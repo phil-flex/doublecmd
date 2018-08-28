@@ -17,6 +17,7 @@ set PACK_DIR=%CD%\windows\release
 rem Create temp dir for building
 set BUILD_DC_TMP_DIR=%TEMP%\doublecmd-%DC_VER%
 rm -rf %BUILD_DC_TMP_DIR%
+REM %SVN_EXE% export ..\ %BUILD_DC_TMP_DIR%
 %SVN_EXE% export ..\ %BUILD_DC_TMP_DIR%
 
 rem Save revision number
@@ -74,6 +75,6 @@ cd %BUILD_PACK_DIR%\doublecmd
 for /D %%f in (doc\*) do zip -9 -Dr %PACK_DIR%\doublecmd-help-%%~nf-%DC_VER%.noarch.zip %%f
 
 rem Clean temp directories
-cd \
-rm -rf %BUILD_DC_TMP_DIR%
-rm -rf %BUILD_PACK_DIR%
+REM cd \
+REM rm -rf %BUILD_DC_TMP_DIR%
+REM rm -rf %BUILD_PACK_DIR%
