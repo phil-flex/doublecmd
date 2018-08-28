@@ -75,6 +75,6 @@ cd %BUILD_PACK_DIR%\doublecmd
 for /D %%f in (doc\*) do zip -9 -Dr %PACK_DIR%\doublecmd-help-%%~nf-%DC_VER%.noarch.zip %%f
 
 rem Clean temp directories
-REM cd \
-REM rm -rf %BUILD_DC_TMP_DIR%
-REM rm -rf %BUILD_PACK_DIR%
+cd \
+rm -rf %BUILD_DC_TMP_DIR%
+rm -rf %BUILD_PACK_DIR%
