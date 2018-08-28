@@ -107,6 +107,7 @@ type
     actExecuteScript: TAction;
     actFocusSwap: TAction;
     actConfigArchivers: TAction;
+    actConfigTooltips: TAction;
     actUnmarkCurrentNameExt: TAction;
     actMarkCurrentNameExt: TAction;
     actUnmarkCurrentName: TAction;
@@ -2590,6 +2591,7 @@ procedure TfrmMain.GetListOpenedPaths(const APaths: TStringList);
   end;
 
 begin
+  APaths.Clear;
   GetNotebookPaths(nbLeft);
   GetNotebookPaths(nbRight);
 end;

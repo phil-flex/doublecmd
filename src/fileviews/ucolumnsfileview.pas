@@ -32,6 +32,8 @@ type
   TDrawGridEx = class(TDrawGrid)
   private
     FMouseDownY: Integer;
+    FLastMouseMoveTime: QWord;
+    FLastMouseScrollTime: QWord;
     ColumnsView: TColumnsFileView;
 
     function GetGridHorzLine: Boolean;
@@ -40,6 +42,7 @@ type
     procedure SetGridVertLine(const AValue: Boolean);
 
   protected
+    procedure DoMouseMoveScroll(X, Y: Integer);
     {$IF lcl_fullversion < 1080003}
     function SelectCell(aCol, aRow: Integer): Boolean; override;
     {$ENDIF}
@@ -47,6 +50,8 @@ type
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X,Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); override;
+    procedure DragOver(Source: TObject; X,Y: Integer; State: TDragState;
+                       var Accept: Boolean); override;
 
     procedure InitializeWnd; override;
     procedure FinalizeWnd; override;
@@ -1381,12 +1386,19 @@ var
       // center icon vertically
       Y:= aRect.Top + (RowHeights[ARow] - gIconsSize) div 2;
 
-      // Draw icon for a file
-      PixMapManager.DrawBitmap(IconID,
-                               Canvas,
-                               aRect.Left + CELL_PADDING,
-                               Y
-                               );
+      if gShowHiddenDimmed and AFile.FSFile.IsHidden then
+        PixMapManager.DrawBitmapAlpha(IconID,
+                                      Canvas,
+                                      aRect.Left + CELL_PADDING,
+                                      Y
+                                     )
+      else
+        // Draw icon for a file
+        PixMapManager.DrawBitmap(IconID,
+                                 Canvas,
+                                 aRect.Left + CELL_PADDING,
+                                 Y
+                                );
 
       // Draw overlay icon for a file if needed
       if gIconOverlays then
@@ -1932,8 +1944,17 @@ begin
     end;
 end;
 
+procedure TDrawGridEx.DragOver(Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean);
+begin
+  inherited DragOver(Source, X, Y, State, Accept);
+  DoMouseMoveScroll(X, Y);
+end;
+
 procedure TDrawGridEx.MouseDown(Button: TMouseButton; Shift: TShiftState; X,Y: Integer);
 begin
+  FLastMouseMoveTime := 0;
+  FLastMouseScrollTime := 0;
+
   if ColumnsView.IsLoadingFileList then Exit;
 {$IFDEF LCLGTK2}
   // Workaround for two doubleclicks being sent on GTK.
@@ -1949,28 +1970,9 @@ begin
 end;
 
 procedure TDrawGridEx.MouseMove(Shift: TShiftState; X, Y: Integer);
-  procedure Scroll(ScrollCode: SmallInt);
-  var
-    Msg: TLMVScroll;
-  begin
-    Msg.Msg := LM_VSCROLL;
-    Msg.ScrollCode := ScrollCode;
-    Msg.SmallPos := 1; // How many lines scroll
-    Msg.ScrollBar := Handle;
-    Dispatch(Msg);
-  end;
 begin
   inherited MouseMove(Shift, X, Y);
-  if DragManager.IsDragging or ColumnsView.IsMouseSelecting then
-  begin
-    if Y < DefaultRowHeight then
-      Scroll(SB_LINEUP)
-    else if (Y > ClientHeight - DefaultRowHeight) and (Y - 1 > FMouseDownY) then
-    begin
-      FMouseDownY := -1;
-      Scroll(SB_LINEDOWN);
-    end;
-  end;
+  if ColumnsView.IsMouseSelecting then DoMouseMoveScroll(X, Y);
 end;
 
 function TDrawGridEx.MouseOnGrid(X, Y: LongInt): Boolean;
@@ -2067,6 +2069,45 @@ function TDrawGridEx.IsRowVisible(aRow: Integer): Boolean;
 begin
   with GCache.FullVisibleGrid do
     Result:= (Top<=aRow)and(aRow<=Bottom);
+end;
+
+procedure TDrawGridEx.DoMouseMoveScroll(X, Y: Integer);
+
+  procedure Scroll(ScrollCode: SmallInt);
+  var
+    Msg: TLMVScroll;
+  begin
+    Msg.Msg := LM_VSCROLL;
+    Msg.ScrollCode := ScrollCode;
+    Msg.SmallPos := 1; // How many lines scroll
+    Msg.ScrollBar := Handle;
+    Dispatch(Msg);
+  end;
+
+var
+  TickCount: QWord;
+  AEvent: SmallInt;
+begin
+  TickCount := GetTickCount64;
+
+  if Y < DefaultRowHeight then
+    AEvent := SB_LINEUP
+  else if (Y > ClientHeight - DefaultRowHeight) and (Y - 1 > FMouseDownY) then
+    AEvent := SB_LINEDOWN
+  else begin
+    Exit;
+  end;
+
+  if (FLastMouseMoveTime = 0) then
+    FLastMouseMoveTime := TickCount
+  else if (FLastMouseScrollTime = 0) then
+    FLastMouseScrollTime := TickCount
+  else if (TickCount - FLastMouseMoveTime > 200) and (TickCount - FLastMouseScrollTime > 50) then
+  begin
+    Scroll(AEvent);
+    FLastMouseScrollTime := GetTickCount64;
+    if (AEvent = SB_LINEDOWN) then FMouseDownY := -1;
+  end;
 end;
 
 procedure TDrawGridEx.KeyDown(var Key: Word; Shift: TShiftState);

@@ -104,7 +104,7 @@ resourcestring
   // Archiver section.
   rsMsgArchiverCustomParams = 'Additional parameters for archiver command-line:';
   rsOptArchiverArchiver = 'Select archiver executable';
-  rsOptArchiverConfirmDelete = 'Are you sure you want to delete: %s';
+  rsOptArchiverConfirmDelete = 'Are you sure you want to delete: "%s"?';
   rsOptArchiverImportFile = 'Select the file to import archiver configuration(s)';
   rsOptArchiverWhereToSave = 'Enter location and filename where to save archiver configuration';
   rsOptArchiverDefaultExportFilename = 'Exported Archiver Configuration';
@@ -133,6 +133,26 @@ resourcestring
   rsOptArchiverUseAnsi = 'Use ANSI encoding';
   rsOptArchiverUseUTF8 = 'Use UTF8 encoding';
   rsOptArchiveConfigureSaveToChange = 'To change current editing archive configuration, either APPLY or DELETE current editing one';
+
+  // Tooltip section
+  rsOptTooltipConfigureSaveToChange = 'To change file type tooltip configuration, either APPLY or DELETE current editing one';
+  rsOptToolTipsFileTypeName = 'Tooltip file type name';
+  rsToolTipModeList = 'Combine DC and system tooltip, DC first (legacy);Combine DC and system tooltip, system first;Show DC tooltip when possible and system when not;Show DC tooltip only;Show system tooltip only';
+  rsToolTipHideTimeOutList = 'System default;1 sec;2 sec;3 sec;5 sec;10 sec;30 sec;1 min;Never hide';
+  rsOptAddingToolTipFileType = 'Adding new tooltip file type';
+  rsOptRenamingToolTipFileType = 'Renaming tooltip file type';
+  rsOptToolTipFileType = 'Tooltip file type name:';
+  rsOptToolTipFileTypeDefaultExportFilename = 'Exported tooltip file type configuration';
+  rsOptToolTipFileTypeWhereToSave = 'Enter location and filename where to save tooltip file type configuration';
+  rsOptToolTipFileTypeAlreadyExists = '"%s" already exists!';
+  rsOptToolTipFileTypeConfirmDelete = 'Are you sure you want to delete: "%s"?';
+  rsOptToolTipFileTypeImportCaption = 'Import tooltip file type configuration';
+  rsOptToolTipFileTypeImportPrompt = 'Select the one(s) you want to import';
+  rsOptToolTipFileTypeImportFile = 'Select the file to import tooltip file type configuration(s)';
+  rsOptToolTipFileTypeImportDone = 'Importation of %d elements from file "%s" completed.';
+  rsOptToolTipFileTypeExportPrompt = 'Select the one(s) you want to export';
+  rsOptToolTipFileTypeExportCaption = 'Export tooltip file type configuration';
+  rsOptToolTipFileTypeExportDone = 'Exportation of %d elements to file "%s" completed.';
 
   rsMsgMasterPassword = 'Master Password';
   rsMsgMasterPasswordEnter = 'Please enter the master password:';

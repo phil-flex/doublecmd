@@ -3,10 +3,10 @@ rem Set Double Commander version
 set DC_VER=0.9.0
 
 rem Path to subversion
-set SVN_EXE="c:\Program Files\SlikSvn\bin\svn.exe"
+set SVN_EXE="c:\Program Files\TortoiseSVN\bin\svn.exe"
 
 rem Path to Inno Setup compiler
-set ISCC_EXE="c:\Program Files\Inno Setup 5\ISCC.exe"
+set ISCC_EXE="c:\Program Files (x86)\Inno Setup 5\ISCC.exe"
 
 rem The new package will be created from here
 set BUILD_PACK_DIR=%TEMP%\doublecmd-%DATE: =%

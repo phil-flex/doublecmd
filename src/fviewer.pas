@@ -292,8 +292,9 @@ type
     FThread: TThread;
 
     //---------------------
-    WlxPlugins:TWLXModuleList;
-    ActivePlugin:Integer;
+    WlxPlugins: TWLXModuleList;
+    FWlxModule: TWlxModule;
+    ActivePlugin: Integer;
     //---------------------
     function GetListerRect: TRect;
     function CheckPlugins(const sFileName: String; bForce: Boolean = False): Boolean;
@@ -508,6 +509,7 @@ begin
   FFileSource := aFileSource;
   FLastSearchPos := -1;
   FZoomFactor := 1.0;
+  ActivePlugin := -1;
   FThumbnailManager:= nil;
   FExif:= TExifReader.Create;
   if not bQuickView then Menu:= MainMenu;
@@ -515,6 +517,9 @@ begin
 
   FontOptionsToFont(gFonts[dcfMain], memFolder.Font);
   memFolder.Color:= gBackColor;
+
+  ViewerControl.TabSpaces := gTabSpaces;
+  ViewerControl.MaxTextWidth := gMaxTextWidth;
 end;
 
 constructor TfrmViewer.Create(TheOwner: TComponent);
@@ -586,13 +591,7 @@ begin
     else
       begin
         ViewerControl.FileName := aFileName;
-        if ViewerControl.IsFileOpen then
-          ActivatePanel(pnlText)
-        else begin
-          ActivatePanel(pnlFolder);
-          memFolder.Font.Color:= clRed;
-          memFolder.Lines.Text:= rsMsgErrERead;
-        end;
+        ActivatePanel(pnlText)
       end;
 
     Status.Panels[sbpFileName].Text:= aFileName;
@@ -604,7 +603,7 @@ end;
 procedure TfrmViewer.LoadNextFile(const aFileName: String);
 begin
   if bPlugin then
-    with WlxPlugins.GetWlxModule(ActivePlugin) do
+    with FWlxModule do
     begin
       if FileParamVSDetectStr(aFileName, False) then
       begin
@@ -638,7 +637,7 @@ end;
 
 procedure TfrmViewer.FormResize(Sender: TObject);
 begin
-  if bPlugin then WlxPlugins.GetWlxModule(ActivePlugin).ResizeWindow(GetListerRect);
+  if bPlugin then FWlxModule.ResizeWindow(GetListerRect);
 end;
 
 procedure TfrmViewer.FormShow(Sender: TObject);
@@ -953,7 +952,7 @@ end;
 
 procedure TfrmViewer.WMSetFocus(var Message: TLMSetFocus);
 begin
-  if bPlugin then WlxPlugins.GetWlxModule(ActivePlugin).SetFocus;
+  if bPlugin then FWlxModule.SetFocus;
 end;
 
 procedure TfrmViewer.RedEyes;
@@ -1126,45 +1125,63 @@ end;
 
 function TfrmViewer.CheckPlugins(const sFileName: String; bForce: Boolean = False): Boolean;
 var
-  I: Integer;
+  I, J: Integer;
   AFileName: String;
   ShowFlags: Integer;
   WlxModule: TWlxModule;
+  Start, Finish: Integer;
 begin
   AFileName:= ExcludeTrailingBackslash(sFileName);
   ShowFlags:= IfThen(bForce, lcp_forceshow, 0) or PluginShowFlags;
   // DCDebug('WlXPlugins.Count = ' + IntToStr(WlxPlugins.Count));
-  for I:= 0 to WlxPlugins.Count - 1 do
-  if WlxPlugins.GetWlxModule(I).FileParamVSDetectStr(AFileName, bForce) then
+  for J := 1 to 2 do
   begin
-    DCDebug('I = ' + IntToStr(I));
-    if not WlxPlugins.LoadModule(I) then Continue;
-    WlxModule:= WlxPlugins.GetWlxModule(I);
-    DCDebug('WlxModule.Name = ', WlxModule.Name);
-    if WlxModule.CallListLoad(Self.Handle, sFileName, ShowFlags) = 0 then
-    begin
-      WlxModule.UnloadModule;
-      Continue;
+    // Find after active plugin
+    if (J = 1) then begin
+      Start := ActivePlugin + 1;
+      Finish :=  WlxPlugins.Count - 1;
+    end
+    // Find before active plugin
+    else begin
+      Start := 0;
+      Finish := ActivePlugin;
     end;
-    ActivePlugin:= I;
-    WlxModule.ResizeWindow(GetListerRect);
-    miPrint.Enabled:= WlxModule.CanPrint;
-    // Set focus to plugin window
-    if not bQuickView then WlxModule.SetFocus;
-    Exit(True);
+    for I:= Start to Finish do
+    begin
+      if WlxPlugins.GetWlxModule(I).FileParamVSDetectStr(AFileName, bForce) then
+      begin
+        DCDebug('I = ' + IntToStr(I));
+        if not WlxPlugins.LoadModule(I) then Continue;
+        WlxModule:= WlxPlugins.GetWlxModule(I);
+        DCDebug('WlxModule.Name = ', WlxModule.Name);
+        if WlxModule.CallListLoad(Self.Handle, sFileName, ShowFlags) = 0 then
+        begin
+          WlxModule.UnloadModule;
+          Continue;
+        end;
+        ActivePlugin:= I;
+        FWlxModule:= WlxModule;
+        WlxModule.ResizeWindow(GetListerRect);
+        miPrint.Enabled:= WlxModule.CanPrint;
+        // Set focus to plugin window
+        if not bQuickView then WlxModule.SetFocus;
+        Exit(True);
+      end;
+    end;
   end;
   // Plugin not found
   ActivePlugin:= -1;
+  FWlxModule:= nil;
   Result:= False;
 end;
 
 procedure TfrmViewer.ExitPluginMode;
 begin
-  if (WlxPlugins.Count > 0) and (ActivePlugin >= 0) then
-  begin
-    WlxPlugins.GetWlxModule(ActivePlugin).CallListCloseWindow;
+  if Assigned(FWlxModule) then begin
+    FWlxModule.CallListCloseWindow;
   end;
   bPlugin:= False;
+  FWlxModule:= nil;
   ActivePlugin:= -1;
   miPrint.Enabled:= False;
 end;
@@ -1446,7 +1463,7 @@ begin
     DrawPreview.RowCount:= FileList.Count div DrawPreview.ColCount + 1
   else
     DrawPreview.RowCount:= FileList.Count div DrawPreview.ColCount;
-  if bPlugin then WlxPlugins.GetWlxModule(ActivePlugin).ResizeWindow(GetListerRect);
+  if bPlugin then FWlxModule.ResizeWindow(GetListerRect);
 end;
 
 procedure TfrmViewer.TimerScreenshotTimer(Sender: TObject);
@@ -1596,7 +1613,9 @@ end;
 
 procedure TfrmViewer.UpdateImagePlacement;
 begin
-  if bImage then
+  if bPlugin then
+    FWlxModule.CallListSendCommand(lc_newparams , PluginShowFlags)
+  else if bImage then
   begin
     if gboxHightlight.Visible then 
     begin
@@ -1606,9 +1625,7 @@ begin
       UndoTmp;
     end;
     AdjustImageSize;
-  end
-  else if bPlugin then
-    WlxPlugins.GetWLxModule(ActivePlugin).CallListSendCommand(lc_newparams , PluginShowFlags)
+  end;
 end;
 
 procedure TfrmViewer.FormCreate(Sender: TObject);
@@ -2081,7 +2098,7 @@ begin
       begin
         FFindDialog.chkHex.Checked:= False;
         // if plugin has specific search dialog
-        if WlxPlugins.GetWLxModule(ActivePlugin).CallListSearchDialog(0) = LISTPLUGIN_OK then
+        if FWlxModule.CallListSearchDialog(0) = LISTPLUGIN_OK then
           Exit;
       end;
       FFindDialog.chkHex.Visible:= not bPlugin;
@@ -2099,12 +2116,12 @@ begin
     end
   else
     begin
-        if bPlugin then
-          begin
-            // if plugin has specific search dialog
-            if WlxPlugins.GetWLxModule(ActivePlugin).CallListSearchDialog(1) = LISTPLUGIN_OK then
-              Exit;
-          end;
+      if bPlugin then
+      begin
+        // if plugin has specific search dialog
+        if FWlxModule.CallListSearchDialog(1) = LISTPLUGIN_OK then
+          Exit;
+      end;
       if glsSearchHistory.Count > 0 then
         sSearchTextU:= glsSearchHistory[0];
     end;
@@ -2114,9 +2131,9 @@ begin
       iSearchParameter:= 0;
       if bSearchBackwards then iSearchParameter:= lcs_backwards;
       if FFindDialog.cbCaseSens.Checked then iSearchParameter:= iSearchParameter or lcs_matchcase;
-      WlxPlugins.GetWLxModule(ActivePlugin).CallListSearchText(sSearchTextU, iSearchParameter);
+      FWlxModule.CallListSearchText(sSearchTextU, iSearchParameter);
     end
-  else
+  else if ViewerControl.IsFileOpen then
     begin
       T:= GetTickCount64;
       if not FFindDialog.chkHex.Checked then
@@ -2261,7 +2278,7 @@ begin
 
   if Panel = nil then
   begin
-    Status.Panels[sbpPluginName].Text:= WlxPlugins.GetWLxModule(ActivePlugin).Name;
+    Status.Panels[sbpPluginName].Text:= FWlxModule.Name;
   end
   else if Panel = pnlText then
   begin
@@ -2328,7 +2345,7 @@ begin
 
   if bPlugin then
   begin
-    if (WlxPlugins.GetWlxModule(ActivePlugin).CallListLoadNext(Self.Handle, FileList[I], PluginShowFlags) <> LISTPLUGIN_ERROR) then
+    if (FWlxModule.CallListLoadNext(Self.Handle, FileList[I], PluginShowFlags) <> LISTPLUGIN_ERROR) then
     Exit;
   end;
   ExitPluginMode;
@@ -2355,9 +2372,8 @@ begin
 
   if bPlugin then
   begin
-    if (WlxPlugins.GetWlxModule(ActivePlugin).CallListLoadNext(Self.Handle, FileList[I], PluginShowFlags) <> LISTPLUGIN_ERROR) then
+    if (FWlxModule.CallListLoadNext(Self.Handle, FileList[I], PluginShowFlags) <> LISTPLUGIN_ERROR) then
       Exit;
-
   end;
   ExitPluginMode;
   if pnlPreview.Visible then
@@ -2634,7 +2650,7 @@ end;
 procedure TfrmViewer.cm_CopyToClipboard(const Params: array of string);
 begin
   if bPlugin then
-   WlxPlugins.GetWLxModule(ActivePlugin).CallListSendCommand(lc_copy, 0)
+   FWlxModule.CallListSendCommand(lc_copy, 0)
   else begin
     if (miGraphics.Checked)and(Image.Picture<>nil)and(Image.Picture.Bitmap<>nil)then
     begin
@@ -2655,9 +2671,9 @@ end;
 procedure TfrmViewer.cm_SelectAll(const Params: array of string);
 begin
   if bPlugin then
-     WlxPlugins.GetWLxModule(ActivePlugin).CallListSendCommand(lc_selectall, 0)
+    FWlxModule.CallListSendCommand(lc_selectall, 0)
   else
-      ViewerControl.SelectAll;
+    ViewerControl.SelectAll;
 end;
 
 procedure TfrmViewer.cm_Find(const Params: array of string);
@@ -2695,7 +2711,7 @@ begin
     FThread.Terminate;
     FThread.WaitFor;
   end;
-  if bPlugin then WlxPlugins.GetWlxModule(ActivePlugin).ResizeWindow(GetListerRect);
+  if bPlugin then FWlxModule.ResizeWindow(GetListerRect);
 end;
 
 procedure TfrmViewer.cm_ShowAsText(const Params: array of string);
@@ -2744,8 +2760,12 @@ begin
 end;
 
 procedure TfrmViewer.cm_ShowPlugins(const Params: array of string);
+var
+  Index: Integer;
 begin
+  Index := ActivePlugin;
   ExitPluginMode;
+  ActivePlugin := Index;
   bPlugin:= CheckPlugins(FileList.Strings[iActiveFile], True);
   if bPlugin then
   begin

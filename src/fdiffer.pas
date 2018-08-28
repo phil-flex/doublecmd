@@ -33,6 +33,13 @@ uses
 
 type
 
+  { TStatusBar }
+
+  TStatusBar = class(ComCtrls.TStatusBar)
+  protected
+    procedure InvalidatePanel(PanelIndex: Integer; PanelParts: TPanelParts); override;
+  end;
+
   { TfrmDiffer }
 
   TfrmDiffer = class(TAloneForm, IFormCommands)
@@ -288,6 +295,18 @@ begin
   end;
 end;
 
+{ TStatusBar }
+
+procedure TStatusBar.InvalidatePanel(PanelIndex: Integer; PanelParts: TPanelParts);
+begin
+  if (PanelIndex >= 0) and (ppText in PanelParts) then
+  begin
+    if Length(Panels[PanelIndex].Text) > 0 then
+      Panels[PanelIndex].Width:= Canvas.TextWidth('WW' + Panels[PanelIndex].Text);
+  end;
+  inherited InvalidatePanel(PanelIndex, PanelParts);
+end;
+
 { TfrmDiffer }
 
 procedure TfrmDiffer.actStartCompareExecute(Sender: TObject);
@@ -298,17 +317,20 @@ var
 begin
   if actBinaryCompare.Checked then
   begin
-    actStartCompare.Enabled := False;
-    actCancelCompare.Enabled := True;
-    actBinaryCompare.Enabled := False;
-    BinaryCompare:= TBinaryCompare.Create(BinaryViewerLeft.GetDataAdr,
-                                          BinaryViewerRight.GetDataAdr,
-                                          BinaryViewerLeft.FileSize,
-                                          BinaryViewerRight.FileSize,
-                                          BinaryDiffList);
+    if (BinaryViewerLeft.IsFileOpen and BinaryViewerRight.IsFileOpen) then
+    begin
+      actStartCompare.Enabled := False;
+      actCancelCompare.Enabled := True;
+      actBinaryCompare.Enabled := False;
+      BinaryCompare:= TBinaryCompare.Create(BinaryViewerLeft.GetDataAdr,
+                                            BinaryViewerRight.GetDataAdr,
+                                            BinaryViewerLeft.FileSize,
+                                            BinaryViewerRight.FileSize,
+                                            BinaryDiffList);
 
-    BinaryCompare.OnFinish:= @BinaryCompareFinish;
-    BinaryCompare.Start;
+      BinaryCompare.OnFinish:= @BinaryCompareFinish;
+      BinaryCompare.Start;
+    end;
   end
   else try
     Inc(ScrollLock);

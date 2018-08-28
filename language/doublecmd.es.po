@@ -379,26 +379,32 @@ msgid "Copy file(s)"
 msgstr "Copiar archivo(s)"
 
 #: tfrmcopydlg.mnunewqueue.caption
+msgctxt "tfrmcopydlg.mnunewqueue.caption"
 msgid "New queue"
 msgstr "Cola nueva"
 
 #: tfrmcopydlg.mnuqueue1.caption
+msgctxt "tfrmcopydlg.mnuqueue1.caption"
 msgid "Queue 1"
 msgstr "Cola 1"
 
 #: tfrmcopydlg.mnuqueue2.caption
+msgctxt "tfrmcopydlg.mnuqueue2.caption"
 msgid "Queue 2"
 msgstr "Cola 2"
 
 #: tfrmcopydlg.mnuqueue3.caption
+msgctxt "tfrmcopydlg.mnuqueue3.caption"
 msgid "Queue 3"
 msgstr "Cola 3"
 
 #: tfrmcopydlg.mnuqueue4.caption
+msgctxt "tfrmcopydlg.mnuqueue4.caption"
 msgid "Queue 4"
 msgstr "Cola 4"
 
 #: tfrmcopydlg.mnuqueue5.caption
+msgctxt "tfrmcopydlg.mnuqueue5.caption"
 msgid "Queue 5"
 msgstr "Cola 5"
 
@@ -3593,6 +3599,7 @@ msgid "A&pply"
 msgstr "A&plicar"
 
 #: tfrmoptionsarchivers.btnarchivercopy.caption
+msgctxt "tfrmoptionsarchivers.btnarchivercopy.caption"
 msgid "Cop&y"
 msgstr "Copiar"
 
@@ -3622,6 +3629,7 @@ msgid "Variable reminder helper"
 msgstr ""
 
 #: tfrmoptionsarchivers.btnarchiverother.caption
+msgctxt "tfrmoptionsarchivers.btnarchiverother.caption"
 msgid "Oth&er..."
 msgstr "Otros..."
 
@@ -4882,6 +4890,14 @@ msgstr "Mostrar caracteres especiales"
 msgid "Shows special characters for spaces and tabulations"
 msgstr ""
 
+#: tfrmoptionseditor.chksmarttabs.caption
+msgid "Smart Tabs"
+msgstr ""
+
+#: tfrmoptionseditor.chksmarttabs.hint
+msgid "When using <Tab> key, caret will go to the next non-space character of the previous line"
+msgstr ""
+
 #: tfrmoptionseditor.chktabindent.caption
 msgid "Tab indents blocks"
 msgstr ""
@@ -4906,9 +4922,23 @@ msgstr ""
 msgid "Auto delete trailing spaces, this applies only to edited lines"
 msgstr ""
 
+#: tfrmoptionseditor.edtabwidth.hint
+msgctxt "tfrmoptionseditor.edtabwidth.hint"
+msgid "Please note that the \"Smart Tabs\" option takes precedence over the tabulation to be performed"
+msgstr ""
+
 #: tfrmoptionseditor.gbinternaleditor.caption
 msgid "Internal editor options"
 msgstr "Opciones del editor interno"
+
+#: tfrmoptionseditor.lbltabwidth.caption
+msgid "Tab width:"
+msgstr ""
+
+#: tfrmoptionseditor.lbltabwidth.hint
+msgctxt "tfrmoptionseditor.lbltabwidth.hint"
+msgid "Please note that the \"Smart Tabs\" option takes precedence over the tabulation to be performed"
+msgstr ""
 
 #: tfrmoptionseditorcolors.backgroundlabel.caption
 msgctxt "tfrmoptionseditorcolors.backgroundlabel.caption"
@@ -6137,6 +6167,10 @@ msgstr "Mostrar iconos en botones"
 msgid "Show o&verlay icons, e.g. for links"
 msgstr "Mostrar &iconos superpuestos (por ejemplo, para enlaces)"
 
+#: tfrmoptionsicons.chkshowhiddendimmed.caption
+msgid "&Dimmed hidden files (slower)"
+msgstr ""
+
 #: tfrmoptionsicons.gbdisablespecialicons.caption
 msgid "Disable special icons"
 msgstr "Deshabilitar iconos especiales"
@@ -6476,9 +6510,18 @@ msgstr "&Tamaño de miniaturas:"
 msgid "&Selection by mouse"
 msgstr "&Selección por ratón"
 
+#: tfrmoptionsmouse.chkcursornofollow.caption
+msgid "The text cursor no longer follows the mouse cursor"
+msgstr ""
+
 #: tfrmoptionsmouse.chkmouseselectioniconclick.caption
 msgid "By clic&king on icon"
 msgstr ""
+
+#: tfrmoptionsmouse.gbopenwith.caption
+msgctxt "tfrmoptionsmouse.gbopenwith.caption"
+msgid "Open with"
+msgstr "Abrir con..."
 
 #: tfrmoptionsmouse.gbscrolling.caption
 msgid "Scrolling"
@@ -6492,6 +6535,10 @@ msgstr "Selección"
 msgid "&Mode:"
 msgstr "&Modo:"
 
+#: tfrmoptionsmouse.rbdoubleclick.caption
+msgid "Double click"
+msgstr ""
+
 #: tfrmoptionsmouse.rbscrolllinebyline.caption
 msgid "&Line by line"
 msgstr "Número de &líneas"
@@ -6503,6 +6550,14 @@ msgstr "Línea a línea con el &movimiento del cursor"
 #: tfrmoptionsmouse.rbscrollpagebypage.caption
 msgid "&Page by page"
 msgstr "&Página a página"
+
+#: tfrmoptionsmouse.rbsingleclickboth.caption
+msgid "Single click (opens files and folders)"
+msgstr ""
+
+#: tfrmoptionsmouse.rbsingleclickfolders.caption
+msgid "Single click (opens folders, double click for files)"
+msgstr ""
 
 #: tfrmoptionsplugins.btnaddplugin.caption
 msgctxt "TFRMOPTIONSPLUGINS.BTNADDPLUGIN.CAPTION"
@@ -7345,19 +7400,24 @@ msgstr "Parámetros a&dicionales"
 msgid "&Path to program to execute"
 msgstr "&Ruta del programa a ejecutar"
 
-#: tfrmoptionstooltips.btnaddfields.caption
-msgctxt "TFRMOPTIONSTOOLTIPS.BTNADDFIELDS.CAPTION"
+#: tfrmoptionstooltips.btnaddtooltipsfiletype.caption
+msgctxt "tfrmoptionstooltips.btnaddtooltipsfiletype.caption"
 msgid "A&dd"
 msgstr "Aña&dir"
 
-#: tfrmoptionstooltips.btnapplyfields.caption
-msgctxt "TFRMOPTIONSTOOLTIPS.BTNAPPLYFIELDS.CAPTION"
+#: tfrmoptionstooltips.btnapplytooltipsfiletype.caption
+msgctxt "tfrmoptionstooltips.btnapplytooltipsfiletype.caption"
 msgid "A&pply"
 msgstr "A&plicar"
 
-#: tfrmoptionstooltips.btndeletefields.caption
-msgctxt "TFRMOPTIONSTOOLTIPS.BTNDELETEFIELDS.CAPTION"
-msgid "D&elete"
+#: tfrmoptionstooltips.btncopytooltipsfiletype.caption
+msgctxt "tfrmoptionstooltips.btncopytooltipsfiletype.caption"
+msgid "Cop&y"
+msgstr "Copiar"
+
+#: tfrmoptionstooltips.btndeletetooltipsfiletype.caption
+msgctxt "tfrmoptionstooltips.btndeletetooltipsfiletype.caption"
+msgid "Delete"
 msgstr "&Borrar"
 
 #: tfrmoptionstooltips.btnfieldslist.caption
@@ -7370,13 +7430,27 @@ msgctxt "TFRMOPTIONSTOOLTIPS.BTNFIELDSSEARCHTEMPLATE.HINT"
 msgid "Template..."
 msgstr "Plantilla..."
 
+#: tfrmoptionstooltips.btnrenametooltipsfiletype.caption
+msgctxt "tfrmoptionstooltips.btnrenametooltipsfiletype.caption"
+msgid "&Rename"
+msgstr "&Renombrar"
+
+#: tfrmoptionstooltips.btntooltipother.caption
+msgctxt "tfrmoptionstooltips.btntooltipother.caption"
+msgid "Oth&er..."
+msgstr "Otros..."
+
+#: tfrmoptionstooltips.bvltooltips1.caption
+msgid "Tooltip configuration for selected file type:"
+msgstr ""
+
+#: tfrmoptionstooltips.bvltooltips2.caption
+msgid "General options about tooltips:"
+msgstr ""
+
 #: tfrmoptionstooltips.chkshowtooltip.caption
 msgid "&Show tooltip for files in the file panel"
 msgstr "Mostrar información emergente para los archivos del panel"
-
-#: tfrmoptionstooltips.gbcustomfields.caption
-msgid "Custom fields by file type"
-msgstr "Campos personalizados por tipo de archivo"
 
 #: tfrmoptionstooltips.lblfieldslist.caption
 msgid "Category &hint:"
@@ -7387,10 +7461,35 @@ msgctxt "TFRMOPTIONSTOOLTIPS.LBLFIELDSMASK.CAPTION"
 msgid "Category &mask:"
 msgstr "Máscara:"
 
-#: tfrmoptionstooltips.lblfieldsname.caption
-msgctxt "TFRMOPTIONSTOOLTIPS.LBLFIELDSNAME.CAPTION"
-msgid "Category &name:"
-msgstr "&Nombre:"
+#: tfrmoptionstooltips.lbltooltiphidingdelay.caption
+msgid "Tooltip hiding delay:"
+msgstr ""
+
+#: tfrmoptionstooltips.lbltooltipshowingmode.caption
+msgid "Tooltip showing mode:"
+msgstr ""
+
+#: tfrmoptionstooltips.lbltooltipslistbox.caption
+msgid "&File types:"
+msgstr ""
+
+#: tfrmoptionstooltips.mitooltipsfiletypediscardmodification.caption
+msgid "Discard Modifications"
+msgstr ""
+
+#: tfrmoptionstooltips.mitooltipsfiletypeexport.caption
+msgctxt "tfrmoptionstooltips.mitooltipsfiletypeexport.caption"
+msgid "Export..."
+msgstr "Exportar..."
+
+#: tfrmoptionstooltips.mitooltipsfiletypeimport.caption
+msgctxt "tfrmoptionstooltips.mitooltipsfiletypeimport.caption"
+msgid "Import..."
+msgstr "Importar..."
+
+#: tfrmoptionstooltips.mitooltipsfiletypesortfiletype.caption
+msgid "Sort Tooltip File Types"
+msgstr ""
 
 #: tfrmoptionstreeviewmenu.ckbdirectoryhotlistfromdoubleclick.caption
 msgid "With double-click on the bar on top of a file panel"
@@ -8886,6 +8985,110 @@ msgctxt "TFRMVIEWER.PMISELECTALL.CAPTION"
 msgid "Select All"
 msgstr "Seleccionar todo"
 
+#: tfrmviewoperations.btnstartpause.caption
+#, fuzzy
+msgctxt "tfrmviewoperations.btnstartpause.caption"
+msgid "&Start"
+msgstr "Comen&zar"
+
+#: tfrmviewoperations.btnstop.caption
+msgid "S&top"
+msgstr ""
+
+#: tfrmviewoperations.caption
+#, fuzzy
+msgctxt "tfrmviewoperations.caption"
+msgid "File operations"
+msgstr "Operaciones con archivos"
+
+#: tfrmviewoperations.cbalwaysontop.caption
+msgid "Always on top"
+msgstr ""
+
+#: tfrmviewoperations.lblusedragdrop.caption
+msgid "&Use \"drag && drop\" to move operations between queues"
+msgstr ""
+
+#: tfrmviewoperations.mnucanceloperation.caption
+#, fuzzy
+msgctxt "tfrmviewoperations.mnucanceloperation.caption"
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: tfrmviewoperations.mnucancelqueue.caption
+#, fuzzy
+msgctxt "tfrmviewoperations.mnucancelqueue.caption"
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: tfrmviewoperations.mnunewqueue.caption
+#, fuzzy
+msgctxt "tfrmviewoperations.mnunewqueue.caption"
+msgid "New queue"
+msgstr "Cola nueva"
+
+#: tfrmviewoperations.mnuoperationshowdetached.caption
+msgctxt "tfrmviewoperations.mnuoperationshowdetached.caption"
+msgid "Show in detached window"
+msgstr ""
+
+#: tfrmviewoperations.mnuputfirstinqueue.caption
+msgid "Put first in queue"
+msgstr ""
+
+#: tfrmviewoperations.mnuputlastinqueue.caption
+msgid "Put last in queue"
+msgstr ""
+
+#: tfrmviewoperations.mnuqueue.caption
+#, fuzzy
+msgctxt "tfrmviewoperations.mnuqueue.caption"
+msgid "Queue"
+msgstr "En cola"
+
+#: tfrmviewoperations.mnuqueue0.caption
+msgid "Out of queue"
+msgstr ""
+
+#: tfrmviewoperations.mnuqueue1.caption
+#, fuzzy
+msgctxt "tfrmviewoperations.mnuqueue1.caption"
+msgid "Queue 1"
+msgstr "Cola 1"
+
+#: tfrmviewoperations.mnuqueue2.caption
+#, fuzzy
+msgctxt "tfrmviewoperations.mnuqueue2.caption"
+msgid "Queue 2"
+msgstr "Cola 2"
+
+#: tfrmviewoperations.mnuqueue3.caption
+#, fuzzy
+msgctxt "tfrmviewoperations.mnuqueue3.caption"
+msgid "Queue 3"
+msgstr "Cola 3"
+
+#: tfrmviewoperations.mnuqueue4.caption
+#, fuzzy
+msgctxt "tfrmviewoperations.mnuqueue4.caption"
+msgid "Queue 4"
+msgstr "Cola 4"
+
+#: tfrmviewoperations.mnuqueue5.caption
+#, fuzzy
+msgctxt "tfrmviewoperations.mnuqueue5.caption"
+msgid "Queue 5"
+msgstr "Cola 5"
+
+#: tfrmviewoperations.mnuqueueshowdetached.caption
+msgctxt "tfrmviewoperations.mnuqueueshowdetached.caption"
+msgid "Show in detached window"
+msgstr ""
+
+#: tfrmviewoperations.tbpauseall.caption
+msgid "&Pause all"
+msgstr ""
+
 #: tmultiarchivecopyoperationoptionsui.lblfileexists.caption
 msgctxt "tmultiarchivecopyoperationoptionsui.lblfileexists.caption"
 msgid "When file exists"
@@ -9153,6 +9356,10 @@ msgctxt "ulng.rsdlgbuttoncancel"
 msgid "&Cancel"
 msgstr "&Cancelar"
 
+#: ulng.rsdlgbuttoncompare
+msgid "Compare &by content"
+msgstr ""
+
 #: ulng.rsdlgbuttoncontinue
 msgid "&Continue"
 msgstr "&Continuar"
@@ -9262,6 +9469,7 @@ msgid "&Start"
 msgstr "Comen&zar"
 
 #: ulng.rsdlgqueue
+msgctxt "ulng.rsdlgqueue"
 msgid "Queue"
 msgstr "En cola"
 
@@ -9703,6 +9911,7 @@ msgid "Open"
 msgstr "Abrir"
 
 #: ulng.rsmnuopenwith
+msgctxt "ulng.rsmnuopenwith"
 msgid "Open with"
 msgstr "Abrir con..."
 
@@ -11119,6 +11328,10 @@ msgstr "Trabajando"
 msgid "Add at &beginning;Add at the end;Smart add"
 msgstr "Añadir al principio;Añadir al final;Añadido inteligente"
 
+#: ulng.rsoptaddingtooltipfiletype
+msgid "Adding new tooltip file type"
+msgstr ""
+
 #: ulng.rsoptarchiveconfiguresavetochange
 msgid "To change current editing archive configuration, either APPLY or DELETE current editing one"
 msgstr ""
@@ -11148,7 +11361,8 @@ msgid "Change Archiver Listing Encoding"
 msgstr ""
 
 #: ulng.rsoptarchiverconfirmdelete
-msgid "Are you sure you want to delete: %s"
+msgctxt "ulng.rsoptarchiverconfirmdelete"
+msgid "Are you sure you want to delete: \"%s\"?"
 msgstr ""
 
 #: ulng.rsoptarchiverdefaultexportfilename
@@ -11164,10 +11378,12 @@ msgid "Export archiver configuration"
 msgstr ""
 
 #: ulng.rsoptarchiverexportdone
+msgctxt "ulng.rsoptarchiverexportdone"
 msgid "Exportation of %d elements to file \"%s\" completed."
 msgstr ""
 
 #: ulng.rsoptarchiverexportprompt
+msgctxt "ulng.rsoptarchiverexportprompt"
 msgid "Select the one(s) you want to export"
 msgstr ""
 
@@ -11184,6 +11400,7 @@ msgid "Import archiver configuration"
 msgstr ""
 
 #: ulng.rsoptarchiverimportdone
+msgctxt "ulng.rsoptarchiverimportdone"
 msgid "Importation of %d elements from file \"%s\" completed."
 msgstr ""
 
@@ -11192,6 +11409,7 @@ msgid "Select the file to import archiver configuration(s)"
 msgstr ""
 
 #: ulng.rsoptarchiverimportprompt
+msgctxt "ulng.rsoptarchiverimportprompt"
 msgid "Select the one(s) you want to import"
 msgstr ""
 
@@ -11444,6 +11662,7 @@ msgid "New"
 msgstr "Nuevo"
 
 #: ulng.rsoptionseditorfileoperations
+msgctxt "ulng.rsoptionseditorfileoperations"
 msgid "File operations"
 msgstr "Operaciones con archivos"
 
@@ -11598,6 +11817,10 @@ msgctxt "ulng.rsoptpluginsregisteredfor"
 msgid "Registered for"
 msgstr "Registrado por"
 
+#: ulng.rsoptrenamingtooltipfiletype
+msgid "Renaming tooltip file type"
+msgstr ""
+
 #: ulng.rsoptsearchcase
 msgid "&Sensitive;&Insensitive"
 msgstr "&Sensible;&Insensible"
@@ -11629,6 +11852,67 @@ msgstr "Arriba;Abajo;"
 #: ulng.rsopttoolbarbuttontype
 msgid "S&eparator;Inte&rnal command;E&xternal command;Men&u"
 msgstr "S&eparador;Comando inte&rno;Comando e&xterno;&Menú"
+
+#: ulng.rsopttooltipconfiguresavetochange
+msgid "To change file type tooltip configuration, either APPLY or DELETE current editing one"
+msgstr ""
+
+#: ulng.rsopttooltipfiletype
+msgid "Tooltip file type name:"
+msgstr "&Nombre:"
+
+#: ulng.rsopttooltipfiletypealreadyexists
+msgid "\"%s\" already exists!"
+msgstr ""
+
+#: ulng.rsopttooltipfiletypeconfirmdelete
+msgctxt "ulng.rsopttooltipfiletypeconfirmdelete"
+msgid "Are you sure you want to delete: \"%s\"?"
+msgstr ""
+
+#: ulng.rsopttooltipfiletypedefaultexportfilename
+msgid "Exported tooltip file type configuration"
+msgstr ""
+
+#: ulng.rsopttooltipfiletypeexportcaption
+msgid "Export tooltip file type configuration"
+msgstr ""
+
+#: ulng.rsopttooltipfiletypeexportdone
+msgctxt "ulng.rsopttooltipfiletypeexportdone"
+msgid "Exportation of %d elements to file \"%s\" completed."
+msgstr ""
+
+#: ulng.rsopttooltipfiletypeexportprompt
+msgctxt "ulng.rsopttooltipfiletypeexportprompt"
+msgid "Select the one(s) you want to export"
+msgstr ""
+
+#: ulng.rsopttooltipfiletypeimportcaption
+msgid "Import tooltip file type configuration"
+msgstr ""
+
+#: ulng.rsopttooltipfiletypeimportdone
+msgctxt "ulng.rsopttooltipfiletypeimportdone"
+msgid "Importation of %d elements from file \"%s\" completed."
+msgstr ""
+
+#: ulng.rsopttooltipfiletypeimportfile
+msgid "Select the file to import tooltip file type configuration(s)"
+msgstr ""
+
+#: ulng.rsopttooltipfiletypeimportprompt
+msgctxt "ulng.rsopttooltipfiletypeimportprompt"
+msgid "Select the one(s) you want to import"
+msgstr ""
+
+#: ulng.rsopttooltipfiletypewheretosave
+msgid "Enter location and filename where to save tooltip file type configuration"
+msgstr ""
+
+#: ulng.rsopttooltipsfiletypename
+msgid "Tooltip file type name"
+msgstr ""
 
 #: ulng.rsopttypeofduplicatedrename
 msgid "DC legacy - Copy (x) filename.ext;Windows - filename (x).ext;Other - filename(x).ext"
@@ -11976,6 +12260,14 @@ msgstr "Error al abrir el visor"
 msgctxt "ulng.rstoolterminal"
 msgid "Terminal"
 msgstr "Terminal"
+
+#: ulng.rstooltiphidetimeoutlist
+msgid "System default;1 sec;2 sec;3 sec;5 sec;10 sec;30 sec;1 min;Never hide"
+msgstr ""
+
+#: ulng.rstooltipmodelist
+msgid "Combine DC and system tooltip, DC first (legacy);Combine DC and system tooltip, system first;Show DC tooltip when possible and system when not;Show DC tooltip only;Show system tooltip only"
+msgstr ""
 
 #: ulng.rstoolviewer
 msgctxt "ulng.rstoolviewer"

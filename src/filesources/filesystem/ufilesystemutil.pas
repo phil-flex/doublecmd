@@ -175,7 +175,7 @@ procedure FillAndCount(Files: TFiles; CountDirs: Boolean; ExcludeRootDir: Boolea
     sr: TSearchRecEx;
     aFile: TFile;
   begin
-    if FindFirstEx(srcPath + '*', faAnyFile, sr) = 0 then
+    if FindFirstEx(srcPath + '*', 0, sr) = 0 then
     begin
       repeat
         if (sr.Name='.') or (sr.Name='..') then Continue;
@@ -301,7 +301,7 @@ var
   sr: TSearchRecEx;
   aFile: TFile;
 begin
-  if FindFirstEx(srcPath + '*', faAnyFile, sr) = 0 then
+  if FindFirstEx(srcPath + '*', 0, sr) = 0 then
   begin
     repeat
       if (sr.Name = '.') or (sr.Name = '..') then Continue;
@@ -936,10 +936,10 @@ begin
       end;
     end;
 
-    if aFile.IsDirectory then
-      ProcessedOk := ProcessDirectory(CurrentSubNode, TargetName)
-    else if aFile.IsLink then
+    if aFile.IsLink then
       ProcessedOk := ProcessLink(CurrentSubNode, TargetName)
+    else if aFile.IsDirectory then
+      ProcessedOk := ProcessDirectory(CurrentSubNode, TargetName)
     else
       ProcessedOk := ProcessFile(CurrentSubNode, TargetName);
 

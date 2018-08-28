@@ -4,14 +4,11 @@
     <PathDelim Value="\"/>
     <Version Value="10"/>
     <BuildModes Active="Debug"/>
-    <Units Count="240">
+    <Units Count="238">
       <Unit0>
         <Filename Value="doublecmd.lpr"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="203"/>
-        <CursorPos X="26" Y="207"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit0>
       <Unit1>
         <Filename Value="fmain.pas"/>
@@ -20,18 +17,15 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="fMain"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="6117"/>
-        <UsageCount Value="38"/>
+        <IsVisibleTab Value="True"/>
+        <UsageCount Value="20"/>
+        <Loaded Value="True"/>
       </Unit1>
       <Unit2>
         <Filename Value="uwcxprototypes.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uWCXprototypes"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="19"/>
-        <CursorPos X="13" Y="26"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit2>
       <Unit3>
         <Filename Value="fviewer.pas"/>
@@ -40,11 +34,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="fViewer"/>
-        <EditorIndex Value="1"/>
-        <TopLine Value="1885"/>
-        <CursorPos Y="1903"/>
-        <UsageCount Value="38"/>
-        <Loaded Value="True"/>
+        <UsageCount Value="20"/>
       </Unit3>
       <Unit4>
         <Filename Value="feditor.pas"/>
@@ -53,12 +43,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="fEditor"/>
-        <EditorIndex Value="2"/>
-        <TopLine Value="491"/>
-        <CursorPos X="55" Y="512"/>
-        <UsageCount Value="38"/>
-        <Loaded Value="True"/>
-        <LoadedDesigner Value="True"/>
+        <UsageCount Value="20"/>
       </Unit4>
       <Unit5>
         <Filename Value="fMsg.pas"/>
@@ -66,7 +51,7 @@
         <ComponentName Value="frmMsg"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit5>
       <Unit6>
         <Filename Value="dmcommondata.pas"/>
@@ -75,9 +60,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="DataModule"/>
         <UnitName Value="dmCommonData"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="39"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit6>
       <Unit7>
         <Filename Value="dmhigh.pas"/>
@@ -86,10 +69,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="DataModule"/>
         <UnitName Value="dmHigh"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="525"/>
-        <CursorPos X="3" Y="9"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit7>
       <Unit8>
         <Filename Value="ffindview.pas"/>
@@ -98,7 +78,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="fFindView"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit8>
       <Unit9>
         <Filename Value="fAbout.pas"/>
@@ -106,7 +86,7 @@
         <ComponentName Value="frmAbout"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit9>
       <Unit10>
         <Filename Value="foptions.pas"/>
@@ -115,10 +95,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="fOptions"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="418"/>
-        <CursorPos X="42" Y="243"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit10>
       <Unit11>
         <Filename Value="fFileOpDlg.pas"/>
@@ -126,8 +103,7 @@
         <ComponentName Value="frmFileOp"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <EditorIndex Value="-1"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit11>
       <Unit12>
         <Filename Value="fmkdir.pas"/>
@@ -136,7 +112,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="fMkDir"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit12>
       <Unit13>
         <Filename Value="fcopymovedlg.pas"/>
@@ -145,7 +121,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="fCopyMoveDlg"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit13>
       <Unit14>
         <Filename Value="fFindDlg.pas"/>
@@ -153,7 +129,7 @@
         <ComponentName Value="frmFindDlg"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit14>
       <Unit15>
         <Filename Value="fsymlink.pas"/>
@@ -162,7 +138,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="fSymLink"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit15>
       <Unit16>
         <Filename Value="fhardlink.pas"/>
@@ -171,7 +147,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="fHardLink"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit16>
       <Unit17>
         <Filename Value="fmultirename.pas"/>
@@ -180,7 +156,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="fMultiRename"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit17>
       <Unit18>
         <Filename Value="fpackdlg.pas"/>
@@ -189,7 +165,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="fPackDlg"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit18>
       <Unit19>
         <Filename Value="flinker.pas"/>
@@ -198,7 +174,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="fLinker"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit19>
       <Unit20>
         <Filename Value="fsplitter.pas"/>
@@ -207,7 +183,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="fSplitter"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit20>
       <Unit21>
         <Filename Value="ffileproperties.pas"/>
@@ -216,7 +192,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="fFileProperties"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit21>
       <Unit22>
         <Filename Value="fextractdlg.pas"/>
@@ -225,20 +201,20 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="fExtractDlg"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit22>
       <Unit23>
         <Filename Value="ulng.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uLng"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit23>
       <Unit24>
         <Filename Value="frames\foptionsfileassocextra.pas"/>
         <IsPartOfProject Value="True"/>
         <HasResources Value="True"/>
         <UnitName Value="fOptionsFileAssocExtra"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit24>
       <Unit25>
         <Filename Value="fhackform.pas"/>
@@ -247,7 +223,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="fHackForm"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit25>
       <Unit26>
         <Filename Value="fpackinfodlg.pas"/>
@@ -256,7 +232,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="fPackInfoDlg"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit26>
       <Unit27>
         <Filename Value="ftweakplugin.pas"/>
@@ -265,13 +241,13 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="fTweakPlugin"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit27>
       <Unit28>
         <Filename Value="udescr.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uDescr"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit28>
       <Unit29>
         <Filename Value="fdescredit.pas"/>
@@ -280,25 +256,25 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="fDescrEdit"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit29>
       <Unit30>
         <Filename Value="platform\win\ugdiplus.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uGdiPlus"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit30>
       <Unit31>
         <Filename Value="platform\win\umywindows.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uMyWindows"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit31>
       <Unit32>
         <Filename Value="platform\unix\umyunix.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uMyUnix"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit32>
       <Unit33>
         <Filename Value="dmhelpmanager.pas"/>
@@ -307,7 +283,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="DataModule"/>
         <UnitName Value="dmHelpManager"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit33>
       <Unit34>
         <Filename Value="feditsearch.pas"/>
@@ -316,48 +292,48 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="fEditSearch"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit34>
       <Unit35>
         <Filename Value="platform\udragdropex.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uDragDropEx"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit35>
       <Unit36>
         <Filename Value="ushellexecute.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uShellExecute"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit36>
       <Unit37>
         <Filename Value="platform\uClipboard.pas"/>
         <IsPartOfProject Value="True"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit37>
       <Unit38>
         <Filename Value="platform\udragdropgtk.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uDragDropGtk"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit38>
       <Unit39>
         <Filename Value="usearchtemplate.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uSearchTemplate"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit39>
       <Unit40>
         <Filename Value="platform\ukeyboard.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uKeyboard"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit40>
       <Unit41>
         <Filename Value="platform\udragdropqt.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uDragDropQt"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit41>
       <Unit42>
         <Filename Value="fchecksumverify.pas"/>
@@ -366,7 +342,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="fCheckSumVerify"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit42>
       <Unit43>
         <Filename Value="fchecksumcalc.pas"/>
@@ -375,28 +351,25 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="fCheckSumCalc"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit43>
       <Unit44>
         <Filename Value="uformcommands.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uFormCommands"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="149"/>
-        <CursorPos X="24" Y="165"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit44>
       <Unit45>
         <Filename Value="ufileviewnotebook.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uFileViewNotebook"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit45>
       <Unit46>
         <Filename Value="platform\unix\mime\umimeactions.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uMimeActions"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit46>
       <Unit47>
         <Filename Value="fsetfileproperties.pas"/>
@@ -405,19 +378,19 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="fSetFileProperties"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit47>
       <Unit48>
         <Filename Value="platform\upixmapgtk.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uPixMapGtk"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit48>
       <Unit49>
         <Filename Value="uquickviewpanel.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uQuickViewPanel"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit49>
       <Unit50>
         <Filename Value="fmaskinputdlg.pas"/>
@@ -426,13 +399,13 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="fMaskInputDlg"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit50>
       <Unit51>
         <Filename Value="platform\uinfotooltip.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uInfoToolTip"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit51>
       <Unit52>
         <Filename Value="fattributesedit.pas"/>
@@ -441,7 +414,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="fAttributesEdit"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit52>
       <Unit53>
         <Filename Value="fmodview.pas"/>
@@ -450,7 +423,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="fModView"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit53>
       <Unit54>
         <Filename Value="fdiffer.pas"/>
@@ -459,7 +432,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="fDiffer"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit54>
       <Unit55>
         <Filename Value="fconnectionmanager.pas"/>
@@ -468,7 +441,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="fConnectionManager"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit55>
       <Unit56>
         <Filename Value="ffileexecuteyourself.pas"/>
@@ -477,37 +450,37 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="fFileExecuteYourSelf"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit56>
       <Unit57>
         <Filename Value="uthumbnails.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uThumbnails"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit57>
       <Unit58>
         <Filename Value="platform\utrash.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uTrash"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit58>
       <Unit59>
         <Filename Value="uparitercontrols.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uPariterControls"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit59>
       <Unit60>
         <Filename Value="ucmdlineparams.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uCmdLineParams"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit60>
       <Unit61>
         <Filename Value="upathlabel.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uPathLabel"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit61>
       <Unit62>
         <Filename Value="frames\foptionstooltips.pas"/>
@@ -516,7 +489,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="fOptionsToolTips"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit62>
       <Unit63>
         <Filename Value="frames\foptionsframe.pas"/>
@@ -525,7 +498,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="fOptionsFrame"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit63>
       <Unit64>
         <Filename Value="frames\foptionsplugins.pas"/>
@@ -534,7 +507,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="fOptionsPlugins"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit64>
       <Unit65>
         <Filename Value="frames\foptionsfiletypescolors.pas"/>
@@ -543,25 +516,25 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="fOptionsFileTypesColors"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit65>
       <Unit66>
         <Filename Value="platform\utarwriter.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uTarWriter"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit66>
       <Unit67>
         <Filename Value="uconvencoding.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uConvEncoding"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit67>
       <Unit68>
         <Filename Value="uvfsmodule.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uVfsModule"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit68>
       <Unit69>
         <Filename Value="frames\foptionslanguage.pas"/>
@@ -570,7 +543,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="fOptionsLanguage"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit69>
       <Unit70>
         <Filename Value="frames\foptionsbehavior.pas"/>
@@ -579,7 +552,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="fOptionsBehavior"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit70>
       <Unit71>
         <Filename Value="frames\foptionstools.pas"/>
@@ -588,7 +561,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="fOptionsTools"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit71>
       <Unit72>
         <Filename Value="frames\foptionshotkeys.pas"/>
@@ -597,7 +570,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="fOptionsHotkeys"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit72>
       <Unit73>
         <Filename Value="frames\foptionslayout.pas"/>
@@ -606,7 +579,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="fOptionsLayout"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit73>
       <Unit74>
         <Filename Value="frames\foptionsfonts.pas"/>
@@ -615,7 +588,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="fOptionsFonts"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit74>
       <Unit75>
         <Filename Value="frames\foptionsfileoperations.pas"/>
@@ -624,7 +597,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="fOptionsFileOperations"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit75>
       <Unit76>
         <Filename Value="frames\foptionsquicksearchfilter.pas"/>
@@ -633,7 +606,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="fOptionsQuickSearchFilter"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit76>
       <Unit77>
         <Filename Value="frames\foptionstabs.pas"/>
@@ -642,7 +615,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="fOptionsTabs"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit77>
       <Unit78>
         <Filename Value="frames\foptionslog.pas"/>
@@ -651,7 +624,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="fOptionsLog"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit78>
       <Unit79>
         <Filename Value="frames\foptionsconfiguration.pas"/>
@@ -660,7 +633,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="fOptionsConfiguration"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit79>
       <Unit80>
         <Filename Value="frames\foptionscustomcolumns.pas"/>
@@ -669,7 +642,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="fOptionsCustomColumns"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit80>
       <Unit81>
         <Filename Value="frames\foptionsmisc.pas"/>
@@ -678,7 +651,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="fOptionsMisc"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit81>
       <Unit82>
         <Filename Value="frames\foptionsautorefresh.pas"/>
@@ -687,7 +660,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="fOptionsAutoRefresh"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit82>
       <Unit83>
         <Filename Value="frames\foptionsicons.pas"/>
@@ -696,7 +669,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="fOptionsIcons"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit83>
       <Unit84>
         <Filename Value="frames\foptionsignorelist.pas"/>
@@ -705,7 +678,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="fOptionsIgnoreList"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit84>
       <Unit85>
         <Filename Value="frames\foptionsarchivers.pas"/>
@@ -714,7 +687,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="fOptionsArchivers"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit85>
       <Unit86>
         <Filename Value="fselecttextrange.pas"/>
@@ -723,7 +696,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="fSelectTextRange"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit86>
       <Unit87>
         <Filename Value="frames\fquicksearch.pas"/>
@@ -732,13 +705,13 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="fQuickSearch"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit87>
       <Unit88>
         <Filename Value="frames\foptionsgroups.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="fOptionsGroups"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit88>
       <Unit89>
         <Filename Value="frames\foptionsfilepanelscolors.pas"/>
@@ -747,7 +720,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="fOptionsFilePanelsColors"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit89>
       <Unit90>
         <Filename Value="frames\foptionstoolbase.pas"/>
@@ -756,7 +729,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="fOptionsToolBase"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit90>
       <Unit91>
         <Filename Value="frames\foptionsterminal.pas"/>
@@ -765,7 +738,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="fOptionsTerminal"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit91>
       <Unit92>
         <Filename Value="frames\foptionsmouse.pas"/>
@@ -774,7 +747,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="fOptionsMouse"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit92>
       <Unit93>
         <Filename Value="frames\foptionskeyboard.pas"/>
@@ -783,7 +756,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="fOptionsKeyboard"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit93>
       <Unit94>
         <Filename Value="frames\foptionsdragdrop.pas"/>
@@ -792,7 +765,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="fOptionsDragDrop"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit94>
       <Unit95>
         <Filename Value="frames\foptionsfilesviews.pas"/>
@@ -801,7 +774,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="fOptionsFilesViews"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit95>
       <Unit96>
         <Filename Value="frames\foptionscolumnsview.pas"/>
@@ -810,7 +783,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="fOptionsColumnsView"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit96>
       <Unit97>
         <Filename Value="frames\foptionsdriveslistbutton.pas"/>
@@ -819,28 +792,25 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="fOptionsDrivesListButton"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit97>
       <Unit98>
         <Filename Value="platform\unix\uoverlayscrollbarfix.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uOverlayScrollBarFix"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit98>
       <Unit99>
         <Filename Value="umaincommands.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uMainCommands"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="3451"/>
-        <CursorPos X="26" Y="3471"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit99>
       <Unit100>
         <Filename Value="platform\win\uexceptionhandlerfix.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uExceptionHandlerFix"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit100>
       <Unit101>
         <Filename Value="frames\foptionseditorcolors.pas"/>
@@ -849,13 +819,13 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="fOptionsEditorColors"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit101>
       <Unit102>
         <Filename Value="uoperationspanel.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uOperationsPanel"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit102>
       <Unit103>
         <Filename Value="foptionshotkeysedithotkey.pas"/>
@@ -864,16 +834,13 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="fOptionsHotkeysEditHotkey"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="513"/>
-        <CursorPos Y="530"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit103>
       <Unit104>
         <Filename Value="ukastoolitemsextended.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uKASToolItemsExtended"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit104>
       <Unit105>
         <Filename Value="frames\foptionstoolbar.pas"/>
@@ -882,105 +849,102 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="fOptionsToolbar"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit105>
       <Unit106>
         <Filename Value="fileviews\ufileviewwithmainctrl.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uFileViewWithMainCtrl"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit106>
       <Unit107>
         <Filename Value="filesources\uarchivefilesource.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uArchiveFileSource"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit107>
       <Unit108>
         <Filename Value="filesources\uarchivefilesourceutil.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uArchiveFileSourceUtil"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit108>
       <Unit109>
         <Filename Value="filesources\ufilesource.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uFileSource"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit109>
       <Unit110>
         <Filename Value="filesources\ufilesourcecalcchecksumoperation.pas"/>
         <IsPartOfProject Value="True"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit110>
       <Unit111>
         <Filename Value="filesources\ufilesourcecalcstatisticsoperation.pas"/>
         <IsPartOfProject Value="True"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit111>
       <Unit112>
         <Filename Value="filesources\ufilesourcecombineoperation.pas"/>
         <IsPartOfProject Value="True"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit112>
       <Unit113>
         <Filename Value="filesources\ufilesourcecopyoperation.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uFileSourceCopyOperation"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit113>
       <Unit114>
         <Filename Value="filesources\ufilesourcecreatedirectoryoperation.pas"/>
         <IsPartOfProject Value="True"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit114>
       <Unit115>
         <Filename Value="filesources\ufilesourcedeleteoperation.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uFileSourceDeleteOperation"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit115>
       <Unit116>
         <Filename Value="filesources\ufilesourceexecuteoperation.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uFileSourceExecuteOperation"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit116>
       <Unit117>
         <Filename Value="filesources\ufilesourcelistoperation.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uFileSourceListOperation"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit117>
       <Unit118>
         <Filename Value="filesources\ufilesourcemoveoperation.pas"/>
         <IsPartOfProject Value="True"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit118>
       <Unit119>
         <Filename Value="filesources\ufilesourceoperation.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uFileSourceOperation"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="1069"/>
-        <CursorPos X="39" Y="1081"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit119>
       <Unit120>
         <Filename Value="filesources\ufilesourceoperationmessageboxesui.pas"/>
         <IsPartOfProject Value="True"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit120>
       <Unit121>
         <Filename Value="filesources\ufilesourceoperationmisc.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uFileSourceOperationMisc"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit121>
       <Unit122>
         <Filename Value="filesources\ufilesourceoperationoptions.pas"/>
         <IsPartOfProject Value="True"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit122>
       <Unit123>
         <Filename Value="filesources\ufilesourceoperationoptionsui.pas"/>
@@ -989,71 +953,72 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="uFileSourceOperationOptionsUI"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit123>
       <Unit124>
         <Filename Value="filesources\ufilesourceoperationtypes.pas"/>
         <IsPartOfProject Value="True"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit124>
       <Unit125>
         <Filename Value="filesources\ufilesourceoperationui.pas"/>
         <IsPartOfProject Value="True"/>
-        <UsageCount Value="38"/>
+        <UnitName Value="uFileSourceOperationUI"/>
+        <UsageCount Value="20"/>
       </Unit125>
       <Unit126>
         <Filename Value="filesources\ufilesourceproperty.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uFileSourceProperty"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit126>
       <Unit127>
         <Filename Value="filesources\ufilesourcesetfilepropertyoperation.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uFileSourceSetFilePropertyOperation"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit127>
       <Unit128>
         <Filename Value="filesources\ufilesourcesplitoperation.pas"/>
         <IsPartOfProject Value="True"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit128>
       <Unit129>
         <Filename Value="filesources\ufilesourcetestarchiveoperation.pas"/>
         <IsPartOfProject Value="True"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit129>
       <Unit130>
         <Filename Value="filesources\ufilesourceutil.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uFileSourceUtil"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit130>
       <Unit131>
         <Filename Value="filesources\ufilesourcewipeoperation.pas"/>
         <IsPartOfProject Value="True"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit131>
       <Unit132>
         <Filename Value="filesources\ulocalfilesource.pas"/>
         <IsPartOfProject Value="True"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit132>
       <Unit133>
         <Filename Value="filesources\uoperationthread.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uOperationThread"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit133>
       <Unit134>
         <Filename Value="filesources\urealfilesource.pas"/>
         <IsPartOfProject Value="True"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit134>
       <Unit135>
         <Filename Value="filesources\uvirtualfilesource.pas"/>
         <IsPartOfProject Value="True"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit135>
       <Unit136>
         <Filename Value="filesources\filesystem\ffilesystemcopymoveoperationoptions.pas"/>
@@ -1062,84 +1027,84 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="fFileSystemCopyMoveOperationOptions"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit136>
       <Unit137>
         <Filename Value="filesources\filesystem\ufilesystemcalcchecksumoperation.pas"/>
         <IsPartOfProject Value="True"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit137>
       <Unit138>
         <Filename Value="filesources\filesystem\ufilesystemcalcstatisticsoperation.pas"/>
         <IsPartOfProject Value="True"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit138>
       <Unit139>
         <Filename Value="filesources\filesystem\ufilesystemcombineoperation.pas"/>
         <IsPartOfProject Value="True"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit139>
       <Unit140>
         <Filename Value="filesources\filesystem\ufilesystemcopyoperation.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uFileSystemCopyOperation"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit140>
       <Unit141>
         <Filename Value="filesources\filesystem\ufilesystemcreatedirectoryoperation.pas"/>
         <IsPartOfProject Value="True"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit141>
       <Unit142>
         <Filename Value="filesources\filesystem\ufilesystemdeleteoperation.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uFileSystemDeleteOperation"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit142>
       <Unit143>
         <Filename Value="filesources\filesystem\ufilesystemexecuteoperation.pas"/>
         <IsPartOfProject Value="True"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit143>
       <Unit144>
         <Filename Value="filesources\filesystem\ufilesystemfilesource.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uFileSystemFileSource"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit144>
       <Unit145>
         <Filename Value="filesources\filesystem\ufilesystemlistoperation.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uFileSystemListOperation"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit145>
       <Unit146>
         <Filename Value="filesources\filesystem\ufilesystemmoveoperation.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uFileSystemMoveOperation"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit146>
       <Unit147>
         <Filename Value="filesources\filesystem\ufilesystemsetfilepropertyoperation.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uFileSystemSetFilePropertyOperation"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit147>
       <Unit148>
         <Filename Value="filesources\filesystem\ufilesystemsplitoperation.pas"/>
         <IsPartOfProject Value="True"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit148>
       <Unit149>
         <Filename Value="filesources\filesystem\ufilesystemutil.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uFileSystemUtil"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit149>
       <Unit150>
         <Filename Value="filesources\filesystem\ufilesystemwipeoperation.pas"/>
         <IsPartOfProject Value="True"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit150>
       <Unit151>
         <Filename Value="filesources\multiarchive\fmultiarchivecopyoperationoptions.pas"/>
@@ -1147,102 +1112,102 @@
         <ComponentName Value="MultiArchiveCopyOperationOptionsUI"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit151>
       <Unit152>
         <Filename Value="filesources\multiarchive\umultiarchivecalcstatisticsoperation.pas"/>
         <IsPartOfProject Value="True"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit152>
       <Unit153>
         <Filename Value="filesources\multiarchive\umultiarchivecopyinoperation.pas"/>
         <IsPartOfProject Value="True"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit153>
       <Unit154>
         <Filename Value="filesources\multiarchive\umultiarchivecopyoutoperation.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uMultiArchiveCopyOutOperation"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit154>
       <Unit155>
         <Filename Value="filesources\multiarchive\umultiarchivedeleteoperation.pas"/>
         <IsPartOfProject Value="True"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit155>
       <Unit156>
         <Filename Value="filesources\multiarchive\umultiarchiveexecuteoperation.pas"/>
         <IsPartOfProject Value="True"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit156>
       <Unit157>
         <Filename Value="filesources\multiarchive\umultiarchivefilesource.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uMultiArchiveFileSource"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit157>
       <Unit158>
         <Filename Value="filesources\multiarchive\umultiarchivelistoperation.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uMultiArchiveListOperation"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit158>
       <Unit159>
         <Filename Value="filesources\multiarchive\umultiarchivetestarchiveoperation.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uMultiArchiveTestArchiveOperation"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit159>
       <Unit160>
         <Filename Value="filesources\multiarchive\umultiarchiveutil.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uMultiArchiveUtil"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit160>
       <Unit161>
         <Filename Value="filesources\multilist\umultilistfilesource.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uMultiListFileSource"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit161>
       <Unit162>
         <Filename Value="filesources\multilist\umultilistlistoperation.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uMultiListListOperation"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit162>
       <Unit163>
         <Filename Value="filesources\searchresult\usearchresultfilesource.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uSearchResultFileSource"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit163>
       <Unit164>
         <Filename Value="filesources\searchresult\usearchresultlistoperation.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uSearchResultListOperation"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit164>
       <Unit165>
         <Filename Value="filesources\tempfilesystem\utempfilesystemfilesource.pas"/>
         <IsPartOfProject Value="True"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit165>
       <Unit166>
         <Filename Value="filesources\vfs\uvfsexecuteoperation.pas"/>
         <IsPartOfProject Value="True"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit166>
       <Unit167>
         <Filename Value="filesources\vfs\uvfsfilesource.pas"/>
         <IsPartOfProject Value="True"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit167>
       <Unit168>
         <Filename Value="filesources\vfs\uvfslistoperation.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uVfsListOperation"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit168>
       <Unit169>
         <Filename Value="filesources\wcxarchive\fwcxarchivecopyoperationoptions.pas"/>
@@ -1250,57 +1215,54 @@
         <ComponentName Value="WcxArchiveCopyOperationOptionsUI"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="13"/>
-        <CursorPos X="73" Y="48"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit169>
       <Unit170>
         <Filename Value="filesources\wcxarchive\uwcxarchivecalcstatisticsoperation.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uWcxArchiveCalcStatisticsOperation"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit170>
       <Unit171>
         <Filename Value="filesources\wcxarchive\uwcxarchivecopyinoperation.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uWcxArchiveCopyInOperation"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit171>
       <Unit172>
         <Filename Value="filesources\wcxarchive\uwcxarchivecopyoutoperation.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uWcxArchiveCopyOutOperation"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit172>
       <Unit173>
         <Filename Value="filesources\wcxarchive\uwcxarchivedeleteoperation.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uWcxArchiveDeleteOperation"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit173>
       <Unit174>
         <Filename Value="filesources\wcxarchive\uwcxarchiveexecuteoperation.pas"/>
         <IsPartOfProject Value="True"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit174>
       <Unit175>
         <Filename Value="filesources\wcxarchive\uwcxarchivefilesource.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uWcxArchiveFileSource"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit175>
       <Unit176>
         <Filename Value="filesources\wcxarchive\uwcxarchivelistoperation.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uWcxArchiveListOperation"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit176>
       <Unit177>
         <Filename Value="filesources\wcxarchive\uwcxarchivetestarchiveoperation.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uWcxArchiveTestArchiveOperation"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit177>
       <Unit178>
         <Filename Value="filesources\wfxplugin\fwfxplugincopymoveoperationoptions.pas"/>
@@ -1308,156 +1270,137 @@
         <ComponentName Value="WfxPluginCopyMoveOperationOptionsUI"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit178>
       <Unit179>
         <Filename Value="filesources\wfxplugin\uwfxplugincopyinoperation.pas"/>
         <IsPartOfProject Value="True"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit179>
       <Unit180>
         <Filename Value="filesources\wfxplugin\uwfxplugincopyoperation.pas"/>
         <IsPartOfProject Value="True"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit180>
       <Unit181>
         <Filename Value="filesources\wfxplugin\uwfxplugincopyoutoperation.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uWfxPluginCopyOutOperation"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit181>
       <Unit182>
         <Filename Value="filesources\wfxplugin\uwfxplugincreatedirectoryoperation.pas"/>
         <IsPartOfProject Value="True"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit182>
       <Unit183>
         <Filename Value="filesources\wfxplugin\uwfxplugindeleteoperation.pas"/>
         <IsPartOfProject Value="True"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit183>
       <Unit184>
         <Filename Value="filesources\wfxplugin\uwfxpluginexecuteoperation.pas"/>
         <IsPartOfProject Value="True"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit184>
       <Unit185>
         <Filename Value="filesources\wfxplugin\uwfxpluginfilesource.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uWfxPluginFileSource"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit185>
       <Unit186>
         <Filename Value="filesources\wfxplugin\uwfxpluginlistoperation.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uWfxPluginListOperation"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit186>
       <Unit187>
         <Filename Value="filesources\wfxplugin\uwfxpluginmoveoperation.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uWfxPluginMoveOperation"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit187>
       <Unit188>
         <Filename Value="filesources\wfxplugin\uwfxpluginsetfilepropertyoperation.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uWfxPluginSetFilePropertyOperation"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit188>
       <Unit189>
         <Filename Value="filesources\wfxplugin\uwfxpluginutil.pas"/>
         <IsPartOfProject Value="True"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit189>
       <Unit190>
         <Filename Value="filesources\winnet\uwinnetexecuteoperation.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="63"/>
-        <CursorPos Y="55"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit190>
       <Unit191>
         <Filename Value="filesources\winnet\uwinnetfilesource.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="75"/>
-        <CursorPos X="27" Y="88"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit191>
       <Unit192>
         <Filename Value="filesources\winnet\uwinnetlistoperation.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uWinNetListOperation"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="41"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit192>
       <Unit193>
         <Filename Value="fileviews\ubrieffileview.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uBriefFileView"/>
-        <EditorIndex Value="-1"/>
-        <CursorPos X="40" Y="204"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit193>
       <Unit194>
         <Filename Value="fileviews\ucolumnsfileview.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uColumnsFileView"/>
-        <EditorIndex Value="-1"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit194>
       <Unit195>
         <Filename Value="fileviews\ucolumnsfileviewvtv.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uColumnsFileViewVtv"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="1320"/>
-        <CursorPos Y="1337"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit195>
       <Unit196>
         <Filename Value="fileviews\ufileview.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uFileView"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="278"/>
-        <CursorPos X="75" Y="298"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit196>
       <Unit197>
         <Filename Value="fileviews\ufileviewheader.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uFileViewHeader"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit197>
       <Unit198>
         <Filename Value="fileviews\ufileviewhistory.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uFileViewHistory"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="14"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit198>
       <Unit199>
         <Filename Value="fileviews\ufileviewwithpanels.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uFileViewWithPanels"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit199>
       <Unit200>
         <Filename Value="fileviews\ufileviewworker.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uFileViewWorker"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit200>
       <Unit201>
         <Filename Value="fileviews\uorderedfileview.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uOrderedFileView"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit201>
       <Unit202>
         <Filename Value="fopenwith.pas"/>
@@ -1466,15 +1409,13 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="fOpenWith"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="218"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit202>
       <Unit203>
         <Filename Value="platform\unix\ukeyfile.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uKeyFile"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit203>
       <Unit204>
         <Filename Value="fsyncdirsdlg.pas"/>
@@ -1483,38 +1424,38 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="fSyncDirsDlg"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit204>
       <Unit205>
         <Filename Value="fsyncdirsperformdlg.pas"/>
         <IsPartOfProject Value="True"/>
         <HasResources Value="True"/>
         <UnitName Value="fSyncDirsPerformDlg"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit205>
       <Unit206>
         <Filename Value="platform\unix\glib\ugio2.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uGio2"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit206>
       <Unit207>
         <Filename Value="platform\unix\glib\ugobject2.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uGObject2"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit207>
       <Unit208>
         <Filename Value="platform\unix\glib\uglib2.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uGLib2"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit208>
       <Unit209>
         <Filename Value="uspecialdir.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uSpecialDir"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit209>
       <Unit210>
         <Filename Value="fstartingsplash.pas"/>
@@ -1522,10 +1463,7 @@
         <ComponentName Value="frmStartingSplash"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="7"/>
-        <CursorPos X="41" Y="28"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit210>
       <Unit211>
         <Filename Value="frames\foptionsdirectoryhotlist.pas"/>
@@ -1534,7 +1472,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="foptionsDirectoryHotlist"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit211>
       <Unit212>
         <Filename Value="fhotdirexportimport.pas"/>
@@ -1542,25 +1480,25 @@
         <ComponentName Value="frmhotdirexportimport"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit212>
       <Unit213>
         <Filename Value="platform\unix\mime\umimecache.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uMimeCache"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit213>
       <Unit214>
         <Filename Value="platform\unix\uxdg.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uXdg"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit214>
       <Unit215>
         <Filename Value="platform\unix\mime\umimetype.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uMimeType"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit215>
       <Unit216>
         <Filename Value="frames\foptionstoolsdiffer.pas"/>
@@ -1569,7 +1507,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="fOptionsToolsDiffer"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit216>
       <Unit217>
         <Filename Value="frames\foptionsfileassoc.pas"/>
@@ -1578,7 +1516,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="fOptionsFileAssoc"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit217>
       <Unit218>
         <Filename Value="frames\foptionsbriefview.pas"/>
@@ -1587,7 +1525,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="fOptionsBriefView"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit218>
       <Unit219>
         <Filename Value="fmaincommandsdlg.pas"/>
@@ -1596,7 +1534,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="fMainCommandsDlg"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit219>
       <Unit220>
         <Filename Value="frames\fsearchplugin.pas"/>
@@ -1605,19 +1543,19 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="fSearchPlugin"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit220>
       <Unit221>
         <Filename Value="udiffonp.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uDiffONP"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit221>
       <Unit222>
         <Filename Value="udiffond.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uDiffOND"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit222>
       <Unit223>
         <Filename Value="fdeletedlg.pas"/>
@@ -1626,12 +1564,12 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="fDeleteDlg"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit223>
       <Unit224>
         <Filename Value="ufavoritetabs.pas"/>
         <IsPartOfProject Value="True"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit224>
       <Unit225>
         <Filename Value="frames\foptionsfavoritetabs.pas"/>
@@ -1640,7 +1578,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="fOptionsFavoriteTabs"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit225>
       <Unit226>
         <Filename Value="frames\foptionstoolseditor.pas"/>
@@ -1649,7 +1587,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="fOptionsToolsEditor"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit226>
       <Unit227>
         <Filename Value="frames\foptionstabsextra.pas"/>
@@ -1658,14 +1596,13 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="fOptionsTabsExtra"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit227>
       <Unit228>
         <Filename Value="uaccentsutils.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uAccentsUtils"/>
-        <EditorIndex Value="-1"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit228>
       <Unit229>
         <Filename Value="frames\foptionstreeviewmenu.pas"/>
@@ -1674,7 +1611,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="fOptionsTreeViewMenu"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit229>
       <Unit230>
         <Filename Value="frames\foptionstreeviewmenucolor.pas"/>
@@ -1683,16 +1620,13 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="fOptionsTreeViewMenuColor"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit230>
       <Unit231>
         <Filename Value="uglobs.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uGlobs"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="784"/>
-        <CursorPos X="50" Y="797"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit231>
       <Unit232>
         <Filename Value="ftreeviewmenu.pas"/>
@@ -1701,10 +1635,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="fTreeViewMenu"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="1197"/>
-        <CursorPos X="66" Y="20"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit232>
       <Unit233>
         <Filename Value="fmultirenamewait.pas"/>
@@ -1713,13 +1644,13 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="fMultiRenameWait"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit233>
       <Unit234>
         <Filename Value="filesources\multiarchive\umultiarchiveparser.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uMultiArchiveParser"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit234>
       <Unit235>
         <Filename Value="frames\foptionsfilesearch.pas"/>
@@ -1728,163 +1659,24 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="fOptionsFileSearch"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit235>
       <Unit236>
         <Filename Value="uexifreader.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uExifReader"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="20"/>
       </Unit236>
       <Unit237>
-        <Filename Value="platform\upixmapmanager.pas"/>
-        <UnitName Value="uPixMapManager"/>
-        <TopLine Value="1035"/>
-        <CursorPos X="17" Y="1035"/>
-        <UsageCount Value="16"/>
-        <Loaded Value="True"/>
+        <Filename Value="fviewoperations.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmViewOperations"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="fViewOperations"/>
+        <UsageCount Value="20"/>
       </Unit237>
-      <Unit238>
-        <Filename Value="..\components\virtualtreeview\VirtualTrees.pas"/>
-        <EditorIndex Value="4"/>
-        <TopLine Value="14435"/>
-        <CursorPos X="46" Y="14450"/>
-        <UsageCount Value="10"/>
-        <Loaded Value="True"/>
-      </Unit238>
-      <Unit239>
-        <Filename Value="..\components\lclextensions\oleutils.pas"/>
-        <IsVisibleTab Value="True"/>
-        <EditorIndex Value="3"/>
-        <TopLine Value="91"/>
-        <CursorPos X="54" Y="107"/>
-        <UsageCount Value="10"/>
-        <Loaded Value="True"/>
-      </Unit239>
     </Units>
-    <JumpHistory Count="26" HistoryIndex="25">
-      <Position1>
-        <Filename Value="feditor.pas"/>
-        <Caret Line="18" Column="79"/>
-      </Position1>
-      <Position2>
-        <Filename Value="feditor.pas"/>
-        <Caret Line="68" Column="16" TopLine="42"/>
-      </Position2>
-      <Position3>
-        <Filename Value="feditor.pas"/>
-        <Caret Line="69" Column="16" TopLine="43"/>
-      </Position3>
-      <Position4>
-        <Filename Value="feditor.pas"/>
-        <Caret Line="100" Column="9" TopLine="75"/>
-      </Position4>
-      <Position5>
-        <Filename Value="feditor.pas"/>
-        <Caret Line="101" Column="9" TopLine="76"/>
-      </Position5>
-      <Position6>
-        <Filename Value="feditor.pas"/>
-        <Caret Line="115" Column="12" TopLine="90"/>
-      </Position6>
-      <Position7>
-        <Filename Value="feditor.pas"/>
-        <Caret Line="127" Column="11" TopLine="102"/>
-      </Position7>
-      <Position8>
-        <Filename Value="feditor.pas"/>
-        <Caret Line="176" Column="22" TopLine="165"/>
-      </Position8>
-      <Position9>
-        <Filename Value="feditor.pas"/>
-        <Caret Line="482" Column="16" TopLine="471"/>
-      </Position9>
-      <Position10>
-        <Filename Value="feditor.pas"/>
-        <Caret Line="460" Column="55" TopLine="448"/>
-      </Position10>
-      <Position11>
-        <Filename Value="feditor.pas"/>
-        <Caret Line="457" Column="46" TopLine="434"/>
-      </Position11>
-      <Position12>
-        <Filename Value="feditor.pas"/>
-        <Caret Line="478" Column="32" TopLine="471"/>
-      </Position12>
-      <Position13>
-        <Filename Value="..\components\virtualtreeview\VirtualTrees.pas"/>
-        <Caret Line="14450" Column="46" TopLine="14434"/>
-      </Position13>
-      <Position14>
-        <Filename Value="..\components\virtualtreeview\VirtualTrees.pas"/>
-        <Caret Line="14449" Column="33" TopLine="14435"/>
-      </Position14>
-      <Position15>
-        <Filename Value="..\components\virtualtreeview\VirtualTrees.pas"/>
-        <Caret Line="14450" Column="46" TopLine="14435"/>
-      </Position15>
-      <Position16>
-        <Filename Value="..\components\virtualtreeview\VirtualTrees.pas"/>
-        <Caret Line="14435" Column="30" TopLine="14435"/>
-      </Position16>
-      <Position17>
-        <Filename Value="..\components\virtualtreeview\VirtualTrees.pas"/>
-        <Caret Line="14450" Column="46" TopLine="14435"/>
-      </Position17>
-      <Position18>
-        <Filename Value="feditor.pas"/>
-        <Caret Line="512" Column="55" TopLine="491"/>
-      </Position18>
-      <Position19>
-        <Filename Value="..\components\lclextensions\oleutils.pas"/>
-        <Caret Line="107" Column="64" TopLine="91"/>
-      </Position19>
-      <Position20>
-        <Filename Value="..\components\lclextensions\oleutils.pas"/>
-        <Caret Line="108" Column="13" TopLine="89"/>
-      </Position20>
-      <Position21>
-        <Filename Value="..\components\lclextensions\oleutils.pas"/>
-        <Caret Line="107" Column="64" TopLine="91"/>
-      </Position21>
-      <Position22>
-        <Filename Value="..\components\lclextensions\oleutils.pas"/>
-        <Caret Line="108" Column="11" TopLine="92"/>
-      </Position22>
-      <Position23>
-        <Filename Value="..\components\lclextensions\oleutils.pas"/>
-        <Caret Line="107" Column="64" TopLine="91"/>
-      </Position23>
-      <Position24>
-        <Filename Value="..\components\lclextensions\oleutils.pas"/>
-        <Caret Line="98" TopLine="91"/>
-      </Position24>
-      <Position25>
-        <Filename Value="..\components\lclextensions\oleutils.pas"/>
-        <Caret Line="107" Column="64" TopLine="91"/>
-      </Position25>
-      <Position26>
-        <Filename Value="..\components\lclextensions\oleutils.pas"/>
-        <Caret Line="108" Column="11" TopLine="92"/>
-      </Position26>
-    </JumpHistory>
+    <JumpHistory HistoryIndex="-1"/>
   </ProjectSession>
-  <Debugging>
-    <BreakPoints Count="2">
-      <Item1>
-        <Kind Value="bpkSource"/>
-        <WatchScope Value="wpsLocal"/>
-        <WatchKind Value="wpkWrite"/>
-        <Source Value="filesources\winnet\uwinnetexecuteoperation.pas"/>
-        <Line Value="78"/>
-      </Item1>
-      <Item2>
-        <Kind Value="bpkSource"/>
-        <WatchScope Value="wpsLocal"/>
-        <WatchKind Value="wpkWrite"/>
-        <Source Value="feditor.pas"/>
-        <Line Value="460"/>
-      </Item2>
-    </BreakPoints>
-  </Debugging>
 </CONFIG>

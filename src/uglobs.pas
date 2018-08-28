@@ -122,6 +122,9 @@ type
 
   THotKeySortOrder = (hksoByCommand, hksoByHotKeyGrouped, hksoByHotKeyOnePerRow);
 
+  TToolTipMode = (tttmCombineDcSystem, tttmDcSystemCombine, tttmDcIfPossThenSystem, tttmDcOnly, tttmSystemOnly);
+  TToolTipHideTimeOut = (ttthtSystem, tttht1Sec, tttht2Sec, tttht3Sec, tttht5Sec, tttht10Sec, tttht30Sec, tttht1Min, ttthtNeverHide);
+
 const
   { Default hotkey list version number }
   hkVersion = 43;
@@ -381,6 +384,7 @@ var
   gIconsInMenus: Boolean;
   gIconsInMenusSize,
   gIconsInMenusSizeNew: Integer;
+  gShowHiddenDimmed: Boolean;
   gIconTheme: String;
 
   { Keys page }
@@ -447,7 +451,9 @@ var
   gInplaceRename,
   gDblClickToParent,
   gGoToRoot: Boolean;
-  gShowToolTipMode: Boolean;
+  gShowToolTip: Boolean;
+  gShowToolTipMode: TToolTipMode;
+  gToolTipHideTimeOut: TToolTipHideTimeOut;
   gThumbSize: TSize;
   gThumbSave: Boolean;
   gSearchDefaultTemplate: String;
@@ -503,7 +509,9 @@ var
   gImagePaintMode: String;
   gImagePaintWidth,
   gColCount,
-  gViewerMode: Integer;
+  gViewerMode,
+  gMaxTextWidth,
+  gTabSpaces : Integer;
   gImagePaintColor,
   gBookBackgroundColor,
   gBookFontColor: TColor;
@@ -512,6 +520,7 @@ var
   { Editor }
   gEditWaitTime: Integer;
   gEditorSynEditOptions: TSynEditorOptions;
+  gEditorSynEditTabWidth: Integer;
 
   {SyncDirs}
   gSyncDirsSubdirs,
@@ -1584,7 +1593,9 @@ begin
   gShowPathInPopup:=FALSE;
   gShowOnlyValidEnv:=TRUE;
   gWhereToAddNewHotDir := ahdSmart;
-  gShowToolTipMode := True;
+  gShowToolTip := True;
+  gShowToolTipMode := tttmCombineDcSystem;
+  gToolTipHideTimeOut := ttthtSystem;
   gThumbSave := True;
   gThumbSize.cx := 128;
   gThumbSize.cy := 128;
@@ -1613,6 +1624,7 @@ begin
   gIconsInMenus := False;
   gIconsInMenusSize := 16;
   gIconsInMenusSizeNew := gIconsInMenusSize;
+  gShowHiddenDimmed := False;
   gIconTheme := DC_THEME_NAME;
 
   { Ignore list page }
@@ -1633,6 +1645,8 @@ begin
   gImagePaintMode := 'Pen';
   gImagePaintWidth := 5;
   gColCount := 1;
+  gTabSpaces := 8;
+  gMaxTextWidth := 1024;
   gImagePaintColor := clRed;
   gBookBackgroundColor := clBlack;
   gBookFontColor := clWhite;
@@ -1642,6 +1656,7 @@ begin
   { Editor }
   gEditWaitTime := 2000;
   gEditorSynEditOptions := SYNEDIT_DEFAULT_OPTIONS;
+  gEditorSynEditTabWidth := 8;
 
   {SyncDirs}
   gSyncDirsSubdirs := False;
@@ -2249,7 +2264,9 @@ begin
     Node := Root.FindNode('ToolTips');
     if Assigned(Node) then
     begin
-      gShowToolTipMode := GetValue(Node, 'ShowToolTipMode', gShowToolTipMode);
+      gShowToolTip := GetValue(Node, 'ShowToolTipMode', gShowToolTip);
+      gShowToolTipMode := TToolTipMode(GetValue(Node, 'ActualToolTipMode', Integer(gShowToolTipMode)));
+      gToolTipHideTimeOut := TToolTipHideTimeOut(GetValue(Node, 'ToolTipHideTimeOut', Integer(gToolTipHideTimeOut)));
       gFileInfoToolTip.Load(gConfig, Node);
     end;
 
@@ -2522,6 +2539,7 @@ begin
     if Assigned(Node) then
     begin
       gIconTheme := GetValue(Node, 'Theme', gIconTheme);
+      gShowHiddenDimmed := GetValue(Node, 'ShowHiddenDimmed', gShowHiddenDimmed);
       gShowIcons := TShowIconsMode(GetValue(Node, 'ShowMode', Integer(gShowIcons)));
       gIconOverlays := GetValue(Node, 'ShowOverlays', gIconOverlays);
       gIconsSize := GetValue(Node, 'Size', gIconsSize);
@@ -2570,6 +2588,8 @@ begin
       gImagePaintMode := GetValue(Node, 'PaintMode', gImagePaintMode);
       gImagePaintWidth := GetValue(Node, 'PaintWidth', gImagePaintWidth);
       gColCount    := GetValue(Node, 'NumberOfColumns', gColCount);
+      gTabSpaces := GetValue(Node, 'TabSpaces', gTabSpaces);
+      gMaxTextWidth := GetValue(Node, 'MaxTextWidth', gMaxTextWidth);
       gViewerMode  := GetValue(Node, 'ViewerMode'  , gViewerMode);
 
       gImagePaintColor := GetValue(Node, 'PaintColor', gImagePaintColor);
@@ -2588,6 +2608,7 @@ begin
     begin
       gEditWaitTime := GetValue(Node, 'EditWaitTime', gEditWaitTime);
       gEditorSynEditOptions := TSynEditorOptions(GetValue(Node, 'SynEditOptions', Integer(gEditorSynEditOptions)));
+      gEditorSynEditTabWidth := GetValue(Node, 'SynEditTabWidth', gEditorSynEditTabWidth);
     end;
 
     { SyncDirs }
@@ -2848,7 +2869,9 @@ begin
 
     { ToolTips page }
     Node := FindNode(Root, 'ToolTips', True);
-    SetValue(Node, 'ShowToolTipMode', gShowToolTipMode);
+    SetValue(Node, 'ShowToolTipMode', gShowToolTip);
+    SetValue(Node, 'ActualToolTipMode', Integer(gShowToolTipMode));
+    SetValue(Node, 'ToolTipHideTimeOut', Integer(gToolTipHideTimeOut));
     gFileInfoToolTip.Save(gConfig, Node);
 
     { Layout page }
@@ -3026,6 +3049,7 @@ begin
     { Icons page }
     Node := FindNode(Root, 'Icons', True);
     SetValue(Node, 'Theme', gIconTheme);
+    SetValue(Node, 'ShowHiddenDimmed', gShowHiddenDimmed);
     SetValue(Node, 'ShowMode', Integer(gShowIconsNew));
     SetValue(Node, 'ShowOverlays', gIconOverlays);
     SetValue(Node, 'Size', gIconsSizeNew);
@@ -3062,6 +3086,8 @@ begin
     SetValue(Node, 'PaintMode', gImagePaintMode);
     SetValue(Node, 'PaintWidth', gImagePaintWidth);
     SetValue(Node, 'NumberOfColumns', gColCount);
+    SetValue(Node, 'TabSpaces', gTabSpaces);
+    SetValue(Node, 'MaxTextWidth', gMaxTextWidth);
     SetValue(Node, 'ViewerMode' , gViewerMode);
 
     SetValue(Node, 'PaintColor', gImagePaintColor);
@@ -3073,6 +3099,7 @@ begin
     Node := FindNode(Root, 'Editor',True);
     SetValue(Node, 'EditWaitTime', gEditWaitTime);
     SetValue(Node, 'SynEditOptions', Integer(gEditorSynEditOptions));
+    SetValue(Node, 'SynEditTabWidth', gEditorSynEditTabWidth);
 
     { SyncDirs }
     Node := FindNode(Root, 'SyncDirs', True);

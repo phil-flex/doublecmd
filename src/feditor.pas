@@ -196,6 +196,7 @@ type
     procedure UpdateHighlighter(Highlighter: TSynCustomHighlighter);
     procedure DoSearchReplaceText(AReplace: boolean; ABackwards: boolean);
     procedure ShowSearchReplaceDialog(AReplace: boolean);
+    procedure LoadGlobalOptions;
 
     property FileName: String read FFileName write SetFileName;
 
@@ -227,6 +228,9 @@ type
 
   procedure ShowEditor(const sFileName: String; WaitData: TWaitData = nil);
 
+  var
+    LastEditorUsedForConfiguration: TfrmEditor = nil;
+
 implementation
 
 {$R *.lfm}
@@ -252,6 +256,7 @@ begin
   end;
 
   Editor.ShowOnTop;
+  LastEditorUsedForConfiguration := Editor;
 end;
 
 procedure TfrmEditor.FormCreate(Sender: TObject);
@@ -265,8 +270,7 @@ begin
 
   Menu.Images:= dmComData.ilEditorImages;
 
-  Editor.Options:= gEditorSynEditOptions;
-  FontOptionsToFont(gFonts[dcfEditor], Editor.Font);
+  LoadGlobalOptions;
 
 // update menu highlighting
   miHighlight.Clear;
@@ -318,6 +322,13 @@ begin
   HMEditor := HotMan.Register(Self, HotkeysCategory);
   HMEditor.RegisterActionList(ActListEdit);
   FCommands := TFormCommands.Create(Self, ActListEdit);
+end;
+
+procedure TfrmEditor.LoadGlobalOptions;
+begin
+  Editor.Options:= gEditorSynEditOptions;
+  FontOptionsToFont(gFonts[dcfEditor], Editor.Font);
+  Editor.TabWidth := gEditorSynEditTabWidth;
 end;
 
 procedure TfrmEditor.actExecute(Sender: TObject);
@@ -510,12 +521,12 @@ begin
     on E: EFCreateError do
     begin
       DCDebug(E.Message);
-      msgWarning(rsMsgErrSaveFile + ' (Create Error) ' + aFileName);
+      msgWarning(rsMsgErrSaveFile + ' ' + aFileName);
     end;
     on E: EFOpenError do
     begin
       DCDebug(E.Message);
-      msgWarning(rsMsgErrSaveFile + ' (Open Error) ' + aFileName);
+      msgWarning(rsMsgErrSaveFile + ' ' + aFileName);
     end;
   end;
 end;
@@ -531,6 +542,7 @@ end;
 
 destructor TfrmEditor.Destroy;
 begin
+  LastEditorUsedForConfiguration := nil;
   HotMan.UnRegister(Self);
   inherited Destroy;
   if Assigned(FWaitData) then FWaitData.Done;
@@ -978,6 +990,7 @@ end;
 
 procedure TfrmEditor.cm_ConfHigh(const Params:array of string);
 begin
+  LastEditorUsedForConfiguration := Self;
   ShowOptions(TfrmOptionsEditor);
 end;
 

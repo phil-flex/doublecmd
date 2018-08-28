@@ -12,7 +12,7 @@ uses
 
 type
 
-  TUpdateProgress = function(SourceName, TargetName: String; PercentDone: Integer): Integer of object;
+  TUpdateProgress = function(SourceName, TargetName: PAnsiChar; PercentDone: Integer): Integer of object;
 
   { IWfxPluginFileSource }
 
@@ -184,7 +184,7 @@ var
 
 { CallBack functions }
 
-function MainProgressProc(PluginNr: Integer; SourceName, TargetName: String; PercentDone: Integer): Integer;
+function MainProgressProc(PluginNr: Integer; SourceName, TargetName: PAnsiChar; PercentDone: Integer): Integer;
 var
   CallbackDataClass: TCallbackDataClass;
 begin
@@ -212,22 +212,36 @@ end;
 
 function MainProgressProcA(PluginNr: Integer; SourceName, TargetName: PAnsiChar; PercentDone: Integer): Integer; dcpcall;
 var
-  sSourceName,
-  sTargetName: String;
+  sSourceName, sTargetName: String;
 begin
-  sSourceName:= CeSysToUtf8(StrPas(SourceName));
-  sTargetName:= CeSysToUtf8(StrPas(TargetName));
-  Result:= MainProgressProc(PluginNr, sSourceName, sTargetName, PercentDone);
+  if Assigned(SourceName) then
+  begin
+    sSourceName:= CeSysToUtf8(StrPas(SourceName));
+    SourceName:= PAnsiChar(sSourceName);
+  end;
+  if Assigned(TargetName) then
+  begin
+    sTargetName:= CeSysToUtf8(StrPas(TargetName));
+    TargetName:= PAnsiChar(sTargetName);
+  end;
+  Result:= MainProgressProc(PluginNr, SourceName, TargetName, PercentDone);
 end;
 
 function MainProgressProcW(PluginNr: Integer; SourceName, TargetName: PWideChar; PercentDone: Integer): Integer; dcpcall;
 var
-  sSourceName,
-  sTargetName: String;
+  sSourceName, sTargetName: String;
 begin
-  sSourceName:= UTF16ToUTF8(UnicodeString(SourceName));
-  sTargetName:= UTF16ToUTF8(UnicodeString(TargetName));
-  Result:= MainProgressProc(PluginNr, sSourceName, sTargetName, PercentDone);
+  if Assigned(SourceName) then
+  begin
+    sSourceName:= UTF16ToUTF8(UnicodeString(SourceName));
+    SourceName:= Pointer(PAnsiChar(sSourceName));
+  end;
+  if Assigned(TargetName) then
+  begin
+    sTargetName:= UTF16ToUTF8(UnicodeString(TargetName));
+    TargetName:= Pointer(PAnsiChar(sTargetName));
+  end;
+  Result:= MainProgressProc(PluginNr, Pointer(SourceName), Pointer(TargetName), PercentDone);
 end;
 
 procedure MainLogProc(PluginNr, MsgType: Integer; LogString: String);
@@ -482,6 +496,8 @@ end;
 { TWfxPluginFileSource }
 
 constructor TWfxPluginFileSource.Create(aModuleFileName, aPluginRootName: String);
+var
+  AFlags: Integer;
 begin
   inherited Create;
   FPluginNumber:= -1;
@@ -508,10 +524,16 @@ begin
 
       VFSInit;
 
+      if not PasswordStore.MasterKeySet then
+        AFlags:= 0
+      else begin
+        AFlags:= FS_CRYPTOPT_MASTERPASS_SET;
+      end;
+
       if Assigned(FsSetCryptCallbackW) then
-        FsSetCryptCallbackW(@CryptProcW, FPluginNumber, 0);
+        FsSetCryptCallbackW(@CryptProcW, FPluginNumber, AFlags);
       if Assigned(FsSetCryptCallback) then
-        FsSetCryptCallback(@CryptProcA, FPluginNumber, 0);
+        FsSetCryptCallback(@CryptProcA, FPluginNumber, AFlags);
     end;
   end;
 
@@ -808,18 +830,20 @@ end;
 
 constructor TWfxPluginFileSource.Create(const URI: TURI);
 var
+  Index: Integer;
   sModuleFileName: String;
 begin
-  if gWFXPlugins.Count = 0 then Exit;
   // Check if there is a registered plugin for the name of the file system plugin.
-  sModuleFileName:= gWFXPlugins.Values[URI.Host];
-  if sModuleFileName <> EmptyStr then
-    begin
-      sModuleFileName:= GetCmdDirFromEnvVar(sModuleFileName);
-      Create(sModuleFileName, URI.Host);
+  Index:= gWFXPlugins.FindFirstEnabledByName(URI.Host);
+  if Index < 0 then begin
+    raise EFileSourceException.Create('Cannot find Wfx module ' + URI.Host);
+  end;
 
-      DCDebug('Found registered plugin ' + sModuleFileName + ' for file system ' + URI.Host);
-    end;
+  sModuleFileName:= gWFXPlugins.FileName[Index];
+  sModuleFileName:= GetCmdDirFromEnvVar(sModuleFileName);
+  Create(sModuleFileName, URI.Host);
+
+  DCDebug('Found registered plugin ' + sModuleFileName + ' for file system ' + URI.Host);
 end;
 
 function TWfxPluginFileSource.CreateListOperation(TargetPath: String): TFileSourceOperation;
