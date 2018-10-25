@@ -177,6 +177,7 @@ type
     actKeyboard: TAction;
     actPrevTab: TAction;
     actNextTab: TAction;
+    actActivateTabByIndex: TAction;
     actCloseAllTabs: TAction;
     actSetTabOptionNormal: TAction;
     actSetTabOptionPathLocked: TAction;
@@ -201,6 +202,7 @@ type
     actNewTab: TAction;
     actConfigToolbars: TAction;
     actDebugShowCommandParameters: TAction;
+    actOpenDriveByIndex: TAction;
     btnF10: TSpeedButton;
     btnF3: TSpeedButton;
     btnF4: TSpeedButton;
@@ -720,7 +722,6 @@ type
     procedure UpdateDriveToolbarSelection(DriveToolbar: TKAStoolBar; FileView: TFileView);
     procedure UpdateDriveButtonSelection(DriveButton: TSpeedButton; FileView: TFileView);
     procedure UpdateSelectedDrive(ANoteBook: TFileViewNotebook);
-    procedure SetPanelDrive(aPanel: TFilePanelSelect; Drive: PDrive; ActivateIfNeeded: Boolean);
     procedure OnDriveWatcherEvent(EventType: TDriveWatcherEvent; const ADrive: PDrive);
     procedure AppActivate(Sender: TObject);
     procedure AppDeActivate(Sender: TObject);
@@ -808,6 +809,7 @@ type
     procedure UpdateSelectedDrives;
     procedure UpdateGUIFunctionKeys;
     procedure CreateDiskPanel(dskPanel : TKASToolBar);
+    procedure SetPanelDrive(aPanel: TFilePanelSelect; Drive: PDrive; ActivateIfNeeded: Boolean);
     function CreateFileView(sType: String; Page: TFileViewPage; AConfig: TXmlConfig; ANode: TXmlNode): TFileView;
     procedure AssignEvents(AFileView: TFileView);
     function RemovePage(ANoteBook: TFileViewNotebook; iPageIndex:Integer; CloseLocked: Boolean = True; ConfirmCloseLocked: integer = 0; ShowButtonAll: Boolean = False): LongInt;
@@ -826,6 +828,7 @@ type
     procedure SaveMainToolBar;
     procedure ConfigSaveSettings;
     function  IsCommandLineVisible: Boolean;
+    procedure ShowCommandLine(AFocus: Boolean);
     procedure ShowDrivesList(APanel: TFilePanelSelect);
     procedure ExecuteCommandLine(bRunInTerm: Boolean);
     procedure UpdatePrompt;
@@ -848,6 +851,7 @@ type
                                   var DropParams: TDropParams);
 
 
+    property Drives: TDrivesList read DrivesList;
     property Commands: TMainCommands read FCommands implements IFormCommands;
     property SelectedPanel: TFilePanelSelect read PanelSelected write SetPanelSelected;
     property LeftTabs: TFileViewNotebook read nbLeft;
@@ -864,7 +868,7 @@ implementation
 {$R *.lfm}
 
 uses
-  uFileProcs, uShellContextMenu, fTreeViewMenu,
+  uFileProcs, uShellContextMenu, fTreeViewMenu, uSearchResultFileSource,
   Math, LCLIntf, Dialogs, uGlobs, uLng, uMasks, fCopyMoveDlg, uQuickViewPanel,
   uShowMsg, uDCUtils, uLog, uGlobsPaths, LCLProc, uOSUtils, uPixMapManager, LazUTF8,
   uDragDropEx, uKeyboard, uFileSystemFileSource, fViewOperations, uMultiListFileSource,
@@ -3412,6 +3416,10 @@ var
 begin
   Result := False;
   try
+    // Special case for Search Result File Source
+    if SourceFileSource.IsClass(TSearchResultFileSource) then begin
+      SourceFileSource:= ISearchResultFileSource(SourceFileSource).FileSource;
+    end;
     // Only allow moving within the same file source.
     if (SourceFileSource.IsInterface(TargetFileSource) or
         TargetFileSource.IsInterface(SourceFileSource)) and
@@ -3825,24 +3833,8 @@ end;
 
 procedure TfrmMain.pnlLeftRightDblClick(Sender: TObject);
 var
-  APanel: TPanel;
-  APoint: TPoint;
   FileViewNotebook: TFileViewNotebook;
 begin
-  if Sender is TPanel then
-  begin
-    APanel := Sender as TPanel;
-    if APanel = pnlLeft then
-      begin
-        APoint := FrameLeft.ClientToScreen(Classes.Point(0, FrameLeft.Top));
-        if Mouse.CursorPos.Y < APoint.Y then Commands.DoNewTab(nbLeft);
-      end
-    else if APanel = pnlRight then
-      begin
-        APoint := FrameRight.ClientToScreen(Classes.Point(0, FrameRight.Top));
-        if Mouse.CursorPos.Y < APoint.Y then Commands.DoNewTab(nbRight);
-      end;
-  end;
   if Sender is TFileViewNotebook then
   begin
     FileViewNotebook:= Sender as TFileViewNotebook;
@@ -5534,6 +5526,20 @@ end;
 function TfrmMain.IsCommandLineVisible: Boolean;
 begin
   Result := (edtCommand.Visible and pnlCommand.Visible and pnlCmdLine.Visible);
+end;
+
+procedure TfrmMain.ShowCommandLine(AFocus: Boolean);
+begin
+  if edtCommand.Visible then
+  begin
+    // Show temporarily command line on user request.
+    if not (gCmdLine and frmMain.IsCommandLineVisible) then
+    begin
+      pnlCommand.Show;
+      pnlCmdLine.Show;
+    end;
+    if AFocus then edtCommand.SetFocus;
+  end;
 end;
 
 function TfrmMain.FindMatchingDrive(Address, Path: String): Integer;

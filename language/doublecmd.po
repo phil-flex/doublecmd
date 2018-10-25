@@ -1881,6 +1881,10 @@ msgstr ""
 msgid "&About"
 msgstr ""
 
+#: tfrmmain.actactivatetabbyindex.caption
+msgid "Activate Tab By Index"
+msgstr ""
+
 #: tfrmmain.actaddfilenametocmdline.caption
 msgid "Add file name to command line"
 msgstr ""
@@ -2027,6 +2031,10 @@ msgstr ""
 
 #: tfrmmain.actconfigtoolbars.caption
 msgid "Toolbar..."
+msgstr ""
+
+#: tfrmmain.actconfigtooltips.caption
+msgid "Configuration of tooltips"
 msgstr ""
 
 #: tfrmmain.actconfigtreeviewmenus.caption
@@ -2358,6 +2366,10 @@ msgstr ""
 
 #: tfrmmain.actopendirinnewtab.caption
 msgid "Open &Folder in a New Tab"
+msgstr ""
+
+#: tfrmmain.actopendrivebyindex.caption
+msgid "Open Drive by Index"
 msgstr ""
 
 #: tfrmmain.actopenvirtualfilesystemlist.caption
@@ -5606,6 +5618,10 @@ msgstr ""
 
 #: tfrmoptionsfileoperations.cbskipfileoperror.caption
 msgid "S&kip file operations errors and write them to log window"
+msgstr ""
+
+#: tfrmoptionsfileoperations.cbverifychecksumconfirmation.caption
+msgid "Verify checksum operation"
 msgstr ""
 
 #: tfrmoptionsfileoperations.gbexecutingoperations.caption
@@ -10698,6 +10714,10 @@ msgstr ""
 msgid "Rename/move selected \"%s\"?"
 msgstr ""
 
+#: ulng.rsmsgreplacethistext
+msgid "Do you want to replace this text?"
+msgstr ""
+
 #: ulng.rsmsgrestartforapplychanges
 msgid "Please, restart Double Commander in order to apply changes"
 msgstr ""
@@ -10906,6 +10926,10 @@ msgstr ""
 
 #: ulng.rsmsgverify
 msgid "VERIFICATION:"
+msgstr ""
+
+#: ulng.rsmsgverifychecksum
+msgid "Do you want to verify selected checksums?"
 msgstr ""
 
 #: ulng.rsmsgverifywrong

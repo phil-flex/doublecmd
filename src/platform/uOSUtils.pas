@@ -3,7 +3,7 @@
     -------------------------------------------------------------------------
     This unit contains platform depended functions.
 
-    Copyright (C) 2006-2016 Alexander Koblov (alexx2000@mail.ru)
+    Copyright (C) 2006-2018 Alexander Koblov (alexx2000@mail.ru)
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -16,8 +16,7 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
 }
 
 unit uOSUtils;
@@ -230,7 +229,7 @@ uses
   fConfirmCommandLine, uLog, DCConvertEncoding, LazUTF8
   {$IF DEFINED(MSWINDOWS)}
   , JwaWinCon, Windows, uMyWindows, JwaWinNetWk,
-    uShlObjAdditional, shlobj, DCWindows
+    uShlObjAdditional, ShlObj, DCWindows, uNetworkThread
   {$ENDIF}
   {$IF DEFINED(UNIX)}
   , BaseUnix, Unix, uMyUnix, dl
@@ -877,32 +876,31 @@ function IsAvailable(Drive: PDrive; TryMount: Boolean): Boolean;
 var
   Drv: String;
   DriveLabel: String;
-  NetResource: TNetResourceW;
   wsLocalName, wsRemoteName: WideString;
 begin
   Drv:= ExtractFileDrive(Drive^.Path) + PathDelim;
 
   // Try to close CD/DVD drive
-  if (GetDriveType(PChar(Drv)) = DRIVE_CDROM) and
+  if (Drive^.DriveType = dtOptical) and
      TryMount and (not mbDriveReady(Drv)) then
     begin
        DriveLabel:= mbGetVolumeLabel(Drv, False);
        mbCloseCD(Drv);
        if mbDriveReady(Drv) then
          mbWaitLabelChange(Drv, DriveLabel);
-    end;
+    end
   // Try to connect to mapped network drive
-  if (Drive^.DriveType = dtNetwork) and
+  else if (Drive^.DriveType = dtNetwork) and
      TryMount and (not mbDriveReady(Drv)) then
     begin
       wsLocalName  := UTF8Decode(ExtractFileDrive(Drive^.Path));
       wsRemoteName := UTF8Decode(Drive^.DriveLabel);
-      FillChar(NetResource, SizeOf(NetResource), #0);
-      NetResource.dwType:= RESOURCETYPE_DISK;
-      NetResource.lpLocalName:= PWideChar(wsLocalName);
-      NetResource.lpRemoteName:= PWideChar(wsRemoteName);
-      WNetAddConnection2W(NetResource, nil, nil, CONNECT_INTERACTIVE);
-    end;
+      TNetworkThread.Connect(PWideChar(wsLocalName), PWideChar(wsRemoteName), RESOURCETYPE_DISK);
+    end
+  // Try to unlock BitLocker Drive
+  else if TryMount then begin
+    mbDriveUnlock(Drive^.Path);
+  end;
   Result:= mbDriveReady(Drv);
 end;
 {$ELSEIF DEFINED(DARWIN)}

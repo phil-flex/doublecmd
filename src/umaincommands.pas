@@ -206,6 +206,7 @@ type
    procedure cm_CloseDuplicateTabs(const Params: array of string);
    procedure cm_NextTab(const Params: array of string);
    procedure cm_PrevTab(const Params: array of string);
+   procedure cm_ActivateTabByIndex(const Params: array of string);
    procedure cm_SaveTabs(const Params: array of string);
    procedure cm_LoadTabs(const Params: array of string);
    procedure cm_SetTabOptionNormal(const Params: array of string);
@@ -356,6 +357,7 @@ type
    procedure cm_Benchmark(const {%H-}Params: array of string);
    procedure cm_ConfigArchivers(const {%H-}Params: array of string);
    procedure cm_ConfigTooltips(const {%H-}Params: array of string);
+   procedure cm_OpenDriveByIndex(const Params: array of string);
 
    // Internal commands
    procedure cm_ExecuteToolbarItem(const Params: array of string);
@@ -574,12 +576,8 @@ begin
   begin
     if edtCommand.Visible then
     begin
-      if not (gCmdLine and frmMain.IsCommandLineVisible) then
-      begin
-        pnlCommand.Show;
-        pnlCmdLine.Show;
-      end;
-      edtCommand.SetFocus;
+      ShowCommandLine(True);
+
       if bNextCmdLine then
       begin
         if edtCommand.ItemIndex > 0 then
@@ -953,6 +951,8 @@ begin
   OldPosition := frmMain.edtCommand.SelStart;
   frmMain.edtCommand.Text := frmMain.edtCommand.Text + sAddedString;
   frmMain.edtCommand.SelStart := OldPosition + Length(sAddedString);
+
+  frmMain.ShowCommandLine(False);
 end;
 
 { TMainCommands.cm_AddPathToCmdLine }
@@ -1545,8 +1545,6 @@ begin
   DoActionOnMultipleTabs(Params,@DoCloseDuplicateTabs);
 end;
 
-
-
 procedure TMainCommands.cm_NextTab(const Params: array of string);
 begin
   frmMain.ActiveNotebook.ActivateNextTab;
@@ -1555,6 +1553,36 @@ end;
 procedure TMainCommands.cm_PrevTab(const Params: array of string);
 begin
   frmMain.ActiveNotebook.ActivatePrevTab;
+end;
+
+procedure TMainCommands.cm_ActivateTabByIndex(const Params: array of string);
+var
+  Param: String;
+  Index: Integer;
+  AValue: String;
+  ANotebook: TFileViewNotebook;
+begin
+  if Length(Params) <> 0 then
+  begin
+    ANotebook:= frmMain.ActiveNotebook;
+    for Param in Params do
+    begin
+      if GetParamValue(Param, 'index', AValue) then
+      begin
+        Index:= StrToIntDef(AValue, 1);
+      end
+      else if GetParamValue(Param, 'side', AValue) then
+      begin
+        if AValue = 'left' then ANotebook:= frmMain.LeftTabs
+        else if AValue = 'right' then ANotebook:= frmMain.RightTabs
+        else if AValue = 'inactive' then ANotebook:= frmMain.NotActiveNotebook;
+      end
+    end;
+    if Index = -1 then
+      ANotebook.ActivateTabByIndex(Index)
+    else
+      ANotebook.ActivateTabByIndex(Index - 1);
+  end;
 end;
 
 { TMainCommands.cm_SaveTabs }
@@ -2201,10 +2229,10 @@ var
   MsgDelSel, MsgDelFlDr : string;
   Operation: TFileSourceOperation;
   bRecycle: Boolean;
-  QueueId: TOperationsManagerQueueIdentifier;
   bConfirmation, HasConfirmationParam: Boolean;
   Param, ParamTrashCan: String;
   BoolValue: Boolean;
+  QueueId: TOperationsManagerQueueIdentifier = FreeOperationsQueueId;
 begin
   with frmMain.ActiveFrame do
   begin
@@ -2426,9 +2454,13 @@ procedure TMainCommands.cm_CheckSumVerify(const Params: array of string);
 var
   I: Integer;
   Hash: String;
+  Param: String;
+  BoolValue: Boolean;
   SelectedFiles: TFiles;
   Algorithm: THashAlgorithm;
   Operation: TFileSourceCalcChecksumOperation;
+  bConfirmation, HasConfirmationParam: Boolean;
+  QueueId: TOperationsManagerQueueIdentifier = FreeOperationsQueueId;
 begin
   // This will work only for filesystem.
   // For other file sources use temp file system when it's done.
@@ -2442,6 +2474,20 @@ begin
       // Create temp file source.
       // CopyOut ActiveFrame.FileSource to TempFileSource.
       // Do command on TempFileSource and later delete it (or leave cached on disk?)
+    end;
+
+    HasConfirmationParam := False;
+
+    for Param in Params do
+    begin
+      if GetParamBoolValue(Param, 'confirmation', BoolValue) then
+      begin
+        HasConfirmationParam := True;
+        bConfirmation := BoolValue;
+      end;
+    end;
+    if not HasConfirmationParam then begin
+      bConfirmation := focVerifyChecksum in gFileOperationsConfirmations;
     end;
 
     SelectedFiles := ActiveFrame.CloneSelectedOrActiveFiles;
@@ -2462,28 +2508,31 @@ begin
             Exit;
           end
           else begin
-            if not ShowCalcVerifyCheckSum(Hash, Algorithm) then
+            if not ShowCalcVerifyCheckSum(Hash, Algorithm, QueueId) then
               Exit;
+            bConfirmation:= False;
           end;
         end;
 
-      Operation := ActiveFrame.FileSource.CreateCalcChecksumOperation(
-                     SelectedFiles, Hash, '') as TFileSourceCalcChecksumOperation;
-
-      if Assigned(Operation) then
+      if (bConfirmation = False) or (ShowDeleteDialog(rsMsgVerifyChecksum, ActiveFrame.FileSource, QueueId)) then
       begin
-        Operation.Algorithm := Algorithm;
-        Operation.AddStateChangedListener([fsosStopped], @OnCalcChecksumStateChanged);
-        Operation.Mode := checksum_verify;
+        Operation := ActiveFrame.FileSource.CreateCalcChecksumOperation(
+                       SelectedFiles, Hash, '') as TFileSourceCalcChecksumOperation;
 
-        // Start operation.
-        OperationsManager.AddOperation(Operation);
-      end
-      else
-      begin
-        msgWarning(rsMsgNotImplemented);
+        if Assigned(Operation) then
+        begin
+          Operation.Algorithm := Algorithm;
+          Operation.AddStateChangedListener([fsosStopped], @OnCalcChecksumStateChanged);
+          Operation.Mode := checksum_verify;
+
+          // Start operation.
+          OperationsManager.AddOperation(Operation, QueueId, False);
+        end
+        else
+        begin
+          msgWarning(rsMsgNotImplemented);
+        end;
       end;
-
     finally
       if Assigned(SelectedFiles) then
         FreeAndNil(SelectedFiles);
@@ -2493,17 +2542,7 @@ end;
 
 procedure TMainCommands.cm_FocusCmdLine(const Params: array of string);
 begin
-  if frmMain.edtCommand.Visible then
-  begin
-    // Show temporarily command line on user request.
-    if (not gCmdLine) and (frmMain.IsCommandLineVisible = False) then
-    begin
-      frmMain.pnlCommand.Show;
-      frmMain.pnlCmdLine.Show;
-    end;
-
-    frmMain.edtCommand.SetFocus;
-  end;
+  frmMain.ShowCommandLine(True);
 end;
 
 { TMainCommands.cm_FileAssoc }
@@ -2533,7 +2572,7 @@ procedure TMainCommands.cm_VisitHomePage(const Params: array of string);
 var
   ErrMsg: String = '';
 begin
-  dmHelpMgr.HTMLHelpDatabase.ShowURL('http://doublecmd.sourceforge.net','Double Commander Web Site', ErrMsg);
+  dmHelpMgr.HTMLHelpDatabase.ShowURL('https://doublecmd.sourceforge.io','Double Commander Web Site', ErrMsg);
 end;
 
 procedure TMainCommands.cm_About(const Params: array of string);
@@ -4822,6 +4861,44 @@ end;
 procedure TMainCommands.cm_ConfigTooltips(const {%H-}Params: array of string);
 begin
   cm_Options(['TfrmOptionsToolTips']);
+end;
+
+procedure TMainCommands.cm_OpenDriveByIndex(const Params: array of string);
+var
+  Param: String;
+  Index: Integer;
+  AValue: String;
+  SelectedPanel: TFilePanelSelect;
+begin
+  if Length(Params) > 0 then
+  begin
+    SelectedPanel:= frmMain.SelectedPanel;
+
+    for Param in Params do
+    begin
+      if GetParamValue(Param, 'index', AValue) then
+      begin
+        Index:= StrToIntDef(AValue, 1) - 1;
+      end
+      else if GetParamValue(Param, 'side', AValue) then
+      begin
+        if AValue = 'left' then SelectedPanel:= fpLeft
+        else if AValue = 'right' then SelectedPanel:= fpRight
+        else if AValue = 'inactive' then
+        begin
+          if frmMain.SelectedPanel = fpLeft then
+            SelectedPanel:= fpRight
+          else if frmMain.SelectedPanel = fpRight then
+            SelectedPanel:= fpLeft;
+        end;
+      end
+    end;
+
+    if (Index >= 0) and (Index < frmMain.Drives.Count) then
+    begin
+      frmMain.SetPanelDrive(SelectedPanel, frmMain.Drives.Items[Index], True);
+    end;
+  end;
 end;
 
 { TMainCommands.cm_AddNewSearch }

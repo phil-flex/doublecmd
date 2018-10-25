@@ -1930,6 +1930,10 @@ msgctxt "TFRMMAIN.ACTABOUT.CAPTION"
 msgid "&About"
 msgstr "Despre (&a)"
 
+#: tfrmmain.actactivatetabbyindex.caption
+msgid "Activate Tab By Index"
+msgstr ""
+
 #: tfrmmain.actaddfilenametocmdline.caption
 msgid "Add file name to command line"
 msgstr "Adaugă numele de fișiere liniei de comandă"
@@ -2081,6 +2085,10 @@ msgstr ""
 
 #: tfrmmain.actconfigtoolbars.caption
 msgid "Toolbar..."
+msgstr ""
+
+#: tfrmmain.actconfigtooltips.caption
+msgid "Configuration of tooltips"
 msgstr ""
 
 #: tfrmmain.actconfigtreeviewmenus.caption
@@ -2416,6 +2424,10 @@ msgstr "Deschide fișier bară"
 #: tfrmmain.actopendirinnewtab.caption
 msgid "Open &Folder in a New Tab"
 msgstr "Deschide Dosarul într-o &Filă Nouă"
+
+#: tfrmmain.actopendrivebyindex.caption
+msgid "Open Drive by Index"
+msgstr ""
 
 #: tfrmmain.actopenvirtualfilesystemlist.caption
 msgctxt "TFRMMAIN.ACTOPENVIRTUALFILESYSTEMLIST.CAPTION"
@@ -5727,6 +5739,10 @@ msgstr "Arată panoul de selecție al filei în fereastra de dialog (&w)"
 #: tfrmoptionsfileoperations.cbskipfileoperror.caption
 msgid "S&kip file operations errors and write them to log window"
 msgstr "Sari peste erorile din operațiile cu fișiere și scrie-le în fereastra jurnal (&k)"
+
+#: tfrmoptionsfileoperations.cbverifychecksumconfirmation.caption
+msgid "Verify checksum operation"
+msgstr ""
 
 #: tfrmoptionsfileoperations.gbexecutingoperations.caption
 msgid "Executing operations"
@@ -10978,6 +10994,10 @@ msgstr "Se redenumesc/mută %d fișiere/dosare selectate?"
 msgid "Rename/move selected \"%s\"?"
 msgstr "Se redenumește/mută \"%s\"?"
 
+#: ulng.rsmsgreplacethistext
+msgid "Do you want to replace this text?"
+msgstr ""
+
 #: ulng.rsmsgrestartforapplychanges
 msgid "Please, restart Double Commander in order to apply changes"
 msgstr "Reporniți Double Commander pentru a aplica modificările"
@@ -11186,6 +11206,10 @@ msgstr "Nume utilizator (Paravan de protecție):"
 
 #: ulng.rsmsgverify
 msgid "VERIFICATION:"
+msgstr ""
+
+#: ulng.rsmsgverifychecksum
+msgid "Do you want to verify selected checksums?"
 msgstr ""
 
 #: ulng.rsmsgverifywrong

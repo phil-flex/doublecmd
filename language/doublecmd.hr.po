@@ -2000,6 +2000,10 @@ msgctxt "TFRMMAIN.ACTABOUT.CAPTION"
 msgid "&About"
 msgstr "&O programu"
 
+#: tfrmmain.actactivatetabbyindex.caption
+msgid "Activate Tab By Index"
+msgstr ""
+
 #: tfrmmain.actaddfilenametocmdline.caption
 msgid "Add file name to command line"
 msgstr "Dodaj ime datoteke u naredbenu liniju"
@@ -2156,6 +2160,10 @@ msgstr ""
 #: tfrmmain.actconfigtoolbars.caption
 msgid "Toolbar..."
 msgstr "Alatna traka"
+
+#: tfrmmain.actconfigtooltips.caption
+msgid "Configuration of tooltips"
+msgstr ""
 
 #: tfrmmain.actconfigtreeviewmenus.caption
 msgctxt "tfrmmain.actconfigtreeviewmenus.caption"
@@ -2535,6 +2543,10 @@ msgstr "Otvori datoteku sa trake"
 msgctxt "tfrmmain.actopendirinnewtab.caption"
 msgid "Open &Folder in a New Tab"
 msgstr "Otvori &Mapu u novoj kartici"
+
+#: tfrmmain.actopendrivebyindex.caption
+msgid "Open Drive by Index"
+msgstr ""
 
 #: tfrmmain.actopenvirtualfilesystemlist.caption
 msgctxt "TFRMMAIN.ACTOPENVIRTUALFILESYSTEMLIST.CAPTION"
@@ -6050,6 +6062,10 @@ msgstr "prikaži karticu ploče odabira u prozoru za umnožavanje premještanje"
 #: tfrmoptionsfileoperations.cbskipfileoperror.caption
 msgid "S&kip file operations errors and write them to log window"
 msgstr "Z&anemari greške radnji nad datotekama i upiši ih u datoteku događanja"
+
+#: tfrmoptionsfileoperations.cbverifychecksumconfirmation.caption
+msgid "Verify checksum operation"
+msgstr ""
 
 #: tfrmoptionsfileoperations.gbexecutingoperations.caption
 msgid "Executing operations"
@@ -11425,6 +11441,10 @@ msgstr "Preimenovanje/premještanje %d označenih datoteka/kazala?"
 msgid "Rename/move selected \"%s\"?"
 msgstr "Preimenovanje /premještanje označeno „%s“?"
 
+#: ulng.rsmsgreplacethistext
+msgid "Do you want to replace this text?"
+msgstr ""
+
 #: ulng.rsmsgrestartforapplychanges
 msgid "Please, restart Double Commander in order to apply changes"
 msgstr "Molim, ponovo pokrenite Double Commander-a da bi se primijenile izmjene"
@@ -11644,6 +11664,10 @@ msgstr "korisničko ime (vatreni zid):"
 
 #: ulng.rsmsgverify
 msgid "VERIFICATION:"
+msgstr ""
+
+#: ulng.rsmsgverifychecksum
+msgid "Do you want to verify selected checksums?"
 msgstr ""
 
 #: ulng.rsmsgverifywrong

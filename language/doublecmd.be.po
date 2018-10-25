@@ -1881,6 +1881,10 @@ msgstr "Уверх"
 msgid "&About"
 msgstr "&Пра праграму"
 
+#: tfrmmain.actactivatetabbyindex.caption
+msgid "Activate Tab By Index"
+msgstr ""
+
 #: tfrmmain.actaddfilenametocmdline.caption
 msgid "Add file name to command line"
 msgstr "Дадаць назву файла ў загадны радок"
@@ -2028,6 +2032,10 @@ msgstr "Наладка гарачых клавіш"
 #: tfrmmain.actconfigtoolbars.caption
 msgid "Toolbar..."
 msgstr "Панэль прылад..."
+
+#: tfrmmain.actconfigtooltips.caption
+msgid "Configuration of tooltips"
+msgstr ""
 
 #: tfrmmain.actconfigtreeviewmenus.caption
 msgctxt "tfrmmain.actconfigtreeviewmenus.caption"
@@ -2359,6 +2367,10 @@ msgstr "Адкрыць файл панэлі"
 #: tfrmmain.actopendirinnewtab.caption
 msgid "Open &Folder in a New Tab"
 msgstr "Адкрыць &каталог у новай укладцы"
+
+#: tfrmmain.actopendrivebyindex.caption
+msgid "Open Drive by Index"
+msgstr ""
 
 #: tfrmmain.actopenvirtualfilesystemlist.caption
 msgid "Open &VFS List"
@@ -5610,6 +5622,10 @@ msgstr "Паказ&ваць панэль выбару ў дыялогу капі
 #: tfrmoptionsfileoperations.cbskipfileoperror.caption
 msgid "S&kip file operations errors and write them to log window"
 msgstr "Мі&наць памылкі падчас аперацый з файламі і выводзіць іх у акно лога"
+
+#: tfrmoptionsfileoperations.cbverifychecksumconfirmation.caption
+msgid "Verify checksum operation"
+msgstr ""
 
 #: tfrmoptionsfileoperations.gbexecutingoperations.caption
 msgid "Executing operations"
@@ -10739,6 +10755,10 @@ msgstr "Змяніць назву/перамясціць %d абраныя фа�
 msgid "Rename/move selected \"%s\"?"
 msgstr "Змяніць назву/перамясціць абраны \"%s\"?"
 
+#: ulng.rsmsgreplacethistext
+msgid "Do you want to replace this text?"
+msgstr ""
+
 #: ulng.rsmsgrestartforapplychanges
 msgid "Please, restart Double Commander in order to apply changes"
 msgstr "Калі ласка, перазапусціце Double Commander, каб ужыць змены"
@@ -10958,6 +10978,10 @@ msgstr "Імя карыстальніка (Firewall):"
 #: ulng.rsmsgverify
 msgid "VERIFICATION:"
 msgstr "ПРАВЕРКА:"
+
+#: ulng.rsmsgverifychecksum
+msgid "Do you want to verify selected checksums?"
+msgstr ""
 
 #: ulng.rsmsgverifywrong
 msgid "The target file is corrupted, checksum mismatch!"

@@ -70,7 +70,7 @@ type
   { How initially progress is shown for file operations }
   TFileOperationsProgressKind = (fopkSeparateWindow, fopkSeparateWindowMinimized, fopkOperationsPanel);
   { Operations with confirmation }
-  TFileOperationsConfirmation = (focCopy, focMove, focDelete, focDeleteToTrash);
+  TFileOperationsConfirmation = (focCopy, focMove, focDelete, focDeleteToTrash, focVerifyChecksum);
   TFileOperationsConfirmations = set of TFileOperationsConfirmation;
   { Internal Associations}
   //What the use wish for the context menu
@@ -127,7 +127,7 @@ type
 
 const
   { Default hotkey list version number }
-  hkVersion = 43;
+  hkVersion = 44;
   // 40 - In "Main" context, added the "Ctrl+Shift+F7" for "cm_AddNewSearch".
   //      In "Find Files" context, changed "cm_Start" that was "Enter" for "F9".
   //      In "Find Files" context, added "Alt+F7" as a valid alternative for "cm_PageStandard".
@@ -877,8 +877,19 @@ begin
       AddIfNotExists(['F8','','',
                       'Shift+F8','','trashcan=reversesetting',''], 'cm_Delete');
       AddIfNotExists(['F9'],[],'cm_RunTerm');
-      AddIfNotExists(['Ctrl+7'],[],'cm_ShowCmdLineHistory');
-      AddIfNotExists(['Ctrl+Down'],'cm_ShowCmdLineHistory',['Ctrl+7'],[]); //Historic backward support reason...
+
+      if HotMan.Version < 44 then
+      begin
+        HMHotKey:= FindByCommand('cm_ShowCmdLineHistory');
+        if Assigned(HMHotKey) and HMHotKey.SameShortcuts(['Ctrl+7']) then
+        begin
+          Remove(HMHotKey);
+          AddIfNotExists(['Alt+F8'],'cm_ShowCmdLineHistory',['Ctrl+Down'],[]);
+        end;
+      end;
+
+      AddIfNotExists(['Alt+F8','','',
+                      'Ctrl+Down','',''], 'cm_ShowCmdLineHistory');
       AddIfNotExists(['Ctrl+B'],[],'cm_FlatView');
       AddIfNotExists(['Ctrl+D'],[],'cm_DirHotList');
       AddIfNotExists(['Ctrl+F'],[],'cm_QuickFilter');
@@ -936,6 +947,29 @@ begin
       AddIfNotExists(['Alt+Right'],[],'cm_ViewHistoryNext');
       AddIfNotExists(['Alt+Shift+Enter'],[],'cm_CountDirContent');
       AddIfNotExists(['Alt+Shift+F9'],[],'cm_TestArchive');
+      AddIfNotExists([
+         'Alt+1','','index=1','',
+         'Alt+2','','index=2','',
+         'Alt+3','','index=3','',
+         'Alt+4','','index=4','',
+         'Alt+5','','index=5','',
+         'Alt+6','','index=6','',
+         'Alt+7','','index=7','',
+         'Alt+8','','index=8','',
+         'Alt+9','','index=9','',
+         'Alt+`','','index=-1',''],
+       'cm_ActivateTabByIndex');
+      AddIfNotExists([
+        'Ctrl+1','','index=1','',
+        'Ctrl+2','','index=2','',
+        'Ctrl+3','','index=3','',
+        'Ctrl+4','','index=4','',
+        'Ctrl+5','','index=5','',
+        'Ctrl+6','','index=6','',
+        'Ctrl+7','','index=7','',
+        'Ctrl+8','','index=8','',
+        'Ctrl+9','','index=9',''],
+      'cm_OpenDriveByIndex');
 
       if HotMan.Version < 38 then
       begin

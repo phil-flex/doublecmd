@@ -40,12 +40,14 @@ resourcestring
   rsMsgFileExistsFileInfo = '%s bytes, %s';
   rsMsgFileExistsRwrt = 'File %s exists, overwrite?';
   rsMsgFileChangedSave = 'File %s changed, save?';
+  rsMsgReplaceThisText = 'Do you want to replace this text?';
   rsMsgFileReloadWarning = 'Are you sure you want to reload the current file and lose the changes?';
   rsMsgFolderExistsRwrt = 'Folder %s exists, merge?';
   rsMsgFileReadOnly = 'File %s is marked as read-only/hidden/system. Delete it?';
   rsMsgNewFile = 'New file';
   rsMsgDelFlDr = 'Delete %d selected files/directories?';
   rsMsgDelSel = 'Delete selected "%s"?';
+  rsMsgVerifyChecksum = 'Do you want to verify selected checksums?';
   rsMsgObjectNotExists = 'Object does not exist!';
   // 12.05.2009 - another message, when deleting to trash
   rsMsgDelFlDrT = 'Delete %d selected files/directories into trash can?';
@@ -312,6 +314,11 @@ resourcestring
   rsDefaultImportedDCToolbarHint = 'Imported DC toolbar';
   rsFilenameExportedTCBarPrefix = 'Exported_from_DC';
   rsNoEquivalentInternalCommand = 'No internal equivalent command';
+
+  // Locked by another process
+  rsMsgProcessId = 'Process: %d';
+  rsMsgApplicationName = 'Application: %s';
+  rsMsgExecutablePath = 'Executable: %s';
 
   // for context menu
   rsMnuActions = 'Actions';

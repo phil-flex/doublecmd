@@ -2067,6 +2067,10 @@ msgctxt "TFRMMAIN.ACTABOUT.CAPTION"
 msgid "&About"
 msgstr "&Hakkında"
 
+#: tfrmmain.actactivatetabbyindex.caption
+msgid "Activate Tab By Index"
+msgstr ""
+
 #: tfrmmain.actaddfilenametocmdline.caption
 msgid "Add file name to command line"
 msgstr "Dosya adını komut satırına ekle"
@@ -2216,6 +2220,10 @@ msgstr ""
 
 #: tfrmmain.actconfigtoolbars.caption
 msgid "Toolbar..."
+msgstr ""
+
+#: tfrmmain.actconfigtooltips.caption
+msgid "Configuration of tooltips"
 msgstr ""
 
 #: tfrmmain.actconfigtreeviewmenus.caption
@@ -2561,6 +2569,10 @@ msgstr "Dosya Çubuğu Aç"
 #: tfrmmain.actopendirinnewtab.caption
 msgid "Open &Folder in a New Tab"
 msgstr "Klasörü &Yeni Sekmede Aç"
+
+#: tfrmmain.actopendrivebyindex.caption
+msgid "Open Drive by Index"
+msgstr ""
 
 #: tfrmmain.actopenvirtualfilesystemlist.caption
 msgctxt "TFRMMAIN.ACTOPENVIRTUALFILESYSTEMLIST.CAPTION"
@@ -6003,6 +6015,10 @@ msgstr ""
 
 #: tfrmoptionsfileoperations.cbskipfileoperror.caption
 msgid "S&kip file operations errors and write them to log window"
+msgstr ""
+
+#: tfrmoptionsfileoperations.cbverifychecksumconfirmation.caption
+msgid "Verify checksum operation"
 msgstr ""
 
 #: tfrmoptionsfileoperations.gbexecutingoperations.caption
@@ -11406,6 +11422,10 @@ msgstr "Seçilen %d dosya(ları)/Dizinleri/Yeniden adlandır?"
 msgid "Rename/move selected \"%s\"?"
 msgstr "Seçilenleri Taşı/Yeniden adlandır\"%s\"?"
 
+#: ulng.rsmsgreplacethistext
+msgid "Do you want to replace this text?"
+msgstr ""
+
 #: ulng.rsmsgrestartforapplychanges
 msgid "Please, restart Double Commander in order to apply changes"
 msgstr "Lütfen,değişiklikleri uygulamak için Double Commander´ı yeniden başlatın"
@@ -11616,6 +11636,10 @@ msgstr "Kullanıcı adı (Güvenlik duvarı):"
 
 #: ulng.rsmsgverify
 msgid "VERIFICATION:"
+msgstr ""
+
+#: ulng.rsmsgverifychecksum
+msgid "Do you want to verify selected checksums?"
 msgstr ""
 
 #: ulng.rsmsgverifywrong

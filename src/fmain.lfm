@@ -171,7 +171,6 @@ object frmMain: TfrmMain
         ClientHeight = 167
         ClientWidth = 511
         TabOrder = 0
-        OnDblClick = pnlLeftRightDblClick
         OnResize = pnlLeftResize
         object pnlDiskLeftInner: TPanel
           Left = 0
@@ -298,7 +297,6 @@ object frmMain: TfrmMain
         ClientHeight = 167
         ClientWidth = 123
         TabOrder = 1
-        OnDblClick = pnlLeftRightDblClick
         OnResize = pnlRightResize
         object pnlDiskRightInner: TPanel
           Left = 0
@@ -2368,6 +2366,12 @@ object frmMain: TfrmMain
       Caption = 'Go to previous entry in history'
       OnExecute = actExecute
     end
+    object actOpenDriveByIndex: TAction
+      Tag = 14
+      Category = 'Navigation'
+      Caption = 'Open Drive by Index'
+      OnExecute = actExecute
+    end
     object actOpenBar: TAction
       Tag = 16
       Category = 'Window'
@@ -2624,6 +2628,12 @@ object frmMain: TfrmMain
       Tag = 21
       Category = 'Tabs'
       Caption = 'Load the Next Favorite Tabs in the list'
+      OnExecute = actExecute
+    end
+    object actActivateTabByIndex: TAction
+      Tag = 21
+      Category = 'Tabs'
+      Caption = 'Activate Tab By Index'
       OnExecute = actExecute
     end
     object actConfigTreeViewMenus: TAction

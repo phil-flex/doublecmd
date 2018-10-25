@@ -1887,6 +1887,10 @@ msgstr "上移"
 msgid "&About"
 msgstr "关于(&A)"
 
+#: tfrmmain.actactivatetabbyindex.caption
+msgid "Activate Tab By Index"
+msgstr ""
+
 #: tfrmmain.actaddfilenametocmdline.caption
 msgid "Add file name to command line"
 msgstr "添加文件名到命令行"
@@ -2034,6 +2038,10 @@ msgstr "搜索配置"
 #: tfrmmain.actconfigtoolbars.caption
 msgid "Toolbar..."
 msgstr "工具栏..."
+
+#: tfrmmain.actconfigtooltips.caption
+msgid "Configuration of tooltips"
+msgstr ""
 
 #: tfrmmain.actconfigtreeviewmenus.caption
 msgctxt "tfrmmain.actconfigtreeviewmenus.caption"
@@ -2368,6 +2376,10 @@ msgstr "打开工具栏文件"
 #: tfrmmain.actopendirinnewtab.caption
 msgid "Open &Folder in a New Tab"
 msgstr "在新标签打开文件夹(&F)"
+
+#: tfrmmain.actopendrivebyindex.caption
+msgid "Open Drive by Index"
+msgstr ""
 
 #: tfrmmain.actopenvirtualfilesystemlist.caption
 msgctxt "TFRMMAIN.ACTOPENVIRTUALFILESYSTEMLIST.CAPTION"
@@ -5696,6 +5708,10 @@ msgstr "在复制/移动对话框显示标签选择面板(&W)"
 msgctxt "TFRMOPTIONSFILEOPERATIONS.CBSKIPFILEOPERROR.CAPTION"
 msgid "S&kip file operations errors and write them to log window"
 msgstr "忽略文件操作错误，并记录到日志窗口(&K)"
+
+#: tfrmoptionsfileoperations.cbverifychecksumconfirmation.caption
+msgid "Verify checksum operation"
+msgstr ""
 
 #: tfrmoptionsfileoperations.gbexecutingoperations.caption
 msgid "Executing operations"
@@ -11004,6 +11020,10 @@ msgstr "重命名/移动 %d 个选中的文件/文件夹吗？"
 msgid "Rename/move selected \"%s\"?"
 msgstr "重命名/移动所选的 \"%s\" 吗？"
 
+#: ulng.rsmsgreplacethistext
+msgid "Do you want to replace this text?"
+msgstr ""
+
 #: ulng.rsmsgrestartforapplychanges
 msgid "Please, restart Double Commander in order to apply changes"
 msgstr "请重启 Double Commander，使修改生效"
@@ -11223,6 +11243,10 @@ msgstr "用户名（防火墙）："
 #: ulng.rsmsgverify
 msgid "VERIFICATION:"
 msgstr "验证："
+
+#: ulng.rsmsgverifychecksum
+msgid "Do you want to verify selected checksums?"
+msgstr ""
 
 #: ulng.rsmsgverifywrong
 msgid "The target file is corrupted, checksum mismatch!"

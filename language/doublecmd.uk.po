@@ -1937,6 +1937,10 @@ msgctxt "TFRMMAIN.ACTABOUT.CAPTION"
 msgid "&About"
 msgstr "Пр&о програму"
 
+#: tfrmmain.actactivatetabbyindex.caption
+msgid "Activate Tab By Index"
+msgstr ""
+
 #: tfrmmain.actaddfilenametocmdline.caption
 msgid "Add file name to command line"
 msgstr "Додати ім'я файлу в командний рядок"
@@ -2091,6 +2095,10 @@ msgstr ""
 
 #: tfrmmain.actconfigtoolbars.caption
 msgid "Toolbar..."
+msgstr ""
+
+#: tfrmmain.actconfigtooltips.caption
+msgid "Configuration of tooltips"
 msgstr ""
 
 #: tfrmmain.actconfigtreeviewmenus.caption
@@ -2428,6 +2436,10 @@ msgstr "Відкрити bar файл"
 #: tfrmmain.actopendirinnewtab.caption
 msgid "Open &Folder in a New Tab"
 msgstr "Відкрити теку у новій вклад&ці"
+
+#: tfrmmain.actopendrivebyindex.caption
+msgid "Open Drive by Index"
+msgstr ""
 
 #: tfrmmain.actopenvirtualfilesystemlist.caption
 msgctxt "TFRMMAIN.ACTOPENVIRTUALFILESYSTEMLIST.CAPTION"
@@ -5880,6 +5892,10 @@ msgstr "Показу&вати панель вибору вкладок при п
 msgctxt "TFRMOPTIONSFILEOPERATIONS.CBSKIPFILEOPERROR.CAPTION"
 msgid "S&kip file operations errors and write them to log window"
 msgstr "Пропус&кати помилки при файлових операціях і заносити їх у звіт"
+
+#: tfrmoptionsfileoperations.cbverifychecksumconfirmation.caption
+msgid "Verify checksum operation"
+msgstr ""
 
 #: tfrmoptionsfileoperations.gbexecutingoperations.caption
 msgid "Executing operations"
@@ -11327,6 +11343,10 @@ msgstr "Перейменувати/перемістити %d вибраних ф
 msgid "Rename/move selected \"%s\"?"
 msgstr "Перейменувати/перемістити вибраний \"%s\"?"
 
+#: ulng.rsmsgreplacethistext
+msgid "Do you want to replace this text?"
+msgstr ""
+
 #: ulng.rsmsgrestartforapplychanges
 msgid "Please, restart Double Commander in order to apply changes"
 msgstr "Будь ласка, перезапустіть Double Commander для того щоб зміни вступили в дію"
@@ -11565,6 +11585,10 @@ msgstr "Ім'я користувача (Фаєрвол):"
 
 #: ulng.rsmsgverify
 msgid "VERIFICATION:"
+msgstr ""
+
+#: ulng.rsmsgverifychecksum
+msgid "Do you want to verify selected checksums?"
 msgstr ""
 
 #: ulng.rsmsgverifywrong

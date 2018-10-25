@@ -1927,6 +1927,10 @@ msgctxt "TFRMMAIN.ACTABOUT.CAPTION"
 msgid "&About"
 msgstr "Σχετικά"
 
+#: tfrmmain.actactivatetabbyindex.caption
+msgid "Activate Tab By Index"
+msgstr ""
+
 #: tfrmmain.actaddfilenametocmdline.caption
 msgid "Add file name to command line"
 msgstr "Προσθήκη ονόματος αρχείου στη γραμμή εντολών"
@@ -2079,6 +2083,10 @@ msgstr "Διαμόρφωση των αναζητήσεων"
 #: tfrmmain.actconfigtoolbars.caption
 msgid "Toolbar..."
 msgstr "Γραμμή εργαλείων"
+
+#: tfrmmain.actconfigtooltips.caption
+msgid "Configuration of tooltips"
+msgstr ""
 
 #: tfrmmain.actconfigtreeviewmenus.caption
 msgctxt "tfrmmain.actconfigtreeviewmenus.caption"
@@ -2413,6 +2421,10 @@ msgstr "Άνοιγμα του αρχείου της γραμμής εργαλε�
 #: tfrmmain.actopendirinnewtab.caption
 msgid "Open &Folder in a New Tab"
 msgstr "Άνοιγμα Φακέλου σε Νέα Καρτέλα"
+
+#: tfrmmain.actopendrivebyindex.caption
+msgid "Open Drive by Index"
+msgstr ""
 
 #: tfrmmain.actopenvirtualfilesystemlist.caption
 msgctxt "TFRMMAIN.ACTOPENVIRTUALFILESYSTEMLIST.CAPTION"
@@ -5718,6 +5730,10 @@ msgstr "Εμφάνιση καρτέλας επιλογής πάνελ στο δ�
 #: tfrmoptionsfileoperations.cbskipfileoperror.caption
 msgid "S&kip file operations errors and write them to log window"
 msgstr "Παράβλεψη των λαθών εργασιών αρχείων και καταγραφή τους στο παράθυρο καταγραφής"
+
+#: tfrmoptionsfileoperations.cbverifychecksumconfirmation.caption
+msgid "Verify checksum operation"
+msgstr ""
 
 #: tfrmoptionsfileoperations.gbexecutingoperations.caption
 msgid "Executing operations"
@@ -10998,6 +11014,10 @@ msgstr "Μετονομασία/μετακίνηση %d επιλεγμένων α
 msgid "Rename/move selected \"%s\"?"
 msgstr "Μετονομασία/μετακίνηση επιλεγμένων \"%s\";"
 
+#: ulng.rsmsgreplacethistext
+msgid "Do you want to replace this text?"
+msgstr ""
+
 #: ulng.rsmsgrestartforapplychanges
 msgid "Please, restart Double Commander in order to apply changes"
 msgstr "Παρακαλώ επανεκκινείστε τον Double Commander ώστε να εφαρμοστούν οι αλλαγές"
@@ -11216,6 +11236,10 @@ msgstr "Όνομα χρήστη (Τείχος Προστασίας):"
 
 #: ulng.rsmsgverify
 msgid "VERIFICATION:"
+msgstr ""
+
+#: ulng.rsmsgverifychecksum
+msgid "Do you want to verify selected checksums?"
 msgstr ""
 
 #: ulng.rsmsgverifywrong

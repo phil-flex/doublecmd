@@ -1888,6 +1888,10 @@ msgstr "Nahoru"
 msgid "&About"
 msgstr "&O programu"
 
+#: tfrmmain.actactivatetabbyindex.caption
+msgid "Activate Tab By Index"
+msgstr ""
+
 #: tfrmmain.actaddfilenametocmdline.caption
 msgid "Add file name to command line"
 msgstr "Přidat název souboru do příkazového řádku"
@@ -2035,6 +2039,10 @@ msgstr "Nastavit hledání"
 #: tfrmmain.actconfigtoolbars.caption
 msgid "Toolbar..."
 msgstr "Nástrojová lišta"
+
+#: tfrmmain.actconfigtooltips.caption
+msgid "Configuration of tooltips"
+msgstr ""
 
 #: tfrmmain.actconfigtreeviewmenus.caption
 msgctxt "tfrmmain.actconfigtreeviewmenus.caption"
@@ -2366,6 +2374,10 @@ msgstr "Otevřít bar soubor"
 #: tfrmmain.actopendirinnewtab.caption
 msgid "Open &Folder in a New Tab"
 msgstr "Otevřít &adresář v nové záložce"
+
+#: tfrmmain.actopendrivebyindex.caption
+msgid "Open Drive by Index"
+msgstr ""
 
 #: tfrmmain.actopenvirtualfilesystemlist.caption
 msgid "Open &VFS List"
@@ -5611,6 +5623,10 @@ msgstr "Zobra&zit výběr záložky v dialogu kopírovat/přesunout"
 #: tfrmoptionsfileoperations.cbskipfileoperror.caption
 msgid "S&kip file operations errors and write them to log window"
 msgstr "P&řeskočit chyby a zapsat je do okna protokolu"
+
+#: tfrmoptionsfileoperations.cbverifychecksumconfirmation.caption
+msgid "Verify checksum operation"
+msgstr ""
 
 #: tfrmoptionsfileoperations.gbexecutingoperations.caption
 msgid "Executing operations"
@@ -10748,6 +10764,10 @@ msgstr "Přejmenovat/přesunout %d vybraných souborů/adresářů?"
 msgid "Rename/move selected \"%s\"?"
 msgstr "Přejmenovat/přesunout vybrané \"%s\"?"
 
+#: ulng.rsmsgreplacethistext
+msgid "Do you want to replace this text?"
+msgstr ""
+
 #: ulng.rsmsgrestartforapplychanges
 msgid "Please, restart Double Commander in order to apply changes"
 msgstr "Pro provedení změn prosím restartujte Double Commander"
@@ -10966,6 +10986,10 @@ msgstr "Uživatelské jméno (firewall):"
 
 #: ulng.rsmsgverify
 msgid "VERIFICATION:"
+msgstr ""
+
+#: ulng.rsmsgverifychecksum
+msgid "Do you want to verify selected checksums?"
 msgstr ""
 
 #: ulng.rsmsgverifywrong

@@ -1885,6 +1885,10 @@ msgstr "W górę"
 msgid "&About"
 msgstr "O programie"
 
+#: tfrmmain.actactivatetabbyindex.caption
+msgid "Activate Tab By Index"
+msgstr ""
+
 #: tfrmmain.actaddfilenametocmdline.caption
 msgid "Add file name to command line"
 msgstr "Dodaj nazwę pliku do paska poleceń"
@@ -2032,6 +2036,10 @@ msgstr "Konfiguracja wyszukiwań"
 #: tfrmmain.actconfigtoolbars.caption
 msgid "Toolbar..."
 msgstr "Pasek narzędzi..."
+
+#: tfrmmain.actconfigtooltips.caption
+msgid "Configuration of tooltips"
+msgstr ""
 
 #: tfrmmain.actconfigtreeviewmenus.caption
 msgctxt "tfrmmain.actconfigtreeviewmenus.caption"
@@ -2363,6 +2371,10 @@ msgstr "Otwórz plik paska"
 #: tfrmmain.actopendirinnewtab.caption
 msgid "Open &Folder in a New Tab"
 msgstr "Otwórz katalog w &nowej zakładce"
+
+#: tfrmmain.actopendrivebyindex.caption
+msgid "Open Drive by Index"
+msgstr ""
 
 #: tfrmmain.actopenvirtualfilesystemlist.caption
 msgid "Open &VFS List"
@@ -5615,6 +5627,10 @@ msgstr "Pokaż pasek postępu podczas kopiowania/przenoszenia"
 #: tfrmoptionsfileoperations.cbskipfileoperror.caption
 msgid "S&kip file operations errors and write them to log window"
 msgstr "Komunikaty o błędach przy operacjach na plikach pokazuj tylko w oknie logów"
+
+#: tfrmoptionsfileoperations.cbverifychecksumconfirmation.caption
+msgid "Verify checksum operation"
+msgstr ""
 
 #: tfrmoptionsfileoperations.gbexecutingoperations.caption
 msgid "Executing operations"
@@ -10748,6 +10764,10 @@ msgstr "Zmienić nazwę/przenieść %d wybranych plików/katalogów?"
 msgid "Rename/move selected \"%s\"?"
 msgstr "Zmienić nazwę/przenieść wybrany \"%s\"?"
 
+#: ulng.rsmsgreplacethistext
+msgid "Do you want to replace this text?"
+msgstr ""
+
 #: ulng.rsmsgrestartforapplychanges
 msgid "Please, restart Double Commander in order to apply changes"
 msgstr "Proszę ponownie uruchomić Double Commander aby zastosować zmiany"
@@ -10967,6 +10987,10 @@ msgstr "Nazwa użytkownika (Firewall):"
 
 #: ulng.rsmsgverify
 msgid "VERIFICATION:"
+msgstr ""
+
+#: ulng.rsmsgverifychecksum
+msgid "Do you want to verify selected checksums?"
 msgstr ""
 
 #: ulng.rsmsgverifywrong

@@ -1926,6 +1926,10 @@ msgctxt "TFRMMAIN.ACTABOUT.CAPTION"
 msgid "&About"
 msgstr "本製品について(&A)"
 
+#: tfrmmain.actactivatetabbyindex.caption
+msgid "Activate Tab By Index"
+msgstr ""
+
 #: tfrmmain.actaddfilenametocmdline.caption
 msgid "Add file name to command line"
 msgstr "コマンドラインにファイル名を追加"
@@ -2078,6 +2082,10 @@ msgstr "検索の設定"
 #: tfrmmain.actconfigtoolbars.caption
 msgid "Toolbar..."
 msgstr "ツールバー…"
+
+#: tfrmmain.actconfigtooltips.caption
+msgid "Configuration of tooltips"
+msgstr ""
 
 #: tfrmmain.actconfigtreeviewmenus.caption
 msgctxt "tfrmmain.actconfigtreeviewmenus.caption"
@@ -2412,6 +2420,10 @@ msgstr "メニューバーファイルを開く"
 #: tfrmmain.actopendirinnewtab.caption
 msgid "Open &Folder in a New Tab"
 msgstr "新しいタブでフォルダを開く(&F)"
+
+#: tfrmmain.actopendrivebyindex.caption
+msgid "Open Drive by Index"
+msgstr ""
 
 #: tfrmmain.actopenvirtualfilesystemlist.caption
 msgctxt "TFRMMAIN.ACTOPENVIRTUALFILESYSTEMLIST.CAPTION"
@@ -5724,6 +5736,10 @@ msgstr "コピー/移動ダイアログボックスにタブ選定パネルを�
 #: tfrmoptionsfileoperations.cbskipfileoperror.caption
 msgid "S&kip file operations errors and write them to log window"
 msgstr "ファイル操作エラーはスキップして、そのエラーをログウィンドウに書く(&k)"
+
+#: tfrmoptionsfileoperations.cbverifychecksumconfirmation.caption
+msgid "Verify checksum operation"
+msgstr ""
 
 #: tfrmoptionsfileoperations.gbexecutingoperations.caption
 msgid "Executing operations"
@@ -11015,6 +11031,10 @@ msgstr "選択した＜%d＞個のファイル/ディレクトリの名前を変
 msgid "Rename/move selected \"%s\"?"
 msgstr "選択した＜%s＞の名前を変更/移動しますか？"
 
+#: ulng.rsmsgreplacethistext
+msgid "Do you want to replace this text?"
+msgstr ""
+
 #: ulng.rsmsgrestartforapplychanges
 msgid "Please, restart Double Commander in order to apply changes"
 msgstr "諸々の変更を有効にするため、ダブル・コマンダーを再起動して下さい。"
@@ -11241,6 +11261,10 @@ msgstr "ユーザ名（ファイアウォール用）："
 
 #: ulng.rsmsgverify
 msgid "VERIFICATION:"
+msgstr ""
+
+#: ulng.rsmsgverifychecksum
+msgid "Do you want to verify selected checksums?"
 msgstr ""
 
 #: ulng.rsmsgverifywrong
