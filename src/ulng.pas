@@ -15,9 +15,8 @@
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
 
-   You should have received a copy of the GNU General Public License along
-   with this program; if not, write to the Free Software Foundation, Inc.,
-   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+   You should have received a copy of the GNU General Public License
+   along with this program. If not, see <http://www.gnu.org/licenses/>.
 }
 
 unit uLng;
@@ -73,11 +72,9 @@ resourcestring
   rsMarkPlus = 'Select mask';
   rsMarkMinus = 'Unselect mask';
   rsMaskInput = 'Input mask:';
-  rsFreeMsg = 'Free %s from %s bytes';
-  rsFreeMsgShort = '%s bytes free';
   rsMsgPopUpHotDelete = '&Delete %s';
   rsMsgDiskNotAvail = 'Disk is not available';
-  rsMsgChDirFailed = 'ChDir to [%s] failed!';
+  rsMsgChDirFailed = 'Change current directory to "%s" failed!';
   rsMsgNoFreeSpaceCont = 'No enough free space on target drive, Continue?';
   rsMsgNoFreeSpaceRetry = 'No enough free space on target drive, Retry?';
   rsMsgSetVolumeLabel = 'Set volume label';
@@ -213,6 +210,8 @@ resourcestring
   rsMsgCopyBackward = 'The file %s has changed. Do you want to copy it backward?';
   rsMsgCouldNotCopyBackward = 'Could not copy backward - do you want to keep the changed file?';
   rsMsgFilePathOverMaxPath = 'The target name length (%d) is more than %d characters!' + #13 + '%s' + #13 + 'Most programs will not be able to access a file/directory with such a long name!';
+  rsExtsClosedBracketNoFound = '"]" not found in line %s';
+  rsExtsCommandWithNoExt = 'No extension defined before command "%s". It will be ignored.';
 
   //Hot Dir related
   rsMsgHotDirWhatToDelete = 'Do you want to delete all elements inside the sub-menu [%s]?'+#$0A+'Answering NO will delete only menu delimiters but will keep element inside sub-menu.';
@@ -284,7 +283,7 @@ resourcestring
   rsMsgSpecialDirMakeRelToHotDir = 'Make relative to hotdir path';
 
   //Favorite Tabs related
-  rsMsgFavoriteTabsEnterName = 'Enter a name this Favorite Tabs entry';
+  rsMsgFavoriteTabsEnterName = 'Enter a name for this new Favorite Tabs entry:';
   rsMsgFavoriteTabsEnterNameTitle = 'Saving a new Favorite Tabs entry';
   rsMsgFavoriteTabsSubMenuName = 'Submenu name';
   rsMsgFavoriteTabsImportSubMenuName = 'Legacy tabs imported';
@@ -316,9 +315,12 @@ resourcestring
   rsNoEquivalentInternalCommand = 'No internal equivalent command';
 
   // Locked by another process
-  rsMsgProcessId = 'Process: %d';
-  rsMsgApplicationName = 'Application: %s';
+  rsMsgProcessId = 'PID: %d';
+  rsMsgApplicationName = 'Description: %s';
   rsMsgExecutablePath = 'Executable: %s';
+  rsMsgOpenInAnotherProgram = 'The action cannot be completed because the file is open in another program:';
+  rsMsgTerminateProcess = 'WARNING: Terminating a process can cause undesired results including loss of data and system instability.' + #32 +
+                          'The process will not be given the chance to save its state or data before it is terminated. Are you sure you want to terminate the process?';
 
   // for context menu
   rsMnuActions = 'Actions';
@@ -391,6 +393,7 @@ resourcestring
   rsDlgButtonAbort = 'Ab&ort';
   rsDlgButtonOther = 'Ot&her';
   rsDlgButtonRetryAdmin = 'As Ad&ministrator';
+  rsDlgButtonUnlock = '&Unlock';
   rsDlgButtonCompare = 'Compare &by content';
 
   rsDlgButtonContinue = '&Continue';
@@ -414,6 +417,9 @@ resourcestring
   rsMsgLogTest = 'Test file integrity %s';
   rsMsgLogExtCmdLaunch = 'Launch external';
   rsMsgLogExtCmdResult = 'Result external';
+  rsMsgLogProgramStart = 'Program start';
+  rsMsgLogProgramShutdown = 'Program shutdown';
+  rsMsgExitStatusCode = 'Exit status:';
 
   rsSearchResult = 'Search result';
   rsShowHelpFor = '&Show help for %s';
@@ -434,6 +440,7 @@ resourcestring
   // File operations
   rsFileOpDirectoryExistsOptions = 'Ask;Merge;Skip';
   rsFileOpFileExistsOptions = 'Ask;Overwrite;Overwrite Older;Skip';
+  rsFileOpCopyMoveFileExistsOptions = 'Ask;Overwrite;Skip';
   rsFileOpSetPropertyErrorOptions = 'Ask;Don''t set anymore;Ignore errors';
 
   // Viewer
@@ -443,6 +450,8 @@ resourcestring
   rsViewNewSize = 'New Size';
   rsViewImageType = 'Image Type';
   rsViewBadQuality = 'Bad Quality';
+  rsViewPaintToolsList = 'Pen;Rect;Ellipse';
+
   // Editor
   rsEditGotoLineTitle = 'Goto Line';
   rsEditGotoLineQuery = 'Goto line:';
@@ -555,6 +564,19 @@ resourcestring
   rsClearFiltersOrNot = 'Do you want to clear filters for this new search?';
   rsSearchWithDSXPluginInProgress = 'A file search using DSX plugin is already in progress.'+#$0A+'We need that one to be completed before to launch a new one.';
   rsSearchWithWDXPluginInProgress = 'A file search using WDX plugin is already in progress.'+#$0A+'We need that one to be completed before to launch a new one.';
+  rsPluginSearchFieldNotFound = 'Field "%s" not found!';
+  rsPluginSearchPluginNotFound = 'Plugin "%s" not found!';
+  rsPluginSearchUnitNotFoundForField = 'Unit "%s" not found for field "%s" !';
+  rsPluginSearchContainsNotCase = 'contains';
+  rsPluginSearchNotContainsNotCase = '!contains';
+  rsPluginSearchContainsCaseSenstive = 'contains(case)';
+  rsPluginSearchNotContainsCaseSenstive = '!contains(case)';
+  rsPluginSearchEqualNotCase = '=';
+  rsPluginSearchNotEqualNotCase = '!=';
+  rsPluginSearchEqualCaseSensitive = '=(case)';
+  rsPluginSearchNotEquaCaseSensitive = '!=(case)';
+  rsPluginSearchRegExpr = 'regexp';
+  rsPluginSearchNotRegExpr = '!regexp';
 
   rsTimeUnitSecond = 'Second(s)';
   rsTimeUnitMinute = 'Minute(s)';
@@ -568,6 +590,22 @@ resourcestring
   rsSizeUnitMBytes = 'Megabytes';
   rsSizeUnitGBytes = 'Gigabytes';
   rsSizeUnitTBytes = 'Terabytes';
+  rsLegacyOperationByteSuffixLetter = 'B'; //Must be 1 character. Respecting legacy, letter added to following single letters for size when not empty.
+  rsLegacyDisplaySizeSingleLetterKilo = 'K'; //Must be 1 character. By legacy before 2018-11 it was a 'K'. If for a language a different letter was better, it's now changeable in language file.
+  rsLegacyDisplaySizeSingleLetterMega = 'M'; //Must be 1 character. By legacy before 2018-11 it was a 'M'. If for a language a different letter was better, it's now changeable in language file.
+  rsLegacyDisplaySizeSingleLetterGiga = 'G'; //Must be 1 character. By legacy before 2018-11 it was a 'G'. If for a language a different letter was better, it's now changeable in language file.
+  rsLegacyDisplaySizeSingleLetterTera = 'T'; //Must be 1 character. By legacy it was not present before 2018-11. It's also now changeable in language file.
+  rsDefaultPersonalizedAbbrevByte = 'B';
+  rsDefaultPersonalizedAbbrevKilo = 'KB';
+  rsDefaultPersonalizedAbbrevMega = 'MB';
+  rsDefaultPersonalizedAbbrevGiga = 'GB';
+  rsDefaultPersonalizedAbbrevTera = 'TB';
+  rsAbbrevDisplayDir = '<DIR>';
+  rsAbbrevDisplayLink = '<LNK>';
+  rsOptPersonalizedFileSizeFormat = 'Personalized float;Personalized byte;Personalized kilobyte;Personalized megabyte;Personalized gigabyte;Personalized terabyte';
+  rsOptFileSizeFloat = 'float';
+  rsFreeMsg = '%s of %s free';
+  rsFreeMsgShort = '%s free';
 
   // Other
   rsCopyNameTemplate = 'Copy (%d) %s';
@@ -631,6 +669,7 @@ resourcestring
   rsOptionsEditorFileTypes = 'File types';
   rsOptionsEditorFileNewFileTypes = 'New';
   rsOptionsEditorFilesViews = 'Files views';
+  rsOptionsEditorFilesViewsComplement = 'Files views extra';
   rsOptionsEditorFolderTabs = 'Folder tabs';
   rsOptionsEditorFolderTabsExtra = 'Folder tabs extra';
   rsOptionsEditorFonts = 'Fonts';
@@ -658,14 +697,13 @@ resourcestring
   rsOptionsEditorFileSearch = 'File search';
   //-------------------------------
   rsOptConfigSortOrder = 'Classic, legacy order;Alphabetic order (but language still first)';
+  rsOptConfigTreeState = 'Full expand;Full collapse';
   rsOptDifferFramePosition = 'Active frame panel on left, inactive on right (legacy);Left frame panel on left, right on right';
   //-------------------------------
 
   //-------------------------------
   rsOptEnterExt = 'Enter extension';
   rsOptAssocPluginWith = 'Associate plugin "%s" with:';
-  rsOptEnable = 'Enable';
-  rsOptDisable = 'Disable';
   rsOptMouseSelectionButton = 'Left button;Right button;';
   rsOptAutoSizeColumn = 'First;Last;';
   rsOptTabsPosition = 'Top;Bottom;';
@@ -731,13 +769,25 @@ resourcestring
   rsSimpleWordResult = 'Result';
   rsSimpleWordColumnSingular = 'Column';
   rsSimpleWordLetter = 'Letter';
+  rsSimpleWordTrue = 'True';
+  rsSimpleWordFalse = 'False';
+  rsSimpleWordError = 'Error';
+  rsSimpleWordSuccessExcla = 'Success!';
+  rsSimpleWordFailedExcla = 'Failed!';
 
   // Plugins
   rsOptPluginsActive = 'Active';
   rsOptPluginsName = 'Name';
   rsOptPluginsRegisteredFor = 'Registered for';
   rsOptPluginsFileName = 'File name';
+  rsOptPluginsDescription = 'Description';
   rsOptPluginAlreadyAssigned = 'Plugin %s is already assigned for the following extensions:';
+  rsOptPluginEnable = 'E&nable';
+  rsOptPluginDisable = 'D&isable';
+  rsOptPluginShowByPlugin = 'By Plugin';
+  rsOptPluginShowByExtension = 'By extension';
+  rsOptPluginSortOnlyWhenByExtension = 'Sorting WCX plugins is only possible when showing plugins by extension!';
+  rsPluginFilenameStyleList = 'With complete absolute path;Path relative to %COMMANDER_PATH%;Relative to the following';  
   //-------------------------------
   rsOptSortMethod = 'Alphabetical, considering accents;Natural sorting: alphabetical and numbers';
   rsOptSortCaseSens = 'not case sensitive;according to locale settings (aAbBcC);first upper then lower case (ABCabc)';
@@ -746,7 +796,6 @@ resourcestring
   rsOptUpdatedFilesPosition = 'don''t change position;use the same setting as for new files;to sorted position';
   rsOptFileOperationsProgressKind = 'separate window;minimized separate window;operations panel';
   rsOptTypeOfDuplicatedRename = 'DC legacy - Copy (x) filename.ext;Windows - filename (x).ext;Other - filename(x).ext';
-  rsOptFileSizeFormat = 'float;B;K;M;G';
   // Keyboard
   rsOptLetters = 'None;Command Line;Quick Search;Quick Filter';
   // Directory hotlist

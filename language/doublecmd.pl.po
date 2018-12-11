@@ -1426,6 +1426,42 @@ msgctxt "TFRMFILEPROPERTIES.TSPROPERTIES.CAPTION"
 msgid "Properties"
 msgstr "Właściwości"
 
+#: tfrmfileunlock.btnclose.caption
+#, fuzzy
+msgctxt "tfrmfileunlock.btnclose.caption"
+msgid "Close"
+msgstr "Zamknij"
+
+#: tfrmfileunlock.btnterminate.caption
+msgid "Terminate"
+msgstr ""
+
+#: tfrmfileunlock.btnunlock.caption
+msgctxt "tfrmfileunlock.btnunlock.caption"
+msgid "Unlock"
+msgstr ""
+
+#: tfrmfileunlock.btnunlockall.caption
+msgid "Unlock All"
+msgstr ""
+
+#: tfrmfileunlock.caption
+msgctxt "tfrmfileunlock.caption"
+msgid "Unlock"
+msgstr ""
+
+#: tfrmfileunlock.stgfilehandles.columns[0].title.caption
+msgid "File Handle"
+msgstr ""
+
+#: tfrmfileunlock.stgfilehandles.columns[1].title.caption
+msgid "Process ID"
+msgstr ""
+
+#: tfrmfileunlock.stgfilehandles.columns[2].title.caption
+msgid "Executable Path"
+msgstr ""
+
 #: tfrmfinddlg.actcancel.caption
 msgctxt "TFRMFINDDLG.ACTCANCEL.CAPTION"
 msgid "C&ancel"
@@ -1855,6 +1891,7 @@ msgid "&File name"
 msgstr "Nazwa pliku"
 
 #: tfrmlinker.spbtndown.caption
+msgctxt "tfrmlinker.spbtndown.caption"
 msgid "Do&wn"
 msgstr "W dół"
 
@@ -2025,6 +2062,10 @@ msgctxt "tfrmmain.actconfighotkeys.caption"
 msgid "Configuration of hot keys"
 msgstr "Konfiguracja skrótów klawiszowych"
 
+#: tfrmmain.actconfigplugins.caption
+msgid "Configuration of Plugins"
+msgstr ""
+
 #: tfrmmain.actconfigsavesettings.caption
 msgid "Save Settings"
 msgstr "Zapisz ustawienia"
@@ -2193,6 +2234,14 @@ msgstr ""
 
 #: tfrmmain.actfocusswap.hint
 msgid "Switch between left and right file list"
+msgstr ""
+
+#: tfrmmain.actfocustreeview.caption
+msgid "Focus on tree view"
+msgstr ""
+
+#: tfrmmain.actfocustreeview.hint
+msgid "Switch between current file list and tree view (if enabled)"
 msgstr ""
 
 #: tfrmmain.actgotofirstfile.caption
@@ -2624,7 +2673,7 @@ msgid "Create Symbolic &Link..."
 msgstr "Utwórz link &symboliczny..."
 
 #: tfrmmain.actsyncdirs.caption
-msgid "Synchronize dirs..."
+msgid "Syn&chronize dirs..."
 msgstr "Synchronizuj katalogi..."
 
 #: tfrmmain.acttargetequalsource.caption
@@ -3004,6 +3053,7 @@ msgid "&OK"
 msgstr "&Ok"
 
 #: tfrmmaincommandsdlg.caption
+msgctxt "tfrmmaincommandsdlg.caption"
 msgid "Select your internal command"
 msgstr "Wybierz wewnętrzne polecenie"
 
@@ -3689,6 +3739,10 @@ msgctxt "tfrmoptionsarchivers.chkarchivermultiarcoutput.caption"
 msgid "S&how console output"
 msgstr "Pokaż wyjście konsoli"
 
+#: tfrmoptionsarchivers.chkfilenameonlylist.caption
+msgid "Use archive name without extension as list"
+msgstr ""
+
 #: tfrmoptionsarchivers.ckbarchiverunixfileattributes.caption
 msgid "Uni&x file attributes"
 msgstr ""
@@ -3981,6 +4035,10 @@ msgstr "Zapisz przy wyjściu"
 #: tfrmoptionsconfiguration.gbsortorderconfigurationoption.caption
 msgid "Sort order of configuration order in left tree"
 msgstr "Kolejność sortowania porządku konfiguracji w drzewie po lewej"
+
+#: tfrmoptionsconfiguration.gpconfigurationtreestate.caption
+msgid "Tree state when entering in configuration page"
+msgstr ""
 
 #: tfrmoptionsconfiguration.lblcmdlineconfigdir.caption
 msgid "Set on command line"
@@ -5344,12 +5402,13 @@ msgid "Test resulting menu"
 msgstr "Testuj wynikowe menu"
 
 #: tfrmoptionsfileassoc.btnaddact.caption
+msgctxt "tfrmoptionsfileassoc.btnaddact.caption"
 msgid "Add"
 msgstr "Dodaj"
 
 #: tfrmoptionsfileassoc.btnaddext.caption
 msgctxt "tfrmoptionsfileassoc.btnaddext.caption"
-msgid "&Add"
+msgid "Add"
 msgstr "Dodaj"
 
 #: tfrmoptionsfileassoc.btnaddnewtype.caption
@@ -5358,16 +5417,22 @@ msgid "A&dd"
 msgstr "Dodaj"
 
 #: tfrmoptionsfileassoc.btncloneact.caption
-msgid "Clone"
+msgid "C&lone"
 msgstr "Klonuj"
 
+#: tfrmoptionsfileassoc.btncommands.hint
+msgctxt "tfrmoptionsfileassoc.btncommands.hint"
+msgid "Select your internal command"
+msgstr "Wybierz wewnętrzne polecenie"
+
 #: tfrmoptionsfileassoc.btndownact.caption
-msgid "&Down"
+msgctxt "tfrmoptionsfileassoc.btndownact.caption"
+msgid "Do&wn"
 msgstr "W dół"
 
 #: tfrmoptionsfileassoc.btneditext.caption
 msgctxt "tfrmoptionsfileassoc.btneditext.caption"
-msgid "Edit"
+msgid "Edi&t"
 msgstr "Edytuj"
 
 #: tfrmoptionsfileassoc.btninsertact.caption
@@ -5377,8 +5442,18 @@ msgstr "Wstaw"
 
 #: tfrmoptionsfileassoc.btninsertext.caption
 msgctxt "tfrmoptionsfileassoc.btninsertext.caption"
-msgid "Insert"
+msgid "&Insert"
 msgstr "Wstaw"
+
+#: tfrmoptionsfileassoc.btnparametershelper.hint
+msgctxt "tfrmoptionsfileassoc.btnparametershelper.hint"
+msgid "Variable reminder helper"
+msgstr ""
+
+#: tfrmoptionsfileassoc.btnrelativecommand.hint
+msgctxt "tfrmoptionsfileassoc.btnrelativecommand.hint"
+msgid "Some functions to select appropriate path"
+msgstr "Niektóre funkcje by wybrać odpowiednią ścieżkę"
 
 #: tfrmoptionsfileassoc.btnremoveact.caption
 msgid "Remo&ve"
@@ -5398,6 +5473,16 @@ msgctxt "tfrmoptionsfileassoc.btnrenametype.caption"
 msgid "R&ename"
 msgstr "Zmi&eń nazwę"
 
+#: tfrmoptionsfileassoc.btnstartpathpathhelper.hint
+msgctxt "tfrmoptionsfileassoc.btnstartpathpathhelper.hint"
+msgid "Some functions to select appropriate path"
+msgstr "Niektóre funkcje by wybrać odpowiednią ścieżkę"
+
+#: tfrmoptionsfileassoc.btnstartpathvarhelper.hint
+msgctxt "tfrmoptionsfileassoc.btnstartpathvarhelper.hint"
+msgid "Variable reminder helper"
+msgstr ""
+
 #: tfrmoptionsfileassoc.btnupact.caption
 msgctxt "tfrmoptionsfileassoc.btnupact.caption"
 msgid "&Up"
@@ -5412,15 +5497,15 @@ msgid "Name of the action. It is never passed to the system, it's just a mnemoni
 msgstr ""
 
 #: tfrmoptionsfileassoc.edtparams.hint
-msgid "Parameter to pass to the command. Long filename with spaces should be quoted."
+msgid "Parameter to pass to the command. Long filename with spaces should be quoted (manually entering)."
 msgstr ""
 
 #: tfrmoptionsfileassoc.fnecommand.hint
-msgid "Command to execute. Long filename with space should be quoted."
+msgid "Command to execute. Never quote this string."
 msgstr ""
 
 #: tfrmoptionsfileassoc.gbactiondescription.caption
-msgid "Action description:"
+msgid "Action description"
 msgstr "Opis akcji:"
 
 #: tfrmoptionsfileassoc.gbactions.caption
@@ -5458,11 +5543,12 @@ msgid "File types may be sorted by drag & drop"
 msgstr "Typy plików mogą być sortowane przez \"przeciągnij i upuść\""
 
 #: tfrmoptionsfileassoc.lblaction.caption
-msgid "Action name:"
+msgid "Action &name:"
 msgstr "Nazwa akcji:"
 
 #: tfrmoptionsfileassoc.lblcommand.caption
-msgid "&Command:"
+msgctxt "tfrmoptionsfileassoc.lblcommand.caption"
+msgid "Command:"
 msgstr "Polecenie:"
 
 #: tfrmoptionsfileassoc.lblexternalparameters.caption
@@ -5474,11 +5560,6 @@ msgstr "Parametry:"
 msgctxt "tfrmoptionsfileassoc.lblstartpath.caption"
 msgid "Start pat&h:"
 msgstr "Ścieżka startowa:"
-
-#: tfrmoptionsfileassoc.menuitem1.caption
-msgctxt "tfrmoptionsfileassoc.menuitem1.caption"
-msgid "-"
-msgstr "-"
 
 #: tfrmoptionsfileassoc.menuitem3.caption
 msgid "Custom with..."
@@ -5521,11 +5602,6 @@ msgstr "Otwórz"
 #: tfrmoptionsfileassoc.miopenwith.caption
 msgid "Open with..."
 msgstr "Otwórz za pomocą..."
-
-#: tfrmoptionsfileassoc.miseparator.caption
-msgctxt "tfrmoptionsfileassoc.miseparator.caption"
-msgid "-"
-msgstr "-"
 
 #: tfrmoptionsfileassoc.mishell.caption
 msgid "Run in terminal"
@@ -5836,75 +5912,26 @@ msgstr "Użyj mapowania pamięci dla wyszukiwanego tekstu w plikach"
 msgid "&Use stream for search text in files"
 msgstr ""
 
-#: tfrmoptionsfilesviews.btnaddattribute.caption
-msgctxt "TFRMOPTIONSFILESVIEWS.BTNADDATTRIBUTE.CAPTION"
-msgid "&Add"
-msgstr "Dod&aj"
-
-#: tfrmoptionsfilesviews.btnattrshelp.caption
-msgctxt "TFRMOPTIONSFILESVIEWS.BTNATTRSHELP.CAPTION"
-msgid "&Help"
-msgstr "Pomoc"
-
-#: tfrmoptionsfilesviews.cbdblclicktoparent.caption
-msgid "Enable changing to &parent folder when double-clicking on empty part of file view"
-msgstr ""
-
-#: tfrmoptionsfilesviews.cbdelayloadingtabs.caption
-msgid "Do&n't load file list until a tab is activated"
-msgstr "Nie ładuj listy plików aż zakładka zostanie wybrana"
-
-#: tfrmoptionsfilesviews.cbdirbrackets.caption
-msgid "S&how square brackets around directories"
-msgstr "Pokazuj nazwy katalogów w nawiasach kwadratowych"
-
-#: tfrmoptionsfilesviews.cbhighlightupdatedfiles.caption
-msgid "Hi&ghlight new and updated files"
-msgstr "Wyróżnij nowe i zaktualizowane pliki"
-
-#: tfrmoptionsfilesviews.cbinplacerename.caption
-msgid "Enable inplace &renaming when clicking twice on a name"
-msgstr ""
-
-#: tfrmoptionsfilesviews.cblistfilesinthread.caption
-msgid "Load &file list in separate thread"
-msgstr "Wczytuj listę plików w oddzielnym wątku"
-
-#: tfrmoptionsfilesviews.cbloadiconsseparately.caption
-msgid "Load icons af&ter file list"
-msgstr "Wczytuj ikony po liście plików"
-
-#: tfrmoptionsfilesviews.cbshowsystemfiles.caption
-msgid "Show s&ystem and hidden files"
-msgstr "Pokaż pliki ukryte/systemowe"
-
-#: tfrmoptionsfilesviews.cbspacemovesdown.caption
-msgid "&When selecting files with <SPACEBAR>, move down to next file (as with <INSERT>)"
-msgstr "Klawisz <spacja> przenosi do następnego pliku (tak jak <INSERT>)"
-
-#: tfrmoptionsfilesviews.chkmarkmaskfilterwindows.caption
-msgid "Windows style filter when marking files (\"*.*\" also select files without extension, etc.)"
-msgstr ""
-
-#: tfrmoptionsfilesviews.chkmarkmaskshowattribute.caption
-msgid "Use an independent attribute filter in mask input dialog each time"
-msgstr ""
+#: tfrmoptionsfilesviews.btndefault.caption
+msgctxt "tfrmoptionsfilesviews.btndefault.caption"
+msgid "De&fault"
+msgstr "Domyślny"
 
 #: tfrmoptionsfilesviews.gbformatting.caption
 msgid "Formatting"
 msgstr "Formatowanie"
 
-#: tfrmoptionsfilesviews.gbmarking.caption
-msgid "Marking/Unmarking entries"
-msgstr "Zaznaczenie/Odznaczenie wpisów"
+#: tfrmoptionsfilesviews.gbpersonalizedabbreviationtouse.caption
+msgid "Personalized abbreviations to use:"
+msgstr ""
 
 #: tfrmoptionsfilesviews.gbsorting.caption
 msgid "Sorting"
 msgstr "Sortowanie"
 
-#: tfrmoptionsfilesviews.lbattributemask.caption
-msgid "Default attribute mask value to use:"
-msgstr "Domyślna wartość atrybutu maski do użycia:"
+#: tfrmoptionsfilesviews.lblbyte.caption
+msgid "&Byte:"
+msgstr ""
 
 #: tfrmoptionsfilesviews.lblcasesensitivity.caption
 msgid "Case s&ensitivity:"
@@ -5922,9 +5949,29 @@ msgstr "Format daty i czasu:"
 msgid "File si&ze format:"
 msgstr "Format rozmiaru pliku:"
 
+#: tfrmoptionsfilesviews.lblgigabyte.caption
+msgid "&Gigabyte:"
+msgstr ""
+
+#: tfrmoptionsfilesviews.lblheaderfootersizeformat.caption
+msgid "&Header/footer format:"
+msgstr ""
+
+#: tfrmoptionsfilesviews.lblkilobyte.caption
+msgid "&Kilobyte:"
+msgstr ""
+
+#: tfrmoptionsfilesviews.lblmegabyte.caption
+msgid "Megab&yte:"
+msgstr ""
+
 #: tfrmoptionsfilesviews.lblnewfilesposition.caption
 msgid "&Insert new files:"
 msgstr "Wstaw nowe pliki:"
+
+#: tfrmoptionsfilesviews.lbloperationsizeformat.caption
+msgid "O&peration size format:"
+msgstr ""
 
 #: tfrmoptionsfilesviews.lblsortfoldermode.caption
 msgid "So&rting directories:"
@@ -5934,9 +5981,88 @@ msgstr "Sortowanie katalogów:"
 msgid "&Sort method:"
 msgstr "&Metoda sortowania:"
 
+#: tfrmoptionsfilesviews.lblterabyte.caption
+msgid "&Terabyte:"
+msgstr ""
+
 #: tfrmoptionsfilesviews.lblupdatedfilesposition.caption
 msgid "&Move updated files:"
 msgstr "Przenieś zaktualizowane pliki:"
+
+#: tfrmoptionsfilesviewscomplement.btnaddattribute.caption
+msgctxt "tfrmoptionsfilesviewscomplement.btnaddattribute.caption"
+msgid "&Add"
+msgstr "Dod&aj"
+
+#: tfrmoptionsfilesviewscomplement.btnattrshelp.caption
+msgctxt "tfrmoptionsfilesviewscomplement.btnattrshelp.caption"
+msgid "&Help"
+msgstr "Pomoc"
+
+#: tfrmoptionsfilesviewscomplement.cbdblclicktoparent.caption
+msgctxt "tfrmoptionsfilesviewscomplement.cbdblclicktoparent.caption"
+msgid "Enable changing to &parent folder when double-clicking on empty part of file view"
+msgstr ""
+
+#: tfrmoptionsfilesviewscomplement.cbdelayloadingtabs.caption
+msgctxt "tfrmoptionsfilesviewscomplement.cbdelayloadingtabs.caption"
+msgid "Do&n't load file list until a tab is activated"
+msgstr "Nie ładuj listy plików aż zakładka zostanie wybrana"
+
+#: tfrmoptionsfilesviewscomplement.cbdirbrackets.caption
+msgctxt "tfrmoptionsfilesviewscomplement.cbdirbrackets.caption"
+msgid "S&how square brackets around directories"
+msgstr "Pokazuj nazwy katalogów w nawiasach kwadratowych"
+
+#: tfrmoptionsfilesviewscomplement.cbhighlightupdatedfiles.caption
+msgctxt "tfrmoptionsfilesviewscomplement.cbhighlightupdatedfiles.caption"
+msgid "Hi&ghlight new and updated files"
+msgstr "Wyróżnij nowe i zaktualizowane pliki"
+
+#: tfrmoptionsfilesviewscomplement.cbinplacerename.caption
+msgctxt "tfrmoptionsfilesviewscomplement.cbinplacerename.caption"
+msgid "Enable inplace &renaming when clicking twice on a name"
+msgstr ""
+
+#: tfrmoptionsfilesviewscomplement.cblistfilesinthread.caption
+msgctxt "tfrmoptionsfilesviewscomplement.cblistfilesinthread.caption"
+msgid "Load &file list in separate thread"
+msgstr "Wczytuj listę plików w oddzielnym wątku"
+
+#: tfrmoptionsfilesviewscomplement.cbloadiconsseparately.caption
+msgctxt "tfrmoptionsfilesviewscomplement.cbloadiconsseparately.caption"
+msgid "Load icons af&ter file list"
+msgstr "Wczytuj ikony po liście plików"
+
+#: tfrmoptionsfilesviewscomplement.cbshowsystemfiles.caption
+msgctxt "tfrmoptionsfilesviewscomplement.cbshowsystemfiles.caption"
+msgid "Show s&ystem and hidden files"
+msgstr "Pokaż pliki ukryte/systemowe"
+
+#: tfrmoptionsfilesviewscomplement.cbspacemovesdown.caption
+msgctxt "tfrmoptionsfilesviewscomplement.cbspacemovesdown.caption"
+msgid "&When selecting files with <SPACEBAR>, move down to next file (as with <INSERT>)"
+msgstr "Klawisz <spacja> przenosi do następnego pliku (tak jak <INSERT>)"
+
+#: tfrmoptionsfilesviewscomplement.chkmarkmaskfilterwindows.caption
+msgctxt "tfrmoptionsfilesviewscomplement.chkmarkmaskfilterwindows.caption"
+msgid "Windows style filter when marking files (\"*.*\" also select files without extension, etc.)"
+msgstr ""
+
+#: tfrmoptionsfilesviewscomplement.chkmarkmaskshowattribute.caption
+msgctxt "tfrmoptionsfilesviewscomplement.chkmarkmaskshowattribute.caption"
+msgid "Use an independent attribute filter in mask input dialog each time"
+msgstr ""
+
+#: tfrmoptionsfilesviewscomplement.gbmarking.caption
+msgctxt "tfrmoptionsfilesviewscomplement.gbmarking.caption"
+msgid "Marking/Unmarking entries"
+msgstr "Zaznaczenie/Odznaczenie wpisów"
+
+#: tfrmoptionsfilesviewscomplement.lbattributemask.caption
+msgctxt "tfrmoptionsfilesviewscomplement.lbattributemask.caption"
+msgid "Default attribute mask value to use:"
+msgstr "Domyślna wartość atrybutu maski do użycia:"
 
 #: tfrmoptionsfiletypescolors.btnaddcategory.caption
 msgctxt "TFRMOPTIONSFILETYPESCOLORS.BTNADDCATEGORY.CAPTION"
@@ -6459,8 +6585,10 @@ msgid "&Remove thumbnails for no longer existing files"
 msgstr "Usuń miniatury dla nie istniejących plików"
 
 #: tfrmoptionsmisc.btnviewconfigfile.hint
+#, fuzzy
+#| msgid "View log file content"
 msgctxt "tfrmoptionsmisc.btnviewconfigfile.hint"
-msgid "View log file content"
+msgid "View configuration file content"
 msgstr "Podgląd zawartości pliku dziennika"
 
 #: tfrmoptionsmisc.chkdesccreateunicode.caption
@@ -6576,88 +6704,124 @@ msgstr ""
 msgid "Single click (opens folders, double click for files)"
 msgstr ""
 
-#: tfrmoptionsplugins.btnaddplugin.caption
-msgctxt "TFRMOPTIONSPLUGINS.BTNADDPLUGIN.CAPTION"
+#: tfrmoptionspluginsbase.btnaddplugin.caption
+msgctxt "tfrmoptionspluginsbase.btnaddplugin.caption"
 msgid "A&dd"
-msgstr "Dodaj"
+msgstr "&Dodaj"
 
-#: tfrmoptionsplugins.btnconfigplugin.caption
-msgctxt "TFRMOPTIONSPLUGINS.BTNCONFIGPLUGIN.CAPTION"
+#: tfrmoptionspluginsbase.btnconfigplugin.caption
+msgctxt "tfrmoptionspluginsbase.btnconfigplugin.caption"
 msgid "Con&figure"
 msgstr "Konfiguruj"
 
-#: tfrmoptionsplugins.btnenableplugin.caption
+#: tfrmoptionspluginsbase.btnenableplugin.caption
+msgctxt "tfrmoptionspluginsbase.btnenableplugin.caption"
 msgid "E&nable"
 msgstr "Włącz"
 
-#: tfrmoptionsplugins.btnremoveplugin.caption
-msgctxt "TFRMOPTIONSPLUGINS.BTNREMOVEPLUGIN.CAPTION"
+#: tfrmoptionspluginsbase.btnremoveplugin.caption
+msgctxt "tfrmoptionspluginsbase.btnremoveplugin.caption"
 msgid "&Remove"
 msgstr "Usuń"
 
-#: tfrmoptionsplugins.btntweakplugin.caption
+#: tfrmoptionspluginsbase.btntweakplugin.caption
+msgctxt "tfrmoptionspluginsbase.btntweakplugin.caption"
 msgid "&Tweak"
 msgstr "Dostosuj"
 
-#: tfrmoptionsplugins.lbldsxdescription.caption
-msgid "Searc&h plugins allow one to use alternative search algorithms or external tools (like \"locate\", etc.)"
-msgstr "Zezwalaj na szukanie wtyczek wg alternatywnych algorytmów i narzędzi zewnętrznych (np. \"locate\")"
+#: tfrmoptionspluginsbase.lblplugindescription.caption
+msgctxt "tfrmoptionspluginsbase.lblplugindescription.caption"
+msgid "Description"
+msgstr "Opis"
 
-#: tfrmoptionsplugins.lblwcxdescription.caption
-msgid "Pack&er plugins are used to work with archives"
-msgstr "Obsługa archiwów z użyciem wtyczek."
-
-#: tfrmoptionsplugins.lblwdxdescription.caption
-msgid "Content plu&gins allow one to display extended file details like mp3 tags or image attributes in file lists, or use them in search and multi-rename tool"
-msgstr "Wtyczki pozwalające wyświetlać dodatkowe informacje o plikach (np. tagi mp3, atrybuty grafiki) w panelach oraz przy szukaniu i zamianie."
-
-#: tfrmoptionsplugins.lblwfxdescription.caption
-msgid "Fi&le system plugins allow access to disks inaccessible by operating system or to external devices like Palm/PocketPC."
-msgstr "Wtyczki obsługujące niedostępne dla systemu dyski i urządzenia zewnętrzne (np. Palm/PocketPC)"
-
-#: tfrmoptionsplugins.lblwlxdescription.caption
-msgid "Vie&wer plugins allow one to display file formats like images, spreadsheets, databases etc. in Viewer (F3, Ctrl+Q)"
-msgstr "Wtyczki pozwalające wyświetlić za pomocą przeglądarki (listera, komendą F3) pliki takie jak np. grafika, bazy danych akusze kalkulacyjne"
-
-#: tfrmoptionsplugins.stgplugins.columns[0].title.caption
-msgctxt "TFRMOPTIONSPLUGINS.STGPLUGINS.COLUMNS[0].TITLE.CAPTION"
+#: tfrmoptionspluginsbase.stgplugins.columns[0].title.caption
+msgctxt "tfrmoptionspluginsbase.stgplugins.columns[0].title.caption"
 msgid "Active"
 msgstr "Aktywne"
 
-#: tfrmoptionsplugins.stgplugins.columns[1].title.caption
-msgctxt "TFRMOPTIONSPLUGINS.STGPLUGINS.COLUMNS[1].TITLE.CAPTION"
+#: tfrmoptionspluginsbase.stgplugins.columns[1].title.caption
+msgctxt "tfrmoptionspluginsbase.stgplugins.columns[1].title.caption"
 msgid "Plugin"
 msgstr "Wtyczka"
 
-#: tfrmoptionsplugins.stgplugins.columns[2].title.caption
-msgctxt "TFRMOPTIONSPLUGINS.STGPLUGINS.COLUMNS[2].TITLE.CAPTION"
+#: tfrmoptionspluginsbase.stgplugins.columns[2].title.caption
+msgctxt "tfrmoptionspluginsbase.stgplugins.columns[2].title.caption"
 msgid "Registered for"
 msgstr "Zarejestrowany dla"
 
-#: tfrmoptionsplugins.stgplugins.columns[3].title.caption
-msgctxt "TFRMOPTIONSPLUGINS.STGPLUGINS.COLUMNS[3].TITLE.CAPTION"
+#: tfrmoptionspluginsbase.stgplugins.columns[3].title.caption
+msgctxt "tfrmoptionspluginsbase.stgplugins.columns[3].title.caption"
 msgid "File name"
 msgstr "Nazwa pliku"
 
-#: tfrmoptionsplugins.tsdsx.caption
-msgid "&Search plugins (.DSX)"
-msgstr "Wtyczki wyszukiwania (.DSX)"
+#: tfrmoptionspluginsdsx.lblplugindescription.caption
+msgctxt "tfrmoptionspluginsdsx.lblplugindescription.caption"
+msgid "Searc&h plugins allow one to use alternative search algorithms or external tools (like \"locate\", etc.)"
+msgstr "Zezwalaj na szukanie wtyczek wg alternatywnych algorytmów i narzędzi zewnętrznych (np. \"locate\")"
 
-#: tfrmoptionsplugins.tswcx.caption
-msgid "Pac&ker plugins (.WCX)"
-msgstr "Wtyczki pakera (.WCX)"
+#: tfrmoptionspluginsgroup.btnpathtoberelativetoall.caption
+msgid "Apply current settings to all current configured plugins"
+msgstr ""
 
-#: tfrmoptionsplugins.tswdx.caption
-msgid "Content pl&ugins (.WDX)"
-msgstr "Wtyczki zawartości (.WDX)"
+#: tfrmoptionspluginsgroup.ckbautotweak.caption
+msgid "When adding a new plugin, automatically go in tweak window"
+msgstr ""
 
-#: tfrmoptionsplugins.tswfx.caption
-msgid "F&ile system plugins (.WFX)"
-msgstr "Wtyczki systemu plików (.WFX)"
+#: tfrmoptionspluginsgroup.gbconfiguration.caption
+msgid "Configuration:"
+msgstr ""
 
-#: tfrmoptionsplugins.tswlx.caption
-msgid "&Viewer plugins (.WLX)"
-msgstr "Wtyczki przeglądarki (listera) (.WLX)"
+#: tfrmoptionspluginsgroup.lbpathtoberelativeto.caption
+msgid "Path to be relative to:"
+msgstr ""
+
+#: tfrmoptionspluginsgroup.lbpluginfilenamestyle.caption
+msgid "Plugin filename style when adding a new plugin:"
+msgstr ""
+
+#: tfrmoptionspluginswcx.lblplugindescription.caption
+msgctxt "tfrmoptionspluginswcx.lblplugindescription.caption"
+msgid "Pack&er plugins are used to work with archives"
+msgstr "Obsługa archiwów z użyciem wtyczek."
+
+#: tfrmoptionspluginswcx.stgplugins.columns[0].title.caption
+#, fuzzy
+msgctxt "tfrmoptionspluginswcx.stgplugins.columns[0].title.caption"
+msgid "Active"
+msgstr "Aktywna"
+
+#: tfrmoptionspluginswcx.stgplugins.columns[1].title.caption
+#, fuzzy
+msgctxt "tfrmoptionspluginswcx.stgplugins.columns[1].title.caption"
+msgid "Plugin"
+msgstr "Wtyczka"
+
+#: tfrmoptionspluginswcx.stgplugins.columns[2].title.caption
+#, fuzzy
+msgctxt "tfrmoptionspluginswcx.stgplugins.columns[2].title.caption"
+msgid "Registered for"
+msgstr "Zarejestrowany dla"
+
+#: tfrmoptionspluginswcx.stgplugins.columns[3].title.caption
+#, fuzzy
+msgctxt "tfrmoptionspluginswcx.stgplugins.columns[3].title.caption"
+msgid "File name"
+msgstr "Nazwa pliku"
+
+#: tfrmoptionspluginswdx.lblplugindescription.caption
+msgctxt "tfrmoptionspluginswdx.lblplugindescription.caption"
+msgid "Content plu&gins allow one to display extended file details like mp3 tags or image attributes in file lists, or use them in search and multi-rename tool"
+msgstr "Wtyczki pozwalające wyświetlać dodatkowe informacje o plikach (np. tagi mp3, atrybuty grafiki) w panelach oraz przy szukaniu i zamianie."
+
+#: tfrmoptionspluginswfx.lblplugindescription.caption
+msgctxt "tfrmoptionspluginswfx.lblplugindescription.caption"
+msgid "Fi&le system plugins allow access to disks inaccessible by operating system or to external devices like Palm/PocketPC."
+msgstr "Wtyczki obsługujące niedostępne dla systemu dyski i urządzenia zewnętrzne (np. Palm/PocketPC)"
+
+#: tfrmoptionspluginswlx.lblplugindescription.caption
+msgctxt "tfrmoptionspluginswlx.lblplugindescription.caption"
+msgid "Vie&wer plugins allow one to display file formats like images, spreadsheets, databases etc. in Viewer (F3, Ctrl+Q)"
+msgstr "Wtyczki pozwalające wyświetlić za pomocą przeglądarki (listera, komendą F3) pliki takie jak np. grafika, bazy danych akusze kalkulacyjne"
 
 #: tfrmoptionsquicksearchfilter.cbexactbeginning.caption
 msgid "&Beginning (name must start with first typed character)"
@@ -8384,10 +8548,12 @@ msgid "duplicates"
 msgstr "duplikaty"
 
 #: tfrmsyncdirsdlg.sbequal.caption
+msgctxt "tfrmsyncdirsdlg.sbequal.caption"
 msgid "="
 msgstr "="
 
 #: tfrmsyncdirsdlg.sbnotequal.caption
+msgctxt "tfrmsyncdirsdlg.sbnotequal.caption"
 msgid "!="
 msgstr "!="
 
@@ -8477,6 +8643,7 @@ msgid "C&hange"
 msgstr "Zmień"
 
 #: tfrmtweakplugin.btndefault.caption
+msgctxt "tfrmtweakplugin.btndefault.caption"
 msgid "De&fault"
 msgstr "Domyślny"
 
@@ -8484,6 +8651,16 @@ msgstr "Domyślny"
 msgctxt "TFRMTWEAKPLUGIN.BTNOK.CAPTION"
 msgid "&OK"
 msgstr "OK"
+
+#: tfrmtweakplugin.btnrelativeplugin1.hint
+msgctxt "tfrmtweakplugin.btnrelativeplugin1.hint"
+msgid "Some functions to select appropriate path"
+msgstr "Niektóre funkcje by wybrać odpowiednią ścieżkę"
+
+#: tfrmtweakplugin.btnrelativeplugin2.hint
+msgctxt "tfrmtweakplugin.btnrelativeplugin2.hint"
+msgid "Some functions to select appropriate path"
+msgstr "Niektóre funkcje by wybrać odpowiednią ścieżkę"
 
 #: tfrmtweakplugin.btnremove.caption
 msgctxt "TFRMTWEAKPLUGIN.BTNREMOVE.CAPTION"
@@ -8560,8 +8737,8 @@ msgctxt "TFRMTWEAKPLUGIN.LBLPLUGIN.CAPTION"
 msgid "&Plugin:"
 msgstr "Wtyczka:"
 
-#: tfrmtweakplugin.lblplugin1.caption
-msgctxt "TFRMTWEAKPLUGIN.LBLPLUGIN1.CAPTION"
+#: tfrmtweakplugin.lblplugin2.caption
+msgctxt "tfrmtweakplugin.lblplugin2.caption"
 msgid "&Plugin:"
 msgstr "Wtyczka:"
 
@@ -8800,29 +8977,9 @@ msgstr "Powiększ"
 msgid "Zoom Out"
 msgstr "Zmniejsz"
 
-#: tfrmviewer.btncopyfile.hint
-msgctxt "TFRMVIEWER.BTNCOPYFILE.HINT"
-msgid "Copy"
-msgstr "Kopiuj"
-
-#: tfrmviewer.btncopyfile1.hint
-msgctxt "TFRMVIEWER.BTNCOPYFILE1.HINT"
-msgid "Copy"
-msgstr "Kopiuj"
-
 #: tfrmviewer.btncuttuimage.hint
 msgid "Crop"
 msgstr "Przytnij"
-
-#: tfrmviewer.btndeletefile.hint
-msgctxt "TFRMVIEWER.BTNDELETEFILE.HINT"
-msgid "Delete"
-msgstr "Usuń"
-
-#: tfrmviewer.btndeletefile1.hint
-msgctxt "TFRMVIEWER.BTNDELETEFILE1.HINT"
-msgid "Delete"
-msgstr "Usuń"
 
 #: tfrmviewer.btnfullscreen.hint
 msgctxt "TFRMVIEWER.BTNFULLSCREEN.HINT"
@@ -8842,16 +8999,6 @@ msgstr "S"
 msgctxt "TFRMVIEWER.BTNHIGHTLIGHT.HINT"
 msgid "Highlight"
 msgstr "Wyróżnij"
-
-#: tfrmviewer.btnmovefile.hint
-msgctxt "TFRMVIEWER.BTNMOVEFILE.HINT"
-msgid "Move"
-msgstr "Przenieś"
-
-#: tfrmviewer.btnmovefile1.hint
-msgctxt "TFRMVIEWER.BTNMOVEFILE1.HINT"
-msgid "Move"
-msgstr "Przenieś"
 
 #: tfrmviewer.btnnextgifframe.caption
 msgid "||>"
@@ -8927,31 +9074,6 @@ msgctxt "TFRMVIEWER.MIABOUT.CAPTION"
 msgid "About"
 msgstr "O programie"
 
-#: tfrmviewer.midiv1.caption
-msgctxt "TFRMVIEWER.MIDIV1.CAPTION"
-msgid "-"
-msgstr "-"
-
-#: tfrmviewer.midiv2.caption
-msgctxt "TFRMVIEWER.MIDIV2.CAPTION"
-msgid "-"
-msgstr "-"
-
-#: tfrmviewer.midiv3.caption
-msgctxt "TFRMVIEWER.MIDIV3.CAPTION"
-msgid "-"
-msgstr "-"
-
-#: tfrmviewer.midiv4.caption
-msgctxt "TFRMVIEWER.MIDIV4.CAPTION"
-msgid "-"
-msgstr "-"
-
-#: tfrmviewer.midiv5.caption
-msgctxt "TFRMVIEWER.MIDIV5.CAPTION"
-msgid "-"
-msgstr "-"
-
 #: tfrmviewer.miedit.caption
 msgctxt "TFRMVIEWER.MIEDIT.CAPTION"
 msgid "&Edit"
@@ -8983,11 +9105,6 @@ msgstr "Obróć"
 msgctxt "TFRMVIEWER.MISCREENSHOT.CAPTION"
 msgid "Screenshot"
 msgstr "Zrzut ekranu"
-
-#: tfrmviewer.miseparator.caption
-msgctxt "TFRMVIEWER.MISEPARATOR.CAPTION"
-msgid "-"
-msgstr "-"
 
 #: tfrmviewer.miview.caption
 msgctxt "TFRMVIEWER.MIVIEW.CAPTION"
@@ -9164,6 +9281,14 @@ msgid ""
 "or press \"CANCEL\" to continue without it?\n"
 msgstr ""
 
+#: ulng.rsabbrevdisplaydir
+msgid "<DIR>"
+msgstr ""
+
+#: ulng.rsabbrevdisplaylink
+msgid "<LNK>"
+msgstr ""
+
 #: ulng.rscancelfilter
 msgid "Cancel Quick Filter"
 msgstr "Anuluj szybki filtr"
@@ -9301,6 +9426,27 @@ msgstr "Zaimportowany pasek narzędzi DC"
 #: ulng.rsdefaultimportedtctoolbarhint
 msgid "Imported TC toolbar"
 msgstr "Zaimportowany pasek narzędi TC"
+
+#: ulng.rsdefaultpersonalizedabbrevbyte
+msgctxt "ulng.rsdefaultpersonalizedabbrevbyte"
+msgid "B"
+msgstr ""
+
+#: ulng.rsdefaultpersonalizedabbrevgiga
+msgid "GB"
+msgstr ""
+
+#: ulng.rsdefaultpersonalizedabbrevkilo
+msgid "KB"
+msgstr ""
+
+#: ulng.rsdefaultpersonalizedabbrevmega
+msgid "MB"
+msgstr ""
+
+#: ulng.rsdefaultpersonalizedabbrevtera
+msgid "TB"
+msgstr ""
 
 #: ulng.rsdefaultsuffixdroppedtext
 msgid "_DroppedText"
@@ -9458,6 +9604,10 @@ msgstr "&Pomiń"
 msgid "S&kip All"
 msgstr "Pomiń &wszystko"
 
+#: ulng.rsdlgbuttonunlock
+msgid "&Unlock"
+msgstr ""
+
 #: ulng.rsdlgbuttonyes
 msgid "&Yes"
 msgstr "&Tak"
@@ -9569,6 +9719,14 @@ msgctxt "ulng.rsexecuteviaterminalstayopen"
 msgid "Execute via terminal and stay open"
 msgstr "Uruchom przez terminal i pozostaw otwarty"
 
+#: ulng.rsextsclosedbracketnofound
+msgid "\"]\" not found in line %s"
+msgstr ""
+
+#: ulng.rsextscommandwithnoext
+msgid "No extension defined before command \"%s\". It will be ignored."
+msgstr ""
+
 #: ulng.rsfavtabspanelsideselection
 msgid "Left;Right;Active;Inactive;Both;None"
 msgstr "Lewy;Prawy;Aktywny;Nieaktywny;Oba,Żaden"
@@ -9580,6 +9738,10 @@ msgstr "Nie;Tak"
 #: ulng.rsfilenameexportedtcbarprefix
 msgid "Exported_from_DC"
 msgstr "Wyeksportowane_z_DC"
+
+#: ulng.rsfileopcopymovefileexistsoptions
+msgid "Ask;Overwrite;Skip"
+msgstr ""
 
 #: ulng.rsfileopdirectoryexistsoptions
 msgid "Ask;Merge;Skip"
@@ -9651,12 +9813,14 @@ msgid "Begin at"
 msgstr "Zacznij w"
 
 #: ulng.rsfreemsg
-msgid "Free %s from %s bytes"
+#, fuzzy
+msgid "%s of %s free"
 msgstr "Wolne %s z %s"
 
 #: ulng.rsfreemsgshort
-msgid "%s bytes free"
-msgstr "%s bajtów wolnych"
+#, fuzzy
+msgid "%s free"
+msgstr "%s wolnych"
 
 #: ulng.rsfuncatime
 msgid "Access date/time"
@@ -9830,6 +9994,27 @@ msgstr "Wg nazwy polecenia;Wg klawisza skrótu (pogrupowane);Wg klawisza skrótu
 msgid "Cannot find reference to default bar file"
 msgstr "Nie można znaleźć odniesienia do domyślnego pliku bar"
 
+#: ulng.rslegacydisplaysizesinglelettergiga
+msgid "G"
+msgstr ""
+
+#: ulng.rslegacydisplaysizesingleletterkilo
+msgid "K"
+msgstr ""
+
+#: ulng.rslegacydisplaysizesinglelettermega
+msgid "M"
+msgstr ""
+
+#: ulng.rslegacydisplaysizesinglelettertera
+msgid "T"
+msgstr ""
+
+#: ulng.rslegacyoperationbytesuffixletter
+msgctxt "ulng.rslegacyoperationbytesuffixletter"
+msgid "B"
+msgstr ""
+
 #: ulng.rslistoffindfileswindows
 msgid "List of \"Find files\" windows"
 msgstr "Lista okien \"Znajdź pliki\""
@@ -9953,6 +10138,10 @@ msgstr "Konto:"
 msgid "All Double Commander internal commands"
 msgstr ""
 
+#: ulng.rsmsgapplicationname
+msgid "Description: %s"
+msgstr ""
+
 #: ulng.rsmsgarchivercustomparams
 msgid "Additional parameters for archiver command-line:"
 msgstr "Dodatkowe parametry linii poleceń archiwizera:"
@@ -9986,7 +10175,7 @@ msgid "Cannot overwrite directory \"%s\" with non-directory \"%s\""
 msgstr "Nie można nadpisać katalogu \"%s\" nie-katalogiem \"%s\""
 
 #: ulng.rsmsgchdirfailed
-msgid "ChDir to [%s] failed!"
+msgid "Change current directory to \"%s\" failed!"
 msgstr "Nieudane przejście do katalogu [%s] !"
 
 #: ulng.rsmsgcloseallinactivetabs
@@ -10205,6 +10394,14 @@ msgstr "Zbyt wiele plików do spakowania"
 msgid "Archive format unknown"
 msgstr "Nieznany format archiwum"
 
+#: ulng.rsmsgexecutablepath
+msgid "Executable: %s"
+msgstr ""
+
+#: ulng.rsmsgexitstatuscode
+msgid "Exit status:"
+msgstr ""
+
 #: ulng.rsmsgfavoritetabsdeleteallentries
 msgid "Are you sure you want to remove all entries of your Favorite Tabs? (There is no \"undo\" to this action!)"
 msgstr "Czy na pewno chcesz usunąć wszystkie wpisy z Twoich Ulubionych Zakładek? (Nie jest możliwe \"cofnięcie\" operacji do tej akcji!)"
@@ -10214,7 +10411,7 @@ msgid "Drag here other entries"
 msgstr "Przeciągnij tutaj inne wpisy"
 
 #: ulng.rsmsgfavoritetabsentername
-msgid "Enter a name this Favorite Tabs entry"
+msgid "Enter a name for this new Favorite Tabs entry:"
 msgstr "Podaj nazwę dla tego wpisu Ulubionych Zakładek"
 
 #: ulng.rsmsgfavoritetabsenternametitle
@@ -10635,6 +10832,14 @@ msgstr "Przenoszenie pliku %s"
 msgid "Pack to file %s"
 msgstr "Archiwizowanie do pliku %s"
 
+#: ulng.rsmsglogprogramshutdown
+msgid "Program shutdown"
+msgstr ""
+
+#: ulng.rsmsglogprogramstart
+msgid "Program start"
+msgstr ""
+
 #: ulng.rsmsglogrmdir
 msgid "Remove directory %s"
 msgstr "Usunięcie katalogu %s"
@@ -10703,6 +10908,10 @@ msgstr "Nie zaimplementowano."
 msgid "Object does not exist!"
 msgstr ""
 
+#: ulng.rsmsgopeninanotherprogram
+msgid "The action cannot be completed because the file is open in another program:"
+msgstr ""
+
 #: ulng.rsmsgpanelpreview
 msgctxt "ulng.rsmsgpanelpreview"
 msgid "Below is a preview. You may move cursor and select files to get immediately an actual look and feel of the various settings."
@@ -10739,6 +10948,10 @@ msgstr "Wzorzec \"%s\" istnieje. Zastąpić?"
 #: ulng.rsmsgproblemexecutingcommand
 msgid "Problem executing command (%s)"
 msgstr "Problem z wykonaniem polecenia (%s)"
+
+#: ulng.rsmsgprocessid
+msgid "PID: %d"
+msgstr ""
 
 #: ulng.rsmsgpromptaskingfilename
 msgid "Filename for dropped text:"
@@ -10924,6 +11137,10 @@ msgstr ""
 #: ulng.rsmsgtctoolbarwheretosave
 msgid "Enter location and filename where to save a TC Toolbar file"
 msgstr "Wprowadź lokalizację i nazwę pliku, w którym chcesz zapisać plik paska narzędzi TC"
+
+#: ulng.rsmsgterminateprocess
+msgid "WARNING: Terminating a process can cause undesired results including loss of data and system instability. The process will not be given the chance to save its state or data before it is terminated. Are you sure you want to terminate the process?"
+msgstr ""
 
 #: ulng.rsmsgthisisnowinclipboard
 msgid "\"%s\" is now in the clipboard"
@@ -11472,17 +11689,13 @@ msgstr "Pierwszy;Ostatni;"
 msgid "Classic, legacy order;Alphabetic order (but language still first)"
 msgstr "Klasyczny, starszy porządek;Kolejność alfabetyczna (ale wciąż pierwszy język)"
 
+#: ulng.rsoptconfigtreestate
+msgid "Full expand;Full collapse"
+msgstr ""
+
 #: ulng.rsoptdifferframeposition
 msgid "Active frame panel on left, inactive on right (legacy);Left frame panel on left, right on right"
 msgstr "Ramka aktywnego panelu po lewej, nieaktywnego po prawej (starsze);Lewa ramka panelu po lewej, prawa po prawej"
-
-#: ulng.rsoptdisable
-msgid "Disable"
-msgstr "Wyłącz"
-
-#: ulng.rsoptenable
-msgid "Enable"
-msgstr "Włącz"
 
 #: ulng.rsoptenterext
 msgid "Enter extension"
@@ -11496,9 +11709,9 @@ msgstr "Dodaj na początku;Dodaj na końcu;Alfabetyczne sortowanie"
 msgid "separate window;minimized separate window;operations panel"
 msgstr "oddzielnym oknie;zminimalizowanym oddzielnym oknie;panelu operacji"
 
-#: ulng.rsoptfilesizeformat
-msgid "float;B;K;M;G"
-msgstr "dynamiczny;bajty;kbajty;Mbajty;Gbajty"
+#: ulng.rsoptfilesizefloat
+msgid "float"
+msgstr "dynamiczny"
 
 #: ulng.rsopthotkeysadddeleteshortcutlong
 msgid "Shortcut %s for cm_Delete will be registered, so it can be used to reverse this setting."
@@ -11679,6 +11892,10 @@ msgstr "Wyszukiwanie pliku"
 msgid "Files views"
 msgstr "Widoki plików"
 
+#: ulng.rsoptionseditorfilesviewscomplement
+msgid "Files views extra"
+msgstr ""
+
 #: ulng.rsoptionseditorfiletypes
 msgctxt "ulng.rsoptionseditorfiletypes"
 msgid "File types"
@@ -11793,24 +12010,54 @@ msgstr "Lewy klawisz;Prawy klawisz;"
 msgid "at the top of the file list;after directories (if directories are sorted before files);at sorted position;at the bottom of the file list"
 msgstr "na początku listy plików;po katalogach(jeśli katalogi są sortowane przed plikami);od sortowanej pozycji;na końcu listy plików"
 
+#: ulng.rsoptpersonalizedfilesizeformat
+msgid "Personalized float;Personalized byte;Personalized kilobyte;Personalized megabyte;Personalized gigabyte;Personalized terabyte"
+msgstr ""
+
 #: ulng.rsoptpluginalreadyassigned
 msgid "Plugin %s is already assigned for the following extensions:"
 msgstr "Wtyczka %s jest już przypisana do następujących rozszerzeń:"
+
+#: ulng.rsoptplugindisable
+msgid "D&isable"
+msgstr "Wyłącz"
+
+#: ulng.rsoptpluginenable
+msgctxt "ulng.rsoptpluginenable"
+msgid "E&nable"
+msgstr "Włącz"
 
 #: ulng.rsoptpluginsactive
 msgctxt "ulng.rsoptpluginsactive"
 msgid "Active"
 msgstr "Aktywna"
 
+#: ulng.rsoptpluginsdescription
+msgctxt "ulng.rsoptpluginsdescription"
+msgid "Description"
+msgstr "Opis"
+
 #: ulng.rsoptpluginsfilename
 msgctxt "ulng.rsoptpluginsfilename"
 msgid "File name"
 msgstr "Nazwa pliku"
 
+#: ulng.rsoptpluginshowbyextension
+msgid "By extension"
+msgstr ""
+
+#: ulng.rsoptpluginshowbyplugin
+msgid "By Plugin"
+msgstr ""
+
 #: ulng.rsoptpluginsname
 msgctxt "ulng.rsoptpluginsname"
 msgid "Name"
 msgstr "Nazwa"
+
+#: ulng.rsoptpluginsortonlywhenbyextension
+msgid "Sorting WCX plugins is only possible when showing plugins by extension!"
+msgstr ""
 
 #: ulng.rsoptpluginsregisteredfor
 msgctxt "ulng.rsoptpluginsregisteredfor"
@@ -11922,6 +12169,65 @@ msgstr "DC legacy - Kopiuj (x) nazwapliku.roz;Windows - nazwapliku (x).roz;Pozos
 msgid "don't change position;use the same setting as for new files;to sorted position"
 msgstr "nie zmieniaj pozycji;użyj takich samych ustawień dla nowych plików; do posortowanej pozycji"
 
+#: ulng.rspluginfilenamestylelist
+msgid "With complete absolute path;Path relative to %COMMANDER_PATH%;Relative to the following"
+msgstr ""
+
+#: ulng.rspluginsearchcontainscasesenstive
+msgid "contains(case)"
+msgstr ""
+
+#: ulng.rspluginsearchcontainsnotcase
+msgid "contains"
+msgstr ""
+
+#: ulng.rspluginsearchequalcasesensitive
+msgid "=(case)"
+msgstr ""
+
+#: ulng.rspluginsearchequalnotcase
+msgctxt "ulng.rspluginsearchequalnotcase"
+msgid "="
+msgstr "="
+
+#: ulng.rspluginsearchfieldnotfound
+msgid "Field \"%s\" not found!"
+msgstr ""
+
+#: ulng.rspluginsearchnotcontainscasesenstive
+msgid "!contains(case)"
+msgstr ""
+
+#: ulng.rspluginsearchnotcontainsnotcase
+msgid "!contains"
+msgstr ""
+
+#: ulng.rspluginsearchnotequacasesensitive
+msgid "!=(case)"
+msgstr ""
+
+#: ulng.rspluginsearchnotequalnotcase
+msgctxt "ulng.rspluginsearchnotequalnotcase"
+msgid "!="
+msgstr "!="
+
+#: ulng.rspluginsearchnotregexpr
+msgid "!regexp"
+msgstr ""
+
+#: ulng.rspluginsearchpluginnotfound
+msgid "Plugin \"%s\" not found!"
+msgstr ""
+
+#: ulng.rspluginsearchregexpr
+msgid "regexp"
+msgstr ""
+
+#: ulng.rspluginsearchunitnotfoundforfield
+msgctxt "ulng.rspluginsearchunitnotfoundforfield"
+msgid "Unit \"%s\" not found for field \"%s\" !"
+msgstr ""
+
 #: ulng.rspropscontains
 msgid "Files: %d, folders: %d"
 msgstr "Pliki: %d, foldery: %d"
@@ -12026,6 +12332,18 @@ msgctxt "ulng.rssimplewordcommand"
 msgid "Command"
 msgstr "Polecenie"
 
+#: ulng.rssimpleworderror
+msgid "Error"
+msgstr ""
+
+#: ulng.rssimplewordfailedexcla
+msgid "Failed!"
+msgstr ""
+
+#: ulng.rssimplewordfalse
+msgid "False"
+msgstr ""
+
 #: ulng.rssimplewordfilename
 msgid "Filename"
 msgstr "Nazwa pliku"
@@ -12045,6 +12363,14 @@ msgstr "Parametr"
 #: ulng.rssimplewordresult
 msgid "Result"
 msgstr "Wynik"
+
+#: ulng.rssimplewordsuccessexcla
+msgid "Success!"
+msgstr ""
+
+#: ulng.rssimplewordtrue
+msgid "True"
+msgstr ""
 
 #: ulng.rssimplewordworkdir
 msgid "WorkDir"
@@ -12466,6 +12792,10 @@ msgstr "Nowy rozmiar"
 #: ulng.rsviewnotfound
 msgid "%s not found!"
 msgstr "%s nie znaleziony!"
+
+#: ulng.rsviewpainttoolslist
+msgid "Pen;Rect;Ellipse"
+msgstr ""
 
 #: ulng.rsviewwithexternalviewer
 msgid "with external viewer"

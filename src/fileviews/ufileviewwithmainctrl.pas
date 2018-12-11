@@ -103,6 +103,7 @@ type
     FDropFileIndex: PtrInt;
     FStartDrag: Boolean;
     tmContextMenu: TTimer;
+    tmMouseScroll: TTimer;
     // Needed for rename on mouse
     FRenameFileIndex: PtrInt;
     tmRenameFile: TTimer;
@@ -134,6 +135,7 @@ type
     }
     function GetFileIndexFromCursor(X, Y: Integer; out AtFileList: Boolean): PtrInt; virtual; abstract;
     procedure InitializeDragDropEx(AControl: TWinControl);
+    procedure MouseScrollTimer(Sender: TObject); virtual; abstract;
     {en
        Returns @true if currently selecting with right mouse button.
     }
@@ -219,6 +221,7 @@ type
 
 procedure TFileViewWithMainCtrl.ClearAfterDragDrop;
 begin
+  tmMouseScroll.Enabled := False;
   // Clear some control specific flags.
   MainControl.ControlState := MainControl.ControlState - [csClicked, csLButtonDown];
 end;
@@ -277,6 +280,11 @@ begin
   edtRename.OnMouseDown:=@edtRenameMouseDown;
   edtRename.OnEnter := @edtRenameEnter;
   edtRename.OnExit := @edtRenameExit;
+
+  tmMouseScroll := TTimer.Create(Self);
+  tmMouseScroll.Enabled  := False;
+  tmMouseScroll.Interval := 100;
+  tmMouseScroll.OnTimer  := @MouseScrollTimer;
 
   tmContextMenu := TTimer.Create(Self);
   tmContextMenu.Enabled  := False;
@@ -369,9 +377,12 @@ begin
               TargetPath := TargetPath + AFile.FSFile.Name + DirectorySeparator;
           end
           else if FileIsArchive(AFile.FSFile.FullPath) then
-            begin
+            try
               TargetFileSource:= GetArchiveFileSource(FileSource, AFile.FSFile, EmptyStr, False, False);
               if Assigned(TargetFileSource) then TargetPath:= TargetFileSource.GetRootDir;
+            except
+              on E: Exception do
+                msgError(E.Message + LineEnding + AFile.FSFile.FullPath);
             end;
         end;
       end;
@@ -984,17 +995,7 @@ begin
   if (sHint <> EmptyStr) then
     HintInfo^.HintStr:= HintInfo^.HintStr + LineEnding + sHint;
 
-  case gToolTipHideTimeOut of
-    ttthtSystem: ;
-    tttht1Sec: HintInfo^.HideTimeout := 1000;
-    tttht2Sec: HintInfo^.HideTimeout := 2000;
-    tttht3Sec: HintInfo^.HideTimeout := 3000;
-    tttht5Sec: HintInfo^.HideTimeout := 5000;
-    tttht10Sec: HintInfo^.HideTimeout := 10000;
-    tttht30Sec: HintInfo^.HideTimeout := 30000;
-    tttht1Min: HintInfo^.HideTimeout := 60000;
-    ttthtNeverHide: HintInfo^.HideTimeout := HintInfo^.HideTimeout.MaxValue;
-  end;
+  if gFileInfoToolTipValue[ord(gToolTipHideTimeOut)] <> -1 then HintInfo^.HideTimeout := gFileInfoToolTipValue[ord(gToolTipHideTimeOut)];
 end;
 
 procedure TFileViewWithMainCtrl.MainControlUTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);

@@ -108,6 +108,7 @@ type
     actFocusSwap: TAction;
     actConfigArchivers: TAction;
     actConfigTooltips: TAction;
+    actConfigPlugins: TAction;
     actUnmarkCurrentNameExt: TAction;
     actMarkCurrentNameExt: TAction;
     actUnmarkCurrentName: TAction;
@@ -115,6 +116,7 @@ type
     actUnmarkCurrentPath: TAction;
     actMarkCurrentPath: TAction;
     actTreeView: TAction;
+    actFocusTreeView: TAction;
     actToggleFullscreenConsole: TAction;
     actSrcOpenDrives: TAction;
     actRightReverseOrder: TAction;
@@ -2611,6 +2613,8 @@ procedure TfrmMain.AppShowHint(var HintStr: string; var CanShow: Boolean;
 begin
   // Refresh monitor list
   Screen.UpdateMonitors;
+  // Show hint only when application is active
+  CanShow:= Application.Active;
 end;
 
 constructor TfrmMain.Create(TheOwner: TComponent);
@@ -2805,8 +2809,8 @@ begin
   for I:= 0 to Min(gDirHistoryCount, glsDirHistory.Count - 1) do
   begin
     MenuItem:= TMenuItem.Create(pmDirHistory);
-    MenuItem.Caption:= glsDirHistory[I];
-    MenuItem.Hint:= MenuItem.Caption;
+    MenuItem.Caption:= glsDirHistory[I].Replace('&','&&');
+    MenuItem.Hint:= glsDirHistory[I];
     MenuItem.OnClick:= @HistorySelected;
     pmDirHistory.Items.Add(MenuItem);
   end;
@@ -2971,7 +2975,7 @@ begin
     mi := TMenuItem.Create(pmDirHistory);
     pmDirHistory.Items.Add(mi);
 
-    mi.Caption := ActiveFrame.Path[FromFileSourceIndex, FromPathIndex];
+    mi.Caption := ActiveFrame.Path[FromFileSourceIndex, FromPathIndex].Replace('&','&&');
     mi.OnClick := @ViewHistorySelected;
     // Remember indexes into history.
     mi.Tag := HistoryIndexesToTag(FromFileSourceIndex, FromPathIndex);
@@ -2987,7 +2991,7 @@ begin
     if FromPathIndex = 0 then
     begin
       AddCaptionItem('-');
-      AddCaptionItem('- ' + ActiveFrame.FileSources[FromFileSourceIndex].CurrentAddress + ' -');
+      AddCaptionItem('- ' + ActiveFrame.FileSources[FromFileSourceIndex].CurrentAddress.Replace('&','&&') + ' -');
     end;
   end;
 
@@ -4787,6 +4791,8 @@ begin
       pnlLeft.BorderSpacing.Bottom := 0;
       MainSplitter.Cursor := crHSplit;
     end;
+    pnlLeftResize(pnlLeft);
+    pnlNotebooksResize(pnlNotebooks);
 
     (* Disk Panels *)
     if gHorizontalFilePanels and gDriveBar1 and gDriveBar2 then
@@ -5921,9 +5927,9 @@ begin
             sboxDrive.Tag := -1;
           sboxDrive.Invalidate;
         end;
-      lblDriveInfo.Hint := Format(rsFreeMsg, [cnvFormatFileSize(FreeSize), cnvFormatFileSize(TotalSize)]);
+      lblDriveInfo.Hint := Format(rsFreeMsg, [cnvFormatFileSize(FreeSize, uoscHeaderFooter), cnvFormatFileSize(TotalSize, uoscHeaderFooter)]); //It's not an "operation" but most probably the closest wanted form.
       if gShortFormatDriveInfo then
-        lblDriveInfo.Caption := Format(rsFreeMsgShort, [cnvFormatFileSize(FreeSize)])
+        lblDriveInfo.Caption := Format(rsFreeMsgShort, [cnvFormatFileSize(FreeSize, uoscHeaderFooter)])
       else
         lblDriveInfo.Caption := lblDriveInfo.Hint;
       sboxDrive.Hint := lblDriveInfo.Hint;
@@ -6116,6 +6122,7 @@ begin
   begin
     frmTreeViewMenu.Close;
   end;
+  Application.CancelHint;
 end;
 
 procedure TfrmMain.AppEndSession(Sender: TObject);

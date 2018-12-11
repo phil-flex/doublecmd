@@ -131,6 +131,7 @@ type
   private
     { private declarations }
     FCancel: Boolean;
+    FScanning: Boolean;
     FFoundItems: TStringListUtf8;
     FVisibleItems: TStringListUtf8;
     FSortIndex: Integer;
@@ -222,7 +223,6 @@ type
     FDone: Boolean;
     procedure UpdateGrid;
     procedure ReapplyFilter;
-    procedure DoOnTerminate(Sender: TObject);
   protected
     procedure Execute; override;
   public
@@ -265,12 +265,6 @@ begin
 end;
 
 { TCheckContentThread }
-
-procedure TCheckContentThread.DoOnTerminate(Sender: TObject);
-begin
-  FOwner.CheckContentThread := nil;
-  FOwner := nil;
-end;
 
 procedure TCheckContentThread.UpdateGrid;
 begin
@@ -353,11 +347,8 @@ end;
 
 constructor TCheckContentThread.Create(Owner: TfrmSyncDirsDlg);
 begin
-  inherited Create(True);
-  OnTerminate := @DoOnTerminate;
-  FreeOnTerminate := True;
   FOwner := Owner;
-  Start;
+  inherited Create(False);
 end;
 
 constructor TFileSyncRec.Create(AForm: TfrmSyncDirsDlg; RelPath: string);
@@ -662,6 +653,7 @@ end;
 procedure TfrmSyncDirsDlg.FormClose(Sender: TObject;
   var CloseAction: TCloseAction);
 begin
+  StopCheckContentThread;
   CloseAction := caFree;
   { settings }
   gSyncDirsSubdirs              := chkSubDirs.Checked;
@@ -685,13 +677,10 @@ begin
     FOperation.Stop;
     CanClose := False;
   end
-  else begin
-    CanClose := FCancel;
-    if not FCancel then
-    begin
-      FCancel := True;
-      StopCheckContentThread;
-    end;
+  else if FScanning then
+  begin
+    FCancel := True;
+    CanClose := False;
   end;
 end;
 
@@ -826,7 +815,7 @@ begin
   if Key = VK_ESCAPE then
   begin
     Key := 0;
-    if not FCancel then
+    if FScanning then
       FCancel := True
     else
       Close;
@@ -1152,6 +1141,7 @@ var
             Format(rsComparingPercent, [i * 100 div tot]);
         d := dirsLeft[i];
         ScanDir(dir + d);
+        if FCancel then Exit;
         j := dirsRight.IndexOf(d);
         if j >= 0 then
         begin
@@ -1166,6 +1156,7 @@ var
             Format(rsComparingPercent, [(dirsLeft.Count + i) * 100 div tot]);
         d := dirsRight[i];
         ScanDir(dir + d);
+        if FCancel then Exit;
       end;
     finally
       dirsLeft.Free;
@@ -1174,6 +1165,8 @@ var
   end;
 
 begin
+  FScanning := True;
+  try
   FCancel := False;
   FCmpFileSourceL := FFileSourceL;
   FCmpFileSourceR := FFileSourceR;
@@ -1199,7 +1192,9 @@ begin
   if FCancel then Exit;
   if (FFoundItems.Count > 0) and chkByContent.Checked then
     CheckContentThread := TCheckContentThread.Create(Self);
-  FCancel := True;
+  finally
+  FScanning := False;
+  end;
 end;
 
 procedure TfrmSyncDirsDlg.SortFoundItems;
@@ -1345,6 +1340,7 @@ begin
       Terminate;
       WaitFor;
     end;
+    FreeAndNil(CheckContentThread);
   end;
 end;
 
@@ -1490,7 +1486,7 @@ begin
   MainDrawGrid.Font.Bold := True;
   FSortIndex := -1;
   SortIndex := 0;
-  FCancel := True;
+  FScanning := False;
   FSortDesc := False;
   MainDrawGrid.RowCount := 0;
   // ---------------------------------------------------------------------------

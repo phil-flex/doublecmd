@@ -3,7 +3,7 @@
    -------------------------------------------------------------------------
    Options frame page
 
-   Copyright (C) 2006-2016 Alexander Koblov (alexx2000@mail.ru)
+   Copyright (C) 2006-2018  Alexander Koblov (alexx2000@mail.ru)
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -151,6 +151,7 @@ uses
   fOptionsFilePanelsColors,
   fOptionsFileTypesColors,
   fOptionsFilesViews,
+  fOptionsFilesViewsComplement,
   fOptionsFonts,
   fOptionsGroups,
   fOptionsHotkeys,
@@ -162,7 +163,12 @@ uses
   fOptionsLog,
   fOptionsMisc,
   fOptionsMouse,
-  fOptionsPlugins,
+  fOptionsPluginsGroup,
+  fOptionsPluginsDSX,
+  fOptionsPluginsWCX,
+  fOptionsPluginsWDX,
+  fOptionsPluginsWFX,
+  fOptionsPluginsWLX,
   fOptionsQuickSearchFilter,
   fOptionsTabs,
   fOptionsFavoriteTabs,
@@ -348,7 +354,7 @@ procedure MakeEditorsClassList;
 var
   Main: TOptionsEditorClassList absolute OptionsEditorClassList;
   Colors, ColumnsView, FilesViews, Keyboard, Layout, Mouse, Tools, Editor,
-  FileAssoc, FileOperation, FolderTabs: TOptionsEditorRec;
+  FileAssoc, FileOperation, FolderTabs, Plugins: TOptionsEditorRec;
 begin
   Main.Add(TfrmOptionsLanguage);
   Main.Add(TfrmOptionsBehavior);
@@ -367,10 +373,16 @@ begin
   Mouse := Main.Add(TfrmOptionsMouse);
   Mouse.Add(TfrmOptionsDragDrop);
   FilesViews := Main.Add(TfrmOptionsFilesViews);
+  FilesViews.Add(TfrmOptionsFilesViewsComplement);
   FilesViews.Add(TfrmOptionsBriefView);
   ColumnsView := FilesViews.Add(TfrmOptionsColumnsView);
   ColumnsView.Add(TfrmOptionsCustomColumns);
-  Main.Add(TfrmOptionsPlugins);
+  Plugins := Main.Add(TfrmOptionsPluginsGroup);
+  Plugins.Add(TfrmOptionsPluginsDSX);
+  Plugins.Add(TfrmOptionsPluginsWCX);
+  Plugins.Add(TfrmOptionsPluginsWDX);
+  Plugins.Add(TfrmOptionsPluginsWFX);
+  Plugins.Add(TfrmOptionsPluginsWLX);
   Layout := Main.Add(TfrmOptionsLayout);
   Layout.Add(TfrmOptionsDrivesListButton);
   Layout.Add(TfrmOptionsTreeViewMenu);

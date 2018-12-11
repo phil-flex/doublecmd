@@ -1553,7 +1553,7 @@ object frmMain: TfrmMain
     object actSyncDirs: TAction
       Tag = 18
       Category = 'Tools'
-      Caption = 'Synchronize dirs...'
+      Caption = 'Syn&chronize dirs...'
       HelpType = htKeyword
       OnExecute = actExecute
     end
@@ -2497,6 +2497,13 @@ object frmMain: TfrmMain
       Caption = '&Tree View Panel'
       OnExecute = actExecute
     end
+    object actFocusTreeView: TAction
+      Tag = 16
+      Category = 'Window'
+      Caption = 'Focus on tree view'
+      Hint = 'Switch between current file list and tree view (if enabled)'
+      OnExecute = actExecute
+    end
     object actConfigFolderTabs: TAction
       Tag = 5
       Category = 'Configuration'
@@ -2691,6 +2698,12 @@ object frmMain: TfrmMain
       Tag = 5
       Category = 'Configuration'
       Caption = 'Configuration of tooltips'
+      OnExecute = actExecute
+    end
+    object actConfigPlugins: TAction
+      Tag = 5
+      Category = 'Configuration'
+      Caption = 'Configuration of Plugins'
       OnExecute = actExecute
     end
   end

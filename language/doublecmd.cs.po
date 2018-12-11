@@ -1429,6 +1429,42 @@ msgctxt "TFRMFILEPROPERTIES.TSPROPERTIES.CAPTION"
 msgid "Properties"
 msgstr "Vlastnosti"
 
+#: tfrmfileunlock.btnclose.caption
+#, fuzzy
+msgctxt "tfrmfileunlock.btnclose.caption"
+msgid "Close"
+msgstr "Zavřít"
+
+#: tfrmfileunlock.btnterminate.caption
+msgid "Terminate"
+msgstr ""
+
+#: tfrmfileunlock.btnunlock.caption
+msgctxt "tfrmfileunlock.btnunlock.caption"
+msgid "Unlock"
+msgstr ""
+
+#: tfrmfileunlock.btnunlockall.caption
+msgid "Unlock All"
+msgstr ""
+
+#: tfrmfileunlock.caption
+msgctxt "tfrmfileunlock.caption"
+msgid "Unlock"
+msgstr ""
+
+#: tfrmfileunlock.stgfilehandles.columns[0].title.caption
+msgid "File Handle"
+msgstr ""
+
+#: tfrmfileunlock.stgfilehandles.columns[1].title.caption
+msgid "Process ID"
+msgstr ""
+
+#: tfrmfileunlock.stgfilehandles.columns[2].title.caption
+msgid "Executable Path"
+msgstr ""
+
 #: tfrmfinddlg.actcancel.caption
 msgctxt "tfrmfinddlg.actcancel.caption"
 msgid "C&ancel"
@@ -1858,6 +1894,7 @@ msgid "&File name"
 msgstr "&Název souboru"
 
 #: tfrmlinker.spbtndown.caption
+msgctxt "tfrmlinker.spbtndown.caption"
 msgid "Do&wn"
 msgstr "Do&lů"
 
@@ -2028,6 +2065,10 @@ msgctxt "tfrmmain.actconfighotkeys.caption"
 msgid "Configuration of hot keys"
 msgstr "Nastavení klávesových zkratek"
 
+#: tfrmmain.actconfigplugins.caption
+msgid "Configuration of Plugins"
+msgstr ""
+
 #: tfrmmain.actconfigsavesettings.caption
 msgid "Save Settings"
 msgstr "Uložit nastavení"
@@ -2196,6 +2237,14 @@ msgstr ""
 
 #: tfrmmain.actfocusswap.hint
 msgid "Switch between left and right file list"
+msgstr ""
+
+#: tfrmmain.actfocustreeview.caption
+msgid "Focus on tree view"
+msgstr ""
+
+#: tfrmmain.actfocustreeview.hint
+msgid "Switch between current file list and tree view (if enabled)"
 msgstr ""
 
 #: tfrmmain.actgotofirstfile.caption
@@ -2627,7 +2676,7 @@ msgid "Create Symbolic &Link..."
 msgstr "Vytvořit symbolický o&dkaz..."
 
 #: tfrmmain.actsyncdirs.caption
-msgid "Synchronize dirs..."
+msgid "Syn&chronize dirs..."
 msgstr "Synchronizovat adresáře..."
 
 #: tfrmmain.acttargetequalsource.caption
@@ -3007,6 +3056,7 @@ msgid "&OK"
 msgstr "&OK"
 
 #: tfrmmaincommandsdlg.caption
+msgctxt "tfrmmaincommandsdlg.caption"
 msgid "Select your internal command"
 msgstr "Vyberte vnitřní příkaz"
 
@@ -3692,6 +3742,10 @@ msgctxt "tfrmoptionsarchivers.chkarchivermultiarcoutput.caption"
 msgid "S&how console output"
 msgstr "U&kázat výstup konzoly"
 
+#: tfrmoptionsarchivers.chkfilenameonlylist.caption
+msgid "Use archive name without extension as list"
+msgstr ""
+
 #: tfrmoptionsarchivers.ckbarchiverunixfileattributes.caption
 msgid "Uni&x file attributes"
 msgstr ""
@@ -3984,6 +4038,10 @@ msgstr "Uložit při ukončení"
 #: tfrmoptionsconfiguration.gbsortorderconfigurationoption.caption
 msgid "Sort order of configuration order in left tree"
 msgstr "Řazení pořadí levého konfiguračního stromu"
+
+#: tfrmoptionsconfiguration.gpconfigurationtreestate.caption
+msgid "Tree state when entering in configuration page"
+msgstr ""
 
 #: tfrmoptionsconfiguration.lblcmdlineconfigdir.caption
 msgid "Set on command line"
@@ -5340,12 +5398,13 @@ msgid "Test resulting menu"
 msgstr "Otestovat výsledné zobrazení nabídky"
 
 #: tfrmoptionsfileassoc.btnaddact.caption
+msgctxt "tfrmoptionsfileassoc.btnaddact.caption"
 msgid "Add"
 msgstr "Přidat"
 
 #: tfrmoptionsfileassoc.btnaddext.caption
 msgctxt "TFRMOPTIONSFILEASSOC.BTNADDEXT.CAPTION"
-msgid "&Add"
+msgid "Add"
 msgstr "&Přidat"
 
 #: tfrmoptionsfileassoc.btnaddnewtype.caption
@@ -5354,16 +5413,22 @@ msgid "A&dd"
 msgstr "P&řidat"
 
 #: tfrmoptionsfileassoc.btncloneact.caption
-msgid "Clone"
+msgid "C&lone"
 msgstr "Klonovat"
 
+#: tfrmoptionsfileassoc.btncommands.hint
+msgctxt "tfrmoptionsfileassoc.btncommands.hint"
+msgid "Select your internal command"
+msgstr "Vyberte vnitřní příkaz"
+
 #: tfrmoptionsfileassoc.btndownact.caption
-msgid "&Down"
+msgctxt "tfrmoptionsfileassoc.btndownact.caption"
+msgid "Do&wn"
 msgstr "&Dolů"
 
 #: tfrmoptionsfileassoc.btneditext.caption
 msgctxt "TFRMOPTIONSFILEASSOC.BTNEDITEXT.CAPTION"
-msgid "Edit"
+msgid "Edi&t"
 msgstr "Upravit"
 
 #: tfrmoptionsfileassoc.btninsertact.caption
@@ -5373,8 +5438,18 @@ msgstr "Vložit"
 
 #: tfrmoptionsfileassoc.btninsertext.caption
 msgctxt "TFRMOPTIONSFILEASSOC.BTNINSERTEXT.CAPTION"
-msgid "Insert"
+msgid "&Insert"
 msgstr "Vložit"
+
+#: tfrmoptionsfileassoc.btnparametershelper.hint
+msgctxt "tfrmoptionsfileassoc.btnparametershelper.hint"
+msgid "Variable reminder helper"
+msgstr ""
+
+#: tfrmoptionsfileassoc.btnrelativecommand.hint
+msgctxt "tfrmoptionsfileassoc.btnrelativecommand.hint"
+msgid "Some functions to select appropriate path"
+msgstr "Některé funkce pro výběr příslušné cesty"
 
 #: tfrmoptionsfileassoc.btnremoveact.caption
 msgid "Remo&ve"
@@ -5394,6 +5469,16 @@ msgctxt "TFRMOPTIONSFILEASSOC.BTNRENAMETYPE.CAPTION"
 msgid "R&ename"
 msgstr "Př&ejmenovat"
 
+#: tfrmoptionsfileassoc.btnstartpathpathhelper.hint
+msgctxt "tfrmoptionsfileassoc.btnstartpathpathhelper.hint"
+msgid "Some functions to select appropriate path"
+msgstr "Některé funkce pro výběr příslušné cesty"
+
+#: tfrmoptionsfileassoc.btnstartpathvarhelper.hint
+msgctxt "tfrmoptionsfileassoc.btnstartpathvarhelper.hint"
+msgid "Variable reminder helper"
+msgstr ""
+
 #: tfrmoptionsfileassoc.btnupact.caption
 msgctxt "TFRMOPTIONSFILEASSOC.BTNUPACT.CAPTION"
 msgid "&Up"
@@ -5408,15 +5493,19 @@ msgid "Name of the action. It is never passed to the system, it's just a mnemoni
 msgstr "Název akce. Není nikdy předán do systému, je to jen symbolické jméno vybrané od vás, pro vás"
 
 #: tfrmoptionsfileassoc.edtparams.hint
-msgid "Parameter to pass to the command. Long filename with spaces should be quoted."
+#, fuzzy
+#| msgid "Parameter to pass to the command. Long filename with spaces should be quoted."
+msgid "Parameter to pass to the command. Long filename with spaces should be quoted (manually entering)."
 msgstr "Parametr bude předán příkazu. Dlouhý název s mezerami by měly být uzavřen do uvozovek."
 
 #: tfrmoptionsfileassoc.fnecommand.hint
-msgid "Command to execute. Long filename with space should be quoted."
+#, fuzzy
+#| msgid "Command to execute. Long filename with space should be quoted."
+msgid "Command to execute. Never quote this string."
 msgstr "Příkaz k vykonání. Dlouhý název s mezerou by měly být uzavřen do uvozovek."
 
 #: tfrmoptionsfileassoc.gbactiondescription.caption
-msgid "Action description:"
+msgid "Action description"
 msgstr "Popis akce:"
 
 #: tfrmoptionsfileassoc.gbactions.caption
@@ -5454,11 +5543,12 @@ msgid "File types may be sorted by drag & drop"
 msgstr "Typy souborů mohou být seřazeny přetáhnutím"
 
 #: tfrmoptionsfileassoc.lblaction.caption
-msgid "Action name:"
+msgid "Action &name:"
 msgstr "Název akce:"
 
 #: tfrmoptionsfileassoc.lblcommand.caption
-msgid "&Command:"
+msgctxt "tfrmoptionsfileassoc.lblcommand.caption"
+msgid "Command:"
 msgstr "&Příkaz:"
 
 #: tfrmoptionsfileassoc.lblexternalparameters.caption
@@ -5470,11 +5560,6 @@ msgstr "Parametr&y:"
 msgctxt "TFRMOPTIONSFILEASSOC.LBLSTARTPATH.CAPTION"
 msgid "Start pat&h:"
 msgstr "Výchozí cest&a:"
-
-#: tfrmoptionsfileassoc.menuitem1.caption
-msgctxt "TFRMOPTIONSFILEASSOC.MENUITEM1.CAPTION"
-msgid "-"
-msgstr "-"
 
 #: tfrmoptionsfileassoc.menuitem3.caption
 msgid "Custom with..."
@@ -5517,11 +5602,6 @@ msgstr "Otevřít"
 #: tfrmoptionsfileassoc.miopenwith.caption
 msgid "Open with..."
 msgstr "Otevřít s..."
-
-#: tfrmoptionsfileassoc.miseparator.caption
-msgctxt "TFRMOPTIONSFILEASSOC.MISEPARATOR.CAPTION"
-msgid "-"
-msgstr "-"
 
 #: tfrmoptionsfileassoc.mishell.caption
 msgid "Run in terminal"
@@ -5832,78 +5912,26 @@ msgstr "Použít mapování paměti pro hledání te&xtu v souborech"
 msgid "&Use stream for search text in files"
 msgstr "&Použit proud pro hledání textu v souborech"
 
-#: tfrmoptionsfilesviews.btnaddattribute.caption
-msgctxt "tfrmoptionsfilesviews.btnaddattribute.caption"
-msgid "&Add"
-msgstr "Přid&at"
-
-#: tfrmoptionsfilesviews.btnattrshelp.caption
-msgctxt "tfrmoptionsfilesviews.btnattrshelp.caption"
-msgid "&Help"
-msgstr "&Nápověda"
-
-#: tfrmoptionsfilesviews.cbdblclicktoparent.caption
-msgid "Enable changing to &parent folder when double-clicking on empty part of file view"
-msgstr "Umožnit &přechod do nadřazené složky, poklikáním na prázdnou část prohlížení souboru"
-
-#: tfrmoptionsfilesviews.cbdelayloadingtabs.caption
-msgid "Do&n't load file list until a tab is activated"
-msgstr "Nevklá&dat seznam souborů, dokud se karta neaktivuje"
-
-#: tfrmoptionsfilesviews.cbdirbrackets.caption
-msgid "S&how square brackets around directories"
-msgstr "N&ázvy adresářů v hranatých závorkách"
-
-#: tfrmoptionsfilesviews.cbhighlightupdatedfiles.caption
-msgid "Hi&ghlight new and updated files"
-msgstr "Zvý&raznit nové a aktualizované soubory"
-
-#: tfrmoptionsfilesviews.cbinplacerename.caption
-msgid "Enable inplace &renaming when clicking twice on a name"
-msgstr "Povoli&t při dvojkliknutí na název přejmenování"
-
-#: tfrmoptionsfilesviews.cblistfilesinthread.caption
-msgid "Load &file list in separate thread"
-msgstr "Načíst &seznam souborů v odděleném vlákně"
-
-#: tfrmoptionsfilesviews.cbloadiconsseparately.caption
-msgid "Load icons af&ter file list"
-msgstr "Načíst ikony p&o seznam souborů"
-
-#: tfrmoptionsfilesviews.cbshowsystemfiles.caption
-msgid "Show s&ystem and hidden files"
-msgstr "Zobrazit s&ystémové a skryté soubory"
-
-#: tfrmoptionsfilesviews.cbspacemovesdown.caption
-msgid "&When selecting files with <SPACEBAR>, move down to next file (as with <INSERT>)"
-msgstr "&Při výběru souboru <mezerníkem> posunout kurzor dolů na další soubor, jako při výběru klávesou <Insert>"
-
-#: tfrmoptionsfilesviews.chkmarkmaskfilterwindows.caption
-msgctxt "tfrmoptionsfilesviews.chkmarkmaskfilterwindows.caption"
-msgid "Windows style filter when marking files (\"*.*\" also select files without extension, etc.)"
-msgstr "Styl filtrování Windows při označení souborů (\"*.*\" také vybírá soubory bez přípony, atd.)"
-
-#: tfrmoptionsfilesviews.chkmarkmaskshowattribute.caption
-msgctxt "tfrmoptionsfilesviews.chkmarkmaskshowattribute.caption"
-msgid "Use an independent attribute filter in mask input dialog each time"
-msgstr "Vždy použít samostatný atributový filtr v dialogovém okně masky"
+#: tfrmoptionsfilesviews.btndefault.caption
+msgctxt "tfrmoptionsfilesviews.btndefault.caption"
+msgid "De&fault"
+msgstr "Vý&chozí"
 
 #: tfrmoptionsfilesviews.gbformatting.caption
 msgid "Formatting"
 msgstr "Formátování"
 
-#: tfrmoptionsfilesviews.gbmarking.caption
-msgid "Marking/Unmarking entries"
-msgstr "Označení/odznačení položek"
+#: tfrmoptionsfilesviews.gbpersonalizedabbreviationtouse.caption
+msgid "Personalized abbreviations to use:"
+msgstr ""
 
 #: tfrmoptionsfilesviews.gbsorting.caption
 msgid "Sorting"
 msgstr "Řazení"
 
-#: tfrmoptionsfilesviews.lbattributemask.caption
-msgctxt "tfrmoptionsfilesviews.lbattributemask.caption"
-msgid "Default attribute mask value to use:"
-msgstr "Výchozí hodnota atributové masky:"
+#: tfrmoptionsfilesviews.lblbyte.caption
+msgid "&Byte:"
+msgstr ""
 
 #: tfrmoptionsfilesviews.lblcasesensitivity.caption
 msgid "Case s&ensitivity:"
@@ -5921,9 +5949,29 @@ msgstr "&Formát data a času:"
 msgid "File si&ze format:"
 msgstr "Formát veli&kosti souboru:"
 
+#: tfrmoptionsfilesviews.lblgigabyte.caption
+msgid "&Gigabyte:"
+msgstr ""
+
+#: tfrmoptionsfilesviews.lblheaderfootersizeformat.caption
+msgid "&Header/footer format:"
+msgstr ""
+
+#: tfrmoptionsfilesviews.lblkilobyte.caption
+msgid "&Kilobyte:"
+msgstr ""
+
+#: tfrmoptionsfilesviews.lblmegabyte.caption
+msgid "Megab&yte:"
+msgstr ""
+
 #: tfrmoptionsfilesviews.lblnewfilesposition.caption
 msgid "&Insert new files:"
 msgstr "&Vložit nové soubory:"
+
+#: tfrmoptionsfilesviews.lbloperationsizeformat.caption
+msgid "O&peration size format:"
+msgstr ""
 
 #: tfrmoptionsfilesviews.lblsortfoldermode.caption
 msgid "So&rting directories:"
@@ -5933,9 +5981,88 @@ msgstr "Řazení a&dresářů:"
 msgid "&Sort method:"
 msgstr "&Metoda řazení:"
 
+#: tfrmoptionsfilesviews.lblterabyte.caption
+msgid "&Terabyte:"
+msgstr ""
+
 #: tfrmoptionsfilesviews.lblupdatedfilesposition.caption
 msgid "&Move updated files:"
 msgstr "&Přesun aktualizovaných souborů:"
+
+#: tfrmoptionsfilesviewscomplement.btnaddattribute.caption
+msgctxt "tfrmoptionsfilesviewscomplement.btnaddattribute.caption"
+msgid "&Add"
+msgstr "Přid&at"
+
+#: tfrmoptionsfilesviewscomplement.btnattrshelp.caption
+msgctxt "tfrmoptionsfilesviewscomplement.btnattrshelp.caption"
+msgid "&Help"
+msgstr "&Nápověda"
+
+#: tfrmoptionsfilesviewscomplement.cbdblclicktoparent.caption
+msgctxt "tfrmoptionsfilesviewscomplement.cbdblclicktoparent.caption"
+msgid "Enable changing to &parent folder when double-clicking on empty part of file view"
+msgstr "Umožnit &přechod do nadřazené složky, poklikáním na prázdnou část prohlížení souboru"
+
+#: tfrmoptionsfilesviewscomplement.cbdelayloadingtabs.caption
+msgctxt "tfrmoptionsfilesviewscomplement.cbdelayloadingtabs.caption"
+msgid "Do&n't load file list until a tab is activated"
+msgstr "Nevklá&dat seznam souborů, dokud se karta neaktivuje"
+
+#: tfrmoptionsfilesviewscomplement.cbdirbrackets.caption
+msgctxt "tfrmoptionsfilesviewscomplement.cbdirbrackets.caption"
+msgid "S&how square brackets around directories"
+msgstr "N&ázvy adresářů v hranatých závorkách"
+
+#: tfrmoptionsfilesviewscomplement.cbhighlightupdatedfiles.caption
+msgctxt "tfrmoptionsfilesviewscomplement.cbhighlightupdatedfiles.caption"
+msgid "Hi&ghlight new and updated files"
+msgstr "Zvý&raznit nové a aktualizované soubory"
+
+#: tfrmoptionsfilesviewscomplement.cbinplacerename.caption
+msgctxt "tfrmoptionsfilesviewscomplement.cbinplacerename.caption"
+msgid "Enable inplace &renaming when clicking twice on a name"
+msgstr "Povoli&t při dvojkliknutí na název přejmenování"
+
+#: tfrmoptionsfilesviewscomplement.cblistfilesinthread.caption
+msgctxt "tfrmoptionsfilesviewscomplement.cblistfilesinthread.caption"
+msgid "Load &file list in separate thread"
+msgstr "Načíst &seznam souborů v odděleném vlákně"
+
+#: tfrmoptionsfilesviewscomplement.cbloadiconsseparately.caption
+msgctxt "tfrmoptionsfilesviewscomplement.cbloadiconsseparately.caption"
+msgid "Load icons af&ter file list"
+msgstr "Načíst ikony p&o seznam souborů"
+
+#: tfrmoptionsfilesviewscomplement.cbshowsystemfiles.caption
+msgctxt "tfrmoptionsfilesviewscomplement.cbshowsystemfiles.caption"
+msgid "Show s&ystem and hidden files"
+msgstr "Zobrazit s&ystémové a skryté soubory"
+
+#: tfrmoptionsfilesviewscomplement.cbspacemovesdown.caption
+msgctxt "tfrmoptionsfilesviewscomplement.cbspacemovesdown.caption"
+msgid "&When selecting files with <SPACEBAR>, move down to next file (as with <INSERT>)"
+msgstr "&Při výběru souboru <mezerníkem> posunout kurzor dolů na další soubor, jako při výběru klávesou <Insert>"
+
+#: tfrmoptionsfilesviewscomplement.chkmarkmaskfilterwindows.caption
+msgctxt "tfrmoptionsfilesviewscomplement.chkmarkmaskfilterwindows.caption"
+msgid "Windows style filter when marking files (\"*.*\" also select files without extension, etc.)"
+msgstr "Styl filtrování Windows při označení souborů (\"*.*\" také vybírá soubory bez přípony, atd.)"
+
+#: tfrmoptionsfilesviewscomplement.chkmarkmaskshowattribute.caption
+msgctxt "tfrmoptionsfilesviewscomplement.chkmarkmaskshowattribute.caption"
+msgid "Use an independent attribute filter in mask input dialog each time"
+msgstr "Vždy použít samostatný atributový filtr v dialogovém okně masky"
+
+#: tfrmoptionsfilesviewscomplement.gbmarking.caption
+msgctxt "tfrmoptionsfilesviewscomplement.gbmarking.caption"
+msgid "Marking/Unmarking entries"
+msgstr "Označení/odznačení položek"
+
+#: tfrmoptionsfilesviewscomplement.lbattributemask.caption
+msgctxt "tfrmoptionsfilesviewscomplement.lbattributemask.caption"
+msgid "Default attribute mask value to use:"
+msgstr "Výchozí hodnota atributové masky:"
 
 #: tfrmoptionsfiletypescolors.btnaddcategory.caption
 msgctxt "TFRMOPTIONSFILETYPESCOLORS.BTNADDCATEGORY.CAPTION"
@@ -6453,8 +6580,10 @@ msgid "&Remove thumbnails for no longer existing files"
 msgstr "&Odstranit miniatury už existujících souborů"
 
 #: tfrmoptionsmisc.btnviewconfigfile.hint
+#, fuzzy
+#| msgid "View log file content"
 msgctxt "TFRMOPTIONSMISC.BTNVIEWCONFIGFILE.HINT"
-msgid "View log file content"
+msgid "View configuration file content"
 msgstr "Zobrazí obsah souboru s protokolem"
 
 #: tfrmoptionsmisc.chkdesccreateunicode.caption
@@ -6570,88 +6699,124 @@ msgstr ""
 msgid "Single click (opens folders, double click for files)"
 msgstr ""
 
-#: tfrmoptionsplugins.btnaddplugin.caption
-msgctxt "TFRMOPTIONSPLUGINS.BTNADDPLUGIN.CAPTION"
+#: tfrmoptionspluginsbase.btnaddplugin.caption
+msgctxt "tfrmoptionspluginsbase.btnaddplugin.caption"
 msgid "A&dd"
 msgstr "P&řidat"
 
-#: tfrmoptionsplugins.btnconfigplugin.caption
-msgctxt "TFRMOPTIONSPLUGINS.BTNCONFIGPLUGIN.CAPTION"
+#: tfrmoptionspluginsbase.btnconfigplugin.caption
+msgctxt "tfrmoptionspluginsbase.btnconfigplugin.caption"
 msgid "Con&figure"
 msgstr "Kon&figurovat"
 
-#: tfrmoptionsplugins.btnenableplugin.caption
+#: tfrmoptionspluginsbase.btnenableplugin.caption
+msgctxt "tfrmoptionspluginsbase.btnenableplugin.caption"
 msgid "E&nable"
 msgstr "P&ovolit"
 
-#: tfrmoptionsplugins.btnremoveplugin.caption
-msgctxt "TFRMOPTIONSPLUGINS.BTNREMOVEPLUGIN.CAPTION"
+#: tfrmoptionspluginsbase.btnremoveplugin.caption
+msgctxt "tfrmoptionspluginsbase.btnremoveplugin.caption"
 msgid "&Remove"
 msgstr "&Smazat"
 
-#: tfrmoptionsplugins.btntweakplugin.caption
+#: tfrmoptionspluginsbase.btntweakplugin.caption
+msgctxt "tfrmoptionspluginsbase.btntweakplugin.caption"
 msgid "&Tweak"
 msgstr "&Vylepšení"
 
-#: tfrmoptionsplugins.lbldsxdescription.caption
-msgid "Searc&h plugins allow one to use alternative search algorithms or external tools (like \"locate\", etc.)"
-msgstr "Vyhle&dávací doplňky umožňují použití při hledání alternativních vyhledávacích algoritmů nebo externích nástrojů (např. \"najít \", atd.)"
+#: tfrmoptionspluginsbase.lblplugindescription.caption
+msgctxt "tfrmoptionspluginsbase.lblplugindescription.caption"
+msgid "Description"
+msgstr "Popis"
 
-#: tfrmoptionsplugins.lblwcxdescription.caption
-msgid "Pack&er plugins are used to work with archives"
-msgstr "Komp&rimační doplňky pro práci s archívy."
-
-#: tfrmoptionsplugins.lblwdxdescription.caption
-msgid "Content plu&gins allow one to display extended file details like mp3 tags or image attributes in file lists, or use them in search and multi-rename tool"
-msgstr "Obsahové dop&lňky umožňují zobrazit rozšířené informace jako jsou MP3 značky nebo atributy obrázků v seznamu souborů, nebo je používat při vyhledávání a s nástrojem hromadného přejmenování"
-
-#: tfrmoptionsplugins.lblwfxdescription.caption
-msgid "Fi&le system plugins allow access to disks inaccessible by operating system or to external devices like Palm/PocketPC."
-msgstr "Doplňky sou&borových systémů umožní přístup na běžně nedostupná média jako jsou například externí zařízení Palm/PocketPC."
-
-#: tfrmoptionsplugins.lblwlxdescription.caption
-msgid "Vie&wer plugins allow one to display file formats like images, spreadsheets, databases etc. in Viewer (F3, Ctrl+Q)"
-msgstr "Zobra&zovací doplňky umožňují prohlížení souborů jako jsou například obrázky, databáze a podobně v prohlížeči (F3, nebo Ctrl+Q)"
-
-#: tfrmoptionsplugins.stgplugins.columns[0].title.caption
-msgctxt "TFRMOPTIONSPLUGINS.STGPLUGINS.COLUMNS[0].TITLE.CAPTION"
+#: tfrmoptionspluginsbase.stgplugins.columns[0].title.caption
+msgctxt "tfrmoptionspluginsbase.stgplugins.columns[0].title.caption"
 msgid "Active"
 msgstr "Aktivní"
 
-#: tfrmoptionsplugins.stgplugins.columns[1].title.caption
-msgctxt "TFRMOPTIONSPLUGINS.STGPLUGINS.COLUMNS[1].TITLE.CAPTION"
+#: tfrmoptionspluginsbase.stgplugins.columns[1].title.caption
+msgctxt "tfrmoptionspluginsbase.stgplugins.columns[1].title.caption"
 msgid "Plugin"
 msgstr "Doplněk"
 
-#: tfrmoptionsplugins.stgplugins.columns[2].title.caption
-msgctxt "TFRMOPTIONSPLUGINS.STGPLUGINS.COLUMNS[2].TITLE.CAPTION"
+#: tfrmoptionspluginsbase.stgplugins.columns[2].title.caption
+msgctxt "tfrmoptionspluginsbase.stgplugins.columns[2].title.caption"
 msgid "Registered for"
 msgstr "Registrováno pro"
 
-#: tfrmoptionsplugins.stgplugins.columns[3].title.caption
-msgctxt "TFRMOPTIONSPLUGINS.STGPLUGINS.COLUMNS[3].TITLE.CAPTION"
+#: tfrmoptionspluginsbase.stgplugins.columns[3].title.caption
+msgctxt "tfrmoptionspluginsbase.stgplugins.columns[3].title.caption"
 msgid "File name"
 msgstr "Název souboru"
 
-#: tfrmoptionsplugins.tsdsx.caption
-msgid "&Search plugins (.DSX)"
-msgstr "&Vyhledávací doplňky (.DSX)"
+#: tfrmoptionspluginsdsx.lblplugindescription.caption
+msgctxt "tfrmoptionspluginsdsx.lblplugindescription.caption"
+msgid "Searc&h plugins allow one to use alternative search algorithms or external tools (like \"locate\", etc.)"
+msgstr "Vyhle&dávací doplňky umožňují použití při hledání alternativních vyhledávacích algoritmů nebo externích nástrojů (např. \"najít \", atd.)"
 
-#: tfrmoptionsplugins.tswcx.caption
-msgid "Pac&ker plugins (.WCX)"
-msgstr "Kom&primační doplňky (.WCX)"
+#: tfrmoptionspluginsgroup.btnpathtoberelativetoall.caption
+msgid "Apply current settings to all current configured plugins"
+msgstr ""
 
-#: tfrmoptionsplugins.tswdx.caption
-msgid "Content pl&ugins (.WDX)"
-msgstr "Obsahové do&plňky (.WDX)"
+#: tfrmoptionspluginsgroup.ckbautotweak.caption
+msgid "When adding a new plugin, automatically go in tweak window"
+msgstr ""
 
-#: tfrmoptionsplugins.tswfx.caption
-msgid "F&ile system plugins (.WFX)"
-msgstr "D&oplňky souborových systémů (.WFX)"
+#: tfrmoptionspluginsgroup.gbconfiguration.caption
+msgid "Configuration:"
+msgstr ""
 
-#: tfrmoptionsplugins.tswlx.caption
-msgid "&Viewer plugins (.WLX)"
-msgstr "&Zobrazovací doplňky (.WLX)"
+#: tfrmoptionspluginsgroup.lbpathtoberelativeto.caption
+msgid "Path to be relative to:"
+msgstr ""
+
+#: tfrmoptionspluginsgroup.lbpluginfilenamestyle.caption
+msgid "Plugin filename style when adding a new plugin:"
+msgstr ""
+
+#: tfrmoptionspluginswcx.lblplugindescription.caption
+msgctxt "tfrmoptionspluginswcx.lblplugindescription.caption"
+msgid "Pack&er plugins are used to work with archives"
+msgstr "Komp&rimační doplňky pro práci s archívy."
+
+#: tfrmoptionspluginswcx.stgplugins.columns[0].title.caption
+#, fuzzy
+msgctxt "tfrmoptionspluginswcx.stgplugins.columns[0].title.caption"
+msgid "Active"
+msgstr "Aktivní"
+
+#: tfrmoptionspluginswcx.stgplugins.columns[1].title.caption
+#, fuzzy
+msgctxt "tfrmoptionspluginswcx.stgplugins.columns[1].title.caption"
+msgid "Plugin"
+msgstr "Doplněk"
+
+#: tfrmoptionspluginswcx.stgplugins.columns[2].title.caption
+#, fuzzy
+msgctxt "tfrmoptionspluginswcx.stgplugins.columns[2].title.caption"
+msgid "Registered for"
+msgstr "Registrováno pro"
+
+#: tfrmoptionspluginswcx.stgplugins.columns[3].title.caption
+#, fuzzy
+msgctxt "tfrmoptionspluginswcx.stgplugins.columns[3].title.caption"
+msgid "File name"
+msgstr "Název souboru"
+
+#: tfrmoptionspluginswdx.lblplugindescription.caption
+msgctxt "tfrmoptionspluginswdx.lblplugindescription.caption"
+msgid "Content plu&gins allow one to display extended file details like mp3 tags or image attributes in file lists, or use them in search and multi-rename tool"
+msgstr "Obsahové dop&lňky umožňují zobrazit rozšířené informace jako jsou MP3 značky nebo atributy obrázků v seznamu souborů, nebo je používat při vyhledávání a s nástrojem hromadného přejmenování"
+
+#: tfrmoptionspluginswfx.lblplugindescription.caption
+msgctxt "tfrmoptionspluginswfx.lblplugindescription.caption"
+msgid "Fi&le system plugins allow access to disks inaccessible by operating system or to external devices like Palm/PocketPC."
+msgstr "Doplňky sou&borových systémů umožní přístup na běžně nedostupná média jako jsou například externí zařízení Palm/PocketPC."
+
+#: tfrmoptionspluginswlx.lblplugindescription.caption
+msgctxt "tfrmoptionspluginswlx.lblplugindescription.caption"
+msgid "Vie&wer plugins allow one to display file formats like images, spreadsheets, databases etc. in Viewer (F3, Ctrl+Q)"
+msgstr "Zobra&zovací doplňky umožňují prohlížení souborů jako jsou například obrázky, databáze a podobně v prohlížeči (F3, nebo Ctrl+Q)"
 
 #: tfrmoptionsquicksearchfilter.cbexactbeginning.caption
 msgid "&Beginning (name must start with first typed character)"
@@ -8377,10 +8542,12 @@ msgid "duplicates"
 msgstr "stejné"
 
 #: tfrmsyncdirsdlg.sbequal.caption
+msgctxt "tfrmsyncdirsdlg.sbequal.caption"
 msgid "="
 msgstr "="
 
 #: tfrmsyncdirsdlg.sbnotequal.caption
+msgctxt "tfrmsyncdirsdlg.sbnotequal.caption"
 msgid "!="
 msgstr "!="
 
@@ -8470,6 +8637,7 @@ msgid "C&hange"
 msgstr "Z&měnit"
 
 #: tfrmtweakplugin.btndefault.caption
+msgctxt "tfrmtweakplugin.btndefault.caption"
 msgid "De&fault"
 msgstr "Vý&chozí"
 
@@ -8477,6 +8645,16 @@ msgstr "Vý&chozí"
 msgctxt "TFRMTWEAKPLUGIN.BTNOK.CAPTION"
 msgid "&OK"
 msgstr "&OK"
+
+#: tfrmtweakplugin.btnrelativeplugin1.hint
+msgctxt "tfrmtweakplugin.btnrelativeplugin1.hint"
+msgid "Some functions to select appropriate path"
+msgstr "Některé funkce pro výběr příslušné cesty"
+
+#: tfrmtweakplugin.btnrelativeplugin2.hint
+msgctxt "tfrmtweakplugin.btnrelativeplugin2.hint"
+msgid "Some functions to select appropriate path"
+msgstr "Některé funkce pro výběr příslušné cesty"
 
 #: tfrmtweakplugin.btnremove.caption
 msgctxt "TFRMTWEAKPLUGIN.BTNREMOVE.CAPTION"
@@ -8553,8 +8731,8 @@ msgctxt "TFRMTWEAKPLUGIN.LBLPLUGIN.CAPTION"
 msgid "&Plugin:"
 msgstr "&Doplněk:"
 
-#: tfrmtweakplugin.lblplugin1.caption
-msgctxt "TFRMTWEAKPLUGIN.LBLPLUGIN1.CAPTION"
+#: tfrmtweakplugin.lblplugin2.caption
+msgctxt "tfrmtweakplugin.lblplugin2.caption"
 msgid "&Plugin:"
 msgstr "&Doplněk:"
 
@@ -8793,29 +8971,9 @@ msgstr "Přiblížit"
 msgid "Zoom Out"
 msgstr "Oddálit"
 
-#: tfrmviewer.btncopyfile.hint
-msgctxt "TFRMVIEWER.BTNCOPYFILE.HINT"
-msgid "Copy"
-msgstr "Kopírovat"
-
-#: tfrmviewer.btncopyfile1.hint
-msgctxt "TFRMVIEWER.BTNCOPYFILE1.HINT"
-msgid "Copy"
-msgstr "Kopírovat"
-
 #: tfrmviewer.btncuttuimage.hint
 msgid "Crop"
 msgstr "Oříznout"
-
-#: tfrmviewer.btndeletefile.hint
-msgctxt "TFRMVIEWER.BTNDELETEFILE.HINT"
-msgid "Delete"
-msgstr "Vymazat"
-
-#: tfrmviewer.btndeletefile1.hint
-msgctxt "TFRMVIEWER.BTNDELETEFILE1.HINT"
-msgid "Delete"
-msgstr "Vymazat"
 
 #: tfrmviewer.btnfullscreen.hint
 msgctxt "TFRMVIEWER.BTNFULLSCREEN.HINT"
@@ -8835,16 +8993,6 @@ msgstr "S"
 msgctxt "TFRMVIEWER.BTNHIGHTLIGHT.HINT"
 msgid "Highlight"
 msgstr "Zvýraznění"
-
-#: tfrmviewer.btnmovefile.hint
-msgctxt "TFRMVIEWER.BTNMOVEFILE.HINT"
-msgid "Move"
-msgstr "Přesunout"
-
-#: tfrmviewer.btnmovefile1.hint
-msgctxt "TFRMVIEWER.BTNMOVEFILE1.HINT"
-msgid "Move"
-msgstr "Přesunout"
 
 #: tfrmviewer.btnnextgifframe.caption
 msgid "||>"
@@ -8920,31 +9068,6 @@ msgctxt "TFRMVIEWER.MIABOUT.CAPTION"
 msgid "About"
 msgstr "O programu"
 
-#: tfrmviewer.midiv1.caption
-msgctxt "TFRMVIEWER.MIDIV1.CAPTION"
-msgid "-"
-msgstr "-"
-
-#: tfrmviewer.midiv2.caption
-msgctxt "TFRMVIEWER.MIDIV2.CAPTION"
-msgid "-"
-msgstr "-"
-
-#: tfrmviewer.midiv3.caption
-msgctxt "TFRMVIEWER.MIDIV3.CAPTION"
-msgid "-"
-msgstr "-"
-
-#: tfrmviewer.midiv4.caption
-msgctxt "TFRMVIEWER.MIDIV4.CAPTION"
-msgid "-"
-msgstr "-"
-
-#: tfrmviewer.midiv5.caption
-msgctxt "TFRMVIEWER.MIDIV5.CAPTION"
-msgid "-"
-msgstr "-"
-
 #: tfrmviewer.miedit.caption
 msgctxt "TFRMVIEWER.MIEDIT.CAPTION"
 msgid "&Edit"
@@ -8976,11 +9099,6 @@ msgstr "Otočit"
 msgctxt "TFRMVIEWER.MISCREENSHOT.CAPTION"
 msgid "Screenshot"
 msgstr "Snímek obrazovky"
-
-#: tfrmviewer.miseparator.caption
-msgctxt "TFRMVIEWER.MISEPARATOR.CAPTION"
-msgid "-"
-msgstr "-"
 
 #: tfrmviewer.miview.caption
 msgctxt "TFRMVIEWER.MIVIEW.CAPTION"
@@ -9162,6 +9280,14 @@ msgstr ""
 "Mohl byste ho dát jen k dispozici, a kliknout tlačítko \"OK\", pokud jste připraveni,\n"
 "nebo pokračovat bez něj kliknutím na \"ZRUŠIT\"?\n"
 
+#: ulng.rsabbrevdisplaydir
+msgid "<DIR>"
+msgstr ""
+
+#: ulng.rsabbrevdisplaylink
+msgid "<LNK>"
+msgstr ""
+
 #: ulng.rscancelfilter
 msgid "Cancel Quick Filter"
 msgstr "Zrušit rychlý filtr"
@@ -9299,6 +9425,27 @@ msgstr "Importovaná nástrojová lišta DC"
 #: ulng.rsdefaultimportedtctoolbarhint
 msgid "Imported TC toolbar"
 msgstr "Importovaná nástrojová lišta TC"
+
+#: ulng.rsdefaultpersonalizedabbrevbyte
+msgctxt "ulng.rsdefaultpersonalizedabbrevbyte"
+msgid "B"
+msgstr ""
+
+#: ulng.rsdefaultpersonalizedabbrevgiga
+msgid "GB"
+msgstr ""
+
+#: ulng.rsdefaultpersonalizedabbrevkilo
+msgid "KB"
+msgstr ""
+
+#: ulng.rsdefaultpersonalizedabbrevmega
+msgid "MB"
+msgstr ""
+
+#: ulng.rsdefaultpersonalizedabbrevtera
+msgid "TB"
+msgstr ""
 
 #: ulng.rsdefaultsuffixdroppedtext
 msgid "_DroppedText"
@@ -9456,6 +9603,10 @@ msgstr "Pře&skočit"
 msgid "S&kip All"
 msgstr "Přes&kočit vše"
 
+#: ulng.rsdlgbuttonunlock
+msgid "&Unlock"
+msgstr ""
+
 #: ulng.rsdlgbuttonyes
 msgid "&Yes"
 msgstr "&Ano"
@@ -9567,6 +9718,14 @@ msgctxt "ulng.rsexecuteviaterminalstayopen"
 msgid "Execute via terminal and stay open"
 msgstr "Spustit přes terminál a ponechat otevřené"
 
+#: ulng.rsextsclosedbracketnofound
+msgid "\"]\" not found in line %s"
+msgstr ""
+
+#: ulng.rsextscommandwithnoext
+msgid "No extension defined before command \"%s\". It will be ignored."
+msgstr ""
+
 #: ulng.rsfavtabspanelsideselection
 msgid "Left;Right;Active;Inactive;Both;None"
 msgstr "Vlevo;Vpravo;V aktivním;V neaktivním;V obojím;V žádným"
@@ -9578,6 +9737,10 @@ msgstr "Ne;Ano"
 #: ulng.rsfilenameexportedtcbarprefix
 msgid "Exported_from_DC"
 msgstr "Exportováno_z_DC"
+
+#: ulng.rsfileopcopymovefileexistsoptions
+msgid "Ask;Overwrite;Skip"
+msgstr ""
 
 #: ulng.rsfileopdirectoryexistsoptions
 msgid "Ask;Merge;Skip"
@@ -9649,12 +9812,14 @@ msgid "Begin at"
 msgstr "Začít v"
 
 #: ulng.rsfreemsg
-msgid "Free %s from %s bytes"
-msgstr "Volno %s z %s bytů"
+#, fuzzy
+msgid "%s of %s free"
+msgstr "Volno %s z %s"
 
 #: ulng.rsfreemsgshort
-msgid "%s bytes free"
-msgstr "%s bajtů volných"
+#, fuzzy
+msgid "%s free"
+msgstr "%s volných"
 
 #: ulng.rsfuncatime
 msgid "Access date/time"
@@ -9832,6 +9997,27 @@ msgstr "podle názvu příkazu;podle zkratky (seskupeno);podle zkratky (jedna na
 msgid "Cannot find reference to default bar file"
 msgstr "Nemohu najít odkaz na výchozí BAR soubor"
 
+#: ulng.rslegacydisplaysizesinglelettergiga
+msgid "G"
+msgstr ""
+
+#: ulng.rslegacydisplaysizesingleletterkilo
+msgid "K"
+msgstr ""
+
+#: ulng.rslegacydisplaysizesinglelettermega
+msgid "M"
+msgstr ""
+
+#: ulng.rslegacydisplaysizesinglelettertera
+msgid "T"
+msgstr ""
+
+#: ulng.rslegacyoperationbytesuffixletter
+msgctxt "ulng.rslegacyoperationbytesuffixletter"
+msgid "B"
+msgstr ""
+
 #: ulng.rslistoffindfileswindows
 msgid "List of \"Find files\" windows"
 msgstr ""
@@ -9955,6 +10141,10 @@ msgstr "Účet:"
 msgid "All Double Commander internal commands"
 msgstr ""
 
+#: ulng.rsmsgapplicationname
+msgid "Description: %s"
+msgstr ""
+
 #: ulng.rsmsgarchivercustomparams
 msgid "Additional parameters for archiver command-line:"
 msgstr "Doplňující parametry pro archivátor příkazové řádky:"
@@ -9988,7 +10178,7 @@ msgid "Cannot overwrite directory \"%s\" with non-directory \"%s\""
 msgstr "Nelze přepsat adresář \"%s\" neadresářem \"%s\""
 
 #: ulng.rsmsgchdirfailed
-msgid "ChDir to [%s] failed!"
+msgid "Change current directory to \"%s\" failed!"
 msgstr "Změna adresáře na [%s] selhala!"
 
 #: ulng.rsmsgcloseallinactivetabs
@@ -10207,6 +10397,14 @@ msgstr "Příliš mnoho souborů pro kompresi"
 msgid "Archive format unknown"
 msgstr "Neznámý formát archívu"
 
+#: ulng.rsmsgexecutablepath
+msgid "Executable: %s"
+msgstr ""
+
+#: ulng.rsmsgexitstatuscode
+msgid "Exit status:"
+msgstr ""
+
 #: ulng.rsmsgfavoritetabsdeleteallentries
 msgid "Are you sure you want to remove all entries of your Favorite Tabs? (There is no \"undo\" to this action!)"
 msgstr "Jste si jisti že chcete vymazat všechny položky oblíbených záložek? (Neexistuje krok \"zpět\" pro tuto akci!)"
@@ -10216,7 +10414,7 @@ msgid "Drag here other entries"
 msgstr "Přetáhněte sem další položky"
 
 #: ulng.rsmsgfavoritetabsentername
-msgid "Enter a name this Favorite Tabs entry"
+msgid "Enter a name for this new Favorite Tabs entry:"
 msgstr "Zadání názvu záložky mezi oblíbené"
 
 #: ulng.rsmsgfavoritetabsenternametitle
@@ -10635,6 +10833,14 @@ msgstr "Přesunout soubor %s"
 msgid "Pack to file %s"
 msgstr "Komprimovat do souboru %s"
 
+#: ulng.rsmsglogprogramshutdown
+msgid "Program shutdown"
+msgstr ""
+
+#: ulng.rsmsglogprogramstart
+msgid "Program start"
+msgstr ""
+
 #: ulng.rsmsglogrmdir
 msgid "Remove directory %s"
 msgstr "Odstranit adresář %s"
@@ -10703,6 +10909,10 @@ msgstr "Není implementováno."
 msgid "Object does not exist!"
 msgstr ""
 
+#: ulng.rsmsgopeninanotherprogram
+msgid "The action cannot be completed because the file is open in another program:"
+msgstr ""
+
 #: ulng.rsmsgpanelpreview
 msgctxt "ulng.rsmsgpanelpreview"
 msgid "Below is a preview. You may move cursor and select files to get immediately an actual look and feel of the various settings."
@@ -10739,6 +10949,10 @@ msgstr "Předvolba \"%s\" již existuje. Nahradit?"
 #: ulng.rsmsgproblemexecutingcommand
 msgid "Problem executing command (%s)"
 msgstr "Problém při vykonávání příkazu (%s)"
+
+#: ulng.rsmsgprocessid
+msgid "PID: %d"
+msgstr ""
 
 #: ulng.rsmsgpromptaskingfilename
 msgid "Filename for dropped text:"
@@ -10923,6 +11137,10 @@ msgstr ""
 #: ulng.rsmsgtctoolbarwheretosave
 msgid "Enter location and filename where to save a TC Toolbar file"
 msgstr "Zadání umístění a názvu souboru pro uložení souboru nástrojové lišty TC"
+
+#: ulng.rsmsgterminateprocess
+msgid "WARNING: Terminating a process can cause undesired results including loss of data and system instability. The process will not be given the chance to save its state or data before it is terminated. Are you sure you want to terminate the process?"
+msgstr ""
 
 #: ulng.rsmsgthisisnowinclipboard
 msgid "\"%s\" is now in the clipboard"
@@ -11471,17 +11689,13 @@ msgstr "První;Poslední;"
 msgid "Classic, legacy order;Alphabetic order (but language still first)"
 msgstr "Klasicky, starší pořadí;Abecední pořadí (jazyk ale stále jako první)"
 
+#: ulng.rsoptconfigtreestate
+msgid "Full expand;Full collapse"
+msgstr ""
+
 #: ulng.rsoptdifferframeposition
 msgid "Active frame panel on left, inactive on right (legacy);Left frame panel on left, right on right"
 msgstr "Záložka aktivního rámu na levé straně, neaktivní na pravé (starší);Levá záložka rámu na levé straně, pravá na pravé"
-
-#: ulng.rsoptdisable
-msgid "Disable"
-msgstr "Zakázat"
-
-#: ulng.rsoptenable
-msgid "Enable"
-msgstr "Povolit"
 
 #: ulng.rsoptenterext
 msgid "Enter extension"
@@ -11495,9 +11709,9 @@ msgstr "Přidat na začátek;Přidat na konec;Abecedně seřadit"
 msgid "separate window;minimized separate window;operations panel"
 msgstr "samostatné okno;minimalizované samostatné okno;záložka operace"
 
-#: ulng.rsoptfilesizeformat
-msgid "float;B;K;M;G"
-msgstr "plovoucí;B;K;M;G"
+#: ulng.rsoptfilesizefloat
+msgid "float"
+msgstr "plovoucí"
 
 #: ulng.rsopthotkeysadddeleteshortcutlong
 msgid "Shortcut %s for cm_Delete will be registered, so it can be used to reverse this setting."
@@ -11677,6 +11891,10 @@ msgstr "Hledání souborů"
 msgid "Files views"
 msgstr "Zobrazení souborů"
 
+#: ulng.rsoptionseditorfilesviewscomplement
+msgid "Files views extra"
+msgstr ""
+
 #: ulng.rsoptionseditorfiletypes
 msgctxt "ulng.rsoptionseditorfiletypes"
 msgid "File types"
@@ -11791,24 +12009,54 @@ msgstr "Levé tlačítko;Pravé tlačítko;"
 msgid "at the top of the file list;after directories (if directories are sorted before files);at sorted position;at the bottom of the file list"
 msgstr "nahoře v seznamu souborů;po adresářích (pokud jsou adresáře řazeny před soubory);na řazené pozici;v dolní části seznamu souborů"
 
+#: ulng.rsoptpersonalizedfilesizeformat
+msgid "Personalized float;Personalized byte;Personalized kilobyte;Personalized megabyte;Personalized gigabyte;Personalized terabyte"
+msgstr ""
+
 #: ulng.rsoptpluginalreadyassigned
 msgid "Plugin %s is already assigned for the following extensions:"
 msgstr "Doplněk %s již je přiřazen pro následující rozšíření:"
+
+#: ulng.rsoptplugindisable
+msgid "D&isable"
+msgstr "Zakázat"
+
+#: ulng.rsoptpluginenable
+msgctxt "ulng.rsoptpluginenable"
+msgid "E&nable"
+msgstr "P&ovolit"
 
 #: ulng.rsoptpluginsactive
 msgctxt "ulng.rsoptpluginsactive"
 msgid "Active"
 msgstr "Aktivní"
 
+#: ulng.rsoptpluginsdescription
+msgctxt "ulng.rsoptpluginsdescription"
+msgid "Description"
+msgstr "Popis"
+
 #: ulng.rsoptpluginsfilename
 msgctxt "ulng.rsoptpluginsfilename"
 msgid "File name"
 msgstr "Název souboru"
 
+#: ulng.rsoptpluginshowbyextension
+msgid "By extension"
+msgstr ""
+
+#: ulng.rsoptpluginshowbyplugin
+msgid "By Plugin"
+msgstr ""
+
 #: ulng.rsoptpluginsname
 msgctxt "ulng.rsoptpluginsname"
 msgid "Name"
 msgstr "Název"
+
+#: ulng.rsoptpluginsortonlywhenbyextension
+msgid "Sorting WCX plugins is only possible when showing plugins by extension!"
+msgstr ""
 
 #: ulng.rsoptpluginsregisteredfor
 msgctxt "ulng.rsoptpluginsregisteredfor"
@@ -11920,6 +12168,65 @@ msgstr "Starší DC - kopie (x) názevsouboru.ext;Windows - názevsouboru (x).ex
 msgid "don't change position;use the same setting as for new files;to sorted position"
 msgstr "neměnit pozici;použít stejné nastavení pro nové soubory;do řazené pozice"
 
+#: ulng.rspluginfilenamestylelist
+msgid "With complete absolute path;Path relative to %COMMANDER_PATH%;Relative to the following"
+msgstr ""
+
+#: ulng.rspluginsearchcontainscasesenstive
+msgid "contains(case)"
+msgstr ""
+
+#: ulng.rspluginsearchcontainsnotcase
+msgid "contains"
+msgstr ""
+
+#: ulng.rspluginsearchequalcasesensitive
+msgid "=(case)"
+msgstr ""
+
+#: ulng.rspluginsearchequalnotcase
+msgctxt "ulng.rspluginsearchequalnotcase"
+msgid "="
+msgstr "="
+
+#: ulng.rspluginsearchfieldnotfound
+msgid "Field \"%s\" not found!"
+msgstr ""
+
+#: ulng.rspluginsearchnotcontainscasesenstive
+msgid "!contains(case)"
+msgstr ""
+
+#: ulng.rspluginsearchnotcontainsnotcase
+msgid "!contains"
+msgstr ""
+
+#: ulng.rspluginsearchnotequacasesensitive
+msgid "!=(case)"
+msgstr ""
+
+#: ulng.rspluginsearchnotequalnotcase
+msgctxt "ulng.rspluginsearchnotequalnotcase"
+msgid "!="
+msgstr "!="
+
+#: ulng.rspluginsearchnotregexpr
+msgid "!regexp"
+msgstr ""
+
+#: ulng.rspluginsearchpluginnotfound
+msgid "Plugin \"%s\" not found!"
+msgstr ""
+
+#: ulng.rspluginsearchregexpr
+msgid "regexp"
+msgstr ""
+
+#: ulng.rspluginsearchunitnotfoundforfield
+msgctxt "ulng.rspluginsearchunitnotfoundforfield"
+msgid "Unit \"%s\" not found for field \"%s\" !"
+msgstr ""
+
 #: ulng.rspropscontains
 msgid "Files: %d, folders: %d"
 msgstr "Soubory: %d, složky: %d"
@@ -12024,6 +12331,18 @@ msgctxt "ulng.rssimplewordcommand"
 msgid "Command"
 msgstr "Příkaz"
 
+#: ulng.rssimpleworderror
+msgid "Error"
+msgstr ""
+
+#: ulng.rssimplewordfailedexcla
+msgid "Failed!"
+msgstr ""
+
+#: ulng.rssimplewordfalse
+msgid "False"
+msgstr ""
+
 #: ulng.rssimplewordfilename
 msgid "Filename"
 msgstr "Název souboru"
@@ -12043,6 +12362,14 @@ msgstr "Parametr"
 #: ulng.rssimplewordresult
 msgid "Result"
 msgstr "Výsledek"
+
+#: ulng.rssimplewordsuccessexcla
+msgid "Success!"
+msgstr ""
+
+#: ulng.rssimplewordtrue
+msgid "True"
+msgstr ""
 
 #: ulng.rssimplewordworkdir
 msgid "WorkDir"
@@ -12464,6 +12791,10 @@ msgstr "Nová velikost"
 #: ulng.rsviewnotfound
 msgid "%s not found!"
 msgstr "%s nenalezeno!"
+
+#: ulng.rsviewpainttoolslist
+msgid "Pen;Rect;Ellipse"
+msgstr ""
 
 #: ulng.rsviewwithexternalviewer
 msgid "with external viewer"

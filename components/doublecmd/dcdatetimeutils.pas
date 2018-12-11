@@ -4,7 +4,7 @@
    Date and time functions.
 
    Copyright (C) 2009-2012 Przemysław Nagay (cobines@gmail.com)
-   Copyright (C) 2017 Alexander Koblov (alexx2000@mail.ru)
+   Copyright (C) 2017-2018 Alexander Koblov (alexx2000@mail.ru)
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -17,8 +17,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+   along with this program. If not, see <http://www.gnu.org/licenses/>.
 }
 
 unit DCDateTimeUtils;
@@ -32,7 +31,7 @@ uses
   {$IF DEFINED(MSWINDOWS)}
   , Windows
   {$ELSEIF DEFINED(UNIX)}
-  , unixutil
+  , UnixUtil, DCUnix
   {$ENDIF}
   ;
 
@@ -130,14 +129,18 @@ implementation
 uses
   DateUtils;
 
+const
+  UnixWinEpoch = TWinFileTime($019DB1DED53E8000); // Unix epoch start
+
 const  { Short names of months. }
   ShortMonthNames: TMonthNameArray = ('Jan','Feb','Mar','Apr','May','Jun',
                                       'Jul','Aug','Sep','Oct','Nov','Dec');
-  SecsPerHour = SecsPerMin * MinsPerHour;
 
 {$IF DEFINED(MSWINDOWS)}
 var
   WinTimeZoneBias: LongInt;
+  TzSpecificLocalTimeToSystemTime: function(lpTimeZoneInformation: PTimeZoneInformation;
+                                            lpLocalTime, lpUniversalTime: PSystemtime): BOOL; stdcall;
 {$ENDIF}
 
 function AdjustUnixFileTime(const FileTime: DCBasicTypes.TFileTime;
@@ -204,27 +207,14 @@ begin
   end;
 end;
 
-function FileTimeToDateTime(FileTime : DCBasicTypes.TFileTime) : TDateTime;
+function FileTimeToDateTime(FileTime : DCBasicTypes.TFileTime) : TDateTime; inline;
 {$IF DEFINED(MSWINDOWS)}
 begin
   Result := WinFileTimeToDateTime(FileTime);
 end;
 {$ELSEIF DEFINED(UNIX)}
-var
-  Hrs, Mins, Secs : Word;
-  TodaysSecs : DCBasicTypes.TFileTime;
 begin
-  FileTimeToLocalFileTime(FileTime, FileTime);
-
-  TodaysSecs := FileTime mod SecsPerDay;
-  Hrs        := Word(TodaysSecs div SecsPerHour);
-  TodaysSecs := TodaysSecs - (Hrs * SecsPerHour);
-  Mins       := Word(TodaysSecs div SecsPerMin);
-  Secs       := Word(TodaysSecs - (Mins * SecsPerMin));
-
-  Result := UnixEpoch +                     // Epoch start +
-            (FileTime div SecsPerDay) +     // Number of days +
-            EncodeTime(Hrs, Mins, Secs, 0); // Time
+  Result := UnixFileTimeToDateTime(FileTime);
 end;
 {$ELSE}
 begin
@@ -232,37 +222,14 @@ begin
 end;
 {$ENDIF}
 
-function DateTimeToFileTime(DateTime : TDateTime) : DCBasicTypes.TFileTime;
+function DateTimeToFileTime(DateTime : TDateTime) : DCBasicTypes.TFileTime; inline;
 {$IF DEFINED(MSWINDOWS)}
 begin
   Result := DateTimeToWinFileTime(DateTime);
 end;
 {$ELSEIF DEFINED(UNIX)}
-var
-  Hrs, Mins, Secs, MSecs : Word;
-  Dt, Tm : TDateTime;
-  BigTime: QWord;
 begin
-  Dt := Trunc(DateTime);
-  Tm := DateTime - Dt;
-  if Dt < UnixEpoch then
-    raise EDateOutOfRange.Create(DateTime)
-  else
-    {$PUSH}{$Q-}
-    BigTime := Trunc(Dt - UnixEpoch) * SecsPerDay;
-    {$POP}
-
-  DecodeTime(Tm, Hrs, Mins, Secs, MSecs);
-  {$PUSH}{$Q-}
-  BigTime := BigTime + QWord(Hrs * SecsPerHour) + QWord(Mins * SecsPerMin) + Secs;
-  {$POP}
-
-{$IFDEF cpu32}
-  if BigTime > High(DCBasicTypes.TFileTime) then
-    raise EDateOutOfRange.Create(DateTime)
-  else
-{$ENDIF}
-  LocalFileTimeToFileTime(BigTime, Result);
+  Result := DateTimeToUnixFileTime(DateTime);
 end;
 {$ELSE}
 begin
@@ -319,15 +286,45 @@ end;
 {$ENDIF}
 
 function WinFileTimeToDateTime(ft : TWinFileTime) : TDateTime;
+{$IF DEFINED(MSWINDOWS)}
+var
+  lpUniversalTime, lpLocalTime: TSystemTime;
+{$ENDIF}
 begin
-  WinFileTimeToLocalFileTime(ft,ft);
-  Result := (ft / 864000000000.0) - 109205.0;
+{$IF DEFINED(MSWINDOWS)}
+  if (Win32MajorVersion > 5) then
+  begin
+    FileTimeToSystemTime(@ft, @lpUniversalTime);
+    SystemTimeToTzSpecificLocalTime(nil, @lpUniversalTime, @lpLocalTime);
+    Result := SystemTimeToDateTime(lpLocalTime);
+  end
+  else
+{$ENDIF}
+  begin
+    WinFileTimeToLocalFileTime(ft,ft);
+    Result := (ft / 864000000000.0) - 109205.0;
+  end;
 end;
 
 function DateTimeToWinFileTime(dt : TDateTime) : TWinFileTime;
+{$IF DEFINED(MSWINDOWS)}
+var
+  lpUniversalTime, lpLocalTime: TSystemTime;
+{$ENDIF}
 begin
-  Result := Round((Extended(dt) + 109205.0) * 864000000000.0);
-  WinLocalFileTimeToFileTime(Result, Result);
+{$IF DEFINED(MSWINDOWS)}
+  if (Win32MajorVersion > 5) then
+  begin
+    DateTimeToSystemTime(dt, lpLocalTime);
+    TzSpecificLocalTimeToSystemTime(nil, @lpLocalTime, @lpUniversalTime);
+    SystemTimeToFileTime(@lpUniversalTime, @Result);
+  end
+  else
+{$ENDIF}
+  begin
+    Result := Round((Extended(dt) + 109205.0) * 864000000000.0);
+    WinLocalFileTimeToFileTime(Result, Result);
+  end;
 end;
 
 function DosFileTimeToDateTime(const DosTime: TDosFileTime): TDateTime;
@@ -417,73 +414,60 @@ end;
 {$ENDIF}
 
 function UnixFileTimeToDateTime(UnixTime: TUnixFileTime) : TDateTime;
+{$IF DEFINED(UNIX)}
 var
-  Hrs, Mins, Secs : Word;
-  TodaysSecs : LongInt;
-{$IFDEF MSWINDOWS}
-  LocalWinFileTime, WinFileTime: TWinFileTime;
-{$ENDIF}
-{$IFDEF UNIX}
-  LocalUnixTime: TUnixFileTime;
-{$ENDIF}
+  ATime: TTimeStruct;
 begin
-{$IFDEF UNIX}
-  if FileTimeToLocalFileTime(UnixTime, LocalUnixTime) then
-    UnixTime := LocalUnixTime;
-{$ENDIF}
+  if (fpLocalTime(@UnixTime, @ATime) = nil) then RaiseLastOSError;
 
-  TodaysSecs := UnixTime mod SecsPerDay;
-  Hrs := TodaysSecs div SecsPerHour;
-  TodaysSecs := TodaysSecs - (Hrs * SecsPerHour);
-  Mins := TodaysSecs div SecsPerMin;
-  Secs := TodaysSecs - (Mins * SecsPerMin);
-
-  Result := UnixDateDelta + (UnixTime div SecsPerDay) +
-    EncodeTime(Hrs, Mins, Secs, 0);
-
-{$IFDEF MSWINDOWS}
-  // Convert universal to local TDateTime.
-  WinFileTime := DateTimeToWinFileTime(Result);
-  if FileTimeToLocalFileTime(WinFileTime, LocalWinFileTime) then
-    WinFileTime := LocalWinFileTime;
-  Result := WinFileTimeToDateTime(WinFileTime);
-{$ENDIF}
+  Result := ComposeDateTime(EncodeDate(ATime.tm_year + 1900, ATime.tm_mon + 1, ATime.tm_mday),
+                            EncodeTime(ATime.tm_hour, ATime.tm_min, ATime.tm_sec, 0));
 end;
+{$ELSE}
+var
+  WinFileTime: TWinFileTime;
+begin
+  WinFileTime:= UnixFileTimeToWinTime(UnixTime);
+  Result:= WinFileTimeToDateTime(WinFileTime);
+end;
+{$ENDIF}
 
 function DateTimeToUnixFileTime(DateTime : TDateTime): TUnixFileTime;
+{$IF DEFINED(UNIX)}
 var
-  Hrs, Mins, Secs, MSecs : Word;
-  Dt, Tm : TDateTime;
-{$IFDEF MSWINDOWS}
-  LocalWinFileTime, WinFileTime: TWinFileTime;
-{$ENDIF}
-{$IFDEF UNIX}
-  UnixTime: TUnixFileTime;
-{$ENDIF}
+  ATime: TTimeStruct;
+  Year, Month, Day: Word;
+  Hour, Minute, Second, MilliSecond: Word;
 begin
-{$IFDEF MSWINDOWS}
-  // Convert local to universal TDateTime.
-  LocalWinFileTime := DateTimeToWinFileTime(DateTime);
-  if LocalFileTimeToFileTime(LocalWinFileTime, WinFileTime) then
-    LocalWinFileTime := WinFileTime;
-  DateTime := WinFileTimeToDateTime(LocalWinFileTime);
-{$ENDIF}
+  if DateTime < UnixEpoch then
+    raise EDateOutOfRange.Create(DateTime);
 
-  Dt := Trunc(DateTime);
-  Tm := DateTime - Dt;
-  if Dt < UnixDateDelta then
-    Result := 0
-  else
-    Result := Trunc(Dt - UnixDateDelta) * SecsPerDay;
+  DecodeDate(DateTime, Year, Month, Day);
+  DecodeTime(DateTime, Hour, Minute, Second, MilliSecond);
 
-  DecodeTime(Tm, Hrs, Mins, Secs, MSecs);
-  Result := Result + (Hrs * SecsPerHour) + (Mins * SecsPerMin) + Secs;
+  ATime.tm_isdst:= -1;
 
-{$IFDEF UNIX}
-  if LocalFileTimeToFileTime(Result, UnixTime) then
-    Result := UnixTime;
-{$ENDIF}
+  ATime.tm_year:= Year - 1900;
+  ATime.tm_mon:=  Month - 1;
+  ATime.tm_mday:= Day;
+
+  ATime.tm_hour:= Hour;
+  ATime.tm_min:= Minute;
+  ATime.tm_sec:= Second;
+
+  Result:= fpMkTime(@ATime);
+
+  if Result = DCBasicTypes.TFileTime(-1) then
+    raise EDateOutOfRange.Create(DateTime)
 end;
+{$ELSE}
+var
+  WinFileTime: TWinFileTime;
+begin
+  WinFileTime:= DateTimeToWinFileTime(DateTime);
+  Result:= WinFileTimeToUnixTime(WinFileTime);
+end;
+{$ENDIF}
 
 function UnixFileTimeToDosTime(UnixTime: TUnixFileTime): TDosFileTime;
 begin
@@ -494,14 +478,17 @@ function UnixFileTimeToWinTime(UnixTime: TUnixFileTime): TWinFileTime;
 var
   WinFileTime: TWinFileTime;
 begin
-  WinFileTime := $019DB1DED53E8000; // Unix epoch start
+  WinFileTime := UnixWinEpoch;
   if not AdjustWinFileTime(WinFileTime, Result, 10000000 * Int64(UnixTime)) then
     Result := WinFileTime;
 end;
 
 function WinFileTimeToUnixTime(WinTime: TWinFileTime): TUnixFileTime;
 begin
-  Result:= TUnixFileTime((WinTime - $019DB1DED53E8000) div 10000000);
+  if (WinTime < UnixWinEpoch) then
+    Result:= 0
+  else
+    Result:= TUnixFileTime((WinTime - UnixWinEpoch) div 10000000);
 end;
 
 function WcxFileTimeToDateTime(WcxTime: LongInt): TDateTime;
@@ -566,18 +553,21 @@ end;
 
 function TwelveToTwentyFour(Hour: Word; Modifier: AnsiString): Word;
 begin
-  if Modifier = EmptyStr then Exit(Hour);
-  case LowerCase(Modifier[1]) of
-    'a':
-      begin
-        if (Hour = 12) then
-          Result:= 0;
-      end;
-    'p':
-      begin
-        if (Hour < 12) then
-          Result:=  Hour + 12;
-      end;
+  Result:= Hour;
+  if Length(Modifier) > 0 then
+  begin
+    case LowerCase(Modifier[1]) of
+      'a':
+        begin
+          if (Hour = 12) then
+            Result:= 0;
+        end;
+      'p':
+        begin
+          if (Hour < 12) then
+            Result:=  Hour + 12;
+        end;
+    end;
   end;
 end;
 
@@ -616,24 +606,13 @@ begin
 end;
 
 {$IF DEFINED(MSWINDOWS)}
-procedure InitTimeZoneBias;
-var
-  TZInfo: TTimeZoneInformation;
-begin
-  case GetTimeZoneInformation(@TZInfo) of
-    TIME_ZONE_ID_UNKNOWN:
-      WinTimeZoneBias := TZInfo.Bias;
-    TIME_ZONE_ID_STANDARD:
-      WinTimeZoneBias := TZInfo.Bias + TZInfo.StandardBias;
-    TIME_ZONE_ID_DAYLIGHT:
-      WinTimeZoneBias := TZInfo.Bias + TZInfo.DaylightBias;
-    else
-      WinTimeZoneBias := 0;
-  end;
-end;
-
 initialization
-  InitTimeZoneBias;
+  WinTimeZoneBias := GetLocalTimeOffset;
+  if (Win32MajorVersion > 5) then
+  begin
+    Pointer(TzSpecificLocalTimeToSystemTime):= GetProcAddress(GetModuleHandle(Kernel32),
+                                                              'TzSpecificLocalTimeToSystemTime');
+  end;
 {$ENDIF}
 
 end.

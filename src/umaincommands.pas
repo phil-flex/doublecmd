@@ -236,6 +236,7 @@ type
    procedure cm_RightThumbView(const Params: array of string);
    procedure cm_TreeView(const Params: array of string);
    procedure cm_CopyNamesToClip(const {%H-}Params: array of string);
+   procedure cm_FocusTreeView(const {%H-}Params: array of string);
    procedure cm_FocusCmdLine(const {%H-}Params: array of string);
    procedure cm_FileAssoc(const {%H-}Params: array of string);
    procedure cm_HelpIndex(const {%H-}Params: array of string);
@@ -357,6 +358,7 @@ type
    procedure cm_Benchmark(const {%H-}Params: array of string);
    procedure cm_ConfigArchivers(const {%H-}Params: array of string);
    procedure cm_ConfigTooltips(const {%H-}Params: array of string);
+   procedure cm_ConfigPlugins(const {%H-}Params: array of string);
    procedure cm_OpenDriveByIndex(const Params: array of string);
 
    // Internal commands
@@ -1011,6 +1013,20 @@ end;
 procedure TMainCommands.cm_CopyNamesToClip(const Params: array of string);
 begin
   DoCopySelectedFileNamesToClipboard(frmMain.ActiveFrame, cfntcJustFileNames);
+end;
+
+procedure TMainCommands.cm_FocusTreeView(const Params: array of string);
+begin
+  with frmMain do
+  begin
+    if gSeparateTree then
+    begin
+      if ActiveFrame.Focused then
+        ShellTreeView.SetFocus
+      else
+        ActiveFrame.SetFocus;
+    end;
+  end;
 end;
 
 //------------------------------------------------------
@@ -4899,6 +4915,12 @@ begin
       frmMain.SetPanelDrive(SelectedPanel, frmMain.Drives.Items[Index], True);
     end;
   end;
+end;
+
+{ TMainCommands.cm_ConfigPlugins }
+procedure TMainCommands.cm_ConfigPlugins(const {%H-}Params: array of string);
+begin
+  cm_Options(['TfrmOptionsPluginsGroup']);
 end;
 
 { TMainCommands.cm_AddNewSearch }

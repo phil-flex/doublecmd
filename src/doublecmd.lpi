@@ -284,7 +284,7 @@ end;"/>
         <MinVersion Minor="3" Valid="True"/>
       </Item12>
     </RequiredPackages>
-    <Units Count="238">
+    <Units Count="248">
       <Unit0>
         <Filename Value="doublecmd.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -715,12 +715,12 @@ end;"/>
         <UnitName Value="fOptionsFrame"/>
       </Unit63>
       <Unit64>
-        <Filename Value="frames\foptionsplugins.pas"/>
+        <Filename Value="frames\foptionspluginsgroup.pas"/>
         <IsPartOfProject Value="True"/>
-        <ComponentName Value="frmOptionsPlugins"/>
+        <ComponentName Value="frmOptionsPluginsGroup"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="fOptionsPlugins"/>
+        <UnitName Value="fOptionsPluginsGroup"/>
       </Unit64>
       <Unit65>
         <Filename Value="frames\foptionsfiletypescolors.pas"/>
@@ -1144,6 +1144,7 @@ end;"/>
       <Unit131>
         <Filename Value="filesources\ufilesourcewipeoperation.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="uFileSourceWipeOperation"/>
       </Unit131>
       <Unit132>
         <Filename Value="filesources\ulocalfilesource.pas"/>
@@ -1238,7 +1239,8 @@ end;"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="MultiArchiveCopyOperationOptionsUI"/>
         <HasResources Value="True"/>
-        <ResourceBaseClass Value="Frame"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="fMultiArchiveCopyOperationOptions"/>
       </Unit151>
       <Unit152>
         <Filename Value="filesources\multiarchive\umultiarchivecalcstatisticsoperation.pas"/>
@@ -1308,6 +1310,7 @@ end;"/>
       <Unit166>
         <Filename Value="filesources\vfs\uvfsexecuteoperation.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="uVfsExecuteOperation"/>
       </Unit166>
       <Unit167>
         <Filename Value="filesources\vfs\uvfsfilesource.pas"/>
@@ -1323,7 +1326,8 @@ end;"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="WcxArchiveCopyOperationOptionsUI"/>
         <HasResources Value="True"/>
-        <ResourceBaseClass Value="Frame"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="fWcxArchiveCopyOperationOptions"/>
       </Unit169>
       <Unit170>
         <Filename Value="filesources\wcxarchive\uwcxarchivecalcstatisticsoperation.pas"/>
@@ -1369,7 +1373,8 @@ end;"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="WfxPluginCopyMoveOperationOptionsUI"/>
         <HasResources Value="True"/>
-        <ResourceBaseClass Value="Frame"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="fWfxPluginCopyMoveOperationOptions"/>
       </Unit178>
       <Unit179>
         <Filename Value="filesources\wfxplugin\uwfxplugincopyinoperation.pas"/>
@@ -1716,6 +1721,80 @@ end;"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="fViewOperations"/>
       </Unit237>
+      <Unit238>
+        <Filename Value="ffileunlock.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmFileUnlock"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="fFileUnlock"/>
+      </Unit238>
+      <Unit239>
+        <Filename Value="frames\foptionspluginsbase.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmOptionsPluginsBase"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="fOptionsPluginsBase"/>
+      </Unit239>
+      <Unit240>
+        <Filename Value="frames\foptionspluginsdsx.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmOptionsPluginsDSX"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="fOptionsPluginsDSX"/>
+      </Unit240>
+      <Unit241>
+        <Filename Value="frames\foptionspluginswcx.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmOptionsPluginsWCX"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="fOptionsPluginsWCX"/>
+      </Unit241>
+      <Unit242>
+        <Filename Value="frames\foptionspluginswdx.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmOptionsPluginsWDX"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="fOptionsPluginsWDX"/>
+      </Unit242>
+      <Unit243>
+        <Filename Value="frames\foptionspluginswfx.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmOptionsPluginsWFX"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="fOptionsPluginsWFX"/>
+      </Unit243>
+      <Unit244>
+        <Filename Value="frames\foptionspluginswlx.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmOptionsPluginsWLX"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="fOptionsPluginsWLX"/>
+      </Unit244>
+      <Unit245>
+        <Filename Value="uhotdir.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="uHotDir"/>
+      </Unit245>
+      <Unit246>
+        <Filename Value="ufilefunctions.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="uFileFunctions"/>
+      </Unit246>
+      <Unit247>
+        <Filename Value="frames\foptionsfilesviewscomplement.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmOptionsFilesViewsComplement"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="fOptionsFilesViewsComplement"/>
+      </Unit247>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

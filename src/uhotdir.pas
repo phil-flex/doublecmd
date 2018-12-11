@@ -3,7 +3,7 @@
    -------------------------------------------------------------------------
    Load/Save/WorkingWith HotDir
 
-   Copyright (C) 2014-2016  Alexander Koblov (alexx2000@mail.ru)
+   Copyright (C) 2014-2018  Alexander Koblov (alexx2000@mail.ru)
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -130,8 +130,8 @@ type
     function ComputeSignature(Seed:dword=$00000000):dword;
     property HotDir[Index: integer]: THotDir read GetHotDir;
     {$IFDEF MSWINDOWS}
-    function ImportTotalCommander(TotalCommanderFilename: String): integer;
-    function ExportTotalCommander(TotalCommanderFilename: String; FlagEraseOriginalOnes: boolean): boolean;
+    function ImportTotalCommander(TotalCommanderConfigFilename: String): integer;
+    function ExportTotalCommander(TotalCommanderConfigFilename: String; FlagEraseOriginalOnes: boolean): boolean;
     {$ENDIF}
   end;
 
@@ -565,7 +565,7 @@ begin
         begin
           miMainTree := TMenuItem.Create(mncmpMenuComponentToPopulate);
           case MaybeActiveOrSelectedDirectories.Count of
-            1: with Application.MainForm as TForm do if not FlagSelectedPathAlreadyInMenu then miMainTree.Caption := rsMsgHotDirAddSelectedDirectory + MinimizeFilePath(MaybeActiveOrSelectedDirectories.Items[0].FullPath, Canvas, 250) else miMainTree.Caption := rsMsgHotDirReAddSelectedDirectory + MinimizeFilePath(MaybeActiveOrSelectedDirectories.Items[0].FullPath, Canvas, 250);
+            1: with Application.MainForm as TForm do if not FlagSelectedPathAlreadyInMenu then miMainTree.Caption := rsMsgHotDirAddSelectedDirectory + MinimizeFilePath(MaybeActiveOrSelectedDirectories.Items[0].FullPath, Canvas, 250).Replace('&','&&') else miMainTree.Caption := rsMsgHotDirReAddSelectedDirectory + MinimizeFilePath(MaybeActiveOrSelectedDirectories.Items[0].FullPath, Canvas, 250).Replace('&','&&');
             else miMainTree.Caption := Format(rsMsgHotDirAddSelectedDirectories,[MaybeActiveOrSelectedDirectories.Count]);
           end;
           miMainTree.Tag := ACTION_ADDSELECTEDDIR;
@@ -576,7 +576,7 @@ begin
 
         // now allow to add or re-add the "current path"
         miMainTree := TMenuItem.Create(mncmpMenuComponentToPopulate);
-        with Application.MainForm as TForm do if not FlagCurrentPathAlreadyInMenu then miMainTree.Caption := rsMsgHotDirAddThisDirectory + MinimizeFilePath(frmMain.ActiveFrame.CurrentPath, Canvas, 250) else miMainTree.Caption := rsMsgHotDirReAddThisDirectory + MinimizeFilePath(frmMain.ActiveFrame.CurrentPath, Canvas, 250);
+        with Application.MainForm as TForm do if not FlagCurrentPathAlreadyInMenu then miMainTree.Caption := rsMsgHotDirAddThisDirectory + MinimizeFilePath(frmMain.ActiveFrame.CurrentPath, Canvas, 250).Replace('&','&&') else miMainTree.Caption := rsMsgHotDirReAddThisDirectory + MinimizeFilePath(frmMain.ActiveFrame.CurrentPath, Canvas, 250).Replace('&','&&');
         miMainTree.Tag := ACTION_ADDTOHOTLIST;
         miMainTree.OnClick := ProcedureWhenHotDirAddOrConfigClicked;
         if mncmpMenuComponentToPopulate.ClassType = TPopupMenu then TPopupMenu(mncmpMenuComponentToPopulate).Items.Add(miMainTree)
@@ -1054,7 +1054,7 @@ end;
 
 {$IFDEF MSWINDOWS}
 { TDirectoryHotlist.ImportTotalCommander }
-function TDirectoryHotlist.ImportTotalCommander(TotalCommanderFilename: String): integer;
+function TDirectoryHotlist.ImportTotalCommander(TotalCommanderConfigFilename: String): integer;
 const
   CONFIGFILE_SECTIONNAME = 'DirMenu';
   CONFIGFILE_NAMEPREFIX = 'menu';
@@ -1071,7 +1071,7 @@ begin
   Index := 1;
   CurrentMenuLevel := 0;
 
-  ConfigFile := TIniFileEx.Create(TotalCommanderFilename);
+  ConfigFile := TIniFileEx.Create(mbExpandFilename(TotalCommanderConfigFilename));
 
   try
     repeat
@@ -1079,8 +1079,6 @@ begin
 
       if sName <> TERMINATORNOTPRESENT then
       begin
-        sName := StringReplace(sName, '&', '', [rfReplaceAll, rfIgnoreCase]); //Let's remove the amperstand
-
         FlagAvortInsertion := False;
         LocalHotDir := THotDir.Create;
 
@@ -1155,7 +1153,7 @@ begin
 end;
 
 { TDirectoryHotlist.ExportTotalCommander }
-function TDirectoryHotlist.ExportTotalCommander(TotalCommanderFilename: String; FlagEraseOriginalOnes: boolean): boolean;
+function TDirectoryHotlist.ExportTotalCommander(TotalCommanderConfigFilename: String; FlagEraseOriginalOnes: boolean): boolean;
 const
   CONFIGFILE_SECTIONNAME = 'DirMenu';
   CONFIGFILE_NAMEPREFIX = 'menu';
@@ -1175,7 +1173,7 @@ begin
     RememberCursor := Screen.Cursor;
     Screen.Cursor := crHourGlass;
     try
-      ConfigFile := TIniFileEx.Create(TotalCommanderFilename);
+      ConfigFile := TIniFileEx.Create(mbExpandFileName(TotalCommanderConfigFilename));
       try
         with ConfigFile do
         begin

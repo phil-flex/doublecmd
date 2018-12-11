@@ -138,6 +138,7 @@ type
   TFileDateTimeProperty = class(TFileProperty)
 
   private
+    FIsValid: Boolean;
     FDateTime: TDateTime;
 
   public
@@ -150,6 +151,7 @@ type
     function GetMinimumValue: TDateTime;
     function GetMaximumValue: TDateTime;
 
+    property IsValid: Boolean read FIsValid write FIsValid;
     property Value: TDateTime read FDateTime write FDateTime;
   end;
 
@@ -604,6 +606,7 @@ constructor TFileDateTimeProperty.Create(DateTime: TDateTime);
 begin
   inherited Create;
   Value := DateTime;
+  FIsValid := True;
 end;
 
 procedure TFileDateTimeProperty.CloneTo(FileProperty: TFileProperty);
@@ -614,6 +617,7 @@ begin
 
     with FileProperty as TFileDateTimeProperty do
     begin
+      FIsValid := Self.FIsValid;
       FDateTime := Self.FDateTime;
     end;
   end;
@@ -672,7 +676,10 @@ end;
 
 function TFileCreationDateTimeProperty.Format(Formatter: IFilePropertyFormatter): String;
 begin
-  Result := Formatter.FormatDateTime(Self);
+  if not FIsValid then
+    Result := EmptyStr
+  else
+    Result := Formatter.FormatDateTime(Self);
 end;
 
 // ----------------------------------------------------------------------------
@@ -718,7 +725,10 @@ end;
 
 function TFileChangeDateTimeProperty.Format(Formatter: IFilePropertyFormatter): String;
 begin
-  Result := Formatter.FormatDateTime(Self);
+  if not FIsValid then
+    Result := EmptyStr
+  else
+    Result := Formatter.FormatDateTime(Self);
 end;
 
 // ----------------------------------------------------------------------------
@@ -809,8 +819,8 @@ end;
 
 function TNtfsFileAttributesProperty.IsSysFile: boolean;
 begin
-  Result := ((FAttributes and faSysFile) <> 0) or
-            ((FAttributes and faHidden) <> 0);
+  Result := ((FAttributes and FILE_ATTRIBUTE_SYSTEM) <> 0) or
+            ((FAttributes and FILE_ATTRIBUTE_HIDDEN) <> 0);
 end;
 
 function TNtfsFileAttributesProperty.IsLink: Boolean;
@@ -820,12 +830,12 @@ end;
 
 function TNtfsFileAttributesProperty.IsReadOnly: Boolean;
 begin
-  Result := (FAttributes and faReadOnly) <> 0;
+  Result := (FAttributes and FILE_ATTRIBUTE_READONLY) <> 0;
 end;
 
 function TNtfsFileAttributesProperty.IsHidden: Boolean;
 begin
-  Result := (FAttributes and faHidden) <> 0;
+  Result := (FAttributes and FILE_ATTRIBUTE_HIDDEN) <> 0;
 end;
 
 class function TNtfsFileAttributesProperty.GetDescription: String;

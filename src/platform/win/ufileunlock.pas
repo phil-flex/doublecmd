@@ -1,6 +1,6 @@
 unit uFileUnlock;
 
-{$mode delphi}
+{$mode delphi}{$R-}
 
 interface
 
@@ -17,8 +17,10 @@ type
 
   TProcessInfoArray = array of TProcessInfo;
 
+function TerminateProcess(ProcessId: DWORD): Boolean;
 function FileUnlock(ProcessId: DWORD; hFile: THandle): Boolean;
-function GetFileInUseProcess(const FileName: String; LastError: Integer; out ProcessInfo: TProcessInfoArray): Boolean;
+function GetFileInUseProcessFast(const FileName: String; out ProcessInfo: TProcessInfoArray): Boolean;
+function GetFileInUseProcessSlow(const FileName: String; LastError: Integer; var ProcessInfo: TProcessInfoArray): Boolean;
 
 implementation
 
@@ -80,6 +82,8 @@ var
   QueryFullProcessImageNameW: function(hProcess: HANDLE; dwFlags: DWORD; lpExeName: LPWSTR; lpdwSize: PDWORD): BOOL; stdcall;
 
   GetFinalPathNameByHandleW: function(hFile: HANDLE; lpszFilePath: LPWSTR; cchFilePath: DWORD; dwFlags: DWORD): DWORD; stdcall;
+
+  NtQueryObject: function(ObjectHandle : HANDLE; ObjectInformationClass : OBJECT_INFORMATION_CLASS; ObjectInformation : PVOID; ObjectInformationLength : ULONG; ReturnLength : PULONG): NTSTATUS; stdcall;
 
 var
   RstrtMgrLib: HMODULE = 0;
@@ -252,13 +256,16 @@ begin
       begin
         if EnumProcessModules(hProcess, @hModuleList[0], SizeOf(hModuleList), cbNeeded) then
         begin
-          for J:= 0 to (cbNeeded div SizeOf(DWORD)) do
+          for J:= 0 to (cbNeeded div SizeOf(HMODULE)) do
           begin
             AOpenName:= GetModuleFileName(hProcess, hModuleList[J]);
-            if (_wcsnicmp(PWideChar(AOpenName), PWideChar(AFileName), Length(AFileName)) = 0) then
+            if (Length(AOpenName) = Length(AFileName)) then
             begin
-              AddLock(ProcessInfo, dwProcessList[I], hProcess, 0);
-              Break;
+              if (_wcsnicmp(PWideChar(AOpenName), PWideChar(AFileName), Length(AFileName)) = 0) then
+              begin
+                AddLock(ProcessInfo, dwProcessList[I], hProcess, 0);
+                Break;
+              end;
             end;
           end;
         end;
@@ -268,10 +275,11 @@ begin
   end;
 end;
 
-procedure GetFileInUseProcessOld(const FileName: String; var ProcessInfo: TProcessInfoArray);
+procedure GetFileInUseProcess(const FileName: String; var ProcessInfo: TProcessInfoArray);
 var
   hFile: HANDLE;
   Index: Integer;
+  ALength: Integer;
   hProcess: HANDLE;
   hCurrentProcess: HANDLE;
   AFileName, AOpenName: UnicodeString;
@@ -279,6 +287,7 @@ var
 begin
   if GetNativeName(FileName, AFileName) and GetFileHandleList(SystemInformation) then
   begin
+    ALength:= Length(AFileName);
     hCurrentProcess:= GetCurrentProcess;
     for Index:= 0 to SystemInformation^.Count - 1 do
     begin
@@ -292,9 +301,13 @@ begin
             if CheckHandleType(hFile) then
             begin
               AOpenName:= GetFileName(hFile);
-              if (_wcsnicmp(PWideChar(AOpenName), PWideChar(AFileName), Length(AFileName)) = 0) then
+              if Length(AOpenName) >= ALength then
               begin
-                AddLock(ProcessInfo, SystemInformation^.Handle[Index].ProcessId, hProcess, SystemInformation^.Handle[Index].Handle);
+                if (_wcsnicmp(PWideChar(AOpenName), PWideChar(AFileName), ALength) = 0) then
+                begin
+                  if (Length(AOpenName) = ALength) or (AOpenName[ALength + 1] = PathDelim) then
+                    AddLock(ProcessInfo, SystemInformation^.Handle[Index].ProcessId, hProcess, SystemInformation^.Handle[Index].Handle);
+                end;
               end;
             end;
             CloseHandle(hFile);
@@ -307,9 +320,9 @@ begin
   end;
 end;
 
-function GetFileInUseProcessNew(const FileName: String; out ProcessInfo: TProcessInfoArray): Boolean;
+function GetFileInUseProcessFast(const FileName: String; out ProcessInfo: TProcessInfoArray): Boolean;
 const
-  MAX_CNT = 5;
+  MAX_CNT = 64;
 var
   I: Integer;
   dwReason: DWORD;
@@ -332,6 +345,7 @@ begin
              (RmGetList(dwSession, @nProcInfoNeeded, @nProcInfo, rgAffectedApps, @dwReason) = ERROR_SUCCESS);
     if Result then
     begin
+      Result:= (nProcInfo > 0);
       SetLength(ProcessInfo, nProcInfo);
       for I:= 0 to nProcInfo - 1 do
       begin
@@ -356,17 +370,30 @@ begin
   end;
 end;
 
-function GetFileInUseProcess(const FileName: String; LastError: Integer; out
-  ProcessInfo: TProcessInfoArray): Boolean;
+function GetFileInUseProcessSlow(const FileName: String; LastError: Integer; var ProcessInfo: TProcessInfoArray): Boolean;
 begin
-  // if (LastError <> ERROR_SHARING_VIOLATION) then Exit(False);
-  if Win32MajorVersion < 6 then
+  if (Win32MajorVersion < 6) and (LastError = ERROR_ACCESS_DENIED) then
+  begin
     GetModuleInUseProcess(FileName, ProcessInfo)
-  else begin
-    GetFileInUseProcessNew(FileName, ProcessInfo);
   end;
-  GetFileInUseProcessOld(FileName, ProcessInfo);
+  if (LastError = ERROR_SHARING_VIOLATION) then
+  begin
+    GetFileInUseProcess(FileName, ProcessInfo);
+  end;
   Result:= (Length(ProcessInfo) > 0);
+end;
+
+function TerminateProcess(ProcessId: DWORD): Boolean;
+var
+  hProcess: HANDLE;
+begin
+  hProcess:= OpenProcess(SYNCHRONIZE or PROCESS_TERMINATE, False, ProcessId);
+  Result:= (hProcess <> 0);
+  if Result then
+  begin
+    Result:= Windows.TerminateProcess(hProcess, 1);
+    CloseHandle(hProcess);
+  end;
 end;
 
 function FileUnlock(ProcessId: DWORD; hFile: THandle): Boolean;
@@ -396,7 +423,10 @@ var
   SystemDirectory: UnicodeString;
 begin
   if Win32MajorVersion < 6 then
-    GetFileName:= @GetFileNameOld
+  begin
+    GetFileName:= @GetFileNameOld;
+    @NtQueryObject:= GetProcAddress(GetModuleHandleW(ntdll), 'NtQueryObject');
+  end
   else begin
     SetLength(SystemDirectory, maxSmallint + 1);
     SetLength(SystemDirectory, GetSystemDirectoryW(Pointer(SystemDirectory), maxSmallint));

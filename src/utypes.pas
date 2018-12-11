@@ -4,6 +4,7 @@
    Definitions of some common types.
 
    Copyright (C) 2012 Przemyslaw Nagay (cobines@gmail.com)
+   Copyright (C) 2018 Alexander Koblov (Alexx2000@mail.ru)
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -16,8 +17,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+   along with this program. If not, see <http://www.gnu.org/licenses/>.
 }
 
 unit uTypes;
@@ -27,9 +27,6 @@ unit uTypes;
 interface
 
 type
-// plugin types
-  TPluginType = (ptDSX, ptWCX, ptWDX, ptWFX, ptWLX);
-
   TCaseSensitivity = (
     cstNotSensitive,
     // According to locale collation specs. Usually it means linguistic sorting
@@ -44,7 +41,9 @@ type
     Last: Integer;
   end;
 
-  TFileSizeFormat = (fsfFloat, fsfByte, fsfKilo, fsfMega, fsfGiga);
+  //Note: If we add a format here, don't forget to update also "FILE_SIZE" string table in "uFileFunctions".
+  TFileSizeFormat = (fsfFloat, fsfByte, fsfKilo, fsfMega, fsfGiga, fsfTera,
+                     fsfPersonalizedFloat, fsfPersonalizedByte, fsfPersonalizedKilo, fsfPersonalizedMega, fsfPersonalizedGiga, fsfPersonalizedTera);
 
 implementation
 

@@ -1422,6 +1422,42 @@ msgctxt "TFRMFILEPROPERTIES.TSPROPERTIES.CAPTION"
 msgid "Properties"
 msgstr "Уласцівасці"
 
+#: tfrmfileunlock.btnclose.caption
+#, fuzzy
+msgctxt "tfrmfileunlock.btnclose.caption"
+msgid "Close"
+msgstr "Закрыць"
+
+#: tfrmfileunlock.btnterminate.caption
+msgid "Terminate"
+msgstr ""
+
+#: tfrmfileunlock.btnunlock.caption
+msgctxt "tfrmfileunlock.btnunlock.caption"
+msgid "Unlock"
+msgstr ""
+
+#: tfrmfileunlock.btnunlockall.caption
+msgid "Unlock All"
+msgstr ""
+
+#: tfrmfileunlock.caption
+msgctxt "tfrmfileunlock.caption"
+msgid "Unlock"
+msgstr ""
+
+#: tfrmfileunlock.stgfilehandles.columns[0].title.caption
+msgid "File Handle"
+msgstr ""
+
+#: tfrmfileunlock.stgfilehandles.columns[1].title.caption
+msgid "Process ID"
+msgstr ""
+
+#: tfrmfileunlock.stgfilehandles.columns[2].title.caption
+msgid "Executable Path"
+msgstr ""
+
 #: tfrmfinddlg.actcancel.caption
 msgctxt "TFRMFINDDLG.ACTCANCEL.CAPTION"
 msgid "C&ancel"
@@ -1851,6 +1887,7 @@ msgid "&File name"
 msgstr "&Назва файла"
 
 #: tfrmlinker.spbtndown.caption
+msgctxt "tfrmlinker.spbtndown.caption"
 msgid "Do&wn"
 msgstr "&Уніз"
 
@@ -2021,6 +2058,10 @@ msgctxt "tfrmmain.actconfighotkeys.caption"
 msgid "Configuration of hot keys"
 msgstr "Наладзіць гарачыя клавішы"
 
+#: tfrmmain.actconfigplugins.caption
+msgid "Configuration of Plugins"
+msgstr ""
+
 #: tfrmmain.actconfigsavesettings.caption
 msgid "Save Settings"
 msgstr "Захаваць налады"
@@ -2190,6 +2231,14 @@ msgstr "Змяніць фокус"
 #: tfrmmain.actfocusswap.hint
 msgid "Switch between left and right file list"
 msgstr "Пераключыцца на іншую файлавую панэль"
+
+#: tfrmmain.actfocustreeview.caption
+msgid "Focus on tree view"
+msgstr ""
+
+#: tfrmmain.actfocustreeview.hint
+msgid "Switch between current file list and tree view (if enabled)"
+msgstr ""
 
 #: tfrmmain.actgotofirstfile.caption
 msgid "Place cursor on first file in list"
@@ -2620,7 +2669,7 @@ msgid "Create Symbolic &Link..."
 msgstr "Стварыць сімвалічную &спасылку..."
 
 #: tfrmmain.actsyncdirs.caption
-msgid "Synchronize dirs..."
+msgid "Syn&chronize dirs..."
 msgstr "Сінхранізаваць каталогі..."
 
 #: tfrmmain.acttargetequalsource.caption
@@ -3000,6 +3049,7 @@ msgid "&OK"
 msgstr "&Добра"
 
 #: tfrmmaincommandsdlg.caption
+msgctxt "tfrmmaincommandsdlg.caption"
 msgid "Select your internal command"
 msgstr "Абраць унутраны загад"
 
@@ -3684,6 +3734,10 @@ msgctxt "tfrmoptionsarchivers.chkarchivermultiarcoutput.caption"
 msgid "S&how console output"
 msgstr "Па&казваць вывад кансолі"
 
+#: tfrmoptionsarchivers.chkfilenameonlylist.caption
+msgid "Use archive name without extension as list"
+msgstr ""
+
 #: tfrmoptionsarchivers.ckbarchiverunixfileattributes.caption
 msgid "Uni&x file attributes"
 msgstr ""
@@ -3975,6 +4029,10 @@ msgstr "Захоўваць падчас выхаду"
 #: tfrmoptionsconfiguration.gbsortorderconfigurationoption.caption
 msgid "Sort order of configuration order in left tree"
 msgstr "Парадкаванне дрэва канфігурацыі злева"
+
+#: tfrmoptionsconfiguration.gpconfigurationtreestate.caption
+msgid "Tree state when entering in configuration page"
+msgstr ""
 
 #: tfrmoptionsconfiguration.lblcmdlineconfigdir.caption
 msgid "Set on command line"
@@ -5335,12 +5393,13 @@ msgid "Test resulting menu"
 msgstr "Праверыць выніковае меню"
 
 #: tfrmoptionsfileassoc.btnaddact.caption
+msgctxt "tfrmoptionsfileassoc.btnaddact.caption"
 msgid "Add"
 msgstr "Дадаць"
 
 #: tfrmoptionsfileassoc.btnaddext.caption
 msgctxt "TFRMOPTIONSFILEASSOC.BTNADDEXT.CAPTION"
-msgid "&Add"
+msgid "Add"
 msgstr "&Дадаць"
 
 #: tfrmoptionsfileassoc.btnaddnewtype.caption
@@ -5349,16 +5408,22 @@ msgid "A&dd"
 msgstr "&Дадаць"
 
 #: tfrmoptionsfileassoc.btncloneact.caption
-msgid "Clone"
+msgid "C&lone"
 msgstr "Кланаваць"
 
+#: tfrmoptionsfileassoc.btncommands.hint
+msgctxt "tfrmoptionsfileassoc.btncommands.hint"
+msgid "Select your internal command"
+msgstr "Абраць унутраны загад"
+
 #: tfrmoptionsfileassoc.btndownact.caption
-msgid "&Down"
+msgctxt "tfrmoptionsfileassoc.btndownact.caption"
+msgid "Do&wn"
 msgstr "&Уніз"
 
 #: tfrmoptionsfileassoc.btneditext.caption
 msgctxt "TFRMOPTIONSFILEASSOC.BTNEDITEXT.CAPTION"
-msgid "Edit"
+msgid "Edi&t"
 msgstr "Рэдагаваць"
 
 #: tfrmoptionsfileassoc.btninsertact.caption
@@ -5368,8 +5433,18 @@ msgstr "Уставіць"
 
 #: tfrmoptionsfileassoc.btninsertext.caption
 msgctxt "TFRMOPTIONSFILEASSOC.BTNINSERTEXT.CAPTION"
-msgid "Insert"
+msgid "&Insert"
 msgstr "Уставіць"
+
+#: tfrmoptionsfileassoc.btnparametershelper.hint
+msgctxt "tfrmoptionsfileassoc.btnparametershelper.hint"
+msgid "Variable reminder helper"
+msgstr ""
+
+#: tfrmoptionsfileassoc.btnrelativecommand.hint
+msgctxt "tfrmoptionsfileassoc.btnrelativecommand.hint"
+msgid "Some functions to select appropriate path"
+msgstr "Некаторыя функцыі для выбару адпаведнага шляху"
 
 #: tfrmoptionsfileassoc.btnremoveact.caption
 msgid "Remo&ve"
@@ -5389,6 +5464,16 @@ msgctxt "tfrmoptionsfileassoc.btnrenametype.caption"
 msgid "R&ename"
 msgstr "&Змяніць назву"
 
+#: tfrmoptionsfileassoc.btnstartpathpathhelper.hint
+msgctxt "tfrmoptionsfileassoc.btnstartpathpathhelper.hint"
+msgid "Some functions to select appropriate path"
+msgstr "Некаторыя функцыі для выбару адпаведнага шляху"
+
+#: tfrmoptionsfileassoc.btnstartpathvarhelper.hint
+msgctxt "tfrmoptionsfileassoc.btnstartpathvarhelper.hint"
+msgid "Variable reminder helper"
+msgstr ""
+
 #: tfrmoptionsfileassoc.btnupact.caption
 msgctxt "TFRMOPTIONSFILEASSOC.BTNUPACT.CAPTION"
 msgid "&Up"
@@ -5404,18 +5489,18 @@ msgstr "Назва дзеяння. Яна ніколі не перадаецца
 
 #: tfrmoptionsfileassoc.edtparams.hint
 #, fuzzy
-#| msgid "Parameter to pass to the command. Long filename with spaces should be quoted (manually entering)."
-msgid "Parameter to pass to the command. Long filename with spaces should be quoted."
+#| msgid "Parameter to pass to the command. Long filename with spaces should be quoted."
+msgid "Parameter to pass to the command. Long filename with spaces should be quoted (manually entering)."
 msgstr "Параметры, што перадаюцца загаду. Доўгія назвы файлаў з прагаламі мусяць быць у двукоссях (пры непасрэдным уводзе)"
 
 #: tfrmoptionsfileassoc.fnecommand.hint
 #, fuzzy
-#| msgid "Command to execute. Never quote this string."
-msgid "Command to execute. Long filename with space should be quoted."
+#| msgid "Command to execute. Long filename with space should be quoted."
+msgid "Command to execute. Never quote this string."
 msgstr "Загад для запуску. Не выкарыстоўваць двукоссі."
 
 #: tfrmoptionsfileassoc.gbactiondescription.caption
-msgid "Action description:"
+msgid "Action description"
 msgstr "Апісанне дзеяння:"
 
 #: tfrmoptionsfileassoc.gbactions.caption
@@ -5453,11 +5538,12 @@ msgid "File types may be sorted by drag & drop"
 msgstr "Тыпы файлаў можна ўпарадкаваць перацяг&ваннем"
 
 #: tfrmoptionsfileassoc.lblaction.caption
-msgid "Action name:"
+msgid "Action &name:"
 msgstr "Назва дзеяння:"
 
 #: tfrmoptionsfileassoc.lblcommand.caption
-msgid "&Command:"
+msgctxt "tfrmoptionsfileassoc.lblcommand.caption"
+msgid "Command:"
 msgstr "&Загад:"
 
 #: tfrmoptionsfileassoc.lblexternalparameters.caption
@@ -5469,11 +5555,6 @@ msgstr "Парамет&ры:"
 msgctxt "tfrmoptionsfileassoc.lblstartpath.caption"
 msgid "Start pat&h:"
 msgstr "Ш&лях запуску:"
-
-#: tfrmoptionsfileassoc.menuitem1.caption
-msgctxt "tfrmoptionsfileassoc.menuitem1.caption"
-msgid "-"
-msgstr "-"
 
 #: tfrmoptionsfileassoc.menuitem3.caption
 msgid "Custom with..."
@@ -5516,11 +5597,6 @@ msgstr "Адкрыць"
 #: tfrmoptionsfileassoc.miopenwith.caption
 msgid "Open with..."
 msgstr "Адкрыць у ..."
-
-#: tfrmoptionsfileassoc.miseparator.caption
-msgctxt "tfrmoptionsfileassoc.miseparator.caption"
-msgid "-"
-msgstr "-"
 
 #: tfrmoptionsfileassoc.mishell.caption
 msgid "Run in terminal"
@@ -5831,75 +5907,26 @@ msgstr "Выкарыстоўваць адлюстраванне ў па&мяць
 msgid "&Use stream for search text in files"
 msgstr "&Выкарыстоўваць паток"
 
-#: tfrmoptionsfilesviews.btnaddattribute.caption
-msgctxt "TFRMOPTIONSFILESVIEWS.BTNADDATTRIBUTE.CAPTION"
-msgid "&Add"
-msgstr "&Дадаць"
-
-#: tfrmoptionsfilesviews.btnattrshelp.caption
-msgctxt "TFRMOPTIONSFILESVIEWS.BTNATTRSHELP.CAPTION"
-msgid "&Help"
-msgstr "&Даведка"
-
-#: tfrmoptionsfilesviews.cbdblclicktoparent.caption
-msgid "Enable changing to &parent folder when double-clicking on empty part of file view"
-msgstr "Дазволіць пераход у &бацькоўскі каталог падвойнай пстрычкай па пустым месцы файлавай панэлі"
-
-#: tfrmoptionsfilesviews.cbdelayloadingtabs.caption
-msgid "Do&n't load file list until a tab is activated"
-msgstr "Не заг&ружаць спіс файлаў падчас актывацыі ўкладкі"
-
-#: tfrmoptionsfilesviews.cbdirbrackets.caption
-msgid "S&how square brackets around directories"
-msgstr "Паказва&ць квадратныя дужкі вакол назваў каталогаў"
-
-#: tfrmoptionsfilesviews.cbhighlightupdatedfiles.caption
-msgid "Hi&ghlight new and updated files"
-msgstr "Пад&свечваць новыя і абноўленыя файлы"
-
-#: tfrmoptionsfilesviews.cbinplacerename.caption
-msgid "Enable inplace &renaming when clicking twice on a name"
-msgstr "Уключыць &змену назвы падвойнай пстрычкай па назве ў радку"
-
-#: tfrmoptionsfilesviews.cblistfilesinthread.caption
-msgid "Load &file list in separate thread"
-msgstr "Загружаць спіс &файлаў асобна"
-
-#: tfrmoptionsfilesviews.cbloadiconsseparately.caption
-msgid "Load icons af&ter file list"
-msgstr "Загружаць значкі пас&ля спіса файлаў"
-
-#: tfrmoptionsfilesviews.cbshowsystemfiles.caption
-msgid "Show s&ystem and hidden files"
-msgstr "Паказваць сіс&тэмныя і схаваныя файлы"
-
-#: tfrmoptionsfilesviews.cbspacemovesdown.caption
-msgid "&When selecting files with <SPACEBAR>, move down to next file (as with <INSERT>)"
-msgstr "&Пры вылучэнні файлаў прагалам перамяшчаць курсор на наступны файл"
-
-#: tfrmoptionsfilesviews.chkmarkmaskfilterwindows.caption
-msgid "Windows style filter when marking files (\"*.*\" also select files without extension, etc.)"
-msgstr "Фільтр пазначэння файлаў у стылі Windows (\"*.*\" вылучае файлы без пашырэння і г.д.)"
-
-#: tfrmoptionsfilesviews.chkmarkmaskshowattribute.caption
-msgid "Use an independent attribute filter in mask input dialog each time"
-msgstr "Кожны раз паказваць у акне ўводу незалежны фільтр маскі атрыбутаў"
+#: tfrmoptionsfilesviews.btndefault.caption
+msgctxt "tfrmoptionsfilesviews.btndefault.caption"
+msgid "De&fault"
+msgstr "&Прадвызначана"
 
 #: tfrmoptionsfilesviews.gbformatting.caption
 msgid "Formatting"
 msgstr "Фарматаванне"
 
-#: tfrmoptionsfilesviews.gbmarking.caption
-msgid "Marking/Unmarking entries"
-msgstr "Вылучэнне/Скід вылучэння"
+#: tfrmoptionsfilesviews.gbpersonalizedabbreviationtouse.caption
+msgid "Personalized abbreviations to use:"
+msgstr ""
 
 #: tfrmoptionsfilesviews.gbsorting.caption
 msgid "Sorting"
 msgstr "Упарадкаванне"
 
-#: tfrmoptionsfilesviews.lbattributemask.caption
-msgid "Default attribute mask value to use:"
-msgstr "Прадвызначаная маска атрыбута:"
+#: tfrmoptionsfilesviews.lblbyte.caption
+msgid "&Byte:"
+msgstr ""
 
 #: tfrmoptionsfilesviews.lblcasesensitivity.caption
 msgid "Case s&ensitivity:"
@@ -5917,9 +5944,29 @@ msgstr "&Фармат даты і часу:"
 msgid "File si&ze format:"
 msgstr "Фармат па&меру файла:"
 
+#: tfrmoptionsfilesviews.lblgigabyte.caption
+msgid "&Gigabyte:"
+msgstr ""
+
+#: tfrmoptionsfilesviews.lblheaderfootersizeformat.caption
+msgid "&Header/footer format:"
+msgstr ""
+
+#: tfrmoptionsfilesviews.lblkilobyte.caption
+msgid "&Kilobyte:"
+msgstr ""
+
+#: tfrmoptionsfilesviews.lblmegabyte.caption
+msgid "Megab&yte:"
+msgstr ""
+
 #: tfrmoptionsfilesviews.lblnewfilesposition.caption
 msgid "&Insert new files:"
 msgstr "&Уставіць новыя файлы:"
+
+#: tfrmoptionsfilesviews.lbloperationsizeformat.caption
+msgid "O&peration size format:"
+msgstr ""
 
 #: tfrmoptionsfilesviews.lblsortfoldermode.caption
 msgid "So&rting directories:"
@@ -5929,9 +5976,88 @@ msgstr "Упарад&каванне каталогаў:"
 msgid "&Sort method:"
 msgstr "Метад &упарадкавання:"
 
+#: tfrmoptionsfilesviews.lblterabyte.caption
+msgid "&Terabyte:"
+msgstr ""
+
 #: tfrmoptionsfilesviews.lblupdatedfilesposition.caption
 msgid "&Move updated files:"
 msgstr "&Перамяшчаць абноўлёныя файлы:"
+
+#: tfrmoptionsfilesviewscomplement.btnaddattribute.caption
+msgctxt "tfrmoptionsfilesviewscomplement.btnaddattribute.caption"
+msgid "&Add"
+msgstr "&Дадаць"
+
+#: tfrmoptionsfilesviewscomplement.btnattrshelp.caption
+msgctxt "tfrmoptionsfilesviewscomplement.btnattrshelp.caption"
+msgid "&Help"
+msgstr "&Даведка"
+
+#: tfrmoptionsfilesviewscomplement.cbdblclicktoparent.caption
+msgctxt "tfrmoptionsfilesviewscomplement.cbdblclicktoparent.caption"
+msgid "Enable changing to &parent folder when double-clicking on empty part of file view"
+msgstr "Дазволіць пераход у &бацькоўскі каталог падвойнай пстрычкай па пустым месцы файлавай панэлі"
+
+#: tfrmoptionsfilesviewscomplement.cbdelayloadingtabs.caption
+msgctxt "tfrmoptionsfilesviewscomplement.cbdelayloadingtabs.caption"
+msgid "Do&n't load file list until a tab is activated"
+msgstr "Не заг&ружаць спіс файлаў падчас актывацыі ўкладкі"
+
+#: tfrmoptionsfilesviewscomplement.cbdirbrackets.caption
+msgctxt "tfrmoptionsfilesviewscomplement.cbdirbrackets.caption"
+msgid "S&how square brackets around directories"
+msgstr "Паказва&ць квадратныя дужкі вакол назваў каталогаў"
+
+#: tfrmoptionsfilesviewscomplement.cbhighlightupdatedfiles.caption
+msgctxt "tfrmoptionsfilesviewscomplement.cbhighlightupdatedfiles.caption"
+msgid "Hi&ghlight new and updated files"
+msgstr "Пад&свечваць новыя і абноўленыя файлы"
+
+#: tfrmoptionsfilesviewscomplement.cbinplacerename.caption
+msgctxt "tfrmoptionsfilesviewscomplement.cbinplacerename.caption"
+msgid "Enable inplace &renaming when clicking twice on a name"
+msgstr "Уключыць &змену назвы падвойнай пстрычкай па назве ў радку"
+
+#: tfrmoptionsfilesviewscomplement.cblistfilesinthread.caption
+msgctxt "tfrmoptionsfilesviewscomplement.cblistfilesinthread.caption"
+msgid "Load &file list in separate thread"
+msgstr "Загружаць спіс &файлаў асобна"
+
+#: tfrmoptionsfilesviewscomplement.cbloadiconsseparately.caption
+msgctxt "tfrmoptionsfilesviewscomplement.cbloadiconsseparately.caption"
+msgid "Load icons af&ter file list"
+msgstr "Загружаць значкі пас&ля спіса файлаў"
+
+#: tfrmoptionsfilesviewscomplement.cbshowsystemfiles.caption
+msgctxt "tfrmoptionsfilesviewscomplement.cbshowsystemfiles.caption"
+msgid "Show s&ystem and hidden files"
+msgstr "Паказваць сіс&тэмныя і схаваныя файлы"
+
+#: tfrmoptionsfilesviewscomplement.cbspacemovesdown.caption
+msgctxt "tfrmoptionsfilesviewscomplement.cbspacemovesdown.caption"
+msgid "&When selecting files with <SPACEBAR>, move down to next file (as with <INSERT>)"
+msgstr "&Пры вылучэнні файлаў прагалам перамяшчаць курсор на наступны файл"
+
+#: tfrmoptionsfilesviewscomplement.chkmarkmaskfilterwindows.caption
+msgctxt "tfrmoptionsfilesviewscomplement.chkmarkmaskfilterwindows.caption"
+msgid "Windows style filter when marking files (\"*.*\" also select files without extension, etc.)"
+msgstr "Фільтр пазначэння файлаў у стылі Windows (\"*.*\" вылучае файлы без пашырэння і г.д.)"
+
+#: tfrmoptionsfilesviewscomplement.chkmarkmaskshowattribute.caption
+msgctxt "tfrmoptionsfilesviewscomplement.chkmarkmaskshowattribute.caption"
+msgid "Use an independent attribute filter in mask input dialog each time"
+msgstr "Кожны раз паказваць у акне ўводу незалежны фільтр маскі атрыбутаў"
+
+#: tfrmoptionsfilesviewscomplement.gbmarking.caption
+msgctxt "tfrmoptionsfilesviewscomplement.gbmarking.caption"
+msgid "Marking/Unmarking entries"
+msgstr "Вылучэнне/Скід вылучэння"
+
+#: tfrmoptionsfilesviewscomplement.lbattributemask.caption
+msgctxt "tfrmoptionsfilesviewscomplement.lbattributemask.caption"
+msgid "Default attribute mask value to use:"
+msgstr "Прадвызначаная маска атрыбута:"
 
 #: tfrmoptionsfiletypescolors.btnaddcategory.caption
 msgctxt "TFRMOPTIONSFILETYPESCOLORS.BTNADDCATEGORY.CAPTION"
@@ -6449,8 +6575,10 @@ msgid "&Remove thumbnails for no longer existing files"
 msgstr "&Выдаляць мініяцюры даўно выдаленых файлаў"
 
 #: tfrmoptionsmisc.btnviewconfigfile.hint
+#, fuzzy
+#| msgid "View log file content"
 msgctxt "TFRMOPTIONSMISC.BTNVIEWCONFIGFILE.HINT"
-msgid "View log file content"
+msgid "View configuration file content"
 msgstr "Праглядзець змесціва лога"
 
 #: tfrmoptionsmisc.chkdesccreateunicode.caption
@@ -6566,88 +6694,124 @@ msgstr ""
 msgid "Single click (opens folders, double click for files)"
 msgstr ""
 
-#: tfrmoptionsplugins.btnaddplugin.caption
-msgctxt "TFRMOPTIONSPLUGINS.BTNADDPLUGIN.CAPTION"
+#: tfrmoptionspluginsbase.btnaddplugin.caption
+msgctxt "tfrmoptionspluginsbase.btnaddplugin.caption"
 msgid "A&dd"
 msgstr "&Дадаць"
 
-#: tfrmoptionsplugins.btnconfigplugin.caption
-msgctxt "TFRMOPTIONSPLUGINS.BTNCONFIGPLUGIN.CAPTION"
+#: tfrmoptionspluginsbase.btnconfigplugin.caption
+msgctxt "tfrmoptionspluginsbase.btnconfigplugin.caption"
 msgid "Con&figure"
 msgstr "Нал&адзіць"
 
-#: tfrmoptionsplugins.btnenableplugin.caption
+#: tfrmoptionspluginsbase.btnenableplugin.caption
+msgctxt "tfrmoptionspluginsbase.btnenableplugin.caption"
 msgid "E&nable"
 msgstr "Ук&лючыць"
 
-#: tfrmoptionsplugins.btnremoveplugin.caption
-msgctxt "TFRMOPTIONSPLUGINS.BTNREMOVEPLUGIN.CAPTION"
+#: tfrmoptionspluginsbase.btnremoveplugin.caption
+msgctxt "tfrmoptionspluginsbase.btnremoveplugin.caption"
 msgid "&Remove"
 msgstr "&Выдаліць"
 
-#: tfrmoptionsplugins.btntweakplugin.caption
+#: tfrmoptionspluginsbase.btntweakplugin.caption
+msgctxt "tfrmoptionspluginsbase.btntweakplugin.caption"
 msgid "&Tweak"
 msgstr "&Твікі"
 
-#: tfrmoptionsplugins.lbldsxdescription.caption
-msgid "Searc&h plugins allow one to use alternative search algorithms or external tools (like \"locate\", etc.)"
-msgstr "Убу&довы пошуку дазваляюць выкарыстоўваць дадатковыя алгарытмы пошуку альбо вонкавыя прылады (напрыклад, \"locate\" і т.п.)"
+#: tfrmoptionspluginsbase.lblplugindescription.caption
+msgctxt "tfrmoptionspluginsbase.lblplugindescription.caption"
+msgid "Description"
+msgstr "Апісанне"
 
-#: tfrmoptionsplugins.lblwcxdescription.caption
-msgid "Pack&er plugins are used to work with archives"
-msgstr "Убудовы &архіватараў дазваляюць працаваць з архівамі"
-
-#: tfrmoptionsplugins.lblwdxdescription.caption
-msgid "Content plu&gins allow one to display extended file details like mp3 tags or image attributes in file lists, or use them in search and multi-rename tool"
-msgstr "Убудо&вы змесціва дазваляюць выводзіць дадатковыя звесткі аб файлах на панэлях пры пошуку альбо змене назваў файлаў"
-
-#: tfrmoptionsplugins.lblwfxdescription.caption
-msgid "Fi&le system plugins allow access to disks inaccessible by operating system or to external devices like Palm/PocketPC."
-msgstr "У&будовы файлавых сістэм дазваляюць злучацца з дыскамі, недаступнымі з аперацыйнай сістэмы альбо вонкавымі прыладамі кшталту Palm/PocketPC."
-
-#: tfrmoptionsplugins.lblwlxdescription.caption
-msgid "Vie&wer plugins allow one to display file formats like images, spreadsheets, databases etc. in Viewer (F3, Ctrl+Q)"
-msgstr "Уб&удовы прагляду дазваляюць праглядаць ва ўнутранай праграме прагляду файлы розных фарматаў (выявы, табліцы, базы даных і т.п.)"
-
-#: tfrmoptionsplugins.stgplugins.columns[0].title.caption
-msgctxt "tfrmoptionsplugins.stgplugins.columns[0].title.caption"
+#: tfrmoptionspluginsbase.stgplugins.columns[0].title.caption
+msgctxt "tfrmoptionspluginsbase.stgplugins.columns[0].title.caption"
 msgid "Active"
 msgstr "Актыўна"
 
-#: tfrmoptionsplugins.stgplugins.columns[1].title.caption
-msgctxt "TFRMOPTIONSPLUGINS.STGPLUGINS.COLUMNS[1].TITLE.CAPTION"
+#: tfrmoptionspluginsbase.stgplugins.columns[1].title.caption
+msgctxt "tfrmoptionspluginsbase.stgplugins.columns[1].title.caption"
 msgid "Plugin"
 msgstr "Убудова"
 
-#: tfrmoptionsplugins.stgplugins.columns[2].title.caption
-msgctxt "tfrmoptionsplugins.stgplugins.columns[2].title.caption"
+#: tfrmoptionspluginsbase.stgplugins.columns[2].title.caption
+msgctxt "tfrmoptionspluginsbase.stgplugins.columns[2].title.caption"
 msgid "Registered for"
 msgstr "Зарэгістравана на"
 
-#: tfrmoptionsplugins.stgplugins.columns[3].title.caption
-msgctxt "TFRMOPTIONSPLUGINS.STGPLUGINS.COLUMNS[3].TITLE.CAPTION"
+#: tfrmoptionspluginsbase.stgplugins.columns[3].title.caption
+msgctxt "tfrmoptionspluginsbase.stgplugins.columns[3].title.caption"
 msgid "File name"
 msgstr "Назва файла"
 
-#: tfrmoptionsplugins.tsdsx.caption
-msgid "&Search plugins (.DSX)"
-msgstr "&Убудовы пошуку (.DSX)"
+#: tfrmoptionspluginsdsx.lblplugindescription.caption
+msgctxt "tfrmoptionspluginsdsx.lblplugindescription.caption"
+msgid "Searc&h plugins allow one to use alternative search algorithms or external tools (like \"locate\", etc.)"
+msgstr "Убу&довы пошуку дазваляюць выкарыстоўваць дадатковыя алгарытмы пошуку альбо вонкавыя прылады (напрыклад, \"locate\" і т.п.)"
 
-#: tfrmoptionsplugins.tswcx.caption
-msgid "Pac&ker plugins (.WCX)"
-msgstr "Убудовы &архіватараў (.WCX)"
+#: tfrmoptionspluginsgroup.btnpathtoberelativetoall.caption
+msgid "Apply current settings to all current configured plugins"
+msgstr ""
 
-#: tfrmoptionsplugins.tswdx.caption
-msgid "Content pl&ugins (.WDX)"
-msgstr "Убудовы &змесціва (.WDX)"
+#: tfrmoptionspluginsgroup.ckbautotweak.caption
+msgid "When adding a new plugin, automatically go in tweak window"
+msgstr ""
 
-#: tfrmoptionsplugins.tswfx.caption
-msgid "F&ile system plugins (.WFX)"
-msgstr "Убудовы &файлавых сістэм (.WFX)"
+#: tfrmoptionspluginsgroup.gbconfiguration.caption
+msgid "Configuration:"
+msgstr ""
 
-#: tfrmoptionsplugins.tswlx.caption
-msgid "&Viewer plugins (.WLX)"
-msgstr "Убудовы &прагляду (.WLX)"
+#: tfrmoptionspluginsgroup.lbpathtoberelativeto.caption
+msgid "Path to be relative to:"
+msgstr ""
+
+#: tfrmoptionspluginsgroup.lbpluginfilenamestyle.caption
+msgid "Plugin filename style when adding a new plugin:"
+msgstr ""
+
+#: tfrmoptionspluginswcx.lblplugindescription.caption
+msgctxt "tfrmoptionspluginswcx.lblplugindescription.caption"
+msgid "Pack&er plugins are used to work with archives"
+msgstr "Убудовы &архіватараў дазваляюць працаваць з архівамі"
+
+#: tfrmoptionspluginswcx.stgplugins.columns[0].title.caption
+#, fuzzy
+msgctxt "tfrmoptionspluginswcx.stgplugins.columns[0].title.caption"
+msgid "Active"
+msgstr "Актыўна"
+
+#: tfrmoptionspluginswcx.stgplugins.columns[1].title.caption
+#, fuzzy
+msgctxt "tfrmoptionspluginswcx.stgplugins.columns[1].title.caption"
+msgid "Plugin"
+msgstr "Убудова"
+
+#: tfrmoptionspluginswcx.stgplugins.columns[2].title.caption
+#, fuzzy
+msgctxt "tfrmoptionspluginswcx.stgplugins.columns[2].title.caption"
+msgid "Registered for"
+msgstr "Зарэгістравана на"
+
+#: tfrmoptionspluginswcx.stgplugins.columns[3].title.caption
+#, fuzzy
+msgctxt "tfrmoptionspluginswcx.stgplugins.columns[3].title.caption"
+msgid "File name"
+msgstr "Назва файла"
+
+#: tfrmoptionspluginswdx.lblplugindescription.caption
+msgctxt "tfrmoptionspluginswdx.lblplugindescription.caption"
+msgid "Content plu&gins allow one to display extended file details like mp3 tags or image attributes in file lists, or use them in search and multi-rename tool"
+msgstr "Убудо&вы змесціва дазваляюць выводзіць дадатковыя звесткі аб файлах на панэлях пры пошуку альбо змене назваў файлаў"
+
+#: tfrmoptionspluginswfx.lblplugindescription.caption
+msgctxt "tfrmoptionspluginswfx.lblplugindescription.caption"
+msgid "Fi&le system plugins allow access to disks inaccessible by operating system or to external devices like Palm/PocketPC."
+msgstr "У&будовы файлавых сістэм дазваляюць злучацца з дыскамі, недаступнымі з аперацыйнай сістэмы альбо вонкавымі прыладамі кшталту Palm/PocketPC."
+
+#: tfrmoptionspluginswlx.lblplugindescription.caption
+msgctxt "tfrmoptionspluginswlx.lblplugindescription.caption"
+msgid "Vie&wer plugins allow one to display file formats like images, spreadsheets, databases etc. in Viewer (F3, Ctrl+Q)"
+msgstr "Уб&удовы прагляду дазваляюць праглядаць ва ўнутранай праграме прагляду файлы розных фарматаў (выявы, табліцы, базы даных і т.п.)"
 
 #: tfrmoptionsquicksearchfilter.cbexactbeginning.caption
 msgid "&Beginning (name must start with first typed character)"
@@ -8373,10 +8537,12 @@ msgid "duplicates"
 msgstr "дублікаты"
 
 #: tfrmsyncdirsdlg.sbequal.caption
+msgctxt "tfrmsyncdirsdlg.sbequal.caption"
 msgid "="
 msgstr "="
 
 #: tfrmsyncdirsdlg.sbnotequal.caption
+msgctxt "tfrmsyncdirsdlg.sbnotequal.caption"
 msgid "!="
 msgstr "!="
 
@@ -8466,6 +8632,7 @@ msgid "C&hange"
 msgstr "&Змяніць"
 
 #: tfrmtweakplugin.btndefault.caption
+msgctxt "tfrmtweakplugin.btndefault.caption"
 msgid "De&fault"
 msgstr "&Прадвызначана"
 
@@ -8473,6 +8640,16 @@ msgstr "&Прадвызначана"
 msgctxt "TFRMTWEAKPLUGIN.BTNOK.CAPTION"
 msgid "&OK"
 msgstr "&Добра"
+
+#: tfrmtweakplugin.btnrelativeplugin1.hint
+msgctxt "tfrmtweakplugin.btnrelativeplugin1.hint"
+msgid "Some functions to select appropriate path"
+msgstr "Некаторыя функцыі для выбару адпаведнага шляху"
+
+#: tfrmtweakplugin.btnrelativeplugin2.hint
+msgctxt "tfrmtweakplugin.btnrelativeplugin2.hint"
+msgid "Some functions to select appropriate path"
+msgstr "Некаторыя функцыі для выбару адпаведнага шляху"
 
 #: tfrmtweakplugin.btnremove.caption
 msgctxt "TFRMTWEAKPLUGIN.BTNREMOVE.CAPTION"
@@ -8549,8 +8726,8 @@ msgctxt "tfrmtweakplugin.lblplugin.caption"
 msgid "&Plugin:"
 msgstr "&Убудова:"
 
-#: tfrmtweakplugin.lblplugin1.caption
-msgctxt "TFRMTWEAKPLUGIN.LBLPLUGIN1.CAPTION"
+#: tfrmtweakplugin.lblplugin2.caption
+msgctxt "tfrmtweakplugin.lblplugin2.caption"
 msgid "&Plugin:"
 msgstr "&Убудова:"
 
@@ -8789,29 +8966,9 @@ msgstr "Наблізіць"
 msgid "Zoom Out"
 msgstr "Аддаліць"
 
-#: tfrmviewer.btncopyfile.hint
-msgctxt "TFRMVIEWER.BTNCOPYFILE.HINT"
-msgid "Copy"
-msgstr "Капіраваць"
-
-#: tfrmviewer.btncopyfile1.hint
-msgctxt "TFRMVIEWER.BTNCOPYFILE1.HINT"
-msgid "Copy"
-msgstr "Капіраваць"
-
 #: tfrmviewer.btncuttuimage.hint
 msgid "Crop"
 msgstr "Пакінуць абранае"
-
-#: tfrmviewer.btndeletefile.hint
-msgctxt "TFRMVIEWER.BTNDELETEFILE.HINT"
-msgid "Delete"
-msgstr "Выдаліць"
-
-#: tfrmviewer.btndeletefile1.hint
-msgctxt "TFRMVIEWER.BTNDELETEFILE1.HINT"
-msgid "Delete"
-msgstr "Выдаліць"
 
 #: tfrmviewer.btnfullscreen.hint
 msgctxt "tfrmviewer.btnfullscreen.hint"
@@ -8831,16 +8988,6 @@ msgstr "Пдз"
 msgctxt "TFRMVIEWER.BTNHIGHTLIGHT.HINT"
 msgid "Highlight"
 msgstr "Падсвятленне"
-
-#: tfrmviewer.btnmovefile.hint
-msgctxt "TFRMVIEWER.BTNMOVEFILE.HINT"
-msgid "Move"
-msgstr "Перамясціць"
-
-#: tfrmviewer.btnmovefile1.hint
-msgctxt "TFRMVIEWER.BTNMOVEFILE1.HINT"
-msgid "Move"
-msgstr "Перамясціць"
 
 #: tfrmviewer.btnnextgifframe.caption
 msgid "||>"
@@ -8916,31 +9063,6 @@ msgctxt "TFRMVIEWER.MIABOUT.CAPTION"
 msgid "About"
 msgstr "Пра праграму"
 
-#: tfrmviewer.midiv1.caption
-msgctxt "TFRMVIEWER.MIDIV1.CAPTION"
-msgid "-"
-msgstr "-"
-
-#: tfrmviewer.midiv2.caption
-msgctxt "TFRMVIEWER.MIDIV2.CAPTION"
-msgid "-"
-msgstr "-"
-
-#: tfrmviewer.midiv3.caption
-msgctxt "TFRMVIEWER.MIDIV3.CAPTION"
-msgid "-"
-msgstr "-"
-
-#: tfrmviewer.midiv4.caption
-msgctxt "TFRMVIEWER.MIDIV4.CAPTION"
-msgid "-"
-msgstr "-"
-
-#: tfrmviewer.midiv5.caption
-msgctxt "TFRMVIEWER.MIDIV5.CAPTION"
-msgid "-"
-msgstr "-"
-
 #: tfrmviewer.miedit.caption
 msgctxt "TFRMVIEWER.MIEDIT.CAPTION"
 msgid "&Edit"
@@ -8972,11 +9094,6 @@ msgstr "Павярнуць"
 msgctxt "tfrmviewer.miscreenshot.caption"
 msgid "Screenshot"
 msgstr "Здымак экрана"
-
-#: tfrmviewer.miseparator.caption
-msgctxt "TFRMVIEWER.MISEPARATOR.CAPTION"
-msgid "-"
-msgstr "-"
 
 #: tfrmviewer.miview.caption
 msgctxt "TFRMVIEWER.MIVIEW.CAPTION"
@@ -9151,6 +9268,14 @@ msgstr ""
 "Вы можаце зрабіць яго даступным і націснуць \"Добра\",\n"
 "альбо націснуць \"Скасаваць\", каб працягнуць без яго.\n"
 
+#: ulng.rsabbrevdisplaydir
+msgid "<DIR>"
+msgstr ""
+
+#: ulng.rsabbrevdisplaylink
+msgid "<LNK>"
+msgstr ""
+
 #: ulng.rscancelfilter
 msgid "Cancel Quick Filter"
 msgstr "Скасаваць хуткае фільтраванне"
@@ -9288,6 +9413,27 @@ msgstr "Імпартаваная панэль прылад DC"
 #: ulng.rsdefaultimportedtctoolbarhint
 msgid "Imported TC toolbar"
 msgstr "Імпартаваная панэль прылад TC"
+
+#: ulng.rsdefaultpersonalizedabbrevbyte
+msgctxt "ulng.rsdefaultpersonalizedabbrevbyte"
+msgid "B"
+msgstr ""
+
+#: ulng.rsdefaultpersonalizedabbrevgiga
+msgid "GB"
+msgstr ""
+
+#: ulng.rsdefaultpersonalizedabbrevkilo
+msgid "KB"
+msgstr ""
+
+#: ulng.rsdefaultpersonalizedabbrevmega
+msgid "MB"
+msgstr ""
+
+#: ulng.rsdefaultpersonalizedabbrevtera
+msgid "TB"
+msgstr ""
 
 #: ulng.rsdefaultsuffixdroppedtext
 msgid "_DroppedText"
@@ -9445,6 +9591,10 @@ msgstr "&Прамінуць"
 msgid "S&kip All"
 msgstr "Пра&мінуць усё"
 
+#: ulng.rsdlgbuttonunlock
+msgid "&Unlock"
+msgstr ""
+
 #: ulng.rsdlgbuttonyes
 msgid "&Yes"
 msgstr "&Так"
@@ -9556,6 +9706,14 @@ msgctxt "ulng.rsexecuteviaterminalstayopen"
 msgid "Execute via terminal and stay open"
 msgstr "Запусціць у тэрмінале і пакінуць адкрытым"
 
+#: ulng.rsextsclosedbracketnofound
+msgid "\"]\" not found in line %s"
+msgstr ""
+
+#: ulng.rsextscommandwithnoext
+msgid "No extension defined before command \"%s\". It will be ignored."
+msgstr ""
+
 #: ulng.rsfavtabspanelsideselection
 msgid "Left;Right;Active;Inactive;Both;None"
 msgstr "Злева;Зправа;У актыўнай;У неактыўнай;У абедзвюх;Няма"
@@ -9567,6 +9725,10 @@ msgstr "Не;Так"
 #: ulng.rsfilenameexportedtcbarprefix
 msgid "Exported_from_DC"
 msgstr "Exported_from_DC"
+
+#: ulng.rsfileopcopymovefileexistsoptions
+msgid "Ask;Overwrite;Skip"
+msgstr ""
 
 #: ulng.rsfileopdirectoryexistsoptions
 msgid "Ask;Merge;Skip"
@@ -9638,12 +9800,14 @@ msgid "Begin at"
 msgstr "Пачынаць з"
 
 #: ulng.rsfreemsg
-msgid "Free %s from %s bytes"
-msgstr "Вольна %s з %s байтаў"
+#, fuzzy
+msgid "%s of %s free"
+msgstr "Вольна %s з %s"
 
 #: ulng.rsfreemsgshort
-msgid "%s bytes free"
-msgstr "%s байт вольна"
+#, fuzzy
+msgid "%s free"
+msgstr "%s вольна"
 
 #: ulng.rsfuncatime
 msgid "Access date/time"
@@ -9821,6 +9985,27 @@ msgstr "Па назве загаду; Па гарачых клавішах (гр
 msgid "Cannot find reference to default bar file"
 msgstr "Не атрымалася знайсці спасылку на файл прадвызначанай панэлі прылад"
 
+#: ulng.rslegacydisplaysizesinglelettergiga
+msgid "G"
+msgstr ""
+
+#: ulng.rslegacydisplaysizesingleletterkilo
+msgid "K"
+msgstr ""
+
+#: ulng.rslegacydisplaysizesinglelettermega
+msgid "M"
+msgstr ""
+
+#: ulng.rslegacydisplaysizesinglelettertera
+msgid "T"
+msgstr ""
+
+#: ulng.rslegacyoperationbytesuffixletter
+msgctxt "ulng.rslegacyoperationbytesuffixletter"
+msgid "B"
+msgstr ""
+
 #: ulng.rslistoffindfileswindows
 msgid "List of \"Find files\" windows"
 msgstr "Спіс акон \"Пошук файлаў\""
@@ -9944,6 +10129,10 @@ msgstr "Рахунак:"
 msgid "All Double Commander internal commands"
 msgstr "Усе ўнутраныя загады Double Commander"
 
+#: ulng.rsmsgapplicationname
+msgid "Description: %s"
+msgstr ""
+
 #: ulng.rsmsgarchivercustomparams
 msgid "Additional parameters for archiver command-line:"
 msgstr "Дадатковыя парметры для загаднага радка архіватара:"
@@ -9977,7 +10166,7 @@ msgid "Cannot overwrite directory \"%s\" with non-directory \"%s\""
 msgstr "Немагчыма перазапісаць каталог \"%s\" файлам, што не з'яўляецца каталогам \"%s\""
 
 #: ulng.rsmsgchdirfailed
-msgid "ChDir to [%s] failed!"
+msgid "Change current directory to \"%s\" failed!"
 msgstr "Не атрымалася перайсці ў каталог [%s]!"
 
 #: ulng.rsmsgcloseallinactivetabs
@@ -10196,6 +10385,14 @@ msgstr "Занадта шмат файлаў для архіву"
 msgid "Archive format unknown"
 msgstr "Невядомы фармат архіву"
 
+#: ulng.rsmsgexecutablepath
+msgid "Executable: %s"
+msgstr ""
+
+#: ulng.rsmsgexitstatuscode
+msgid "Exit status:"
+msgstr ""
+
 #: ulng.rsmsgfavoritetabsdeleteallentries
 msgid "Are you sure you want to remove all entries of your Favorite Tabs? (There is no \"undo\" to this action!)"
 msgstr "Сапраўды выдаліць усе аб'екты з вашых \"выбраных укладак\"? (Адрабіць не атрымаецца!)"
@@ -10205,7 +10402,7 @@ msgid "Drag here other entries"
 msgstr "Перацягніце сюды іншыя запісы"
 
 #: ulng.rsmsgfavoritetabsentername
-msgid "Enter a name this Favorite Tabs entry"
+msgid "Enter a name for this new Favorite Tabs entry:"
 msgstr "Увядзіце назву гэтых выбраных укладак"
 
 #: ulng.rsmsgfavoritetabsenternametitle
@@ -10626,6 +10823,14 @@ msgstr "Перамясціць файл %s"
 msgid "Pack to file %s"
 msgstr "Запакаваць у файл %s"
 
+#: ulng.rsmsglogprogramshutdown
+msgid "Program shutdown"
+msgstr ""
+
+#: ulng.rsmsglogprogramstart
+msgid "Program start"
+msgstr ""
+
 #: ulng.rsmsglogrmdir
 msgid "Remove directory %s"
 msgstr "Выдаліць каталог %s"
@@ -10694,6 +10899,10 @@ msgstr "Не вызначана."
 msgid "Object does not exist!"
 msgstr "Аб'ект не існуе!"
 
+#: ulng.rsmsgopeninanotherprogram
+msgid "The action cannot be completed because the file is open in another program:"
+msgstr ""
+
 #: ulng.rsmsgpanelpreview
 msgctxt "ulng.rsmsgpanelpreview"
 msgid "Below is a preview. You may move cursor and select files to get immediately an actual look and feel of the various settings."
@@ -10730,6 +10939,10 @@ msgstr "Шаблон \"%s\" ужо існуе. Перазапісаць?"
 #: ulng.rsmsgproblemexecutingcommand
 msgid "Problem executing command (%s)"
 msgstr "Не атрымалася запусціць загад (%s)"
+
+#: ulng.rsmsgprocessid
+msgid "PID: %d"
+msgstr ""
 
 #: ulng.rsmsgpromptaskingfilename
 msgid "Filename for dropped text:"
@@ -10914,6 +11127,10 @@ msgstr ""
 #: ulng.rsmsgtctoolbarwheretosave
 msgid "Enter location and filename where to save a TC Toolbar file"
 msgstr "Увядзіце назву і шлях да захаванага файла панэлі прылад TC"
+
+#: ulng.rsmsgterminateprocess
+msgid "WARNING: Terminating a process can cause undesired results including loss of data and system instability. The process will not be given the chance to save its state or data before it is terminated. Are you sure you want to terminate the process?"
+msgstr ""
 
 #: ulng.rsmsgthisisnowinclipboard
 msgid "\"%s\" is now in the clipboard"
@@ -11460,17 +11677,13 @@ msgstr "Першае;Апошняе;"
 msgid "Classic, legacy order;Alphabetic order (but language still first)"
 msgstr "Класічна; Па алфавіце (мова першая)"
 
+#: ulng.rsoptconfigtreestate
+msgid "Full expand;Full collapse"
+msgstr ""
+
 #: ulng.rsoptdifferframeposition
 msgid "Active frame panel on left, inactive on right (legacy);Left frame panel on left, right on right"
 msgstr "Актыўная панэль злева, неактыўная зправа;Левая панэль злева, правая зправа"
-
-#: ulng.rsoptdisable
-msgid "Disable"
-msgstr "Выключыць"
-
-#: ulng.rsoptenable
-msgid "Enable"
-msgstr "Уключыць"
 
 #: ulng.rsoptenterext
 msgid "Enter extension"
@@ -11484,9 +11697,9 @@ msgstr "Дадаць у пачатак; Дадаць у канец; Па алф�
 msgid "separate window;minimized separate window;operations panel"
 msgstr "асобнае акно;згарнуць асобнае акно;панэль аперацый"
 
-#: ulng.rsoptfilesizeformat
-msgid "float;B;K;M;G"
-msgstr "плаваючы;B;K;M;G"
+#: ulng.rsoptfilesizefloat
+msgid "float"
+msgstr "плаваючы"
 
 #: ulng.rsopthotkeysadddeleteshortcutlong
 msgid "Shortcut %s for cm_Delete will be registered, so it can be used to reverse this setting."
@@ -11666,6 +11879,10 @@ msgstr "Пошук файлаў"
 msgid "Files views"
 msgstr "Адлюстраванне файлаў"
 
+#: ulng.rsoptionseditorfilesviewscomplement
+msgid "Files views extra"
+msgstr ""
+
 #: ulng.rsoptionseditorfiletypes
 msgctxt "ulng.rsoptionseditorfiletypes"
 msgid "File types"
@@ -11781,24 +11998,54 @@ msgstr "Левая кнопка;Правая кнопка;"
 msgid "at the top of the file list;after directories (if directories are sorted before files);at sorted position;at the bottom of the file list"
 msgstr "уверсе спіса файлаў; пасля каталогаў (калі каталогі адсартаваныя перад файламі); на адсартаванай пазіцыі; унізе спіса файлаў"
 
+#: ulng.rsoptpersonalizedfilesizeformat
+msgid "Personalized float;Personalized byte;Personalized kilobyte;Personalized megabyte;Personalized gigabyte;Personalized terabyte"
+msgstr ""
+
 #: ulng.rsoptpluginalreadyassigned
 msgid "Plugin %s is already assigned for the following extensions:"
 msgstr "Убудова %s ужо ўхвалена для наступных пашырэнняў:"
+
+#: ulng.rsoptplugindisable
+msgid "D&isable"
+msgstr "Выключыць"
+
+#: ulng.rsoptpluginenable
+msgctxt "ulng.rsoptpluginenable"
+msgid "E&nable"
+msgstr "Ук&лючыць"
 
 #: ulng.rsoptpluginsactive
 msgctxt "ulng.rsoptpluginsactive"
 msgid "Active"
 msgstr "Актыўна"
 
+#: ulng.rsoptpluginsdescription
+msgctxt "ulng.rsoptpluginsdescription"
+msgid "Description"
+msgstr "Апісанне"
+
 #: ulng.rsoptpluginsfilename
 msgctxt "ulng.rsoptpluginsfilename"
 msgid "File name"
 msgstr "Назва файла"
 
+#: ulng.rsoptpluginshowbyextension
+msgid "By extension"
+msgstr ""
+
+#: ulng.rsoptpluginshowbyplugin
+msgid "By Plugin"
+msgstr ""
+
 #: ulng.rsoptpluginsname
 msgctxt "ulng.rsoptpluginsname"
 msgid "Name"
 msgstr "Назва"
+
+#: ulng.rsoptpluginsortonlywhenbyextension
+msgid "Sorting WCX plugins is only possible when showing plugins by extension!"
+msgstr ""
 
 #: ulng.rsoptpluginsregisteredfor
 msgctxt "ulng.rsoptpluginsregisteredfor"
@@ -11910,6 +12157,65 @@ msgstr "Стандартны DC - Копія (x) назвафайла.тып;Win
 msgid "don't change position;use the same setting as for new files;to sorted position"
 msgstr "не змяняць пазіцыю;выкарыстоўваць налады як для новых файлаў;ва ўпарадкаванай пазіцыі"
 
+#: ulng.rspluginfilenamestylelist
+msgid "With complete absolute path;Path relative to %COMMANDER_PATH%;Relative to the following"
+msgstr ""
+
+#: ulng.rspluginsearchcontainscasesenstive
+msgid "contains(case)"
+msgstr ""
+
+#: ulng.rspluginsearchcontainsnotcase
+msgid "contains"
+msgstr ""
+
+#: ulng.rspluginsearchequalcasesensitive
+msgid "=(case)"
+msgstr ""
+
+#: ulng.rspluginsearchequalnotcase
+msgctxt "ulng.rspluginsearchequalnotcase"
+msgid "="
+msgstr "="
+
+#: ulng.rspluginsearchfieldnotfound
+msgid "Field \"%s\" not found!"
+msgstr ""
+
+#: ulng.rspluginsearchnotcontainscasesenstive
+msgid "!contains(case)"
+msgstr ""
+
+#: ulng.rspluginsearchnotcontainsnotcase
+msgid "!contains"
+msgstr ""
+
+#: ulng.rspluginsearchnotequacasesensitive
+msgid "!=(case)"
+msgstr ""
+
+#: ulng.rspluginsearchnotequalnotcase
+msgctxt "ulng.rspluginsearchnotequalnotcase"
+msgid "!="
+msgstr "!="
+
+#: ulng.rspluginsearchnotregexpr
+msgid "!regexp"
+msgstr ""
+
+#: ulng.rspluginsearchpluginnotfound
+msgid "Plugin \"%s\" not found!"
+msgstr ""
+
+#: ulng.rspluginsearchregexpr
+msgid "regexp"
+msgstr ""
+
+#: ulng.rspluginsearchunitnotfoundforfield
+msgctxt "ulng.rspluginsearchunitnotfoundforfield"
+msgid "Unit \"%s\" not found for field \"%s\" !"
+msgstr ""
+
 #: ulng.rspropscontains
 msgid "Files: %d, folders: %d"
 msgstr "Файлы: %d ,каталогі: %d"
@@ -12015,6 +12321,18 @@ msgctxt "ulng.rssimplewordcommand"
 msgid "Command"
 msgstr "Загад"
 
+#: ulng.rssimpleworderror
+msgid "Error"
+msgstr ""
+
+#: ulng.rssimplewordfailedexcla
+msgid "Failed!"
+msgstr ""
+
+#: ulng.rssimplewordfalse
+msgid "False"
+msgstr ""
+
 #: ulng.rssimplewordfilename
 msgid "Filename"
 msgstr "Назва файла"
@@ -12034,6 +12352,14 @@ msgstr "Парам"
 #: ulng.rssimplewordresult
 msgid "Result"
 msgstr "Вынік"
+
+#: ulng.rssimplewordsuccessexcla
+msgid "Success!"
+msgstr ""
+
+#: ulng.rssimplewordtrue
+msgid "True"
+msgstr ""
 
 #: ulng.rssimplewordworkdir
 msgid "WorkDir"
@@ -12453,6 +12779,10 @@ msgstr "Новы памер"
 #: ulng.rsviewnotfound
 msgid "%s not found!"
 msgstr "%s не даступны!"
+
+#: ulng.rsviewpainttoolslist
+msgid "Pen;Rect;Ellipse"
+msgstr ""
 
 #: ulng.rsviewwithexternalviewer
 msgid "with external viewer"

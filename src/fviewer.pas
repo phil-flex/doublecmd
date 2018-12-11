@@ -1,8 +1,28 @@
 {
-   Seksi Commander
-   ----------------------------
-   Integrated viewer form
+   Double Commander
+   -------------------------------------------------------------------------
+   Build-in File Viewer.
 
+   Copyright (C) 2018  Alexander Koblov (alexx2000@mail.ru)
+
+   This program is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation; either version 2 of the License, or
+   (at your option) any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with this program; if not, write to the Free Software
+   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+   Legacy comment from its origin:
+   -------------------------------------------------------------------------
+   Seksi Commander
+   Integrated viewer form
    Licence  : GNU GPL v 2.0
    Author   : radek.cervinka@centrum.cz
 
@@ -449,6 +469,7 @@ begin
   end;
   Viewer.LoadFile(0);
   Viewer.Show;
+  Viewer.FormResize(Viewer); //<--Was not supposed to be necessary, but this fix a problem with old "hpg_ed" plugin that needed a resize to be spotted in correct position. Through 27 plugins tried, was the only one required that. :-(
 
   if Viewer.miPreview.Checked then
     begin
@@ -853,19 +874,25 @@ begin
             Pen.Color := ColorBoxPaint.Selected;
             Pen.Style := psSolid;
             tmp:= Pen.Width+10;
-            if ComboBoxPaint.text='Pen' then LineTo (x,y)
-            else
+
+            case TViewerPaintTool(ComboBoxPaint.ItemIndex) of
+              vptPen: LineTo (x,y);
+              vptRectangle, vptEllipse:
               begin
-                if (startX>x) and (startY<y) then
-                CopyRect (Rect(UndoSX+tmp,UndoSY-tmp,UndoEX-tmp,UndoEY+tmp), tmp_all.canvas,Rect(UndoSX+tmp,UndoSY-tmp,UndoEX-tmp,UndoEY+tmp));
-                if (startX<x) and (startY>y) then
-                CopyRect (Rect(UndoSX-tmp,UndoSY+tmp,UndoEX+tmp,UndoEY-tmp), tmp_all.canvas,Rect(UndoSX-tmp,UndoSY+tmp,UndoEX+tmp,UndoEY-tmp));
+                if (startX>x) and (startY<y) then CopyRect (Rect(UndoSX+tmp,UndoSY-tmp,UndoEX-tmp,UndoEY+tmp), tmp_all.canvas,Rect(UndoSX+tmp,UndoSY-tmp,UndoEX-tmp,UndoEY+tmp));
+                if (startX<x) and (startY>y) then CopyRect (Rect(UndoSX-tmp,UndoSY+tmp,UndoEX+tmp,UndoEY-tmp), tmp_all.canvas,Rect(UndoSX-tmp,UndoSY+tmp,UndoEX+tmp,UndoEY-tmp));
                 if (startX>x) and (startY>y) then
-                CopyRect (Rect(UndoSX+tmp,UndoSY+tmp,UndoEX-tmp,UndoEY-tmp), tmp_all.canvas,Rect(UndoSX+tmp,UndoSY+tmp,UndoEX-tmp,UndoEY-tmp))
+                  CopyRect (Rect(UndoSX+tmp,UndoSY+tmp,UndoEX-tmp,UndoEY-tmp), tmp_all.canvas,Rect(UndoSX+tmp,UndoSY+tmp,UndoEX-tmp,UndoEY-tmp))
                 else
-                CopyRect (Rect(UndoSX-tmp,UndoSY-tmp,UndoEX+tmp,UndoEY+tmp), tmp_all.canvas,Rect(UndoSX-tmp,UndoSY-tmp,UndoEX+tmp,UndoEY+tmp));//UndoTmp;
-                if ComboBoxPaint.text='Rect' then Rectangle(Rect(StartX,StartY,X,Y))else Ellipse(StartX,StartY,X,Y);
+                  CopyRect (Rect(UndoSX-tmp,UndoSY-tmp,UndoEX+tmp,UndoEY+tmp), tmp_all.canvas,Rect(UndoSX-tmp,UndoSY-tmp,UndoEX+tmp,UndoEY+tmp));//UndoTmp;
+
+                case TViewerPaintTool(ComboBoxPaint.ItemIndex) of
+                  vptRectangle: Rectangle(Rect(StartX,StartY,X,Y));
+                  vptEllipse:Ellipse(StartX,StartY,X,Y);
+                end;
               end;
+            end;
+
             UndoSX:=StartX;
             UndoSY:=StartY;
             UndoEX:=X;
@@ -1589,7 +1616,7 @@ begin
   gImageStretchOnlyLarge:= miStretchOnlyLarge.Checked;
   gImageCenter:= miCenter.Checked;
   gPreviewVisible := miPreview.Checked;
-  gImagePaintMode := ComboBoxPaint.text;
+  gImagePaintMode := TViewerPaintTool(ComboBoxPaint.ItemIndex);
   gImagePaintWidth := StrToInt(ComboBoxWidth.Text) ;
   gImagePaintColor := ColorBoxPaint.Selected;
   case ViewerControl.Mode of
@@ -1636,6 +1663,9 @@ begin
   HMViewer := HotMan.Register(Self, HotkeysCategory);
   HMViewer.RegisterActionList(actionList);
 
+  ParseLineToList(rsViewPaintToolsList, ComboBoxPaint.Items);
+  SetComboWidthToLargestElement(ComboBoxPaint, 30);
+
   ViewerControl.OnGuessEncoding:= @DetectEncoding;
 
   FontOptionsToFont(gFonts[dcfViewer], ViewerControl.Font);
@@ -1654,7 +1684,7 @@ begin
   miStretchOnlyLarge.Checked := gImageStretchOnlyLarge;
   miCenter.Checked := gImageCenter;
   miPreview.Checked := gPreviewVisible;
-  ComboBoxPaint.Text := gImagePaintMode;
+  ComboBoxPaint.ItemIndex := Integer(gImagePaintMode);
   ComboBoxWidth.Text := IntToStr(gImagePaintWidth);
   ColorBoxPaint.Selected := gImagePaintColor;
 
@@ -1971,10 +2001,13 @@ begin
   // Update scrollbars
   // TODO: fix - calculations are correct but it seems like scroll bars
   // are being updated only after a second call to Form.Resize
-  if (iLeft < 0) then
-    sboxImage.HorzScrollBar.Position:= -iLeft;
-  if (iTop < 0) then
-    sboxImage.VertScrollBar.Position:= -iTop;
+  if sboxImage.HandleAllocated then
+  begin
+    if (iLeft < 0) then
+      sboxImage.HorzScrollBar.Position:= -iLeft;
+    if (iTop < 0) then
+      sboxImage.VertScrollBar.Position:= -iTop;
+  end;
 
   // Update status bar
   Status.Panels[sbpCurrentResolution].Text:= Format(fmtImageInfo, [iWidth,iHeight,  100.0 * dScaleFactor]);

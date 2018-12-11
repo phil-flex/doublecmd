@@ -3,7 +3,7 @@
    -------------------------------------------------------------------------
    Implementing of Options dialog
 
-   Copyright (C) 2006-2016  Koblov Alexander (Alexx2000@mail.ru)
+   Copyright (C) 2006-2018 Alexander Koblov (alexx2000@mail.ru)
 
    contributors:
 
@@ -19,9 +19,8 @@
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
 
-   You should have received a copy of the GNU General Public License along
-   with this program; if not, write to the Free Software Foundation, Inc.,
-   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+   You should have received a copy of the GNU General Public License
+   along with this program. If not, see <http://www.gnu.org/licenses/>.
 }
 
 unit fOptions;
@@ -205,16 +204,15 @@ begin
 
     scoAlphabeticalButLanguage:
       begin
-        if TOptionsEditorView(Node1.Data).EditorClass.ClassName='TfrmOptionsLanguage' then
+        if (TOptionsEditorView(Node1.Data).EditorClass.ClassName='TfrmOptionsLanguage') or (TOptionsEditorView(Node1.Data).EditorClass.ClassName='TfrmOptionsFilesViewsComplement') then
           result:=-1
         else
-          if TOptionsEditorView(Node2.Data).EditorClass.ClassName='TfrmOptionsLanguage' then
+          if (TOptionsEditorView(Node2.Data).EditorClass.ClassName='TfrmOptionsLanguage') or (TOptionsEditorView(Node1.Data).EditorClass.ClassName='TfrmOptionsFilesViewsComplement') then
             result:=1
           else
             result:=CompareStrings(Node1.Text,Node2.Text, gSortNatural, gSortCaseSensitivity)
       end;
   end;
-
 end;
 
 procedure TfrmOptions.CreateOptionsEditorList;
@@ -264,6 +262,10 @@ procedure TfrmOptions.CreateOptionsEditorList;
 begin
   FOptionsEditorList:= TOptionsEditorViews.Create;
   AddEditors(OptionsEditorClassList, nil);
+  case gCollapseConfigurationOptionsTree of
+    ctsFullExpand: ; //By legacy, it was doing automaticall the tvTreeView.FullExpand;
+    ctsFullCollapse: tvTreeView.FullCollapse;
+  end;
 end;
 
 function TfrmOptions.GetEditor(EditorClass: TOptionsEditorClass): TOptionsEditor;

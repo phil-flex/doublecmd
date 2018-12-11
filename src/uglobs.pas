@@ -1,5 +1,24 @@
 {
    Double Commander
+   -------------------------------------------------------------------------
+   Globals variables and some consts
+
+   Copyright (C) 2008-2018 Alexander Koblov (alexx2000@mail.ru)
+
+   This program is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation; either version 2 of the License, or
+   (at your option) any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+   Original comment:
    ------------------------------------------------------------
    Seksi Commander
    ----------------------------
@@ -33,6 +52,7 @@ uses
 type
   { Configuration options }
   TSortConfigurationOptions = (scoClassicLegacy, scoAlphabeticalButLanguage);
+  TConfigurationTreeState = (ctsFullExpand, ctsFullCollapse);
 
   { Log options }
   TLogOptions = set of (log_cp_mv_ln, log_delete, log_dir_op, log_arc_op,
@@ -89,6 +109,13 @@ type
   TExternalToolsOptions = array[TExternalTool] of TExternalToolOptions;
   TResultingFramePositionAfterCompare = (rfpacActiveOnLeft, rfpacLeftOnLeft);
 
+  //Related with the Viewer
+  TViewerPaintTool = (vptPen, vptRectangle, vptEllipse);
+
+  TPluginType = (ptDSX, ptWCX, ptWDX, ptWFX, ptWLX); //*Important: Keep that order to to fit with procedures LoadXmlConfig/SaveXmlConfig when we save/restore widths of "TfrmTweakPlugin".
+  TWcxCfgViewMode = (wcvmByPlugin, wcvmByExtension);
+  TPluginFilenameStyle = (pfsAbsolutePath, pfsRelativeToDC, pfsRelativeToFollowingPath);
+
   TDCFont = (dcfMain, dcfViewer, dcfEditor, dcfLog, dcfViewerBook, dcfConsole, dcfSearchResults, dcfPathEdit, dcfFunctionButtons, dcfOptionsTree, dcfOptionsMain);
   TDCFontOptions = record
     Name: String;
@@ -127,7 +154,7 @@ type
 
 const
   { Default hotkey list version number }
-  hkVersion = 44;
+  hkVersion = 46;
   // 40 - In "Main" context, added the "Ctrl+Shift+F7" for "cm_AddNewSearch".
   //      In "Find Files" context, changed "cm_Start" that was "Enter" for "F9".
   //      In "Find Files" context, added "Alt+F7" as a valid alternative for "cm_PageStandard".
@@ -204,6 +231,13 @@ var
   gWFXPlugins: TWFXModuleList;
   { WLX plugins }
   gWLXPlugins: TWLXModuleList;
+  gTweakPluginWidth: array[ord(ptDSX)..ord(ptWLX)] of integer;
+  gTweakPluginHeight: array[ord(ptDSX)..ord(ptWLX)] of integer;
+  gPluginInAutoTweak: boolean;
+  gWCXConfigViewMode: TWcxCfgViewMode;
+  gPluginFilenameStyle: TPluginFilenameStyle = pfsAbsolutePath;
+  gPluginPathToBeRelativeTo: string = '%COMMANDER_PATH%';
+  
   { MultiArc addons }
   gMultiArcList: TMultiArcList;
 
@@ -300,7 +334,12 @@ var
   gAlwaysShowTrayIcon: Boolean;
   gMinimizeToTray: Boolean;
   gFileSizeFormat: TFileSizeFormat;
+  gHeaderFooterSizeFormat: TFileSizeFormat;
+  gOperationSizeFormat: TFileSizeFormat;
   gFileSizeDigits: Integer;
+  gHeaderFooterDigits: Integer;
+  gOperationSizeDigits: Integer;
+  gSizeDisplayUnits: array[LOW(TFileSizeFormat) .. HIGH(TFileSizeFormat)] of string;
   gDateTimeFormat : String;
   gDriveBlackList: String;
   gDriveBlackListUnmounted: Boolean; // Automatically black list unmounted devices
@@ -343,6 +382,9 @@ var
   gExts:TExts;
   gColorExt:TColorExt;
   gFileInfoToolTip: TFileInfoToolTip;
+  gFileInfoToolTipValue: array[0..ord(ttthtNeverHide)] of integer = (-1, 1000, 2000, 3000, 5000, 10000, 30000, 60000, integer.MaxValue);
+
+
 
   { Fonts page }
   gFonts: TDCFontsOptions;
@@ -436,7 +478,8 @@ var
   gSaveDirHistory,
   gSaveCmdLineHistory,
   gSaveFileMaskHistory : Boolean;
-  gSortOrderOfConfigurationOptionsTree:TSortConfigurationOptions;
+  gSortOrderOfConfigurationOptionsTree: TSortConfigurationOptions;
+  gCollapseConfigurationOptionsTree: TConfigurationTreeState;
   
   { Quick Search page }
   gQuickSearchOptions: TQuickSearchOptions;
@@ -505,8 +548,8 @@ var
   gCopyMovePath2,
   gCopyMovePath3,
   gCopyMovePath4,
-  gCopyMovePath5,
-  gImagePaintMode: String;
+  gCopyMovePath5: String;
+  gImagePaintMode: TViewerPaintTool;
   gImagePaintWidth,
   gColCount,
   gViewerMode,
@@ -933,6 +976,7 @@ begin
       AddIfNotExists(['Shift+F5'],[],'cm_CopySamePanel');
       AddIfNotExists(['Shift+F10'],[],'cm_ContextMenu');
       AddIfNotExists(['Shift+F12'],[],'cm_DoAnyCmCommand');
+      AddIfNotExists(['Shift+Tab'],[],'cm_FocusTreeView');
       AddIfNotExists(['Alt+V'],[],'cm_OperationsViewer');
       AddIfNotExists(['Alt+X'],[],'cm_Exit');
       AddIfNotExists(['Alt+Z'],[],'cm_TargetEqualSource');
@@ -996,7 +1040,12 @@ begin
       AddIfNotExists(['Ctrl+Shift+Home'],[],'cm_ChangeDirToHome');
       AddIfNotExists(['Ctrl+Left'],[],'cm_TransferLeft');
       AddIfNotExists(['Ctrl+Right'],[],'cm_TransferRight');
-      AddIfNotExists(['Shift+Tab'],[],'cm_NextGroup');
+
+      if HotMan.Version < 46 then
+      begin
+        HMHotKey:= FindByCommand('cm_NextGroup');
+        if Assigned(HMHotKey) then Remove(HMHotKey);
+      end;
 
       AddIfNotExists(VK_C, [ssModifier], 'cm_CopyToClipboard');
       AddIfNotExists(VK_V, [ssModifier], 'cm_PasteFromClipboard');
@@ -1094,23 +1143,38 @@ begin
   HMForm := HotMan.Forms.FindOrCreate('Editor');
   with HMForm.Hotkeys do
     begin
-      AddIfNotExists(['F7'],[],'cm_EditFind');
-      AddIfNotExists(['F2'],[],'cm_FileSave');
+      if HotMan.Version < 45 then
+      begin
+        HMHotKey:= FindByCommand('cm_EditFind');
+        if Assigned(HMHotKey) and HMHotKey.SameShortcuts(['F7']) then
+          Remove(HMHotKey);
+        HMHotKey:= FindByCommand('cm_FileSave');
+        if Assigned(HMHotKey) and HMHotKey.SameShortcuts(['F2']) then
+          Remove(HMHotKey);
+        HMHotKey:= FindByCommand('cm_FileExit');
+        if Assigned(HMHotKey) and HMHotKey.SameShortcuts(['Esc']) then
+          Remove(HMHotKey);
+      end;
+
+      AddIfNotExists([SmkcSuper + 'F' ,'','',
+                      'F7'            ,'',''],'cm_EditFind');
+      AddIfNotExists(['F2'            ,'','',
+                      SmkcSuper + 'S' ,'',''],'cm_FileSave');
       AddIfNotExists(['F3'],[],'cm_EditFindNext');
       AddIfNotExists(['Shift+F3'],[],'cm_EditFindPrevious');
-      AddIfNotExists(['Esc'],[],'cm_FileExit');
+      AddIfNotExists(['Alt+X', '', '', //Let is be first since by legacy what we get used to see in main menu as shortcut was "Alt+X".
+                      'Esc', '', ''], 'cm_FileExit');
 
       AddIfNotExists(VK_X, [ssModifier], 'cm_EditCut');
       AddIfNotExists(VK_N, [ssModifier], 'cm_FileNew');
       AddIfNotExists(VK_O, [ssModifier], 'cm_FileOpen');
-      AddIfNotExists(VK_S, [ssModifier], 'cm_FileSave');
-      AddIfNotExists(VK_F, [ssModifier], 'cm_EditFind');
       AddIfNotExists(VK_R, [ssModifier], 'cm_EditRplc');
       AddIfNotExists(VK_C, [ssModifier], 'cm_EditCopy');
       AddIfNotExists(VK_Z, [ssModifier], 'cm_EditUndo');
       AddIfNotExists(VK_V, [ssModifier], 'cm_EditPaste');
       AddIfNotExists(VK_A, [ssModifier], 'cm_EditSelectAll');
       AddIfNotExists(VK_Z, [ssModifier, ssShift], 'cm_EditRedo');
+      AddIfNotExists(VK_G, [ssModifier], 'cm_EditGotoLine');
     end;
 
 
@@ -1306,8 +1370,8 @@ begin
   FreeThenNil(gWCXPlugins);
   FreeThenNil(gWDXPlugins);
   FreeThenNil(gWFXPlugins);
-  FreeThenNil(gMultiArcList);
   FreeThenNil(gWLXPlugins);
+  FreeThenNil(gMultiArcList);
   FreeThenNil(ColSet);
   FreeThenNil(HotMan);
 end;
@@ -1366,7 +1430,13 @@ begin
   gNewFilesPosition := nfpSortedPosition;
   gUpdatedFilesPosition := ufpNoChange;
   gFileSizeFormat := fsfFloat;
+  gHeaderFooterSizeFormat := fsfPersonalizedFloat;
+  gOperationSizeFormat := fsfPersonalizedFloat;
   gFileSizeDigits := 1;
+  gHeaderFooterDigits := 1;
+  gOperationSizeDigits := 1;
+  //NOTES: We're intentionnaly not setting our default memory immediately because language file has not been loaded yet.
+  //       We'll set them *after* after language has been loaded since we'll know the correct default to use.
   gMinimizeToTray := False;
   gAlwaysShowTrayIcon := False;
   gMouseSelectionEnabled := True;
@@ -1606,6 +1676,8 @@ begin
   gSaveDirHistory := True;
   gSaveCmdLineHistory := True;
   gSaveFileMaskHistory := True;
+  gPluginInAutoTweak := False;
+  gWCXConfigViewMode := wcvmByPlugin;
 
   { Quick Search/Filter page }
   gQuickSearchOptions.Match := [qsmBeginning, qsmEnding];
@@ -1676,7 +1748,7 @@ begin
   gCopyMovePath3 := '';
   gCopyMovePath4 := '';
   gCopyMovePath5 := '';
-  gImagePaintMode := 'Pen';
+  gImagePaintMode := vptPen;
   gImagePaintWidth := 5;
   gColCount := 1;
   gTabSpaces := 8;
@@ -1827,34 +1899,41 @@ begin
     Exit(True);
 
   // Check global directory for XML config.
-  if (gpCmdLineCfgDir = EmptyStr) and
-     mbFileExists(gpGlobalCfgDir + 'doublecmd.xml') then
+  if (gpCmdLineCfgDir = EmptyStr) then
   begin
-    gConfig := TXmlConfig.Create(gpGlobalCfgDir + 'doublecmd.xml');
-    gUseConfigInProgramDir := True;
-    if mbFileAccess(gpGlobalCfgDir + 'doublecmd.xml', fmOpenRead or fmShareDenyWrite) then
+    gUseConfigInProgramDir:= mbFileExists(gpGlobalCfgDir + 'doublecmd.inf');
+
+    if gUseConfigInProgramDir or mbFileExists(gpGlobalCfgDir + 'doublecmd.xml') then
     begin
-      LoadConfigCheckErrors(@LoadGlobalConfig, gpGlobalCfgDir + 'doublecmd.xml', ErrorMessage);
-      gUseConfigInProgramDir := gConfig.GetValue(gConfig.RootNode, 'Configuration/UseConfigInProgramDir', False);
-      if not gUseConfigInProgramDir then
+      gConfig := TXmlConfig.Create(gpGlobalCfgDir + 'doublecmd.xml');
+      if mbFileExists(gpGlobalCfgDir + 'doublecmd.xml') then
       begin
-        if mbFileExists(gpCfgDir + 'doublecmd.xml') then
-          // Close global config so that the local config is opened below.
-          FreeAndNil(gConfig)
+        if mbFileAccess(gpGlobalCfgDir + 'doublecmd.xml', fmOpenRead or fmShareDenyWrite) then
+        begin
+          LoadConfigCheckErrors(@LoadGlobalConfig, gpGlobalCfgDir + 'doublecmd.xml', ErrorMessage);
+          gConfig.TryGetValue(gConfig.RootNode, 'Configuration/UseConfigInProgramDir', gUseConfigInProgramDir);
+
+          if not gUseConfigInProgramDir then
+          begin
+            if mbFileExists(gpCfgDir + 'doublecmd.xml') then
+              // Close global config so that the local config is opened below.
+              FreeAndNil(gConfig)
+            else
+              // Local config is used but it doesn't exist. Use global config that has just
+              // been read but set file name accordingly and later save to local config.
+              gConfig.FileName := gpCfgDir + 'doublecmd.xml';
+          end;
+        end
         else
-          // Local config is used but it doesn't exist. Use global config that has just
-          // been read but set file name accordingly and later save to local config.
-          gConfig.FileName := gpCfgDir + 'doublecmd.xml';
+        begin
+          // Configuration file is not readable.
+          AddStrWithSep(ErrorMessage,
+              'Config file "' + gpGlobalCfgDir + 'doublecmd.xml' +
+              '" exists but is not readable.',
+              LineEnding);
+          Exit(False);
+        end;
       end;
-    end
-    else
-    begin
-      // Configuration file is not readable.
-      AddStrWithSep(ErrorMessage,
-          'Config file "' + gpGlobalCfgDir + 'doublecmd.xml' +
-          '" exists but is not readable.',
-          LineEnding);
-      Exit(False);
     end;
   end;
 
@@ -2022,18 +2101,24 @@ begin
      (gpCmdLineCfgDir = EmptyStr) then
     begin
       LoadPaths;
+
       if gUseConfigInProgramDirNew then
       begin
         gpCfgDir := gpGlobalCfgDir;
         UpdateEnvironmentVariable;
+        FileClose(mbFileCreate(gpGlobalCfgDir + 'doublecmd.inf'));
+      end
+      else begin
+        if mbFileExists(gpGlobalCfgDir + 'doublecmd.inf') then
+          mbDeleteFile(gpGlobalCfgDir + 'doublecmd.inf')
       end;
 
-      { Save location of configuration files }
+      { Remove location of configuration files from XML}
       if mbFileAccess(gpGlobalCfgDir + 'doublecmd.xml', fmOpenWrite or fmShareDenyWrite) then
       begin
         TmpConfig := TXmlConfig.Create(gpGlobalCfgDir + 'doublecmd.xml', True);
         try
-          TmpConfig.SetValue(TmpConfig.RootNode, 'Configuration/UseConfigInProgramDir', gUseConfigInProgramDirNew);
+          TmpConfig.DeleteNode(TmpConfig.RootNode, 'Configuration/UseConfigInProgramDir');
           TmpConfig.Save;
         finally
           TmpConfig.Free;
@@ -2134,6 +2219,20 @@ begin
 
     DoLoadLng;
 
+    { Since language file has been loaded, we'll not set our default memory size string. They will be in the correct language }
+    gSizeDisplayUnits[fsfFloat] := ''; //Not used, but at least it will be defined.
+    gSizeDisplayUnits[fsfByte] := ''; //Not user changeable by legacy and empty by legacy.
+    gSizeDisplayUnits[fsfKilo] := ' ' + Trim(rsLegacyDisplaySizeSingleLetterKilo); //Not user changeable by legacy, taken from language file since 2018-11.
+    gSizeDisplayUnits[fsfMega] := ' ' + Trim(rsLegacyDisplaySizeSingleLetterMega); //Not user changeable by legacy, taken from language file since 2018-11.
+    gSizeDisplayUnits[fsfGiga] := ' ' + Trim(rsLegacyDisplaySizeSingleLetterGiga); //Not user changeable by legacy, taken from language file since 2018-11.
+    gSizeDisplayUnits[fsfTera] := ' ' + Trim(rsLegacyDisplaySizeSingleLetterTera); //Not user changeable by legacy, taken from language file since 2018-11.
+    gSizeDisplayUnits[fsfPersonalizedFloat] := ''; //Not used, but at least it will be defined.
+    gSizeDisplayUnits[fsfPersonalizedByte] := rsDefaultPersonalizedAbbrevByte;
+    gSizeDisplayUnits[fsfPersonalizedKilo] := rsDefaultPersonalizedAbbrevKilo;
+    gSizeDisplayUnits[fsfPersonalizedMega] := rsDefaultPersonalizedAbbrevMega;
+    gSizeDisplayUnits[fsfPersonalizedGiga] := rsDefaultPersonalizedAbbrevGiga;
+    gSizeDisplayUnits[fsfPersonalizedTera] := rsDefaultPersonalizedAbbrevTera;
+
     { Behaviours page }
     Node := Root.FindNode('Behaviours');
     if Assigned(Node) then
@@ -2211,7 +2310,17 @@ begin
       begin
         gFileSizeFormat := TFileSizeFormat(GetValue(Node, 'FileSizeFormat', Ord(gFileSizeFormat)));
       end;
+      gHeaderFooterSizeFormat := TFileSizeFormat(GetValue(Node,'HeaderFooterSizeFormat', ord(gHeaderFooterSizeFormat)));
+      gOperationSizeFormat := TFileSizeFormat(GetValue(Node, 'OperationSizeFormat', Ord(gOperationSizeFormat)));
       gFileSizeDigits := GetValue(Node, 'FileSizeDigits', gFileSizeDigits);
+      gHeaderFooterDigits := GetValue(Node, 'HeaderFooterDigits', gHeaderFooterDigits);
+      gOperationSizeDigits := GetValue(Node, 'OperationSizeDigits', gOperationSizeDigits);
+      gSizeDisplayUnits[fsfPersonalizedByte] := Trim(GetValue(Node, 'PersonalizedByte', gSizeDisplayUnits[fsfPersonalizedByte]));
+      if gSizeDisplayUnits[fsfPersonalizedByte]<>'' then gSizeDisplayUnits[fsfPersonalizedByte] := ' ' + gSizeDisplayUnits[fsfPersonalizedByte];
+      gSizeDisplayUnits[fsfPersonalizedKilo] := ' ' + Trim(GetValue(Node, 'PersonalizedKilo', gSizeDisplayUnits[fsfPersonalizedKilo]));
+      gSizeDisplayUnits[fsfPersonalizedMega] := ' ' + Trim(GetValue(Node, 'PersonalizedMega', gSizeDisplayUnits[fsfPersonalizedMega]));
+      gSizeDisplayUnits[fsfPersonalizedGiga] := ' ' + Trim(GetValue(Node, 'PersonalizedGiga', gSizeDisplayUnits[fsfPersonalizedGiga]));
+      gSizeDisplayUnits[fsfPersonalizedTera] := ' ' + Trim(GetValue(Node, 'PersonalizedTera', gSizeDisplayUnits[fsfPersonalizedTera]));
       gMinimizeToTray := GetValue(Node, 'MinimizeToTray', gMinimizeToTray);
       gAlwaysShowTrayIcon := GetValue(Node, 'AlwaysShowTrayIcon', gAlwaysShowTrayIcon);
       gMouseSelectionEnabled := GetAttr(Node, 'Mouse/Selection/Enabled', gMouseSelectionEnabled);
@@ -2487,7 +2596,8 @@ begin
     gSaveDirHistory := GetAttr(Root, 'History/DirHistory/Save', gSaveDirHistory);
     gSaveCmdLineHistory := GetAttr(Root, 'History/CmdLineHistory/Save', gSaveCmdLineHistory);
     gSaveFileMaskHistory := GetAttr(Root, 'History/FileMaskHistory/Save', gSaveFileMaskHistory);
-    gSortOrderOfConfigurationOptionsTree := TSortConfigurationOptions(GetAttr(Root, 'Configuration/SortOrder', Integer(scoClassicLegacy)));
+    gSortOrderOfConfigurationOptionsTree := TSortConfigurationOptions(GetAttr(Root, 'Configuration/SortOrder', Integer(scoAlphabeticalButLanguage)));
+    gCollapseConfigurationOptionsTree := TConfigurationTreeState(GetAttr(Root, 'Configuration/TreeType', Integer(ctsFullExpand)));
 
     { Quick Search/Filter page }
     Node := Root.FindNode('QuickSearch');
@@ -2619,7 +2729,7 @@ begin
       gCopyMovePath3 := GetValue(Node, 'CopyMovePath3', gCopyMovePath3);
       gCopyMovePath4 := GetValue(Node, 'CopyMovePath4', gCopyMovePath4);
       gCopyMovePath5 := GetValue(Node, 'CopyMovePath5', gCopyMovePath5);
-      gImagePaintMode := GetValue(Node, 'PaintMode', gImagePaintMode);
+      gImagePaintMode := TViewerPaintTool(GetValue(Node, 'PaintMode', Integer(gImagePaintMode)));
       gImagePaintWidth := GetValue(Node, 'PaintWidth', gImagePaintWidth);
       gColCount    := GetValue(Node, 'NumberOfColumns', gColCount);
       gTabSpaces := GetValue(Node, 'TabSpaces', gTabSpaces);
@@ -2768,6 +2878,15 @@ begin
     gWDXPlugins.Load(gConfig, Node);
     gWFXPlugins.Load(gConfig, Node);
     gWLXPlugins.Load(gConfig, Node);
+    for iIndexContextMode:=ord(ptDSX) to ord(ptWLX) do
+    begin
+      gTweakPluginWidth[iIndexContextMode]:=gConfig.GetValue(Node, Format('TweakPluginWidth%d',[iIndexContextMode]), 0);
+      gTweakPluginHeight[iIndexContextMode]:=gConfig.GetValue(Node, Format('TweakPluginHeight%d',[iIndexContextMode]), 0);
+    end;
+    gPluginFilenameStyle := TPluginFilenameStyle(gConfig.GetValue(Node, 'PluginFilenameStyle', ord(gPluginFilenameStyle)));
+    gPluginPathToBeRelativeTo := gConfig.GetValue(Node, 'PluginPathToBeRelativeTo', gPluginPathToBeRelativeTo);
+    gPluginInAutoTweak := gConfig.GetValue(Node, 'AutoTweak', gPluginInAutoTweak);
+    gWCXConfigViewMode :=  TWcxCfgViewMode(gConfig.GetValue(Node, 'WCXConfigViewMode', Integer(gWCXConfigViewMode)));
   end;
   gWDXPlugins.Add(TExifWdx.Create);
 
@@ -2825,7 +2944,16 @@ begin
     SetValue(Node, 'OnlyOneAppInstance', gOnlyOneAppInstance);
     SetValue(Node, 'LynxLike', gLynxLike);
     SetValue(Node, 'FileSizeFormat', Ord(gFileSizeFormat));
+    SetValue(Node, 'OperationSizeFormat', Ord(gOperationSizeFormat));
+    SetValue(Node, 'HeaderFooterSizeFormat', Ord(gHeaderFooterSizeFormat));
     SetValue(Node, 'FileSizeDigits', gFileSizeDigits);
+    SetValue(Node, 'HeaderFooterDigits', gHeaderFooterDigits);
+    SetValue(Node, 'OperationSizeDigits', gOperationSizeDigits);
+    SetValue(Node, 'PersonalizedByte', Trim(gSizeDisplayUnits[fsfPersonalizedByte]));
+    SetValue(Node, 'PersonalizedKilo', Trim(gSizeDisplayUnits[fsfPersonalizedKilo]));
+    SetValue(Node, 'PersonalizedMega', Trim(gSizeDisplayUnits[fsfPersonalizedMega]));
+    SetValue(Node, 'PersonalizedGiga', Trim(gSizeDisplayUnits[fsfPersonalizedGiga]));
+    SetValue(Node, 'PersonalizedTera', Trim(gSizeDisplayUnits[fsfPersonalizedTera]));
     SetValue(Node, 'MinimizeToTray', gMinimizeToTray);
     SetValue(Node, 'AlwaysShowTrayIcon', gAlwaysShowTrayIcon);
     SubNode := FindNode(Node, 'Mouse', True);
@@ -3036,6 +3164,7 @@ begin
     SetAttr(Root, 'History/CmdLineHistory/Save', gSaveCmdLineHistory);
     SetAttr(Root, 'History/FileMaskHistory/Save', gSaveFileMaskHistory);
     SetAttr(Root, 'Configuration/SortOrder', Integer(gSortOrderOfConfigurationOptionsTree));
+    SetAttr(Root, 'Configuration/TreeType', Integer(gCollapseConfigurationOptionsTree));
 
     { Quick Search/Filter page }
     Node := FindNode(Root, 'QuickSearch', True);
@@ -3117,7 +3246,7 @@ begin
     SetValue(Node, 'CopyMovePath3', gCopyMovePath3);
     SetValue(Node, 'CopyMovePath4', gCopyMovePath4);
     SetValue(Node, 'CopyMovePath5', gCopyMovePath5);
-    SetValue(Node, 'PaintMode', gImagePaintMode);
+    SetValue(Node, 'PaintMode', Integer(gImagePaintMode));
     SetValue(Node, 'PaintWidth', gImagePaintWidth);
     SetValue(Node, 'NumberOfColumns', gColCount);
     SetValue(Node, 'TabSpaces', gTabSpaces);
@@ -3248,6 +3377,15 @@ begin
   gWDXPlugins.Save(gConfig, Node);
   gWFXPlugins.Save(gConfig, Node);
   gWLXPlugins.Save(gConfig, Node);
+  for iIndexContextMode:=ord(ptDSX) to ord(ptWLX) do
+  begin
+    gConfig.SetValue(Node, Format('TweakPluginWidth%d',[iIndexContextMode]), gTweakPluginWidth[iIndexContextMode]);
+    gConfig.SetValue(Node, Format('TweakPluginHeight%d',[iIndexContextMode]), gTweakPluginHeight[iIndexContextMode]);
+  end;
+  gConfig.SetValue(Node, 'AutoTweak', gPluginInAutoTweak);
+  gConfig.SetValue(Node, 'WCXConfigViewMode', Integer(gWCXConfigViewMode));
+  gConfig.SetValue(Node, 'PluginFilenameStyle', ord(gPluginFilenameStyle));
+  gConfig.SetValue(Node,'PluginPathToBeRelativeTo', gPluginPathToBeRelativeTo);  
 end;
 
 function LoadConfig: Boolean;

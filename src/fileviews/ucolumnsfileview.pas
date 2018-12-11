@@ -174,6 +174,8 @@ type
     procedure ShowRenameFileEdit(aFile: TFile); override;
     procedure UpdateRenameFileEditPosition; override;
 
+    procedure MouseScrollTimer(Sender: TObject); override;
+
     procedure AfterChangePath; override;
 
     function GetVariantFileProperties: TDynamicStringArray; override;
@@ -432,6 +434,10 @@ end;
 
 procedure TColumnsFileView.dgPanelResize(Sender: TObject);
 begin
+{$IF DEFINED(LCLGTK2)}
+  // Workaround: https://doublecmd.sourceforge.io/mantisbt/view.php?id=1992
+  if dgPanel.Flat then dgPanel.Invalidate;
+{$ENDIF}
   Notify([fvnVisibleFilePropertiesChanged]);
 end;
 
@@ -489,6 +495,17 @@ begin
     Inc(ARect.Right, dgPanel.ColWidths[FExtensionColumn]);
 
   edtRename.SetBounds(ARect.Left, ARect.Top, ARect.Right - ARect.Left, ARect.Bottom - ARect.Top);
+end;
+
+procedure TColumnsFileView.MouseScrollTimer(Sender: TObject);
+var
+  APoint: TPoint;
+begin
+  if DragManager.IsDragging or IsMouseSelecting then
+  begin
+    APoint := dgPanel.ScreenToClient(Mouse.CursorPos);
+    dgPanel.DoMouseMoveScroll(APoint.X, APoint.Y);
+  end;
 end;
 
 procedure TColumnsFileView.RedrawFile(FileIndex: PtrInt);
@@ -1938,7 +1955,7 @@ begin
         end;
     end
   { Open folder in new tab on middle click }
-  else if (Button = mbMiddle) and (Y > GetHeaderHeight) then
+  else if (Button = mbMiddle) and (Y > GetHeaderHeight) and MouseOnGrid(X, Y) then
     begin
       frmMain.Commands.cm_OpenDirInNewTab([]);
     end;
@@ -2095,6 +2112,7 @@ begin
   else if (Y > ClientHeight - DefaultRowHeight) and (Y - 1 > FMouseDownY) then
     AEvent := SB_LINEDOWN
   else begin
+    ColumnsView.tmMouseScroll.Enabled := False;
     Exit;
   end;
 
@@ -2106,6 +2124,7 @@ begin
   begin
     Scroll(AEvent);
     FLastMouseScrollTime := GetTickCount64;
+    ColumnsView.tmMouseScroll.Enabled := True;
     if (AEvent = SB_LINEDOWN) then FMouseDownY := -1;
   end;
 end;
