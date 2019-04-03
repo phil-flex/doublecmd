@@ -110,6 +110,7 @@ resourcestring
   rsFilterDirectoryHotListFiles = 'Directory Hotlist files';
   rsFilterArchiverConfigFiles = 'Archiver config files';
   rsFilterPluginFiles = 'Plugin files';
+  rsFilterLibraries = 'Library files';
 
   // Archiver section.
   rsMsgArchiverCustomParams = 'Additional parameters for archiver command-line:';
@@ -993,6 +994,10 @@ resourcestring
   msgTryToLocateCRCFile = 'This file cannot be found and could help to validate final combination of files:'+#$0A+'%s'+#$0A+#$0A+'Could you make it available and press "OK" when ready,'+#$0A+'or press "CANCEL" to continue without it?';
 
   rsMsgInvalidHexNumber = 'Invalid hexadecimal number: "%s"';
+
+  //LUA and script related messages
+  rsMsgScriptCantFindLibrary = 'ERROR: Problem loading Lua library file "%s"';
+  rsMsgWantToConfigureLibraryLocation = 'Do you want to configure Lua library location?';
 
   // Unhandled error.
   rsUnhandledExceptionMessage =

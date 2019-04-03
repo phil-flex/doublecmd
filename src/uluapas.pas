@@ -15,9 +15,8 @@
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
    Lesser General Public License for more details.
 
-   You should have received a copy of the GNU Lesser General Public
-   License along with this library; if not, write to the Free Software
-   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA
+   You should have received a copy of the GNU General Public License
+   along with this program. If not, see <http://www.gnu.org/licenses/>.
 }
 
 unit uLuaPas;
@@ -27,17 +26,17 @@ unit uLuaPas;
 interface
 
 uses
-  Classes, SysUtils, Lua;
+  uDCUtils, Classes, SysUtils, Lua;
 
 procedure RegisterPackages(L : Plua_State);
 procedure SetPackagePath(L: Plua_State; const Path: String);
 function LuaPCall(L : Plua_State; nargs, nresults : Integer): Boolean;
-function ExecuteScript(const FileName: String; Args: array of String): Boolean;
+function ExecuteScript(const FileName: String; Args: array of String; var sErrorToReportIfAny:string): Boolean;
 
 implementation
 
 uses
-  Forms, Dialogs, Clipbrd, LazUTF8, LCLVersion, DCOSUtils,
+  Forms, Dialogs, Clipbrd, LazUTF8, LCLVersion, uLng, DCOSUtils,
   DCConvertEncoding, fMain, uFormCommands, uOSUtils, uGlobs, uLog,
   uClipboard, uShowMsg, uLuaStd, uFindEx, uConvEncoding;
 
@@ -464,7 +463,7 @@ begin
   Result:= (Status = 0);
 end;
 
-function ExecuteScript(const FileName: String; Args: array of String): Boolean;
+function ExecuteScript(const FileName: String; Args: array of String; var sErrorToReportIfAny:string): Boolean;
 var
   L: Plua_State;
   Index: Integer;
@@ -473,11 +472,16 @@ var
   Status: Integer;
 begin
   Result:= False;
+  sErrorToReportIfAny := '';
 
   // Load Lua library
   if not IsLuaLibLoaded then
   begin
-    if not LoadLuaLib(gLuaLib) then Exit;
+    if not LoadLuaLib(mbExpandFileName(gLuaLib)) then
+    begin
+      sErrorToReportIfAny := Format(rsMsgScriptCantFindLibrary, [gLuaLib]);
+      Exit;
+    end;
   end;
 
   // Get script file name
