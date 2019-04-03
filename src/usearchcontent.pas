@@ -3,7 +3,7 @@
    -------------------------------------------------------------------------
    Content plugin search control
 
-   Copyright (C) 2014-2018 Alexander Koblov (alexx2000@mail.ru)
+   Copyright (C) 2014-2019 Alexander Koblov (alexx2000@mail.ru)
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -34,11 +34,11 @@ type
 
   TPluginPanel = class(TPanel)
   private
-   FPlugin,
-   FField,
-   FOperator,
-   FValue,
-   FUnit: TComboBox;
+   FComboPlugin,
+   FComboField, // <---The text of this combo is filled from localized string. The "objects" pointed from the its list are "TWdxField" type.
+   FComboOperator,
+   FComboValue,
+   FComboUnit: TComboBox;
   private
     function GetCompare: TPluginOperator;
     function GetField: String;
@@ -69,84 +69,93 @@ type
 implementation
 
 uses
-  uLng, Variants, StrUtils, WdxPlugin, uGlobs, uWDXModule, Graphics, uShowMsg;
+  uLng, Variants, WdxPlugin, uGlobs, uWDXModule, Graphics, uShowMsg;
 
 { TPluginPanel }
 
 function TPluginPanel.GetCompare: TPluginOperator;
 begin
-  Result:= TPluginOperator(PtrInt(FOperator.Items.Objects[FOperator.ItemIndex]));
+  Result:= TPluginOperator(PtrInt(FComboOperator.Items.Objects[FComboOperator.ItemIndex]));
 end;
 
 function TPluginPanel.GetField: String;
 begin
-  Result:= FField.Text;
+  Result := TWdxField(FComboField.Items.Objects[FComboField.ItemIndex]).FName;
 end;
 
 function TPluginPanel.GetFieldType: Integer;
 begin
-  Result:= PtrInt(FField.Items.Objects[FField.ItemIndex]);
+  Result := TWdxField(FComboField.Items.Objects[FComboField.ItemIndex]).FType
 end;
 
 function TPluginPanel.GetPlugin: String;
 begin
-  Result:= FPlugin.Text;
+  Result:= FComboPlugin.Text;
 end;
 
 function TPluginPanel.GetUnitName: String;
 begin
-  Result:= FUnit.Text;
+  if (FComboField.ItemIndex < 0) or (FComboUnit.ItemIndex < 0) then
+    Result:= FComboUnit.Text
+  else begin
+    Result:= TWdxField(FComboField.Items.Objects[FComboField.ItemIndex]).FUnits[FComboUnit.ItemIndex];
+  end;
 end;
 
 function TPluginPanel.GetValue: Variant;
+var
+  WdxField: TWdxField;
 begin
-  Result:= StrToVar(FValue.Text, PtrInt(FField.Items.Objects[FField.ItemIndex]));
+  WdxField:= TWdxField(FComboField.Items.Objects[FComboField.ItemIndex]);
+  if (WdxField.FType <> ft_multiplechoice) then
+    Result:= StrToVar(FComboValue.Text, WdxField.FType)
+  else begin
+    Result:= StrToVar(WdxField.FUnits[FComboValue.ItemIndex], WdxField.FType)
+  end;
 end;
 
+// When a plugin is selected from the plugin combo, we populate the others in cascade.
+// In the field combo, each element references a corresding "TWdxField" object.
+// Since this combo is for the user we populate text of it from localized strings.
 procedure TPluginPanel.PluginChange(Sender: TObject);
 var
   I: Integer;
   Module: TWDXModule;
 begin
-  if FPlugin.ItemIndex < 0 then Exit;
+  if FComboPlugin.ItemIndex < 0 then Exit;
 
-  FField.Clear;
-  Module:= gWdxPlugins.GetWdxModule(FPlugin.Text);
+  FComboField.Clear;
+  Module:= gWdxPlugins.GetWdxModule(FComboPlugin.Text);
   if Assigned(Module) then
-  for I:= 0 to  Module.FieldList.Count - 1 do
+    for I:= 0 to  Module.FieldList.Count - 1 do
+      FComboField.Items.AddObject(TWdxField(Module.FieldList.Objects[I]).LName, TObject(Module.FieldList.Objects[I]));
+
+  if FComboField.Items.Count > 0 then
   begin
-    FField.Items.AddObject(Module.FieldList[I], TObject(PtrInt(TWdxField(Module.FieldList.Objects[I]).FType)));
-  end;
-  if FField.Items.Count > 0 then
-  begin
-    FField.ItemIndex:= 0;
-    FieldChange(FField);
+    FComboField.ItemIndex:= 0;
+    FieldChange(FComboField);
   end;
 end;
 
 procedure TPluginPanel.FieldChange(Sender: TObject);
 var
-  I, J: Integer;
-  sUnits: String;
-  Module: TWDXModule;
+  WdxField: TWdxField;
 begin
-  FUnit.Items.Clear;
-  FValue.Items.Clear;
-  FOperator.Items.Clear;
-  Module:= gWdxPlugins.GetWdxModule(FPlugin.Text);
-  J:= Module.GetFieldIndex(FField.Text);
-  if J < 0 then Exit;
-  
-  I:= TWdxField(Module.FieldList.Objects[J]).FType;
-  if (I <> FT_MULTIPLECHOICE) then
-  begin
-    sUnits:= TWdxField(Module.FieldList.Objects[J]).FUnits;
-    while sUnits <> EmptyStr do FUnit.Items.Add(Copy2SymbDel(sUnits, '|'));
-  end;
-  FUnit.Enabled := (I <> FT_MULTIPLECHOICE) AND (FUnit.Items.Count > 0);
-  if FUnit.Enabled then FUnit.ItemIndex:= 0;
+  FComboUnit.Items.Clear;
+  FComboValue.Items.Clear;
+  FComboOperator.Items.Clear;
+  if (FComboField.ItemIndex < 0) then Exit;
 
-  case I of
+  WdxField:= TWdxField(FComboField.Items.Objects[FComboField.ItemIndex]);
+
+  if (WdxField.FType <> FT_MULTIPLECHOICE) then
+  begin
+    FComboUnit.Items.AddStrings(WdxField.LUnits);
+  end;
+  FComboUnit.Enabled := (WdxField.FType <> FT_MULTIPLECHOICE) and (FComboUnit.Items.Count > 0);
+  if FComboUnit.Enabled then FComboUnit.ItemIndex:= 0;
+
+  case WdxField.FType of
   FT_NUMERIC_32,
   FT_NUMERIC_64,
   FT_NUMERIC_FLOATING,
@@ -154,95 +163,133 @@ begin
   FT_TIME,
   FT_DATETIME:
     begin
-      FValue.Style:= csDropDown;
-      FOperator.Items.AddObject('=', TObject(PtrInt(poEqualCaseSensitive)));
-      FOperator.Items.AddObject('!=', TObject(PtrInt(poNotEqualCaseSensitive)));
-      FOperator.Items.AddObject('>', TObject(PtrInt(poMore)));
-      FOperator.Items.AddObject('<', TObject(PtrInt(poLess)));
-      FOperator.Items.AddObject('>=', TObject(PtrInt(poMoreEqual)));
-      FOperator.Items.AddObject('<=', TObject(PtrInt(poLessEqual)));
+      FComboValue.Style:= csDropDown;
+      FComboOperator.Items.AddObject('=', TObject(PtrInt(poEqualCaseSensitive)));
+      FComboOperator.Items.AddObject('!=', TObject(PtrInt(poNotEqualCaseSensitive)));
+      FComboOperator.Items.AddObject('>', TObject(PtrInt(poMore)));
+      FComboOperator.Items.AddObject('<', TObject(PtrInt(poLess)));
+      FComboOperator.Items.AddObject('>=', TObject(PtrInt(poMoreEqual)));
+      FComboOperator.Items.AddObject('<=', TObject(PtrInt(poLessEqual)));
     end;
   FT_BOOLEAN:
     begin
-      FValue.Items.Add(rsSimpleWordTrue);
-      FValue.Items.Add(rsSimpleWordFalse);
-      FValue.ItemIndex:= 0;
-      FValue.Style:= csDropDownList;
-      FOperator.Items.AddObject('=', TObject(PtrInt(poEqualCaseSensitive)));
+      FComboValue.Items.Add(rsSimpleWordTrue);
+      FComboValue.Items.Add(rsSimpleWordFalse);
+      FComboValue.ItemIndex:= 0;
+      FComboValue.Style:= csDropDownList;
+      FComboOperator.Items.AddObject('=', TObject(PtrInt(poEqualCaseSensitive)));
     end;
   FT_MULTIPLECHOICE:
     begin
       begin
-        FValue.Style:= csDropDownList;
-        FOperator.Items.AddObject('=', TObject(PtrInt(poEqualCaseSensitive)));
-        FOperator.Items.AddObject('!=', TObject(PtrInt(poNotEqualCaseSensitive)));
-        sUnits:= TWdxField(Module.FieldList.Objects[J]).FUnits;
-        while sUnits <> EmptyStr do
-        begin
-          FValue.Items.Add(Copy2SymbDel(sUnits, '|'));
-        end;
-        if FValue.Items.Count > 0 then FValue.ItemIndex:= 0;
+        FComboValue.Style:= csDropDownList;
+        FComboOperator.Items.AddObject('=', TObject(PtrInt(poEqualCaseSensitive)));
+        FComboOperator.Items.AddObject('!=', TObject(PtrInt(poNotEqualCaseSensitive)));
+        FComboValue.Items.AddStrings(WdxField.LUnits);
+        if FComboValue.Items.Count > 0 then FComboValue.ItemIndex:= 0;
       end;
     end;
   FT_STRING,
   FT_STRINGW:
     begin
-      FValue.Style:= csDropDown;
-      FOperator.Items.AddObject(rsPluginSearchEqualNotCase, TObject(PtrInt(poEqualCaseInsensitive)));
-      FOperator.Items.AddObject(rsPluginSearchNotEqualNotCase, TObject(PtrInt(poNotEqualCaseInsensitive)));
-      FOperator.Items.AddObject(rsPluginSearchEqualCaseSensitive, TObject(PtrInt(poEqualCaseSensitive)));
-      FOperator.Items.AddObject(rsPluginSearchNotEquaCaseSensitive, TObject(PtrInt(poNotEqualCaseSensitive)));
-      FOperator.Items.AddObject(rsPluginSearchContainsNotCase, TObject(PtrInt(poContainsCaseInsensitive)));
-      FOperator.Items.AddObject(rsPluginSearchNotContainsNotCase, TObject(PtrInt(poNotContainsCaseInsensitive)));
-      FOperator.Items.AddObject(rsPluginSearchContainsCaseSenstive, TObject(PtrInt(poContainsCaseSensitive)));
-      FOperator.Items.AddObject(rsPluginSearchNotContainsCaseSenstive, TObject(PtrInt(poNotContainsCaseSensitive)));
-      FOperator.Items.AddObject(rsPluginSearchRegExpr, TObject(PtrInt(poRegExpr)));
-      FOperator.Items.AddObject(rsPluginSearchNotRegExpr, TObject(PtrInt(poNotRegExpr)));
+      FComboValue.Style:= csDropDown;
+      FComboOperator.Items.AddObject(rsPluginSearchEqualNotCase, TObject(PtrInt(poEqualCaseInsensitive)));
+      FComboOperator.Items.AddObject(rsPluginSearchNotEqualNotCase, TObject(PtrInt(poNotEqualCaseInsensitive)));
+      FComboOperator.Items.AddObject(rsPluginSearchEqualCaseSensitive, TObject(PtrInt(poEqualCaseSensitive)));
+      FComboOperator.Items.AddObject(rsPluginSearchNotEquaCaseSensitive, TObject(PtrInt(poNotEqualCaseSensitive)));
+      FComboOperator.Items.AddObject(rsPluginSearchContainsNotCase, TObject(PtrInt(poContainsCaseInsensitive)));
+      FComboOperator.Items.AddObject(rsPluginSearchNotContainsNotCase, TObject(PtrInt(poNotContainsCaseInsensitive)));
+      FComboOperator.Items.AddObject(rsPluginSearchContainsCaseSenstive, TObject(PtrInt(poContainsCaseSensitive)));
+      FComboOperator.Items.AddObject(rsPluginSearchNotContainsCaseSenstive, TObject(PtrInt(poNotContainsCaseSensitive)));
+      FComboOperator.Items.AddObject(rsPluginSearchRegExpr, TObject(PtrInt(poRegExpr)));
+      FComboOperator.Items.AddObject(rsPluginSearchNotRegExpr, TObject(PtrInt(poNotRegExpr)));
     end;
   FT_FULLTEXT,
   FT_FULLTEXTW:
     begin
-      FValue.Style:= csDropDown;
-      FOperator.Items.AddObject(rsPluginSearchContainsNotCase, TObject(PtrInt(poContainsCaseInsensitive)));
-      FOperator.Items.AddObject(rsPluginSearchNotContainsNotCase, TObject(PtrInt(poNotContainsCaseInsensitive)));
-      FOperator.Items.AddObject(rsPluginSearchContainsCaseSenstive, TObject(PtrInt(poContainsCaseSensitive)));
-      FOperator.Items.AddObject(rsPluginSearchNotContainsCaseSenstive, TObject(PtrInt(poNotContainsCaseSensitive)));
+      FComboValue.Style:= csDropDown;
+      FComboOperator.Items.AddObject(rsPluginSearchContainsNotCase, TObject(PtrInt(poContainsCaseInsensitive)));
+      FComboOperator.Items.AddObject(rsPluginSearchNotContainsNotCase, TObject(PtrInt(poNotContainsCaseInsensitive)));
+      FComboOperator.Items.AddObject(rsPluginSearchContainsCaseSenstive, TObject(PtrInt(poContainsCaseSensitive)));
+      FComboOperator.Items.AddObject(rsPluginSearchNotContainsCaseSenstive, TObject(PtrInt(poNotContainsCaseSensitive)));
     end;
   end;
-  if FOperator.Items.Count > 0 then FOperator.ItemIndex:= 0;
+  if FComboOperator.Items.Count > 0 then FComboOperator.ItemIndex:= 0;
 end;
 
 procedure TPluginPanel.SetCompare(AValue: TPluginOperator);
 var
   Index: Integer;
 begin
-  Index:= FOperator.Items.IndexOfObject(TObject(PtrInt(AValue)));
-  if Index >= 0 then FOperator.ItemIndex:= Index;
+  Index:= FComboOperator.Items.IndexOfObject(TObject(PtrInt(AValue)));
+  if Index >= 0 then FComboOperator.ItemIndex:= Index;
 end;
 
+// The "AValue" parameter received here is not localized.
+// We can't search it in combo box directly so we go by index.
 procedure TPluginPanel.SetField(AValue: String);
+var
+  Module: TWDXModule;
 begin
-  SetComboBox(FField, AValue, Format(rsPluginSearchFieldNotFound, [AValue]));
+  Module := gWdxPlugins.GetWdxModule(FComboPlugin.Text);
+  if Module = nil then exit;
+
+  FComboField.ItemIndex := Module.GetFieldIndex(AValue);
+  if FComboField.ItemIndex <> -1 then
+  begin
+    if Assigned(FComboField.OnChange) then FComboField.OnChange(FComboField);
+  end
+  else begin
+    msgError(rsPluginSearchFieldNotFound);
+  end;
 end;
 
 procedure TPluginPanel.SetPlugin(AValue: String);
 begin
-  SetComboBox(FPlugin, AValue, Format(rsPluginSearchPluginNotFound, [AValue]));
+  SetComboBox(FComboPlugin, AValue, Format(rsPluginSearchPluginNotFound, [AValue]));
 end;
 
 procedure TPluginPanel.SetUnitName(AValue: String);
+var
+  Index: Integer;
+  WdxField: TWdxField;
 begin
-  if FUnit.Enabled then
-    SetComboBox(FUnit, AValue, Format(rsPluginSearchUnitNotFoundForField, [AValue, Self.Field]));
+  if FComboUnit.Enabled then
+  begin
+    WdxField:= TWdxField(FComboField.Items.Objects[FComboField.ItemIndex]);
+    Index := WdxField.GetUnitIndex(AValue);
+    if Index >= 0 then AValue:= WdxField.LUnits[Index];
+    SetComboBox(FComboUnit, AValue, Format(rsPluginSearchUnitNotFoundForField, [AValue, Self.Field]));
+  end;
 end;
 
 procedure TPluginPanel.SetValue(AValue: Variant);
+var
+  Index: Integer;
+  WdxField: TWdxField;
 begin
-  FValue.Text:= VarToStr(AValue)
+  if VarIsBool(AValue) then
+  begin
+    if AValue then
+      FComboValue.Text := rsSimpleWordTrue
+    else
+      FComboValue.Text := rsSimpleWordFalse;
+  end
+  else begin
+    WdxField:= TWdxField(FComboField.Items.Objects[FComboField.ItemIndex]);
+    if (WdxField.FType <> FT_MULTIPLECHOICE) then
+      FComboValue.Text := AValue
+    else begin
+      Index:= WdxField.GetUnitIndex(AValue);
+      if Index < 0 then
+        FComboValue.Text := AValue
+      else
+        FComboValue.Text := WdxField.LUnits[Index];
+    end;
+  end;
 end;
 
-procedure TPluginPanel.SetComboBox(ComboBox: TComboBox; const Value,
-  Error: String);
+procedure TPluginPanel.SetComboBox(ComboBox: TComboBox; const Value, Error: String);
 var
   Index: Integer;
 begin
@@ -266,48 +313,48 @@ begin
   ChildSizing.Layout:= cclLeftToRightThenTopToBottom;
   ChildSizing.EnlargeHorizontal:= crsScaleChilds;
 
-  FPlugin:= TComboBox.Create(Self);
-  FPlugin.Parent:= Self;
-  FPlugin.Style:= csDropDownList;
-  FPlugin.OnChange:= @PluginChange;
+  FComboPlugin:= TComboBox.Create(Self);
+  FComboPlugin.Parent:= Self;
+  FComboPlugin.Style:= csDropDownList;
+  FComboPlugin.OnChange:= @PluginChange;
 
-  FField:= TComboBox.Create(Self);
-  FField.Parent:= Self;
-  FField.Style:= csDropDownList;
-  FField.OnChange:= @FieldChange;
+  FComboField:= TComboBox.Create(Self);
+  FComboField.Parent:= Self;
+  FComboField.Style:= csDropDownList;
+  FComboField.OnChange:= @FieldChange;
 
-  FOperator:= TComboBox.Create(Self);
-  FOperator.Parent:= Self;
-  FOperator.Style:= csDropDownList;
+  FComboOperator:= TComboBox.Create(Self);
+  FComboOperator.Parent:= Self;
+  FComboOperator.Style:= csDropDownList;
 
-  FValue:= TComboBox.Create(Self);
-  FValue.Parent:= Self;
+  FComboValue:= TComboBox.Create(Self);
+  FComboValue.Parent:= Self;
 
-  FUnit:= TComboBox.Create(Self);
-  FUnit.Style:= csDropDownList;
-  FUnit.Parent:= Self;
+  FComboUnit:= TComboBox.Create(Self);
+  FComboUnit.Style:= csDropDownList;
+  FComboUnit.Parent:= Self;
 
   for I:= 0 to gWDXPlugins.Count - 1do
   begin
     if gWdxPlugins.GetWdxModule(I).IsLoaded or gWdxPlugins.GetWdxModule(I).LoadModule then
     begin
-      FPlugin.Items.Add(gWdxPlugins.GetWdxModule(I).Name);
+      FComboPlugin.Items.Add(gWdxPlugins.GetWdxModule(I).Name);
     end;
   end;
-  if FPlugin.Items.Count > 0 then
+  if FComboPlugin.Items.Count > 0 then
   begin
-    FPlugin.ItemIndex:= 0;
-    PluginChange(FPlugin);
+    FComboPlugin.ItemIndex:= 0;
+    PluginChange(FComboPlugin);
   end;
 end;
 
 destructor TPluginPanel.Destroy;
 begin
-  FPlugin.Free;
-  FField.Free;
-  FOperator.Free;
-  FValue.Free;
-  FUnit.Free;
+  FComboPlugin.Free;
+  FComboField.Free;
+  FComboOperator.Free;
+  FComboValue.Free;
+  FComboUnit.Free;
   inherited Destroy;
 end;
 

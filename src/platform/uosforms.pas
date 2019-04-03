@@ -3,7 +3,7 @@
     -------------------------------------------------------------------------
     This unit contains platform depended functions.
 
-    Copyright (C) 2006-2017 Alexander Koblov (alexx2000@mail.ru)
+    Copyright (C) 2006-2018 Alexander Koblov (alexx2000@mail.ru)
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -16,8 +16,7 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
 }
 
 unit uOSForms;
@@ -130,7 +129,7 @@ uses
   , uTotalCommander, FileUtil, Windows, ShlObj, uShlObjAdditional
   , uWinNetFileSource, uVfsModule, uLng, uMyWindows, DCStrUtils
   , uListGetPreviewBitmap, uThumbnailProvider, uDCReadSVG, uFileSourceUtil
-  , Dialogs, Clipbrd
+  , Dialogs, Clipbrd, uShowMsg
   {$ENDIF}
   {$IFDEF UNIX}
   , BaseUnix, fFileProperties, uJpegThumb
@@ -448,6 +447,42 @@ begin
     FreeAndNil(SelectedFiles);
   end;
 end;
+
+procedure CreateShortcut(Self, Sender: TObject);
+var
+  ShortcutName: String;
+  SelectedFiles: TFiles;
+begin
+  if (not frmMain.ActiveFrame.FileSource.IsClass(TFileSystemFileSource)) or
+     (not frmMain.NotActiveFrame.FileSource.IsClass(TFileSystemFileSource))then
+  begin
+    msgWarning(rsMsgErrNotSupported);
+    Exit;
+  end;
+
+  SelectedFiles := frmMain.ActiveFrame.CloneSelectedOrActiveFiles;
+  try
+    if SelectedFiles.Count > 0 then
+    begin
+      ShortcutName:= frmMain.NotActiveFrame.CurrentPath + SelectedFiles[0].NameNoExt + '.lnk';
+      if ShowInputQuery(rsMnuCreateShortcut, EmptyStr, ShortcutName) then
+      begin
+        if mbFileExists(ShortcutName) then
+        begin
+          if not msgYesNo(Format(rsMsgFileExistsRwrt, [WrapTextSimple(ShortcutName, 100)])) then
+            Exit;
+        end;
+        try
+          uMyWindows.CreateShortcut(SelectedFiles[0].FullPath, ShortcutName);
+        except
+          on E: Exception do msgError(E.Message);
+        end;
+      end;
+    end;
+  finally
+    FreeAndNil(SelectedFiles);
+  end;
+end;
 {$ENDIF}
 
 {$IF DEFINED(LCLGTK2) or (DEFINED(LCLQT) and not DEFINED(DARWIN))}
@@ -536,6 +571,12 @@ begin
     Handler.Code:= @CopyNetNamesToClip;
     MenuItem.OnClick:= TNotifyEvent(Handler);
     mnuNetwork.Add(MenuItem);
+
+    MenuItem:= TMenuItem.Create(mnuMain);
+    MenuItem.Caption:= rsMnuCreateShortcut;
+    Handler.Code:= @CreateShortcut;
+    MenuItem.OnClick:= TNotifyEvent(Handler);
+    mnuFiles.Insert(mnuFiles.IndexOf(miMakeDir) + 1, MenuItem);
   end;
 end;
 {$ELSE}

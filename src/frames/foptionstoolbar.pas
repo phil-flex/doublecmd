@@ -4,7 +4,7 @@
    Toolbar configuration options page
 
    Copyright (C) 2012      Przemyslaw Nagay (cobines@gmail.com)
-   Copyright (C) 2006-2018 Alexander Koblov (alexx2000@mail.ru)
+   Copyright (C) 2006-2019 Alexander Koblov (alexx2000@mail.ru)
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -27,10 +27,12 @@ unit fOptionsToolbar;
 interface
 
 uses
+  //Lazarus, Free-Pascal, etc.
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ComCtrls, ExtCtrls, Buttons, Menus, fOptionsFrame, KASToolBar, KASToolItems,
-  uFormCommands, uHotkeyManager, DCBasicTypes,
-  fOptionsHotkeysEditHotkey, DCXmlConfig;
+  ComCtrls, ExtCtrls, Buttons, Menus,
+  //DC
+  uGlobs, fOptionsFrame, KASToolBar, KASToolItems, uFormCommands,
+  uHotkeyManager, DCBasicTypes, fOptionsHotkeysEditHotkey, DCXmlConfig;
 
 type
 
@@ -41,6 +43,7 @@ type
     btnCloneButton: TButton;
     btnDeleteButton: TButton;
     btnParametersHelper: TSpeedButton;
+    btnInternalParametersHelper: TSpeedButton;
     btnSuggestionTooltip: TButton;
     btnOpenFile: TButton;
     btnEditHotkey: TButton;
@@ -51,6 +54,7 @@ type
     btnRemoveHotkey: TButton;
     cbInternalCommand: TComboBox;
     cbFlatButtons: TCheckBox;
+    cbShowCaptions: TCheckBox;
     edtExternalParameters: TEdit;
     edtExternalCommand: TEdit;
     lblHelpOnInternalCommand: TLabel;
@@ -108,7 +112,6 @@ type
     pnlEditToolbar: TPanel;
     pnlToolbarButtons: TPanel;
     pmInsertButtonMenu: TPopupMenu;
-    pmparameteresHelper: TPopupMenu;
     ReplaceDialog: TReplaceDialog;
     rgToolItemType: TRadioGroup;
     btnOpenIcon: TSpeedButton;
@@ -178,6 +181,7 @@ type
     miImportBackupAddMenuCurrent: TMenuItem;
     procedure btnEditHotkeyClick(Sender: TObject);
     procedure btnInsertButtonClick(Sender: TObject);
+    procedure btnInternalParametersHelperClick(Sender: TObject);
     procedure btnOpenCmdDlgClick(Sender: TObject);
     procedure btnParametersHelperClick(Sender: TObject);
     procedure btnRelativeExternalCommandClick(Sender: TObject);
@@ -244,19 +248,24 @@ type
     procedure PressButtonDown(Button: TKASToolButton);
     procedure UpdateIcon(Icon: String);
     procedure DisplayAppropriateControls(EnableNormal, EnableCommand, EnableProgram: boolean);
-
   protected
     procedure Init; override;
     procedure Load; override;
     function Save: TOptionsEditorSaveFlags; override;
   public
+    property TopToolbar: TKASToolBar read GetTopToolbar;
     class function GetIconIndex: Integer; override;
     class function GetShortcuts(NormalItem: TKASNormalItem): TDynamicStringArray;
     class function GetTitle: String; override;
     function IsSignatureComputedFromAllWindowComponents: Boolean; override;
     function ExtraOptionsSignature(CurrentSignature:dword):dword; override;
     procedure SelectButton(ButtonNumber: Integer);
+    procedure ScanToolbarForFilenameAndPath(Toolbar: TKASToolbar);
+    procedure RefrechCurrentButton;
   end;
+
+function GetToolbarFilenameToSave(AToolbarPathModifierElement: tToolbarPathModifierElement; sParamFilename: string): string;
+
 
 implementation
 
@@ -264,14 +273,14 @@ implementation
 
 uses
   //Lazarus, Free-Pascal, etc.
-  crc, LazUTF8, LCLVersion, Toolwin,
+  StrUtils, crc, LazUTF8, LCLVersion, Toolwin,
 
   //DC
   {$IFDEF MSWINDOWS}
   uTotalCommander,
   {$ENDIF}
-  uComponentsSignature, fEditSearch, fMainCommandsDlg, uFileProcs, uDebug,
-  DCOSUtils, uShowMsg, DCStrUtils, uGlobs, uLng, uOSForms, uDCUtils,
+  uVariableMenuSupport, uComponentsSignature, fEditSearch, fMainCommandsDlg,
+  uFileProcs, uDebug, DCOSUtils, uShowMsg, DCStrUtils, uLng, uOSForms, uDCUtils,
   uPixMapManager, uKASToolItemsExtended, fMain, uSpecialDir, dmHelpManager,
   uGlobsPaths;
 
@@ -285,7 +294,7 @@ const
   ACTION_WITH_DC_TOOLBARFILE = $02;
   ACTION_WITH_BACKUP = $03;
 
-  MASK_ACTION_TOOLBAR = $30;
+  MASK_ACTION_TOOLBAR = $03;
   ACTION_WITH_MAIN_TOOLBAR = $0;
   IMPORT_IN_MAIN_TOOLBAR_TO_NEW_SUB_BAR = $1;
   ACTION_WITH_CURRENT_BAR = $2;
@@ -393,6 +402,7 @@ begin
   trbBarSize.Position   := gToolBarButtonSize div 2;
   trbIconSize.Position  := gToolBarIconSize div 2;
   cbFlatButtons.Checked := gToolBarFlat;
+  cbShowCaptions.Checked := gToolBarShowCaptions;
   cbReportErrorWithCommands.Checked := gToolbarReportErrorWithCommands;
 
   lblBarSizeValue.Caption  := IntToStr(trbBarSize.Position*2);
@@ -407,7 +417,6 @@ begin
   if ToolBar.ButtonCount > 0 then
     PressButtonDown(ToolBar.Buttons[0]);
   gSpecialDirList.PopulateMenuWithSpecialDir(pmPathHelper,mp_PATHHELPER,nil);
-  gSupportForVariableHelperMenu.PopulateMenuWithVariableHelper(pmparameteresHelper,edtExternalParameters);
 
   FUpdateHotKey := False;
 end;
@@ -498,6 +507,11 @@ begin
   miImportBackupAddMenuCurrent.Enabled := miExportCurrent.Enabled;
 end;
 
+procedure TfrmOptionsToolbar.RefrechCurrentButton;
+begin
+  LoadCurrentButton;
+end;
+
 procedure TfrmOptionsToolbar.DisplayAppropriateControls(EnableNormal, EnableCommand, EnableProgram: boolean);
 begin
   lblIconFile.Visible := EnableNormal;
@@ -512,6 +526,7 @@ begin
   btnOpenCmdDlg.Visible := EnableCommand;
   lblHelpOnInternalCommand.Visible := EnableCommand;
   lblInternalParameters.Visible := EnableCommand;
+  btnInternalParametersHelper.Visible := EnableCommand;
   edtInternalParameters.Visible := EnableCommand;
   lblExternalCommand.Visible := EnableProgram;
   edtExternalCommand.Visible := EnableProgram;
@@ -588,10 +603,11 @@ var
 begin
   ApplyEditControls;
 
-  gToolBarFlat       := cbFlatButtons.Checked;
+  gToolBarFlat         := cbFlatButtons.Checked;
+  gToolBarShowCaptions := cbShowCaptions.Checked;
   gToolbarReportErrorWithCommands := cbReportErrorWithCommands.Checked;
-  gToolBarButtonSize := trbBarSize.Position * 2;
-  gToolBarIconSize   := trbIconSize.Position * 2;
+  gToolBarButtonSize   := trbBarSize.Position * 2;
+  gToolBarIconSize     := trbIconSize.Position * 2;
 
   ToolBar := GetTopToolbar;
   if Assigned(ToolBar) then
@@ -616,7 +632,7 @@ var
 begin
   sFileName := GetCmdDirFromEnvVar(edtIconFileName.Text);
   if ShowOpenIconDialog(Self, sFileName) then
-    edtIconFileName.Text := sFileName;
+    edtIconFileName.Text := GetToolbarFilenameToSave(tpmeIcon, sFileName);
 end;
 
 function TfrmOptionsToolbar.CreateToolbar(Items: TKASToolBarItems): TKASToolBar;
@@ -699,6 +715,18 @@ begin
   pmInsertButtonMenu.PopUp(Mouse.CursorPos.X, Mouse.CursorPos.Y);
 end;
 
+{ TfrmOptionsToolbar.btnInternalParametersHelperClick }
+procedure TfrmOptionsToolbar.btnInternalParametersHelperClick(Sender: TObject);
+begin
+  BringPercentVariablePopupMenu(edtInternalParameters);
+end;
+
+{ TfrmOptionsToolbar.btnParametersHelperClick }
+procedure TfrmOptionsToolbar.btnParametersHelperClick(Sender: TObject);
+begin
+  BringPercentVariablePopupMenu(edtExternalParameters);
+end;
+
 { TfrmOptionsToolbar.btnOpenCmdDlgClick }
 procedure TfrmOptionsToolbar.btnOpenCmdDlgClick(Sender: TObject);
 var
@@ -720,11 +748,6 @@ begin
       cbInternalCommandSelect(cbInternalCommand);
     end;
   end;
-end;
-
-procedure TfrmOptionsToolbar.btnParametersHelperClick(Sender: TObject);
-begin
-  pmparameteresHelper.PopUp;
 end;
 
 procedure TfrmOptionsToolbar.miInsertButtonClick(Sender: TObject);
@@ -1052,22 +1075,22 @@ begin
   OpenDialog.Filter:= EmptyStr;
   if edtExternalCommand.Text<>'' then OpenDialog.InitialDir:=ExtractFilePath(edtExternalCommand.Text);
   if OpenDialog.Execute then
-    begin
-      edtExternalCommand.Text := OpenDialog.FileName;
-      edtStartPath.Text       := ExtractFilePath(OpenDialog.FileName);
-      edtIconFileName.Text    := OpenDialog.FileName;
-      edtToolTip.Text         := ExtractOnlyFileName(OpenDialog.FileName);
-    end;
+  begin
+    edtExternalCommand.Text := GetToolbarFilenameToSave(tpmeIcon, OpenDialog.FileName);
+    edtStartPath.Text       := GetToolbarFilenameToSave(tpmeCommand, ExtractFilePath(OpenDialog.FileName));
+    edtIconFileName.Text    := GetToolbarFilenameToSave(tpmeStartingPath, OpenDialog.FileName);
+    edtToolTip.Text         := ExtractOnlyFileName(OpenDialog.FileName);
+  end;
 end;
 
 procedure TfrmOptionsToolbar.btnStartPathClick(Sender: TObject);
 var
   MaybeResultingOutputPath:string;
 begin
-  MaybeResultingOutputPath:=edtStartPath.Text;
-  if MaybeResultingOutputPath='' then MaybeResultingOutputPath:=frmMain.ActiveFrame.CurrentPath;
+  MaybeResultingOutputPath := edtStartPath.Text;
+  if MaybeResultingOutputPath = '' then MaybeResultingOutputPath := frmMain.ActiveFrame.CurrentPath;
   if SelectDirectory(rsSelectDir, MaybeResultingOutputPath, MaybeResultingOutputPath, False) then
-    edtStartPath.Text:=MaybeResultingOutputPath;
+    edtStartPath.Text := GetToolbarFilenameToSave(tpmeStartingPath, MaybeResultingOutputPath);
 end;
 
 { TfrmOptionsToolbar.btnSuggestionTooltipClick }
@@ -1873,6 +1896,70 @@ begin
         finally
           FreeAndNil(ToolbarConfig);
         end;
+      end;
+    end;
+  end;
+end;
+
+procedure TfrmOptionsToolbar.ScanToolbarForFilenameAndPath(Toolbar: TKASToolbar);
+  procedure PossiblyRecursiveAddThisToolItemToConfigFile(ToolItem: TKASToolItem);
+  var
+    IndexItem: integer;
+  begin
+    if ToolItem is TKASProgramItem then
+    begin
+      TKASProgramItem(ToolItem).Icon := GetToolbarFilenameToSave(tpmeIcon, TKASProgramItem(ToolItem).Icon);
+      TKASProgramItem(ToolItem).Command := GetToolbarFilenameToSave(tpmeCommand, TKASProgramItem(ToolItem).Command);
+      TKASProgramItem(ToolItem).StartPath := GetToolbarFilenameToSave(tpmeStartingPath, TKASProgramItem(ToolItem).StartPath);
+    end
+
+    else if ToolItem is TKASCommandItem then
+    begin
+      //In the rare unexpected case that someone would use internal command with an icon file from somewhere else...
+      TKASCommandItem(ToolItem).Icon := GetToolbarFilenameToSave(tpmeIcon, TKASCommandItem(ToolItem).Icon);
+    end
+
+    else if ToolItem is TKASMenuItem then
+    begin
+      TKASMenuItem(ToolItem).Icon := GetToolbarFilenameToSave(tpmeIcon, TKASMenuItem(ToolItem).Icon);
+      for IndexItem := 0 to pred(TKASMenuItem(ToolItem).SubItems.Count) do
+        PossiblyRecursiveAddThisToolItemToConfigFile(TKASMenuItem(ToolItem).SubItems[IndexItem]);
+    end
+
+    else if ToolItem is TKASSeparatorItem then
+    begin
+    end;
+  end;
+
+var
+  //Placed intentionnally *AFTER* above routine to make sure these variable names are not used in above possibly recursive routines.
+  IndexButton: integer;
+
+begin
+  for IndexButton := 0 to pred(Toolbar.ButtonCount) do
+    PossiblyRecursiveAddThisToolItemToConfigFile(Toolbar.Buttons[IndexButton].ToolItem);
+end;
+
+
+{ GetToolbarFilenameToSave }
+function GetToolbarFilenameToSave(AToolbarPathModifierElement: tToolbarPathModifierElement; sParamFilename: string): string;
+var
+  sMaybeBasePath, SubWorkingPath, MaybeSubstitionPossible: string;
+begin
+  sParamFilename := mbExpandFileName(sParamFilename);
+  Result := sParamFilename;
+
+  if AToolbarPathModifierElement in gToolbarPathModifierElements then
+  begin
+    sMaybeBasePath := IfThen((gToolbarFilenameStyle = pfsRelativeToDC), EnvVarCommanderPath, gToolbarPathToBeRelativeTo);
+    case gToolbarFilenameStyle of
+      pfsAbsolutePath: ;
+      pfsRelativeToDC, pfsRelativeToFollowingPath:
+      begin
+        SubWorkingPath := IncludeTrailingPathDelimiter(mbExpandFileName(sMaybeBasePath));
+        MaybeSubstitionPossible := ExtractRelativePath(IncludeTrailingPathDelimiter(SubWorkingPath), sParamFilename);
+        if MaybeSubstitionPossible <> sParamFilename then
+          Result := IncludeTrailingPathDelimiter(sMaybeBasePath) + MaybeSubstitionPossible;
       end;
     end;
   end;

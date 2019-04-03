@@ -154,7 +154,7 @@ begin
   if WSVersion <> EmptyStr then
     DCDebug('Widgetset library: ' + WSVersion);
   DCDebug('This program is free software released under terms of GNU GPL 2');
-  DCDebug('(C)opyright 2006-2018 Alexander Koblov (alexx2000@mail.ru)');
+  DCDebug('(C)opyright 2006-2019 Alexander Koblov (alexx2000@mail.ru)');
   DCDebug('   and contributors (see about dialog)');
 
   Application.ShowMainForm:= False;
@@ -172,7 +172,6 @@ begin
   LoadInMemoryOurAccentLookupTableList; // Used for conversion of string to remove accents.
   LoadPaths; // before loading config
   LoadWindowsSpecialDir; // Load the list with special path. *Must* be located AFTER "LoadPaths" and BEFORE "InitGlobs"
-  LoadVariableMenuSupport; //Load support for the popup menu with variable
 
   if InitGlobs then
     //-- NOTE: before, only IsInstanceAllowed was called, and all the magic on creation

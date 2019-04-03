@@ -12,3 +12,7 @@
 *.wfx
 *.7z
 *.obj
+/node_modules/.bin
+/doublecmd.dbg
+/doublecmd.exe
+/doublecmd.zdli

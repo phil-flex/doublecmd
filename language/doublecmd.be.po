@@ -12,6 +12,7 @@ msgstr ""
 "X-Native-Language: Беларуская\n"
 
 #: fsyncdirsdlg.rscomparingpercent
+#, fuzzy,badformat
 msgid "Comparing... %d%% (ESC to cancel)"
 msgstr "Параўнанне... ‰d%% (ESC каб скасаваць)"
 
@@ -69,6 +70,7 @@ msgid "E&xclude empty directories"
 msgstr "Вы&ключыць пустыя каталогі"
 
 #: tfilesystemcopymoveoperationoptionsui.cbfollowlinks.caption
+msgctxt "tfilesystemcopymoveoperationoptionsui.cbfollowlinks.caption"
 msgid "Fo&llow links"
 msgstr "&Выкарыcтоўваць спасылкі"
 
@@ -89,6 +91,7 @@ msgid "Use file template"
 msgstr "Выкарыстоўваць шаблоны файлаў"
 
 #: tfilesystemcopymoveoperationoptionsui.lbldirectoryexists.caption
+msgctxt "tfilesystemcopymoveoperationoptionsui.lbldirectoryexists.caption"
 msgid "When dir&ectory exists"
 msgstr "Калі &каталог існуе"
 
@@ -681,56 +684,6 @@ msgstr "Кадаванне"
 msgid "Compare files"
 msgstr "Параўнаць файлы"
 
-#: tfrmdiffer.midivider1.caption
-msgctxt "TFRMDIFFER.MIDIVIDER1.CAPTION"
-msgid "-"
-msgstr "-"
-
-#: tfrmdiffer.midivider10.caption
-msgctxt "TFRMDIFFER.MIDIVIDER10.CAPTION"
-msgid "-"
-msgstr "-"
-
-#: tfrmdiffer.midivider2.caption
-msgctxt "TFRMDIFFER.MIDIVIDER2.CAPTION"
-msgid "-"
-msgstr "-"
-
-#: tfrmdiffer.midivider3.caption
-msgctxt "TFRMDIFFER.MIDIVIDER3.CAPTION"
-msgid "-"
-msgstr "-"
-
-#: tfrmdiffer.midivider4.caption
-msgctxt "TFRMDIFFER.MIDIVIDER4.CAPTION"
-msgid "-"
-msgstr "-"
-
-#: tfrmdiffer.midivider5.caption
-msgctxt "TFRMDIFFER.MIDIVIDER5.CAPTION"
-msgid "-"
-msgstr "-"
-
-#: tfrmdiffer.midivider6.caption
-msgctxt "TFRMDIFFER.MIDIVIDER6.CAPTION"
-msgid "-"
-msgstr "-"
-
-#: tfrmdiffer.midivider7.caption
-msgctxt "tfrmdiffer.midivider7.caption"
-msgid "-"
-msgstr "-"
-
-#: tfrmdiffer.midivider8.caption
-msgctxt "TFRMDIFFER.MIDIVIDER8.CAPTION"
-msgid "-"
-msgstr "-"
-
-#: tfrmdiffer.midivider9.caption
-msgctxt "TFRMDIFFER.MIDIVIDER9.CAPTION"
-msgid "-"
-msgstr "-"
-
 #: tfrmdiffer.miencodingleft.caption
 msgid "&Left"
 msgstr "З&лева"
@@ -738,16 +691,6 @@ msgstr "З&лева"
 #: tfrmdiffer.miencodingright.caption
 msgid "&Right"
 msgstr "З&права"
-
-#: tfrmdiffer.miseparator1.caption
-msgctxt "TFRMDIFFER.MISEPARATOR1.CAPTION"
-msgid "-"
-msgstr "-"
-
-#: tfrmdiffer.miseparator2.caption
-msgctxt "TFRMDIFFER.MISEPARATOR2.CAPTION"
-msgid "-"
-msgstr "-"
 
 #: tfrmdiffer.mnuactions.caption
 msgid "&Actions"
@@ -1276,11 +1219,6 @@ msgctxt "tfrmfileproperties.lblattrtextstr.caption"
 msgid "Text:"
 msgstr "Тэкст:"
 
-#: tfrmfileproperties.lblcontains.caption
-msgctxt "TFRMFILEPROPERTIES.LBLCONTAINS.CAPTION"
-msgid "???"
-msgstr "???"
-
 #: tfrmfileproperties.lblcontainsstr.caption
 msgid "Contains:"
 msgstr "Змяшчае:"
@@ -1309,11 +1247,6 @@ msgctxt "tfrmfileproperties.lblfilestr.caption"
 msgid "File name"
 msgstr "Назва файла"
 
-#: tfrmfileproperties.lblfolder.caption
-msgctxt "TFRMFILEPROPERTIES.LBLFOLDER.CAPTION"
-msgid "???"
-msgstr "???"
-
 #: tfrmfileproperties.lblfolderstr.caption
 msgctxt "tfrmfileproperties.lblfolderstr.caption"
 msgid "Path:"
@@ -1323,28 +1256,13 @@ msgstr "Шлях:"
 msgid "&Group"
 msgstr "&Група"
 
-#: tfrmfileproperties.lbllastaccess.caption
-msgctxt "TFRMFILEPROPERTIES.LBLLASTACCESS.CAPTION"
-msgid "???"
-msgstr "???"
-
 #: tfrmfileproperties.lbllastaccessstr.caption
 msgid "Last access:"
 msgstr "Апошні доступ:"
 
-#: tfrmfileproperties.lbllastmodif.caption
-msgctxt "TFRMFILEPROPERTIES.LBLLASTMODIF.CAPTION"
-msgid "???"
-msgstr "???"
-
 #: tfrmfileproperties.lbllastmodifstr.caption
 msgid "Last modification:"
 msgstr "Апошняя змена:"
-
-#: tfrmfileproperties.lbllaststchange.caption
-msgctxt "TFRMFILEPROPERTIES.LBLLASTSTCHANGE.CAPTION"
-msgid "???"
-msgstr "???"
 
 #: tfrmfileproperties.lbllaststchangestr.caption
 msgid "Last status change:"
@@ -1364,29 +1282,14 @@ msgctxt "TFRMFILEPROPERTIES.LBLREAD.CAPTION"
 msgid "Read"
 msgstr "Чытанне"
 
-#: tfrmfileproperties.lblsize.caption
-msgctxt "TFRMFILEPROPERTIES.LBLSIZE.CAPTION"
-msgid "???"
-msgstr "???"
-
 #: tfrmfileproperties.lblsizestr.caption
 msgctxt "tfrmfileproperties.lblsizestr.caption"
 msgid "Size:"
 msgstr "Памер:"
 
-#: tfrmfileproperties.lblsymlink.caption
-msgctxt "TFRMFILEPROPERTIES.LBLSYMLINK.CAPTION"
-msgid "???"
-msgstr "???"
-
 #: tfrmfileproperties.lblsymlinkstr.caption
 msgid "Symlink to:"
 msgstr "Спасылка:"
-
-#: tfrmfileproperties.lbltype.caption
-msgctxt "TFRMFILEPROPERTIES.LBLTYPE.CAPTION"
-msgid "???"
-msgstr "???"
 
 #: tfrmfileproperties.lbltypestr.caption
 msgid "Type:"
@@ -1675,6 +1578,7 @@ msgid "&Use search plugin:"
 msgstr "&Выкарыстоўваць убудову пошуку:"
 
 #: tfrmfinddlg.chkhex.caption
+msgctxt "tfrmfinddlg.chkhex.caption"
 msgid "Hexadecimal"
 msgstr ""
 
@@ -1689,6 +1593,30 @@ msgstr "Увядзіце назвы файлаў, якія патрэбна вы
 #: tfrmfinddlg.cmbfindfilemask.hint
 msgid "Enter files names separated with \";\""
 msgstr "Увядзіце назвы файлаў, аддзеленыя \";\""
+
+#: tfrmfinddlg.frmcontentplugins.headercontrol.sections[0].text
+#, fuzzy
+msgctxt "tfrmfinddlg.frmcontentplugins.headercontrol.sections[0].text"
+msgid "Plugin"
+msgstr "Убудова"
+
+#: tfrmfinddlg.frmcontentplugins.headercontrol.sections[1].text
+#, fuzzy
+msgctxt "tfrmfinddlg.frmcontentplugins.headercontrol.sections[1].text"
+msgid "Field"
+msgstr "Поле"
+
+#: tfrmfinddlg.frmcontentplugins.headercontrol.sections[2].text
+#, fuzzy
+msgctxt "tfrmfinddlg.frmcontentplugins.headercontrol.sections[2].text"
+msgid "Operator"
+msgstr "Аператар"
+
+#: tfrmfinddlg.frmcontentplugins.headercontrol.sections[3].text
+#, fuzzy
+msgctxt "tfrmfinddlg.frmcontentplugins.headercontrol.sections[3].text"
+msgid "Value"
+msgstr "Значэнне"
 
 #: tfrmfinddlg.gbdirectories.caption
 msgctxt "tfrmfinddlg.gbdirectories.caption"
@@ -1819,6 +1747,35 @@ msgstr "Шукаць"
 msgid "C&ase sensitive"
 msgstr "У&лічваць рэгістр"
 
+#: tfrmfindview.chkhex.caption
+msgctxt "tfrmfindview.chkhex.caption"
+msgid "Hexadecimal"
+msgstr ""
+
+#: tfrmgioauthdialog.lbldomain.caption
+msgid "Domain:"
+msgstr ""
+
+#: tfrmgioauthdialog.lblpassword.caption
+#, fuzzy
+msgctxt "tfrmgioauthdialog.lblpassword.caption"
+msgid "Password:"
+msgstr "Пароль:"
+
+#: tfrmgioauthdialog.lblusername.caption
+#, fuzzy
+msgctxt "tfrmgioauthdialog.lblusername.caption"
+msgid "User name:"
+msgstr "Імя карыстальніка:"
+
+#: tfrmgioauthdialog.rbanonymous.caption
+msgid "Connect anonymously"
+msgstr ""
+
+#: tfrmgioauthdialog.rbconnetas.caption
+msgid "Connect as user:"
+msgstr ""
+
 #: tfrmhardlink.btncancel.caption
 msgctxt "TFRMHARDLINK.BTNCANCEL.CAPTION"
 msgid "&Cancel"
@@ -1937,6 +1894,10 @@ msgstr "Дадаць шлях і назву файла ў загадны рад�
 #: tfrmmain.actaddpathtocmdline.caption
 msgid "Copy path to command line"
 msgstr "Скапіраваць шлях у загадны радок"
+
+#: tfrmmain.actaddplugin.caption
+msgid "Add Plugin"
+msgstr ""
 
 #: tfrmmain.actbenchmark.caption
 msgid "&Benchmark"
@@ -2060,6 +2021,10 @@ msgstr "Наладзіць гарачыя клавішы"
 
 #: tfrmmain.actconfigplugins.caption
 msgid "Configuration of Plugins"
+msgstr ""
+
+#: tfrmmain.actconfigsavepos.caption
+msgid "Save Position"
 msgstr ""
 
 #: tfrmmain.actconfigsavesettings.caption
@@ -3515,31 +3480,6 @@ msgstr "Рэдагаваць назвы..."
 msgid "Load names from file..."
 msgstr "Загрузіць назвы з файла..."
 
-#: tfrmmultirename.n1.caption
-msgctxt "TFRMMULTIRENAME.N1.CAPTION"
-msgid "-"
-msgstr "-"
-
-#: tfrmmultirename.n2.caption
-msgctxt "TFRMMULTIRENAME.N2.CAPTION"
-msgid "-"
-msgstr "-"
-
-#: tfrmmultirename.n3.caption
-msgctxt "TFRMMULTIRENAME.N3.CAPTION"
-msgid "-"
-msgstr "-"
-
-#: tfrmmultirename.n4.caption
-msgctxt "TFRMMULTIRENAME.N4.CAPTION"
-msgid "-"
-msgstr "-"
-
-#: tfrmmultirename.n5.caption
-msgctxt "TFRMMULTIRENAME.N5.CAPTION"
-msgid "-"
-msgstr "-"
-
 #: tfrmmultirename.stringgrid.columns[0].title.caption
 msgid "Old File Name"
 msgstr "Старая назва файла"
@@ -4005,6 +3945,12 @@ msgstr "&Гісторыя каталога"
 msgid "&File mask history"
 msgstr "Гісторыя &файлавай маскі"
 
+#: tfrmoptionsconfiguration.chkfoldertabs.caption
+#, fuzzy
+msgctxt "tfrmoptionsconfiguration.chkfoldertabs.caption"
+msgid "Folder tabs"
+msgstr "Укладкі каталогаў"
+
 #: tfrmoptionsconfiguration.chksaveconfiguration.caption
 msgid "Sa&ve configuration"
 msgstr "Захава&ць канфігурацыю"
@@ -4012,6 +3958,10 @@ msgstr "Захава&ць канфігурацыю"
 #: tfrmoptionsconfiguration.chksearchreplacehistory.caption
 msgid "Searc&h/Replace history"
 msgstr "Шукаць/замяніць гісторыю"
+
+#: tfrmoptionsconfiguration.chkwindowstate.caption
+msgid "Main window state"
+msgstr ""
 
 #: tfrmoptionsconfiguration.gbdirectories.caption
 msgctxt "TFRMOPTIONSCONFIGURATION.GBDIRECTORIES.CAPTION"
@@ -4221,11 +4171,6 @@ msgstr ">>"
 #: tfrmoptionscustomcolumns.btngotosetdefault.caption
 msgid "Go to set default"
 msgstr "Перайсці да прадвызначанага"
-
-#: tfrmoptionscustomcolumns.btngotosetdefault.hint
-msgctxt "TFRMOPTIONSCUSTOMCOLUMNS.BTNGOTOSETDEFAULT.HINT"
-msgid "Reset to default"
-msgstr "Скінуць да прадвызначанага"
 
 #: tfrmoptionscustomcolumns.btninactivecursorcolor.caption
 msgctxt "TFRMOPTIONSCUSTOMCOLUMNS.BTNINACTIVECURSORCOLOR.CAPTION"
@@ -4454,7 +4399,9 @@ msgid "Background 2:"
 msgstr "Фон 2:"
 
 #: tfrmoptionscustomcolumns.lblconfigcolumns.caption
-msgid "Con&figure columns view:"
+#, fuzzy
+#| msgid "Con&figure columns view:"
+msgid "&Columns view:"
 msgstr "Нала&дзіць выгляд слупкоў:"
 
 #: tfrmoptionscustomcolumns.lblcurrentcolumn.caption
@@ -4468,6 +4415,10 @@ msgstr "Колер курсора:"
 #: tfrmoptionscustomcolumns.lblcursortext.caption
 msgid "Cursor Text:"
 msgstr "Тэкст курсора:"
+
+#: tfrmoptionscustomcolumns.lblfilesystem.caption
+msgid "&File system:"
+msgstr ""
 
 #: tfrmoptionscustomcolumns.lblfontname.caption
 msgid "Font:"
@@ -4878,6 +4829,37 @@ msgstr "Змяніць &мэтавы шлях"
 msgid "Addition from main panel"
 msgstr "Даданне з галоўнай панэлі:"
 
+#: tfrmoptionsdirectoryhotlistextra.btnpathtoberelativetoall.caption
+msgid "Apply current settings to directory hotlist"
+msgstr ""
+
+#: tfrmoptionsdirectoryhotlistextra.ckbdirectoryhotlistsource.caption
+msgid "Source"
+msgstr ""
+
+#: tfrmoptionsdirectoryhotlistextra.ckbdirectoryhotlisttarget.caption
+msgid "Target"
+msgstr ""
+
+#: tfrmoptionsdirectoryhotlistextra.gbdirectoryhotlistoptionsextra.caption
+msgctxt "tfrmoptionsdirectoryhotlistextra.gbdirectoryhotlistoptionsextra.caption"
+msgid "Paths"
+msgstr ""
+
+#: tfrmoptionsdirectoryhotlistextra.lbdirectoryhotlistfilenamestyle.caption
+msgid "Way to set paths when adding them:"
+msgstr ""
+
+#: tfrmoptionsdirectoryhotlistextra.lblapplysettingsfor.caption
+msgctxt "tfrmoptionsdirectoryhotlistextra.lblapplysettingsfor.caption"
+msgid "Do this for paths of:"
+msgstr ""
+
+#: tfrmoptionsdirectoryhotlistextra.lbpathtoberelativeto.caption
+msgctxt "tfrmoptionsdirectoryhotlistextra.lbpathtoberelativeto.caption"
+msgid "Path to be relative to:"
+msgstr ""
+
 #: tfrmoptionsdragdrop.cbdraganddropaskformateachtime.caption
 msgid "From all the supported formats, ask which one to use every time"
 msgstr "Прапаноўваць усе падтрымліваемыя фарматы, пытацца штораз"
@@ -5204,16 +5186,6 @@ msgstr "Укладкі, захаваныя злева адновяцца:"
 msgid "Tabs saved on right to be restored to:"
 msgstr "Укладкі, захаваныя зправа, адновяцца:"
 
-#: tfrmoptionsfavoritetabs.menuitem1.caption
-msgctxt "TFRMOPTIONSFAVORITETABS.MENUITEM1.CAPTION"
-msgid "-"
-msgstr "-"
-
-#: tfrmoptionsfavoritetabs.menuitem2.caption
-msgctxt "TFRMOPTIONSFAVORITETABS.MENUITEM2.CAPTION"
-msgid "-"
-msgstr "-"
-
 #: tfrmoptionsfavoritetabs.miaddseparator.caption
 msgctxt "TFRMOPTIONSFAVORITETABS.MIADDSEPARATOR.CAPTION"
 msgid "a separator"
@@ -5321,46 +5293,6 @@ msgstr "Уставіць"
 msgctxt "TFRMOPTIONSFAVORITETABS.MIRENAME.CAPTION"
 msgid "Rename"
 msgstr "Змяніць назву"
-
-#: tfrmoptionsfavoritetabs.miseparator1.caption
-msgctxt "TFRMOPTIONSFAVORITETABS.MISEPARATOR1.CAPTION"
-msgid "-"
-msgstr "-"
-
-#: tfrmoptionsfavoritetabs.miseparator10.caption
-msgctxt "TFRMOPTIONSFAVORITETABS.MISEPARATOR10.CAPTION"
-msgid "-"
-msgstr "-"
-
-#: tfrmoptionsfavoritetabs.miseparator11.caption
-msgctxt "TFRMOPTIONSFAVORITETABS.MISEPARATOR11.CAPTION"
-msgid "-"
-msgstr "-"
-
-#: tfrmoptionsfavoritetabs.miseparator2.caption
-msgctxt "TFRMOPTIONSFAVORITETABS.MISEPARATOR2.CAPTION"
-msgid "-"
-msgstr "-"
-
-#: tfrmoptionsfavoritetabs.miseparator3.caption
-msgctxt "TFRMOPTIONSFAVORITETABS.MISEPARATOR3.CAPTION"
-msgid "-"
-msgstr "-"
-
-#: tfrmoptionsfavoritetabs.miseparator7.caption
-msgctxt "TFRMOPTIONSFAVORITETABS.MISEPARATOR7.CAPTION"
-msgid "-"
-msgstr "-"
-
-#: tfrmoptionsfavoritetabs.miseparator8.caption
-msgctxt "TFRMOPTIONSFAVORITETABS.MISEPARATOR8.CAPTION"
-msgid "-"
-msgstr "-"
-
-#: tfrmoptionsfavoritetabs.miseparator9.caption
-msgctxt "TFRMOPTIONSFAVORITETABS.MISEPARATOR9.CAPTION"
-msgid "-"
-msgstr "-"
 
 #: tfrmoptionsfavoritetabs.misorteverything.caption
 msgctxt "TFRMOPTIONSFAVORITETABS.MISORTEVERYTHING.CAPTION"
@@ -5619,6 +5551,10 @@ msgstr "Праглядзець у..."
 msgid "Click me to change icon!"
 msgstr "Націсніце тут, каб змяніць значок!"
 
+#: tfrmoptionsfileassocextra.btnpathtoberelativetoall.caption
+msgid "Apply current settings to all current configured filenames and paths"
+msgstr ""
+
 #: tfrmoptionsfileassocextra.cbexecuteviashell.caption
 msgctxt "tfrmoptionsfileassocextra.cbexecuteviashell.caption"
 msgid "Execute via shell"
@@ -5651,9 +5587,44 @@ msgctxt "tfrmoptionsfileassocextra.cbopensystemwithterminalstayopen.caption"
 msgid "Execute via terminal and stay open"
 msgstr "Запусціць у тэрмінале і пакінуць адкрытым"
 
+#: tfrmoptionsfileassocextra.ckbfileassoccommand.caption
+msgctxt "tfrmoptionsfileassocextra.ckbfileassoccommand.caption"
+msgid "Commands"
+msgstr ""
+
+#: tfrmoptionsfileassocextra.ckbfileassocicons.caption
+msgctxt "tfrmoptionsfileassocextra.ckbfileassocicons.caption"
+msgid "Icons"
+msgstr "Значкі"
+
+#: tfrmoptionsfileassocextra.ckbfileassocstartpath.caption
+msgctxt "tfrmoptionsfileassocextra.ckbfileassocstartpath.caption"
+msgid "Starting paths"
+msgstr ""
+
 #: tfrmoptionsfileassocextra.gbextendedcontextmenuoptions.caption
 msgid "Extended options items:"
 msgstr "Дадатковыя параметры элементаў:"
+
+#: tfrmoptionsfileassocextra.gbtoolbaroptionsextra.caption
+msgctxt "tfrmoptionsfileassocextra.gbtoolbaroptionsextra.caption"
+msgid "Paths"
+msgstr ""
+
+#: tfrmoptionsfileassocextra.lbfileassocfilenamestyle.caption
+msgctxt "tfrmoptionsfileassocextra.lbfileassocfilenamestyle.caption"
+msgid "Way to set paths when adding elements for icons, commands and starting paths:"
+msgstr ""
+
+#: tfrmoptionsfileassocextra.lblapplysettingsfor.caption
+msgctxt "tfrmoptionsfileassocextra.lblapplysettingsfor.caption"
+msgid "Do this for files and path for:"
+msgstr ""
+
+#: tfrmoptionsfileassocextra.lbpathtoberelativeto.caption
+msgctxt "tfrmoptionsfileassocextra.lbpathtoberelativeto.caption"
+msgid "Path to be relative to:"
+msgstr ""
 
 #: tfrmoptionsfileoperations.bvlconfirmations.caption
 msgid "Show confirmation window for:"
@@ -6269,14 +6240,43 @@ msgctxt "TFRMOPTIONSHOTKEYS.MICOMMANDS.CAPTION"
 msgid "Command"
 msgstr "Загад"
 
-#: tfrmoptionshotkeys.miseparator1.caption
-msgctxt "TFRMOPTIONSHOTKEYS.MISEPARATOR1.CAPTION"
-msgid "-"
-msgstr "-"
-
 #: tfrmoptionshotkeys.misortorder.caption
 msgid "Sort order"
 msgstr "Парадак сартавання"
+
+#: tfrmoptionshotkeys.stgcommands.columns[0].title.caption
+#, fuzzy
+msgctxt "tfrmoptionshotkeys.stgcommands.columns[0].title.caption"
+msgid "Command"
+msgstr "Загад"
+
+#: tfrmoptionshotkeys.stgcommands.columns[1].title.caption
+#, fuzzy
+msgctxt "tfrmoptionshotkeys.stgcommands.columns[1].title.caption"
+msgid "Hotkeys"
+msgstr "Гарачыя клавішы"
+
+#: tfrmoptionshotkeys.stgcommands.columns[2].title.caption
+#, fuzzy
+msgctxt "tfrmoptionshotkeys.stgcommands.columns[2].title.caption"
+msgid "Description"
+msgstr "Апісанне"
+
+#: tfrmoptionshotkeys.stghotkeys.columns[0].title.caption
+#, fuzzy
+msgctxt "tfrmoptionshotkeys.stghotkeys.columns[0].title.caption"
+msgid "Hotkey"
+msgstr "Гарачыя клавішы"
+
+#: tfrmoptionshotkeys.stghotkeys.columns[1].title.caption
+#, fuzzy
+msgctxt "tfrmoptionshotkeys.stghotkeys.columns[1].title.caption"
+msgid "Parameters"
+msgstr "Параметры"
+
+#: tfrmoptionshotkeys.stghotkeys.columns[2].title.caption
+msgid "Controls"
+msgstr ""
 
 #: tfrmoptionsicons.cbiconsexclude.caption
 msgctxt "TFRMOPTIONSICONS.CBICONSEXCLUDE.CAPTION"
@@ -6749,6 +6749,30 @@ msgctxt "tfrmoptionspluginsdsx.lblplugindescription.caption"
 msgid "Searc&h plugins allow one to use alternative search algorithms or external tools (like \"locate\", etc.)"
 msgstr "Убу&довы пошуку дазваляюць выкарыстоўваць дадатковыя алгарытмы пошуку альбо вонкавыя прылады (напрыклад, \"locate\" і т.п.)"
 
+#: tfrmoptionspluginsdsx.stgplugins.columns[0].title.caption
+#, fuzzy
+msgctxt "tfrmoptionspluginsdsx.stgplugins.columns[0].title.caption"
+msgid "Active"
+msgstr "Актыўна"
+
+#: tfrmoptionspluginsdsx.stgplugins.columns[1].title.caption
+#, fuzzy
+msgctxt "tfrmoptionspluginsdsx.stgplugins.columns[1].title.caption"
+msgid "Plugin"
+msgstr "Убудова"
+
+#: tfrmoptionspluginsdsx.stgplugins.columns[2].title.caption
+#, fuzzy
+msgctxt "tfrmoptionspluginsdsx.stgplugins.columns[2].title.caption"
+msgid "Registered for"
+msgstr "Зарэгістравана на"
+
+#: tfrmoptionspluginsdsx.stgplugins.columns[3].title.caption
+#, fuzzy
+msgctxt "tfrmoptionspluginsdsx.stgplugins.columns[3].title.caption"
+msgid "File name"
+msgstr "Назва файла"
+
 #: tfrmoptionspluginsgroup.btnpathtoberelativetoall.caption
 msgid "Apply current settings to all current configured plugins"
 msgstr ""
@@ -6762,6 +6786,7 @@ msgid "Configuration:"
 msgstr ""
 
 #: tfrmoptionspluginsgroup.lbpathtoberelativeto.caption
+msgctxt "tfrmoptionspluginsgroup.lbpathtoberelativeto.caption"
 msgid "Path to be relative to:"
 msgstr ""
 
@@ -6803,15 +6828,87 @@ msgctxt "tfrmoptionspluginswdx.lblplugindescription.caption"
 msgid "Content plu&gins allow one to display extended file details like mp3 tags or image attributes in file lists, or use them in search and multi-rename tool"
 msgstr "Убудо&вы змесціва дазваляюць выводзіць дадатковыя звесткі аб файлах на панэлях пры пошуку альбо змене назваў файлаў"
 
+#: tfrmoptionspluginswdx.stgplugins.columns[0].title.caption
+#, fuzzy
+msgctxt "tfrmoptionspluginswdx.stgplugins.columns[0].title.caption"
+msgid "Active"
+msgstr "Актыўна"
+
+#: tfrmoptionspluginswdx.stgplugins.columns[1].title.caption
+#, fuzzy
+msgctxt "tfrmoptionspluginswdx.stgplugins.columns[1].title.caption"
+msgid "Plugin"
+msgstr "Убудова"
+
+#: tfrmoptionspluginswdx.stgplugins.columns[2].title.caption
+#, fuzzy
+msgctxt "tfrmoptionspluginswdx.stgplugins.columns[2].title.caption"
+msgid "Registered for"
+msgstr "Зарэгістравана на"
+
+#: tfrmoptionspluginswdx.stgplugins.columns[3].title.caption
+#, fuzzy
+msgctxt "tfrmoptionspluginswdx.stgplugins.columns[3].title.caption"
+msgid "File name"
+msgstr "Назва файла"
+
 #: tfrmoptionspluginswfx.lblplugindescription.caption
 msgctxt "tfrmoptionspluginswfx.lblplugindescription.caption"
 msgid "Fi&le system plugins allow access to disks inaccessible by operating system or to external devices like Palm/PocketPC."
 msgstr "У&будовы файлавых сістэм дазваляюць злучацца з дыскамі, недаступнымі з аперацыйнай сістэмы альбо вонкавымі прыладамі кшталту Palm/PocketPC."
 
+#: tfrmoptionspluginswfx.stgplugins.columns[0].title.caption
+#, fuzzy
+msgctxt "tfrmoptionspluginswfx.stgplugins.columns[0].title.caption"
+msgid "Active"
+msgstr "Актыўна"
+
+#: tfrmoptionspluginswfx.stgplugins.columns[1].title.caption
+#, fuzzy
+msgctxt "tfrmoptionspluginswfx.stgplugins.columns[1].title.caption"
+msgid "Plugin"
+msgstr "Убудова"
+
+#: tfrmoptionspluginswfx.stgplugins.columns[2].title.caption
+#, fuzzy
+msgctxt "tfrmoptionspluginswfx.stgplugins.columns[2].title.caption"
+msgid "Registered for"
+msgstr "Зарэгістравана на"
+
+#: tfrmoptionspluginswfx.stgplugins.columns[3].title.caption
+#, fuzzy
+msgctxt "tfrmoptionspluginswfx.stgplugins.columns[3].title.caption"
+msgid "File name"
+msgstr "Назва файла"
+
 #: tfrmoptionspluginswlx.lblplugindescription.caption
 msgctxt "tfrmoptionspluginswlx.lblplugindescription.caption"
 msgid "Vie&wer plugins allow one to display file formats like images, spreadsheets, databases etc. in Viewer (F3, Ctrl+Q)"
 msgstr "Уб&удовы прагляду дазваляюць праглядаць ва ўнутранай праграме прагляду файлы розных фарматаў (выявы, табліцы, базы даных і т.п.)"
+
+#: tfrmoptionspluginswlx.stgplugins.columns[0].title.caption
+#, fuzzy
+msgctxt "tfrmoptionspluginswlx.stgplugins.columns[0].title.caption"
+msgid "Active"
+msgstr "Актыўна"
+
+#: tfrmoptionspluginswlx.stgplugins.columns[1].title.caption
+#, fuzzy
+msgctxt "tfrmoptionspluginswlx.stgplugins.columns[1].title.caption"
+msgid "Plugin"
+msgstr "Убудова"
+
+#: tfrmoptionspluginswlx.stgplugins.columns[2].title.caption
+#, fuzzy
+msgctxt "tfrmoptionspluginswlx.stgplugins.columns[2].title.caption"
+msgid "Registered for"
+msgstr "Зарэгістравана на"
+
+#: tfrmoptionspluginswlx.stgplugins.columns[3].title.caption
+#, fuzzy
+msgctxt "tfrmoptionspluginswlx.stgplugins.columns[3].title.caption"
+msgid "File name"
+msgstr "Назва файла"
 
 #: tfrmoptionsquicksearchfilter.cbexactbeginning.caption
 msgid "&Beginning (name must start with first typed character)"
@@ -7085,6 +7182,10 @@ msgstr "&Плоскія кнопкі"
 msgid "Report errors with commands"
 msgstr "Паведаміць пра памылкі з загадамі"
 
+#: tfrmoptionstoolbar.cbshowcaptions.caption
+msgid "Sho&w captions"
+msgstr ""
+
 #: tfrmoptionstoolbar.edtinternalparameters.hint
 msgid "Enter command parameters, each in a separate line. Press F1 to see help on parameters."
 msgstr "Увядзіце параметры загаду, кожны ў асобным радку. F1- дапамога."
@@ -7198,26 +7299,6 @@ msgstr "у файл \"wincmd.ini\" TC (пакінуць існуючы)"
 msgctxt "TFRMOPTIONSTOOLBAR.MIEXPORTCURRENTTOTCININOKEEP.CAPTION"
 msgid "to a \"wincmd.ini\" of TC (erase existing)"
 msgstr "у файл \"wincmd.ini\" TC (&ыдаліць існуючы)"
-
-#: tfrmoptionstoolbar.miexportseparator1.caption
-msgctxt "TFRMOPTIONSTOOLBAR.MIEXPORTSEPARATOR1.CAPTION"
-msgid "-"
-msgstr "-"
-
-#: tfrmoptionstoolbar.miexportseparator2.caption
-msgctxt "TFRMOPTIONSTOOLBAR.MIEXPORTSEPARATOR2.CAPTION"
-msgid "-"
-msgstr "-"
-
-#: tfrmoptionstoolbar.miexportseparator3.caption
-msgctxt "TFRMOPTIONSTOOLBAR.MIEXPORTSEPARATOR3.CAPTION"
-msgid "-"
-msgstr "-"
-
-#: tfrmoptionstoolbar.miexportseparator4.caption
-msgctxt "TFRMOPTIONSTOOLBAR.MIEXPORTSEPARATOR4.CAPTION"
-msgid "-"
-msgstr "-"
 
 #: tfrmoptionstoolbar.miexporttop.caption
 msgid "Top toolbar..."
@@ -7335,11 +7416,6 @@ msgctxt "tfrmoptionstoolbar.miimportdcbarreplacetop.caption"
 msgid "to replace top toolbar"
 msgstr "замяніць найвышэйшую панэль прылад"
 
-#: tfrmoptionstoolbar.miimportseparator.caption
-msgctxt "TFRMOPTIONSTOOLBAR.MIIMPORTSEPARATOR.CAPTION"
-msgid "-"
-msgstr "-"
-
 #: tfrmoptionstoolbar.miimporttcbar.caption
 msgid "from a single TC .BAR file"
 msgstr "з адзіночнага файла TC .BAR"
@@ -7423,56 +7499,6 @@ msgctxt "TFRMOPTIONSTOOLBAR.MISEARCHANDREPLACE.CAPTION"
 msgid "Search and replace..."
 msgstr "Знайсці і замяніць..."
 
-#: tfrmoptionstoolbar.miseparator1.caption
-msgctxt "TFRMOPTIONSTOOLBAR.MISEPARATOR1.CAPTION"
-msgid "-"
-msgstr "-"
-
-#: tfrmoptionstoolbar.miseparator10.caption
-msgctxt "TFRMOPTIONSTOOLBAR.MISEPARATOR10.CAPTION"
-msgid "-"
-msgstr "-"
-
-#: tfrmoptionstoolbar.miseparator11.caption
-msgctxt "TFRMOPTIONSTOOLBAR.MISEPARATOR11.CAPTION"
-msgid "-"
-msgstr "-"
-
-#: tfrmoptionstoolbar.miseparator13.caption
-msgctxt "TFRMOPTIONSTOOLBAR.MISEPARATOR13.CAPTION"
-msgid "-"
-msgstr "-"
-
-#: tfrmoptionstoolbar.miseparator14.caption
-msgctxt "TFRMOPTIONSTOOLBAR.MISEPARATOR14.CAPTION"
-msgid "-"
-msgstr "-"
-
-#: tfrmoptionstoolbar.miseparator2.caption
-msgctxt "TFRMOPTIONSTOOLBAR.MISEPARATOR2.CAPTION"
-msgid "-"
-msgstr "-"
-
-#: tfrmoptionstoolbar.miseparator6.caption
-msgctxt "TFRMOPTIONSTOOLBAR.MISEPARATOR6.CAPTION"
-msgid "-"
-msgstr "-"
-
-#: tfrmoptionstoolbar.miseparator7.caption
-msgctxt "TFRMOPTIONSTOOLBAR.MISEPARATOR7.CAPTION"
-msgid "-"
-msgstr "-"
-
-#: tfrmoptionstoolbar.miseparator8.caption
-msgctxt "TFRMOPTIONSTOOLBAR.MISEPARATOR8.CAPTION"
-msgid "-"
-msgstr "-"
-
-#: tfrmoptionstoolbar.miseparator9.caption
-msgctxt "TFRMOPTIONSTOOLBAR.MISEPARATOR9.CAPTION"
-msgid "-"
-msgstr "-"
-
 #: tfrmoptionstoolbar.miseparatoraftercurrent.caption
 msgctxt "tfrmoptionstoolbar.miseparatoraftercurrent.caption"
 msgid "just after current selection"
@@ -7496,11 +7522,6 @@ msgstr "адразу перад абраным"
 #: tfrmoptionstoolbar.misrcrplallofall.caption
 msgid "in all of all the above..."
 msgstr "ва ўсім вышэйзгаданым..."
-
-#: tfrmoptionstoolbar.misrcrplclickseparator.caption
-msgctxt "TFRMOPTIONSTOOLBAR.MISRCRPLCLICKSEPARATOR.CAPTION"
-msgid "-"
-msgstr "-"
 
 #: tfrmoptionstoolbar.misrcrplcommands.caption
 msgid "in all commands..."
@@ -7541,6 +7562,44 @@ msgstr "адразу перад абраным"
 #: tfrmoptionstoolbar.rgtoolitemtype.caption
 msgid "Button type"
 msgstr "Тып кнопкі"
+
+#: tfrmoptionstoolbarextra.btnpathtoberelativetoall.caption
+msgid "Apply current settings to all configured filenames and paths"
+msgstr ""
+
+#: tfrmoptionstoolbarextra.ckbtoolbarcommand.caption
+msgctxt "tfrmoptionstoolbarextra.ckbtoolbarcommand.caption"
+msgid "Commands"
+msgstr ""
+
+#: tfrmoptionstoolbarextra.ckbtoolbaricons.caption
+msgctxt "tfrmoptionstoolbarextra.ckbtoolbaricons.caption"
+msgid "Icons"
+msgstr "Значкі"
+
+#: tfrmoptionstoolbarextra.ckbtoolbarstartpath.caption
+msgctxt "tfrmoptionstoolbarextra.ckbtoolbarstartpath.caption"
+msgid "Starting paths"
+msgstr ""
+
+#: tfrmoptionstoolbarextra.gbtoolbaroptionsextra.caption
+msgctxt "tfrmoptionstoolbarextra.gbtoolbaroptionsextra.caption"
+msgid "Paths"
+msgstr ""
+
+#: tfrmoptionstoolbarextra.lblapplysettingsfor.caption
+msgid "Do this for files and paths for:"
+msgstr ""
+
+#: tfrmoptionstoolbarextra.lbpathtoberelativeto.caption
+msgctxt "tfrmoptionstoolbarextra.lbpathtoberelativeto.caption"
+msgid "Path to be relative to:"
+msgstr ""
+
+#: tfrmoptionstoolbarextra.lbtoolbarfilenamestyle.caption
+msgctxt "tfrmoptionstoolbarextra.lbtoolbarfilenamestyle.caption"
+msgid "Way to set paths when adding elements for icons, commands and starting paths:"
+msgstr ""
 
 #: tfrmoptionstoolbase.btnrelativetoolpath.hint
 msgctxt "TFRMOPTIONSTOOLBASE.BTNRELATIVETOOLPATH.HINT"
@@ -8065,10 +8124,12 @@ msgid "Plugin"
 msgstr "Убудова"
 
 #: tfrmsearchplugin.headercontrol.sections[1].text
+msgctxt "tfrmsearchplugin.headercontrol.sections[1].text"
 msgid "Field"
 msgstr "Поле"
 
 #: tfrmsearchplugin.headercontrol.sections[2].text
+msgctxt "tfrmsearchplugin.headercontrol.sections[2].text"
 msgid "Operator"
 msgstr "Аператар"
 
@@ -8245,20 +8306,20 @@ msgctxt "TFRMSETFILEPROPERTIES.LBLWRITE.CAPTION"
 msgid "Write"
 msgstr "Запісаць"
 
-#: tfrmsplitter.btncancel.caption
-msgctxt "TFRMSPLITTER.BTNCANCEL.CAPTION"
-msgid "&Cancel"
-msgstr "&Скасаваць"
+#: tfrmsetfileproperties.zvcreationdatetime.textfornulldate
+msgctxt "tfrmsetfileproperties.zvcreationdatetime.textfornulldate"
+msgid " "
+msgstr ""
 
-#: tfrmsplitter.btnftchoice.caption
-msgctxt "TFRMSPLITTER.BTNFTCHOICE.CAPTION"
-msgid "..."
-msgstr "..."
+#: tfrmsetfileproperties.zvlastaccessdatetime.textfornulldate
+msgctxt "tfrmsetfileproperties.zvlastaccessdatetime.textfornulldate"
+msgid " "
+msgstr ""
 
-#: tfrmsplitter.btnok.caption
-msgctxt "TFRMSPLITTER.BTNOK.CAPTION"
-msgid "&OK"
-msgstr "&Добра"
+#: tfrmsetfileproperties.zvlastwritedatetime.textfornulldate
+msgctxt "tfrmsetfileproperties.zvlastwritedatetime.textfornulldate"
+msgid " "
+msgstr ""
 
 #: tfrmsplitter.btnrelativeftchoice.hint
 msgctxt "TFRMSPLITTER.BTNRELATIVEFTCHOICE.HINT"
@@ -8277,22 +8338,15 @@ msgstr "Стварыць файл кантрольнай сумы"
 msgid "1457664B - 3.5\""
 msgstr "1457664B - 3.5\""
 
-#: tfrmsplitter.grbxfile.caption
-msgctxt "TFRMSPLITTER.GRBXFILE.CAPTION"
-msgid "File name"
-msgstr "Назва файла"
-
 #: tfrmsplitter.grbxsize.caption
 msgid "Size and number of parts"
 msgstr "Памер і нумары частак"
 
 #: tfrmsplitter.lbdirtarget.caption
-msgid "Directory &target"
+#, fuzzy
+#| msgid "Directory &target"
+msgid "Split the file to directory:"
 msgstr "&Мэтавы каталог"
-
-#: tfrmsplitter.lbfilesource.caption
-msgid "File &source"
-msgstr "&Зыходны файл"
 
 #: tfrmsplitter.lblnumberparts.caption
 msgid "&Number of parts"
@@ -9204,10 +9258,54 @@ msgstr ""
 msgid "&Pause all"
 msgstr ""
 
+#: tgiocopymoveoperationoptionsui.cbfollowlinks.caption
+#, fuzzy
+msgctxt "tgiocopymoveoperationoptionsui.cbfollowlinks.caption"
+msgid "Fo&llow links"
+msgstr "&Выкарыcтоўваць спасылкі"
+
+#: tgiocopymoveoperationoptionsui.lbldirectoryexists.caption
+#, fuzzy
+msgctxt "tgiocopymoveoperationoptionsui.lbldirectoryexists.caption"
+msgid "When dir&ectory exists"
+msgstr "Калі &каталог існуе"
+
+#: tgiocopymoveoperationoptionsui.lblfileexists.caption
+#, fuzzy
+msgctxt "tgiocopymoveoperationoptionsui.lblfileexists.caption"
+msgid "When file exists"
+msgstr "Калі файл існуе"
+
 #: tmultiarchivecopyoperationoptionsui.lblfileexists.caption
 msgctxt "tmultiarchivecopyoperationoptionsui.lblfileexists.caption"
 msgid "When file exists"
 msgstr "Калі файл існуе"
+
+#: ttfrmconfirmcommandline.btncancel.caption
+#, fuzzy
+msgctxt "ttfrmconfirmcommandline.btncancel.caption"
+msgid "&Cancel"
+msgstr "&Скасаваць"
+
+#: ttfrmconfirmcommandline.btnok.caption
+#, fuzzy
+msgctxt "ttfrmconfirmcommandline.btnok.caption"
+msgid "&OK"
+msgstr "&Добра"
+
+#: ttfrmconfirmcommandline.lblecommandline.editlabel.caption
+msgid "Command line:"
+msgstr ""
+
+#: ttfrmconfirmcommandline.lbleparameters.editlabel.caption
+#, fuzzy
+msgctxt "ttfrmconfirmcommandline.lbleparameters.editlabel.caption"
+msgid "Parameters:"
+msgstr "Параметры:"
+
+#: ttfrmconfirmcommandline.lblestartpath.editlabel.caption
+msgid "Start path:"
+msgstr ""
 
 #: twcxarchivecopyoperationoptionsui.lblfileexists.caption
 msgctxt "TWCXARCHIVECOPYOPERATIONOPTIONSUI.LBLFILEEXISTS.CAPTION"
@@ -9770,6 +9868,10 @@ msgstr ""
 msgid "Legacy DC .tab files"
 msgstr ""
 
+#: ulng.rsfilterpluginfiles
+msgid "Plugin files"
+msgstr ""
+
 #: ulng.rsfilterstatus
 msgid "FILTER"
 msgstr "ФІЛЬТР"
@@ -10095,6 +10197,10 @@ msgstr ""
 msgid "Copy names with UNC path"
 msgstr "Скапіраваць назвы ў буфер са шляхам UNC"
 
+#: ulng.rsmnucreateshortcut
+msgid "Create Shortcut..."
+msgstr ""
+
 #: ulng.rsmnudisconnectnetworkdrive
 msgid "Disconnect Network Drive..."
 msgstr "Адлучыць сеткавы дыск..."
@@ -10318,6 +10424,7 @@ msgid "There already exists a directory named \"%s\"."
 msgstr "Каталог з назвай \"%s\" ужо існуе."
 
 #: ulng.rsmsgerrdatenotsupported
+#, fuzzy,badformat
 msgid "Date %s is not supported"
 msgstr "Дата % не падтрымліваецца"
 
@@ -10949,6 +11056,7 @@ msgid "Below is a preview. You may move cursor and select files to get immediate
 msgstr "Ніжэй знаходзіцца папярэдні прагляд. Вы можаце перамяшчаць курсор і вылучаць файлы, каб паспрабаваць абраныя налады."
 
 #: ulng.rsmsgpassword
+msgctxt "ulng.rsmsgpassword"
 msgid "Password:"
 msgstr "Пароль:"
 
@@ -11225,6 +11333,7 @@ msgid "<NO NAME>"
 msgstr "<БЕЗ НАЗВЫ>"
 
 #: ulng.rsmsgusername
+msgctxt "ulng.rsmsgusername"
 msgid "User name:"
 msgstr "Імя карыстальніка:"
 
@@ -11876,6 +11985,10 @@ msgctxt "ulng.rsoptionseditordirectoryhotlist"
 msgid "Directory Hotlist"
 msgstr "Спіс выбраных каталогаў"
 
+#: ulng.rsoptionseditordirectoryhotlistextra
+msgid "Directory Hotlist Extra"
+msgstr ""
+
 #: ulng.rsoptionseditordraganddrop
 msgid "Drag & drop"
 msgstr "&Перацягванні"
@@ -11929,6 +12042,7 @@ msgid "File types"
 msgstr "Тыпы файлаў"
 
 #: ulng.rsoptionseditorfoldertabs
+msgctxt "ulng.rsoptionseditorfoldertabs"
 msgid "Folder tabs"
 msgstr "Укладкі каталогаў"
 
@@ -11949,6 +12063,7 @@ msgid "Hot keys"
 msgstr "Гарачыя клавішы"
 
 #: ulng.rsoptionseditoricons
+msgctxt "ulng.rsoptionseditoricons"
 msgid "Icons"
 msgstr "Значкі"
 
@@ -12008,6 +12123,10 @@ msgstr "Тэрмінал"
 #: ulng.rsoptionseditortoolbar
 msgid "Toolbar"
 msgstr "Панэль прылад"
+
+#: ulng.rsoptionseditortoolbarextra
+msgid "Toolbar Extra"
+msgstr ""
 
 #: ulng.rsoptionseditortools
 msgid "Tools"
@@ -12664,6 +12783,14 @@ msgstr "Дапамога па зменным \"%\""
 #: ulng.rsvarinputparam
 msgid "Will request request user to enter a parameter with a default suggested value"
 msgstr "Запыт уводу параметра з прадвызначаным значэннем"
+
+#: ulng.rsvarlastdircurrentpath
+msgid "Last directory of panel's path"
+msgstr ""
+
+#: ulng.rsvarlastdirofpath
+msgid "Last directory of file's path"
+msgstr ""
 
 #: ulng.rsvarleftpanel
 msgid "Left panel"

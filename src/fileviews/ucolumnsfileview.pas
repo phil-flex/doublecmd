@@ -171,7 +171,7 @@ type
     procedure RedrawFiles; override;
     procedure SetActiveFile(FileIndex: PtrInt; ScrollTo: Boolean; aLastTopRowIndex: PtrInt = -1); override;
     procedure SetSorting(const NewSortings: TFileSortings); override;
-    procedure ShowRenameFileEdit(aFile: TFile); override;
+    procedure ShowRenameFileEdit(var aFile: TFile); override;
     procedure UpdateRenameFileEditPosition; override;
 
     procedure MouseScrollTimer(Sender: TObject); override;
@@ -463,7 +463,7 @@ begin
   dgPanel.ColumnsOwnDim:=ExternalDimFunction;
 end;
 
-procedure TColumnsFileView.ShowRenameFileEdit(aFile: TFile);
+procedure TColumnsFileView.ShowRenameFileEdit(var aFile: TFile);
 begin
   if FFileNameColumn <> -1 then
   begin
@@ -484,6 +484,8 @@ procedure TColumnsFileView.UpdateRenameFileEditPosition;
 var
   ARect: TRect;
 begin
+  inherited UpdateRenameFileEditPosition;
+
   ARect := dgPanel.CellRect(FFileNameColumn, dgPanel.Row);
   Dec(ARect.Top, 2);
   Inc(ARect.Bottom, 2);
@@ -1201,9 +1203,7 @@ begin
 
   DoubleBuffered := True;
   Align := alClient;
-{$if lcl_fullversion >= 1080004}
-  AllowOutboundEvents := False;
-{$endif}
+
   Options := [goFixedVertLine, goFixedHorzLine, goTabs, goRowSelect, goColSizing,
               goThumbTracking, goSmoothScroll, goHeaderHotTracking, goHeaderPushedLook];
 
@@ -1983,12 +1983,16 @@ begin
   FMouseDownY := Y;
   ColumnsView.FMainControlMouseDown := True;
 
+  AllowOutboundEvents := False;
   inherited MouseDown(Button, Shift, X, Y);
+  AllowOutboundEvents := True;
 end;
 
 procedure TDrawGridEx.MouseMove(Shift: TShiftState; X, Y: Integer);
 begin
+  AllowOutboundEvents := False;
   inherited MouseMove(Shift, X, Y);
+  AllowOutboundEvents := True;
   if ColumnsView.IsMouseSelecting then DoMouseMoveScroll(X, Y);
 end;
 

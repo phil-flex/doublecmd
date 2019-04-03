@@ -3,7 +3,7 @@
    -------------------------------------------------------------------------
    Useful functions dealing with strings.
    
-   Copyright (C) 2006-2018  Alexander Koblov (alexx2000@mail.ru)
+   Copyright (C) 2006-2019  Alexander Koblov (alexx2000@mail.ru)
    Copyright (C) 2012       Przemyslaw Nagay (cobines@gmail.com)
 
    This program is free software; you can redistribute it and/or modify
@@ -328,7 +328,7 @@ procedure SetValue(var anArray: TDynamicStringArray; Key, NewValue: String);
 procedure SetValue(var anArray: TDynamicStringArray; Key: String; NewValue: Boolean);
 function ShortcutsToText(const Shortcuts: TDynamicStringArray): String;
 function GetDateTimeInStrEZSortable(DateTime:TDateTime):string;
-function WrapTextSimple(const S: String; MaxCol: Integer): String;
+function WrapTextSimple(const S: String; MaxCol: Integer = 100): String;
 
 {en
    Escapes characters to be inserted between single quotes (')
@@ -519,17 +519,21 @@ end;
 
 function ExtractOnlyFileName(const FileName: string): string;
 var
- I, Index : LongInt;
- EndSep : Set of Char;
+  SOF : Boolean;
+  I, Index : LongInt;
+  EndSep : Set of Char;
 begin
+  Index := MaxInt;
   // Find a dot index
   I := Length(FileName);
   EndSep:= AllowDirectorySeparators + AllowDriveSeparators + [ExtensionSeparator];
   while (I > 0) and not (FileName[I] in EndSep) do Dec(I);
   if (I > 0) and (FileName[I] = ExtensionSeparator) then
-     Index := I
-  else
-     Index := MaxInt;
+  begin
+    SOF:= (I = 1) or (FileName[I - 1] in AllowDirectorySeparators);
+    if (not SOF) or FirstDotAtFileNameStartIsExtension then
+      Index := I
+  end;
   // Find file name index
   EndSep := EndSep - [ExtensionSeparator];
   while (I > 0) and not (FileName[I] in EndSep) do Dec(I);
@@ -539,30 +543,37 @@ end;
 function ExtractOnlyFileExt(const FileName: string): string;
 var
   I : LongInt;
+  SOF : Boolean;
   EndSep : Set of Char;
 begin
+  Result := EmptyStr;
   I := Length(FileName);
   EndSep:= AllowDirectorySeparators + AllowDriveSeparators + [ExtensionSeparator];
   while (I > 0) and not (FileName[I] in EndSep) do Dec(I);
   if (I > 0) and (FileName[I] = ExtensionSeparator) then
-    Result := Copy(FileName, I + 1, MaxInt)
-  else
-    Result := '';
+  begin
+    SOF:= (I = 1) or (FileName[I - 1] in AllowDirectorySeparators);
+    if (not SOF) or FirstDotAtFileNameStartIsExtension then
+      Result := Copy(FileName, I + 1, MaxInt)
+  end;
 end;
 
 function RemoveFileExt(const FileName: String): String;
 var
   I : LongInt;
+  SOF : Boolean;
   EndSep : Set of Char;
 begin
+  Result := FileName;
   I := Length(FileName);
   EndSep:= AllowDirectorySeparators + AllowDriveSeparators + [ExtensionSeparator];
-  while (I > 0) and not (FileName[I] in EndSep) do
-    Dec(I);
+  while (I > 0) and not (FileName[I] in EndSep) do Dec(I);
   if (I > 0) and (FileName[I] = ExtensionSeparator) then
-    Result := Copy(FileName, 1, I - 1)
-  else
-    Result := FileName;
+  begin
+    SOF:= (I = 1) or (FileName[I - 1] in AllowDirectorySeparators);
+    if (not SOF) or FirstDotAtFileNameStartIsExtension then
+      Result := Copy(FileName, 1, I - 1)
+  end;
 end;
 
 function ContainsWildcards(const Path: String): Boolean;
@@ -1084,6 +1095,7 @@ var
   Len, Finish: Integer;
 begin
   Len:= Length(S);
+  SetLength(Result, 0);
   for Finish:= 1 to Len - 1 do
   begin
     if S[Finish] = Delimiter then

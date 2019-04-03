@@ -1,6 +1,6 @@
 
 rem Set Double Commander version
-set DC_VER=0.9.0
+set DC_VER=1.0.0
 
 rem Path to subversion
 set SVN_EXE="c:\Program Files\TortoiseSVN\bin\svn.exe"
@@ -17,7 +17,6 @@ set PACK_DIR=%CD%\windows\release
 rem Create temp dir for building
 set BUILD_DC_TMP_DIR=%TEMP%\doublecmd-%DC_VER%
 rm -rf %BUILD_DC_TMP_DIR%
-REM %SVN_EXE% export ..\ %BUILD_DC_TMP_DIR%
 %SVN_EXE% export ..\ %BUILD_DC_TMP_DIR%
 
 rem Save revision number

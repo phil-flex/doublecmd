@@ -158,6 +158,9 @@ uses
   DCBasicTypes, uFileSource, uFileSystemFileSource, uFileProperty,
   StrUtils, DCDateTimeUtils, uShowMsg, Forms, LazUTF8, uHash;
 
+const
+  HASH_TYPE = HASH_BLAKE2S;
+
 function ApplyRenameMask(aFile: TFile; NameMask: String; ExtMask: String): String; overload;
 begin
   // Only change name for files.
@@ -592,7 +595,7 @@ begin
   SourceFileStream := nil;
   TargetFileStream := nil; // for safety exception handling
   BytesToRead := FBufferSize;
-  if FVerify then HashInit(Context, HASH_SHA3_224);
+  if FVerify then HashInit(Context, HASH_TYPE);
   try
     try
       OpenSourceFile;
@@ -766,7 +769,7 @@ procedure TFileSystemOperationHelper.CopyProperties(SourceFile: TFile;
 var
   Msg: String = '';
   ACopyTime: Boolean;
-  CopyAttrResult: TCopyAttributesOptions;
+  CopyAttrResult: TCopyAttributesOptions = [];
   ACopyAttributesOptions: TCopyAttributesOptions;
 begin
   if FCopyAttributesOptions <> [] then
@@ -778,12 +781,14 @@ begin
       CopyAttrResult := mbFileCopyAttr(SourceFile.FullPath, TargetFileName, ACopyAttributesOptions);
     end;
     if ACopyTime then
-    begin
+    try
       // Copy time from properties because move operation change time of original folder
       if not mbFileSetTime(TargetFileName, DateTimeToFileTime(SourceFile.ModificationTime),
                    {$IF DEFINED(MSWINDOWS)}DateTimeToFileTime(SourceFile.CreationTime){$ELSE}0{$ENDIF},
                                            DateTimeToFileTime(SourceFile.LastAccessTime)) then
         CopyAttrResult += [caoCopyTime];
+    except
+      on E: EDateOutOfRange do CopyAttrResult += [caoCopyTime];
     end;
     if CopyAttrResult <> [] then
     begin
@@ -1573,7 +1578,7 @@ begin
   {$PUSH}{$HINTS OFF}{$WARNINGS OFF}
   Aligned:= Pointer(PtrUInt(Buffer + BytesToRead - 1) and not (BytesToRead - 1));
   {$POP}
-  HashInit(Context, HASH_SHA3_224);
+  HashInit(Context, HASH_TYPE);
   try
     Handle:= mbFileOpen(FileName, fmOpenRead or fmShareDenyWrite or fmOpenSync or fmOpenDirect);
 

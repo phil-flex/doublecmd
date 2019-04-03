@@ -3,7 +3,7 @@
    -------------------------------------------------------------------------
    Build-in File Viewer.
 
-   Copyright (C) 2018  Alexander Koblov (alexx2000@mail.ru)
+   Copyright (C) 2007-2019  Alexander Koblov (alexx2000@mail.ru)
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -16,8 +16,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+   along with this program. If not, see <http://www.gnu.org/licenses/>.
 
    Legacy comment from its origin:
    -------------------------------------------------------------------------
@@ -61,11 +60,25 @@ uses
   LCLProc, Menus, Dialogs, ExtDlgs, StdCtrls, Buttons, ColorBox, Spin,
   Grids, ActnList, viewercontrol, GifAnim, fFindView, WLXPlugin, uWLXModule,
   uFileSource, fModView, Types, uThumbnails, uFormCommands, uOSForms,Clipbrd,
-  uExifReader;
+  uExifReader, KASStatusBar;
 
 type
 
   TViewerCopyMoveAction=(vcmaCopy,vcmaMove);
+
+  { TDrawGrid }
+
+  TDrawGrid = class(Grids.TDrawGrid)
+  private
+    FMutex: Integer;
+  private
+    function GetIndex: Integer;
+    procedure SetIndex(AValue: Integer);
+  protected
+    procedure MoveSelection; override;
+  public
+    property Index: Integer read GetIndex write SetIndex;
+  end;
 
   { TfrmViewer }
 
@@ -195,7 +208,7 @@ type
     btnNextGifFrame: TSpeedButton;
     btnPrevGifFrame: TSpeedButton;
     Splitter: TSplitter;
-    Status: TStatusBar;
+    Status: TKASStatusBar;
     MainMenu: TMainMenu;
     miFile: TMenuItem;
     miPrev: TMenuItem;
@@ -339,15 +352,19 @@ type
     property Commands: TFormCommands read FCommands implements IFormCommands;
 
   protected
+    procedure WMCommand(var Message: TLMCommand); message LM_COMMAND;
     procedure WMSetFocus(var Message: TLMSetFocus); message LM_SETFOCUS;
 
   public
     constructor Create(TheOwner: TComponent; aFileSource: IFileSource; aQuickView: Boolean = False); overload;
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
+
+    procedure LoadFile(iIndex: Integer);
     procedure LoadFile(const aFileName: String);
+    procedure LoadNextFile(Index: Integer);
     procedure LoadNextFile(const aFileName: String);
-    procedure LoadFile(iIndex:Integer);
+
     procedure ExitPluginMode;
 
     procedure ShowTextViewer(AMode: TViewerControlMode);
@@ -415,24 +432,23 @@ implementation
 uses
   FileUtil, IntfGraphics, Math, uLng, uShowMsg, uGlobs, LCLType, LConvEncoding,
   DCClassesUtf8, uFindMmap, DCStrUtils, uDCUtils, LCLIntf, uDebug, uHotkeyManager,
-  uConvEncoding, DCBasicTypes, DCOSUtils, uOSUtils, uFindByrMr,
-  fMain;
+  uConvEncoding, DCBasicTypes, DCOSUtils, uOSUtils, uFindByrMr, uFileViewWithGrid;
 
 const
   HotkeysCategory = 'Viewer';
 
   // Status bar panels indexes.
-  sbpFileName             = 0;
-  sbpFileNr               = 1;
+  sbpFileName             = 4;
+  sbpFileNr               = 0;
   // Text
-  sbpPosition             = 2;
-  sbpFileSize             = 3;
-  sbpTextEncoding         = 4;
+  sbpPosition             = 1;
+  sbpFileSize             = 2;
+  sbpTextEncoding         = 3;
   // WLX
-  sbpPluginName           = 2;
+  sbpPluginName           = 1;
   // Graphics
-  sbpCurrentResolution    = 2;
-  sbpFullResolution       = 3;
+  sbpCurrentResolution    = 1;
+  sbpFullResolution       = 2;
 
 type
 
@@ -447,6 +463,7 @@ type
     procedure Execute; override;
   public
     constructor Create(Owner: TfrmViewer);
+    class procedure Finish(var Thread: TThread);
   end;
 
 procedure ShowViewer(const FilesToView:TStringList; const aFileSource: IFileSource);
@@ -478,6 +495,35 @@ begin
     end;
 end;
 
+{ TDrawGrid }
+
+function TDrawGrid.GetIndex: Integer;
+begin
+  Result:= Row * ColCount + Col;
+end;
+
+procedure TDrawGrid.SetIndex(AValue: Integer);
+begin
+  if (FMutex = 0) then
+  try
+    Inc(FMutex);
+    MoveExtend(False, AValue mod ColCount, AValue div ColCount);
+  finally
+    Dec(FMutex)
+  end;
+end;
+
+procedure TDrawGrid.MoveSelection;
+begin
+  if (FMutex = 0) then
+  try
+    Inc(FMutex);
+    inherited MoveSelection;
+  finally
+    Dec(FMutex)
+  end;
+end;
+
 { TThumbThread }
 
 procedure TThumbThread.ClearList;
@@ -494,7 +540,6 @@ end;
 procedure TThumbThread.DoOnTerminate(Sender: TObject);
 begin
   FOwner.EnableActions(True);
-  FOwner.FThread := nil;
   FOwner := nil;
 end;
 
@@ -516,10 +561,19 @@ begin
   inherited Create(True);
   Owner.EnableActions(False);
   OnTerminate := @DoOnTerminate;
-  FreeOnTerminate := True;
   FOwner := Owner;
   ClearList;
   Start;
+end;
+
+class procedure TThumbThread.Finish(var Thread: TThread);
+begin
+  if Assigned(Thread) then
+  begin
+    Thread.Terminate;
+    Thread.WaitFor;
+    FreeAndNil(Thread);
+  end;
 end;
 
 constructor TfrmViewer.Create(TheOwner: TComponent; aFileSource: IFileSource;
@@ -621,6 +675,28 @@ begin
   end;
 end;
 
+procedure TfrmViewer.LoadNextFile(Index: Integer);
+begin
+  try
+    if bPlugin and FWlxModule.FileParamVSDetectStr(FileList[Index], False) then
+    begin
+      if (FWlxModule.CallListLoadNext(Self.Handle, FileList[Index], PluginShowFlags) <> LISTPLUGIN_ERROR) then
+      begin
+        Status.Panels[sbpFileNr].Text:= Format('%d/%d', [Index + 1, FileList.Count]);
+        Status.Panels[sbpFileName].Text:= FileList[Index];
+        Caption:= FileList[Index];
+        iActiveFile := Index;
+        Exit;
+      end;
+    end;
+    ExitPluginMode;
+    LoadFile(Index);
+  finally
+    if pnlPreview.Visible then
+      DrawPreview.Index:= iActiveFile;
+  end;
+end;
+
 procedure TfrmViewer.LoadNextFile(const aFileName: String);
 begin
   if bPlugin then
@@ -629,13 +705,21 @@ begin
       if FileParamVSDetectStr(aFileName, False) then
       begin
         if CallListLoadNext(Self.Handle, aFileName, PluginShowFlags) <> LISTPLUGIN_ERROR then
+        begin
+          Status.Panels[sbpFileName].Text:= aFileName;
           Exit;
+        end;
       end;
     end;
   ExitPluginMode;
   ViewerControl.ResetEncoding;
   LoadFile(aFileName);
-  if ViewerControl.IsFileOpen then ViewerControl.GoHome;
+  if ViewerControl.IsFileOpen then
+  begin
+    ViewerControl.GoHome;
+    if (ViewerControl.Mode = vcmText) then
+      ViewerControl.HGoHome;
+  end;
 end;
 
 procedure TfrmViewer.LoadFile(iIndex: Integer);
@@ -652,7 +736,12 @@ begin
   Status.Panels[sbpFileNr].Text:= Format('%d/%d', [iIndex + 1, FileList.Count]);
 
   if ANewFile then begin
-    if ViewerControl.IsFileOpen then ViewerControl.GoHome;
+    if ViewerControl.IsFileOpen then
+    begin
+      ViewerControl.GoHome;
+      if (ViewerControl.Mode = vcmText) then
+        ViewerControl.HGoHome;
+    end;
   end;
 end;
 
@@ -975,6 +1064,13 @@ begin
           FileList.Objects[Index]:= bmpThumb;
         end;
     end;
+end;
+
+procedure TfrmViewer.WMCommand(var Message: TLMCommand);
+begin
+  case Message.NotifyCode of
+    itm_next: if Message.ItemID = 0 then cm_LoadNextFile([]);
+  end;
 end;
 
 procedure TfrmViewer.WMSetFocus(var Message: TLMSetFocus);
@@ -1504,54 +1600,40 @@ end;
 procedure TfrmViewer.DrawPreviewDrawCell(Sender: TObject; aCol, aRow: Integer;
   aRect: TRect; aState: TGridDrawState);
 var
-  i,z,t, X, Y: Integer;
-  sExt, sName, shortName: String;
+  ATextSize: TSize;
+  sFileName: String;
   bmpThumb: TBitmap;
+  Index, X, Y: Integer;
 begin
-  aRect:= Classes.Rect(aRect.Left + 2, aRect.Top + 2, aRect.Right - 2, aRect.Bottom - 2);
-  i:= (aRow * DrawPreview.ColCount) + aCol; // Calculate FileList index
-  if (i >= 0) and (i < FileList.Count) then
+  LCLIntf.InflateRect(aRect, -2, -2);
+  // Calculate FileList index
+  Index:= (aRow * DrawPreview.ColCount) + aCol;
+  if (Index >= 0) and (Index < FileList.Count) then
+  begin
+    DrawPreview.Canvas.FillRect(aRect);
+    bmpThumb:= TBitmap(FileList.Objects[Index]);
+    sFileName:= ExtractFileName(FileList.Strings[Index]);
+    sFileName:= FitOtherCellText(sFileName, DrawPreview.Canvas, aRect.Width);
+    ATextSize:= DrawPreview.Canvas.TextExtent(sFileName);
+
+    if Assigned(bmpThumb) then
     begin
-      sName:= ExtractOnlyFileName(FileList.Strings[i]);
-      sExt:= ExtractFileExt(FileList.Strings[i]);
-      DrawPreview.Canvas.FillRect(aRect); // Clear cell
-      bmpThumb:= TBitmap(FileList.Objects[i]);
-      if Assigned(bmpThumb) then
-      begin
-        z:= DrawPreview.Canvas.TextHeight('Pp') + 4;
-        X:= aRect.Left + (aRect.Right - aRect.Left - bmpThumb.Width) div 2;
-        Y:= aRect.Top + (aRect.Bottom - aRect.Top - bmpThumb.Height - z) div 2;
-        // Draw thumbnail at center
-        DrawPreview.Canvas.Draw(X, Y, bmpThumb);
-      end;
-      z:= (DrawPreview.Width - DrawPreview.ColCount * DrawPreview.DefaultColWidth) div DrawPreview.ColCount div 2;
-      if DrawPreview.Canvas.GetTextWidth(sName+sExt) < DrawPreview.DefaultColWidth then
-        begin
-          t:= (DrawPreview.DefaultColWidth-DrawPreview.Canvas.GetTextWidth(sName+sExt)) div 2;
-          DrawPreview.Canvas.TextOut(aRect.Left+z+t, aRect.Top + FThumbSize.cy + 2, sName+sExt);
-        end
-      else
-        begin
-          shortName:= '';
-          t:= 1;
-          while DrawPreview.Canvas.GetTextWidth(shortName+'...'+sExt) < (DrawPreview.DefaultColWidth-15) do
-            begin
-              shortName:= shortName + sName[t];
-              Inc(t);
-            end;
-          DrawPreview.Canvas.TextOut(aRect.Left+z, aRect.Top + FThumbSize.cy + 2, shortName+'...'+sExt);
-        end;
+      // Draw thumbnail at center
+      X:= aRect.Left + (aRect.Width - bmpThumb.Width) div 2;
+      Y:= aRect.Top + (aRect.Height - bmpThumb.Height - ATextSize.Height - 4) div 2;
+      DrawPreview.Canvas.Draw(X, Y, bmpThumb);
     end;
+
+    // Draw file name at center
+    Y:= (aRect.Bottom - ATextSize.Height) - 2;
+    X:= aRect.Left + (aRect.Width - ATextSize.Width) div 2;
+    DrawPreview.Canvas.TextOut(X, Y, sFileName);
+  end;
 end;
 
 procedure TfrmViewer.DrawPreviewSelection(Sender: TObject; aCol, aRow: Integer);
-var
-  I: Integer;
 begin
-  gboxHightlight.Visible:= False;
-  gboxPaint.Visible:= False;
-  I:= DrawPreview.Row * DrawPreview.ColCount + DrawPreview.Col;
-  if I < Filelist.Count then LoadNextFile(FileList.Strings[I]);
+  LoadNextFile(DrawPreview.Index);
 end;
 
 procedure TfrmViewer.DrawPreviewTopleftChanged(Sender: TObject);
@@ -1561,11 +1643,7 @@ end;
 
 procedure TfrmViewer.FormCloseQuery(Sender: TObject; var CanClose: boolean);
 begin
-  if Assigned(FThread) then
-  begin
-    FThread.Terminate;
-    FThread.WaitFor;
-  end;
+  TThumbThread.Finish(FThread);
 end;
 
 procedure TfrmViewer.TimerViewerTimer(Sender: TObject);
@@ -1978,7 +2056,7 @@ begin
   dScaleFactor:= FZoomFactor;
 
   // Place and resize image
-  if (miStretch.Checked) then
+  if (miStretch.Checked or miStretchOnlyLarge.Checked) then
   begin
     dScaleFactor:= Min(sboxImage.ClientWidth / Image.Picture.Width ,sboxImage.ClientHeight / Image.Picture.Height);
     dScaleFactor:= IfThen((miStretchOnlyLarge.Checked) and (dScaleFactor > 1.0), 1.0, dScaleFactor);
@@ -2311,6 +2389,8 @@ begin
 
   if Panel = nil then
   begin
+    Status.Panels[sbpFileSize].Text:= EmptyStr;
+    Status.Panels[sbpTextEncoding].Text:= EmptyStr;
     Status.Panels[sbpPluginName].Text:= FWlxModule.Name;
   end
   else if Panel = pnlText then
@@ -2333,6 +2413,7 @@ begin
   else if Panel = pnlImage then
   begin
     pnlImage.TabStop:= True;
+    Status.Panels[sbpTextEncoding].Text:= EmptyStr;
     if CanFocus and pnlImage.CanFocus then pnlImage.SetFocus;
     PanelEditImage.Visible:= not (bQuickView or (miFullScreen.Checked and not PanelEditImage.MouseEntered));
   end;
@@ -2370,56 +2451,30 @@ end;
 
 procedure TfrmViewer.cm_LoadNextFile(const Params: array of string);
 var
-  I : Integer;
+  Index : Integer;
 begin
-  I:= iActiveFile + 1;
-  if I >= FileList.Count then
-    I:= 0;
-
-  if bPlugin then
+  if not bQuickView then
   begin
-    if (FWlxModule.CallListLoadNext(Self.Handle, FileList[I], PluginShowFlags) <> LISTPLUGIN_ERROR) then
-    Exit;
+    Index:= iActiveFile + 1;
+    if Index >= FileList.Count then
+      Index:= 0;
+
+    LoadNextFile(Index);
   end;
-  ExitPluginMode;
-  if pnlPreview.Visible then
-    begin
-      if DrawPreview.Col = DrawPreview.ColCount-1 then
-        begin
-          DrawPreview.Col:=0;
-          DrawPreview.Row:= DrawPreview.Row+1;
-        end
-      else
-        DrawPreview.Col:=DrawPreview.Col+1
-    end
-  else LoadFile(I);
 end;
 
 procedure TfrmViewer.cm_LoadPrevFile(const Params: array of string);
 var
-  I: Integer;
+  Index: Integer;
 begin
-  I:= iActiveFile - 1;
-  if I < 0 then
-    I:= FileList.Count - 1;
-
-  if bPlugin then
+  if not bQuickView then
   begin
-    if (FWlxModule.CallListLoadNext(Self.Handle, FileList[I], PluginShowFlags) <> LISTPLUGIN_ERROR) then
-      Exit;
+    Index:= iActiveFile - 1;
+    if Index < 0 then
+      Index:= FileList.Count - 1;
+
+    LoadNextFile(Index);
   end;
-  ExitPluginMode;
-  if pnlPreview.Visible then
-    begin
-      if DrawPreview.Col = 0  then
-        begin
-          DrawPreview.Col:=DrawPreview.ColCount-1;
-          DrawPreview.Row:= DrawPreview.Row-1;
-        end
-      else
-        DrawPreview.Col:=DrawPreview.Col-1
-    end
-  else LoadFile(I);
 end;
 
 procedure TfrmViewer.cm_MoveFile(const Params: array of string);
@@ -2442,23 +2497,19 @@ end;
 
 procedure TfrmViewer.cm_StretchImage(const Params: array of string);
 begin
-  miStretch.Checked:=not miStretch.Checked;
-  if bImage then
+  miStretch.Checked:= not miStretch.Checked;
+  if miStretch.Checked then
   begin
-    if miStretch.Checked then
-    begin
-      FZoomFactor:= 1.0;
-      UpdateImagePlacement;
-    end else
-    begin
-      UpdateImagePlacement;
-    end;
+    FZoomFactor:= 1.0;
+    miStretchOnlyLarge.Checked:= False
   end;
+  UpdateImagePlacement;
 end;
 
 procedure TfrmViewer.cm_StretchOnlyLarge(const Params: array of string);
 begin
   miStretchOnlyLarge.Checked:= not miStretchOnlyLarge.Checked;
+  if miStretchOnlyLarge.Checked then miStretch.Checked:= False;
   UpdateImagePlacement;
 end;
 
@@ -2545,6 +2596,7 @@ begin
   end;
 
   miStretch.Checked := False;
+  miStretchOnlyLarge.Checked:= False;
   FZoomFactor := FZoomFactor * k;
   AdjustImageSize;
 end;
@@ -2592,7 +2644,8 @@ begin
       gboxPaint.Visible:= false;
       gboxHightlight.Visible:=false;
       PanelEditImage.Visible:= False;
-      miStretch.Checked:= miFullScreen.Checked;
+      miStretch.Checked:= True;
+      miStretchOnlyLarge.Checked:= False;
       if miPreview.Checked then cm_Preview(['']);
     end
   else
@@ -2668,14 +2721,14 @@ procedure TfrmViewer.cm_ChangeEncoding(const Params: array of string);
 var
   MenuItem: TMenuItem;
 begin
-  if Length(Params) > 0 then
+  if miEncoding.Visible and (Length(Params) > 0) then
   begin
     MenuItem:= miEncoding.Find(Params[0]);
     if Assigned(MenuItem) then
     begin
       MenuItem.Checked := True;
       ViewerControl.EncodingName := Params[0];
-      Status.Panels[4].Text := rsViewEncoding + ': ' + ViewerControl.EncodingName;
+      Status.Panels[sbpTextEncoding].Text := rsViewEncoding + ': ' + ViewerControl.EncodingName;
     end;
   end;
 end;
@@ -2736,14 +2789,11 @@ begin
   Splitter.Visible := pnlPreview.Visible;
 
   if miPreview.Checked then
-  begin
     FThread:= TThumbThread.Create(Self)
-  end
-  else if Assigned(FThread) then
-  begin
-    FThread.Terminate;
-    FThread.WaitFor;
+  else begin
+    TThumbThread.Finish(FThread);
   end;
+
   if bPlugin then FWlxModule.ResizeWindow(GetListerRect);
 end;
 

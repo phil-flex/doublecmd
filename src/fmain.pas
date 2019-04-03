@@ -2,7 +2,7 @@
    Double Commander
    -------------------------------------------------------------------------
    Licence  : GNU GPL v 2.0
-   Copyright (C) 2006-2018 Alexander Koblov (Alexx2000@mail.ru)
+   Copyright (C) 2006-2019 Alexander Koblov (Alexx2000@mail.ru)
 
    Main Dialog window
 
@@ -85,6 +85,8 @@ type
     actChangeDirToParent: TAction;
     actEditPath: TAction;
     actHorizontalFilePanels: TAction;
+    actGoToFirstEntry: TAction;
+    actGoToLastEntry: TAction;
     actGoToFirstFile: TAction;
     actGoToLastFile: TAction;
     actCompareDirectories: TAction;
@@ -103,6 +105,7 @@ type
     actCopyAllTabsToOpposite: TAction;
     actConfigTreeViewMenus: TAction;
     actConfigTreeViewMenusColors: TAction;
+    actConfigSavePos: TAction;
     actConfigSaveSettings: TAction;
     actExecuteScript: TAction;
     actFocusSwap: TAction;
@@ -224,6 +227,7 @@ type
     lblLeftDriveInfo: TLabel;
     lblCommandPath: TLabel;
     miConfigArchivers: TMenuItem;
+    mnuConfigSavePos: TMenuItem;
     mnuConfigSaveSettings: TMenuItem;
     miLine55: TMenuItem;
     mnuConfigureFavoriteTabs: TMenuItem;
@@ -745,6 +749,7 @@ type
     procedure SetDragCursor(Shift: TShiftState);
 
   protected
+    procedure CreateWnd; override;
 {$if lcl_fullversion >= 1070000}
     procedure DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
                             const AXProportion, AYProportion: Double); override;
@@ -828,9 +833,10 @@ type
     procedure SaveWindowState;
     procedure LoadMainToolbar;
     procedure SaveMainToolBar;
-    procedure ConfigSaveSettings;
+    procedure ShowLogWindow(Data: PtrInt);
     function  IsCommandLineVisible: Boolean;
     procedure ShowCommandLine(AFocus: Boolean);
+    procedure ConfigSaveSettings(bForce: Boolean);
     procedure ShowDrivesList(APanel: TFilePanelSelect);
     procedure ExecuteCommandLine(bRunInTerm: Boolean);
     procedure UpdatePrompt;
@@ -978,9 +984,6 @@ begin
   Application.OnEndSession := @AppEndSession;
   Application.OnQueryEndSession := @AppQueryEndSession;
 
-  // Save real main form handle
-  Application.MainForm.Tag:= Handle;
-
   // Use LCL's method of dropping files from external
   // applications if we don't support it ourselves.
   if not IsExternalDraggingSupported then
@@ -1070,8 +1073,6 @@ begin
   // Register action list for main form hotkeys.
   HMMainForm.RegisterActionList(actionlst);
   { *HotKeys* }
-
-  LoadWindowState;
 
   // frost_asm begin
     lastWindowState:=WindowState;
@@ -1480,7 +1481,7 @@ begin
     2:
       Commands.cm_ClearLogWindow([]);
     3:
-      ShowLogWindow(False);
+      ShowLogWindow(PtrInt(False));
   end;
 end;
 
@@ -2067,11 +2068,11 @@ begin
         if Assigned(aFile) and aFile.IsNameValid then
         begin
           ToolItem := TKASProgramItem.Create;
-          ToolItem.Command := aFile.FullPath;
-          ToolItem.StartPath := aFile.Path;
+          ToolItem.Command := GetToolbarFilenameToSave(tpmeCommand, aFile.FullPath);
+          ToolItem.StartPath := GetToolbarFilenameToSave(tpmeStartingPath, aFile.Path);
           ToolItem.Hint := ExtractOnlyFileName(aFile.Name);
           // ToolItem.Text := ExtractOnlyFileName(aFile.Name);
-          ToolItem.Icon := aFile.FullPath;
+          ToolItem.Icon := GetToolbarFilenameToSave(tpmeIcon, aFile.FullPath);
           MainToolBar.AddButton(ToolItem);
         end;
       finally
@@ -2176,7 +2177,7 @@ begin
     Commands.cm_CloseDuplicateTabs(['RightTabs']);
   end;
 
-  if gSaveConfiguration then ConfigSaveSettings;
+  if gSaveConfiguration then ConfigSaveSettings(False);
 
   FreeAndNil(Cons);
 
@@ -2636,7 +2637,7 @@ begin
   pnlNotebooksResize(pnlNotebooks);
 end;
 
-procedure TfrmMain.UpdateActionIcons();
+procedure TfrmMain.UpdateActionIcons;
 var
   I: Integer;
   imgIndex: Integer;
@@ -3673,6 +3674,17 @@ begin
   FrameRight.SetDragCursor(Shift);
 end;
 
+procedure TfrmMain.CreateWnd;
+begin
+  // Must be before CreateWnd
+  LoadWindowState;
+
+  inherited CreateWnd;
+
+  // Save real main form handle
+  Application.MainForm.Tag:= Handle;
+end;
+
 {$if lcl_fullversion >= 1070000}
 procedure TfrmMain.DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
   const AXProportion, AYProportion: Double);
@@ -3961,11 +3973,11 @@ begin
   Special := True;
   case LogMsgType of
   lmtInfo:
-    FG := clNavy;
+    FG := gLogInfoColor;
   lmtSuccess:
-    FG := clGreen;
+    FG := gLogSuccessColor;
   lmtError:
-    FG := clRed
+    FG := gLogErrorColor
   else
     FG := clWindowText;
   end;
@@ -4830,6 +4842,7 @@ begin
     MainToolBar.Visible:= gButtonBar;
     MainToolBar.Flat:= gToolBarFlat;
     MainToolBar.GlyphSize:= gToolBarIconSize;
+    MainToolBar.ShowCaptions:= gToolBarShowCaptions;
     MainToolBar.SetButtonSize(gToolBarButtonSize, gToolBarButtonSize);
     MainToolBar.ChangePath:= gpExePath;
     MainToolBar.EnvVar:= '%commander_path%';
@@ -5364,6 +5377,12 @@ begin
   LoadTabsXml(gConfig,'Tabs/OpenedTabs/Left', nbLeft);
   LoadTabsXml(gConfig,'Tabs/OpenedTabs/Right', nbRight);
 
+  if not CommandLineParams.ActivePanelSpecified then
+  begin
+    CommandLineParams.ActivePanelSpecified:= True;
+    CommandLineParams.ActiveRight:= gActiveRight;
+  end;
+
   LoadTabsCommandLine(CommandLineParams);
 
   if gDelayLoadingTabs then
@@ -5450,14 +5469,12 @@ begin
     ATop := gConfig.GetValue(ANode, 'Top', 48);
     AWidth := gConfig.GetValue(ANode, 'Width', 800);
     AHeight := gConfig.GetValue(ANode, 'Height', 480);
-{$if lcl_fullversion >= 1070000}
     FPixelsPerInch := gConfig.GetValue(ANode, 'PixelsPerInch', DesignTimePPI);
     if Scaled and (Screen.PixelsPerInch <> FPixelsPerInch) then
     begin
       AWidth := MulDiv(AWidth, Screen.PixelsPerInch, FPixelsPerInch);
       AHeight := MulDiv(AHeight, Screen.PixelsPerInch, FPixelsPerInch);
     end;
-{$endif}
     SetBounds(ALeft, ATop, AWidth, AHeight);
     if gConfig.GetValue(ANode, 'Maximized', True) then
       Self.WindowState := wsMaximized;
@@ -5468,10 +5485,6 @@ procedure TfrmMain.SaveWindowState;
 var
   ANode: TXmlNode;
 begin
-  (* Save all tabs *)
-  SaveTabsXml(gConfig, 'Tabs/OpenedTabs/', nbLeft, gSaveDirHistory);
-  SaveTabsXml(gConfig, 'Tabs/OpenedTabs/', nbRight, gSaveDirHistory);
-
   (* Save window bounds and state *)
   ANode := gConfig.FindNode(gConfig.RootNode, 'MainWindow/Position', True);
   // save window size only if it's not Maximized (for not break normal size)
@@ -5514,14 +5527,34 @@ begin
   MainToolBar.SaveConfiguration(gConfig, ToolBarNode);
 end;
 
-procedure TfrmMain.ConfigSaveSettings;
+procedure TfrmMain.ShowLogWindow(Data: PtrInt);
+var
+  bShow: Boolean absolute Data;
+begin
+  LogSplitter.Visible:= bShow;
+  seLogWindow.Visible:= bShow;
+  LogSplitter.Top:= seLogWindow.Top - LogSplitter.Height;
+end;
+
+procedure TfrmMain.ConfigSaveSettings(bForce: Boolean);
 begin
   try
     DebugLn('Saving configuration');
+
     if gSaveCmdLineHistory then
       glsCmdLineHistory.Assign(edtCommand.Items);
-    SaveWindowState;
+
+    (* Save all tabs *)
+    if gSaveFolderTabs or bForce then
+    begin
+      SaveTabsXml(gConfig, 'Tabs/OpenedTabs/', nbLeft, gSaveDirHistory);
+      SaveTabsXml(gConfig, 'Tabs/OpenedTabs/', nbRight, gSaveDirHistory);
+    end;
+
+    if gSaveWindowState then SaveWindowState;
+
     if gButtonBar then SaveMainToolBar;
+
     SaveGlobs; // Should be last, writes configuration file
   except
     on E: Exception do

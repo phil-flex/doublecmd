@@ -3,7 +3,7 @@
    -------------------------------------------------------------------------
    This unit contains Unix specific functions
 
-   Copyright (C) 2015-2018 Alexander Koblov (alexx2000@mail.ru)
+   Copyright (C) 2015-2019 Alexander Koblov (alexx2000@mail.ru)
 
    This library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public
@@ -78,11 +78,19 @@ procedure FileCloseOnExec(Handle: System.THandle); inline;
    @returns(On success, zero is returned. On error, -1 is returned, and errno is set appropriately)
 }
 function fpLChown(path : String; owner : TUid; group : TGid): cInt;
+{en
+   Set process group ID for job control
+}
+function setpgid(pid, pgid: pid_t): cint; cdecl; external clib name 'setpgid';
 
 function FileLock(Handle: System.THandle; Mode: cInt): System.THandle;
 
 function fpMkTime(tm: PTimeStruct): TTime;
 function fpLocalTime(timer: PTime; tp: PTimeStruct): PTimeStruct;
+
+{$IF DEFINED(LINUX)}
+function fpFAllocate(fd: cint; mode: cint; offset, len: coff_t): cint;
+{$ENDIF}
 
 implementation
 
@@ -106,7 +114,10 @@ procedure tzset(); cdecl; external clib;
 function sysconf(name: cint): clong; cdecl; external clib;
 function mktime(tp: PTimeStruct): TTime; cdecl; external clib;
 function localtime_r(timer: PTime; tp: PTimeStruct): PTimeStruct; cdecl; external clib;
-function lchown(path : PChar; owner : TUid; group : TGid): cInt; cdecl; external clib name 'lchown';
+function lchown(path : PChar; owner : TUid; group : TGid): cInt; cdecl; external clib;
+{$IF DEFINED(LINUX)}
+function fallocate(fd: cint; mode: cint; offset, len: coff_t): cint; cdecl; external clib;
+{$ENDIF}
 
 procedure FileCloseOnExecAll;
 var
@@ -183,6 +194,14 @@ begin
   Result := localtime_r(timer, tp);
   if (Result = nil) then fpseterrno(fpgetCerrno);
 end;
+
+{$IF DEFINED(LINUX)}
+function fpFAllocate(fd: cint; mode: cint; offset, len: coff_t): cint;
+begin
+  Result := fallocate(fd, mode, offset, len);
+  if Result = -1 then fpseterrno(fpgetCerrno);
+end;
+{$ENDIF}
 
 initialization
   tzset();

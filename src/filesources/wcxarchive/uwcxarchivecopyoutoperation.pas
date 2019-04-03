@@ -26,7 +26,6 @@ type
   private
     FWcxArchiveFileSource: IWcxArchiveFileSource;
     FStatistics: TFileSourceCopyOperationStatistics; // local copy of statistics
-    FCurrentFileSize: Int64;
     FRenamingFiles: Boolean;
     FRenameNameMask, FRenameExtMask: String;
 
@@ -149,8 +148,7 @@ begin
         // Current file percent
         else if (Size >= -1100) and (Size <= -1000) then
           begin
-            CurrentFileTotalBytes := 100;
-            CurrentFileDoneBytes := Int64(-Size) - 1000;
+            CurrentFileDoneBytes := CurrentFileTotalBytes * (Int64(-Size) - 1000) div 100;
           end;
       end;
 
@@ -297,7 +295,6 @@ begin
           CurrentFileDoneBytes := 0;
 
           UpdateStatistics(FStatistics);
-          FCurrentFileSize := Header.UnpSize;
         end;
 
         if (DoFileExists(Header, TargetFileName) = fsoofeOverwrite) then
@@ -321,6 +318,13 @@ begin
                             [FWcxArchiveFileSource.ArchiveFileName + PathDelim +
                              Header.FileName +' -> ' + TargetFileName]), [log_arc_op], lmtSuccess);
         end; // Success
+
+        with FStatistics do
+        begin
+          DoneFiles := DoneFiles + 1;
+
+          UpdateStatistics(FStatistics);
+        end;
       end // Extract
       else // Skip
       begin

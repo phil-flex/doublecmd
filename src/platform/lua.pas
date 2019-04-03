@@ -4,7 +4,7 @@
  * Created by Geo Massar, 2006
  * Distributed as free/open source.
  * 2008 Added dinamicly library loading by Dmitry Kolomiets (B4rr4cuda@rambler.ru)
- * 2018 Added Lua 5.2 - 5.3 library support by Alexander Koblov (alexx2000@mail.ru)
+ * 2018-2019 Added Lua 5.2 - 5.3 library support by Alexander Koblov (alexx2000@mail.ru)
  *)
 
 unit lua;
@@ -17,9 +17,8 @@ uses
   DynLibs;
 
 type
-  size_t   = type Cardinal;
+  size_t = SizeUInt;
   Psize_t  = ^size_t;
-  PPointer = ^Pointer;
 
   lua_State = record end;
   Plua_State = ^lua_State;
@@ -148,12 +147,11 @@ const
   (* option for multiple returns in `lua_pcall' and `lua_call' *)
   LUA_MULTRET = -1;
 
+var
   (*
   ** pseudo-indices
   *)
-  LUA_REGISTRYINDEX = -10000;
-  LUA_ENVIRONINDEX  = -10001;
-  LUA_GLOBALSINDEX  = -10002;
+  LUA_REGISTRYINDEX: Integer;
 
 function lua_upvalueindex(idx : Integer) : Integer;   // a marco
 
@@ -270,7 +268,6 @@ var
   lua_pushnumber:  procedure (L : Plua_State; n : lua_Number);  cdecl;
   lua_pushinteger:  procedure (L : Plua_State; n : lua_Integer);  cdecl;
   lua_pushlstring:  procedure (L : Plua_State; const s : PChar; ls : size_t);  cdecl;
-  lua_pushstring:  procedure (L : Plua_State; const s : PChar);  cdecl;
   lua_pushvfstring:  function  (L : Plua_State; const fmt : PChar; argp : Pointer) : PChar;  cdecl;
   lua_pushfstring:  function  (L : Plua_State; const fmt : PChar) : PChar; varargs;  cdecl;
   lua_pushcclosure:  procedure (L : Plua_State; fn : lua_CFunction; n : Integer);  cdecl;
@@ -373,8 +370,11 @@ function lua_isnone(L : Plua_State; n : Integer) : Boolean;
 function lua_isnoneornil(L : Plua_State; n : Integer) : Boolean;
 
 procedure lua_pushliteral(L : Plua_State; s : PChar);
+procedure lua_pushstring(L : Plua_State; const S : PChar); overload;
+procedure lua_pushstring(L : Plua_State; const S : String); overload;
 
-function lua_tostring(L : Plua_State; idx : Integer) : PChar;
+function lua_tostring(L : Plua_State; idx : Integer) : String;
+function lua_tocstring(L : Plua_State; idx : Integer) : PAnsiChar;
 
 (*
 ** compatibility macros and functions
@@ -633,9 +633,19 @@ uses
 {$ENDIF}
   ;
 
+const
+  (*
+  ** pseudo-indices
+  *)
+  LUA_GLOBALSINDEX  = -10002;
+
+var
+  LUA_UPVALUEINDEX_: Integer;
+
 var
   lua_version: function (L: Plua_State): Plua_Number; cdecl;
   lua_rawlen: function (L : Plua_State; idx : Integer): size_t; cdecl;
+  lua_pushstring_:  procedure (L : Plua_State; const s : PChar);  cdecl;
   lua_objlen_: function (L : Plua_State; idx : Integer) : size_t;  cdecl;
   lua_setglobal_: procedure (L: Plua_State; const name: PAnsiChar); cdecl;
   lua_getglobal_: function (L: Plua_State; const name: PAnsiChar): Integer; cdecl;
@@ -669,6 +679,9 @@ begin
 end;
 
 function LoadLuaLib(FileName: String): Boolean;
+const
+  LUA_REGISTRYINDEX_OLD = -10000;   // Lua 5.1, LuaJIT
+  LUA_REGISTRYINDEX_NEW = -1001000; // Lua 5.2, Lua 5.3
 begin
 {$IF DEFINED(UNIX)}
   LuaLibD:= TLibHandle(dlopen(PAnsiChar(FileName), RTLD_NOW or RTLD_GLOBAL));
@@ -768,7 +781,7 @@ begin
   @lua_pushnumber := GetProcAddress(LuaLibD, 'lua_pushnumber');
   @lua_pushinteger := GetProcAddress(LuaLibD, 'lua_pushinteger');
   @lua_pushlstring := GetProcAddress(LuaLibD, 'lua_pushlstring');
-  @lua_pushstring := GetProcAddress(LuaLibD, 'lua_pushstring');
+  @lua_pushstring_ := GetProcAddress(LuaLibD, 'lua_pushstring');
   @lua_pushvfstring := GetProcAddress(LuaLibD, 'lua_pushvfstring');
   @lua_pushfstring := GetProcAddress(LuaLibD, 'lua_pushfstring');
   @lua_pushcclosure := GetProcAddress(LuaLibD, 'lua_pushcclosure');
@@ -815,6 +828,17 @@ begin
 
   // luaJIT specific stuff
   luaJIT := GetProcAddress(LuaLibD, 'luaJIT_setmode') <> nil;
+
+  // Determine pseudo-indices values
+  if Assigned(lua_version) and (Trunc(lua_version(nil)^) > LUA_VERSION_NUM) then
+  begin
+    LUA_UPVALUEINDEX_:= LUA_REGISTRYINDEX_NEW;
+    LUA_REGISTRYINDEX:= LUA_REGISTRYINDEX_NEW;
+  end
+  else begin
+    LUA_UPVALUEINDEX_:= LUA_GLOBALSINDEX;
+    LUA_REGISTRYINDEX:= LUA_REGISTRYINDEX_OLD;
+  end;
 end;
 
 (*****************************************************************************)
@@ -846,7 +870,7 @@ end;
 
 function lua_upvalueindex(idx : Integer) : Integer;
 begin
-  lua_upvalueindex := LUA_GLOBALSINDEX - idx;
+  lua_upvalueindex := LUA_UPVALUEINDEX_ - idx;
 end;
 
 procedure lua_pop(L : Plua_State; n : Integer);
@@ -920,6 +944,16 @@ begin
   lua_pushlstring(L, s, StrLen(s));
 end;
 
+procedure lua_pushstring(L: Plua_State; const S: PChar); inline;
+begin
+  lua_pushstring_(L, S);
+end;
+
+procedure lua_pushstring(L: Plua_State; const S: String); inline;
+begin
+  lua_pushlstring(L, PAnsiChar(S), Length(S));
+end;
+
 function lua_tonumber(L: Plua_State; idx: Integer): lua_Number;
 begin
   if Assigned(lua_tonumberx) then
@@ -960,9 +994,16 @@ begin
     lua_getfield(L, LUA_GLOBALSINDEX, name);
 end;
 
-function lua_tostring(L : Plua_State; idx : Integer) : PChar;
+function lua_tostring(L : Plua_State; idx : Integer) : String;
+var
+  N: size_t;
 begin
-  lua_tostring := lua_tolstring(L, idx, nil);
+  SetString(Result, lua_tolstring(L, idx, @N), N);
+end;
+
+function lua_tocstring(L : Plua_State; idx : Integer) : PAnsiChar;
+begin
+  lua_tocstring := lua_tolstring(L, idx, nil);
 end;
 
 function lua_open : Plua_State;

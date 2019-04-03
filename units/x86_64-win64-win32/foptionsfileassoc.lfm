@@ -7,8 +7,8 @@ inherited frmOptionsFileAssoc: TfrmOptionsFileAssoc
   OnResize = FrameResize
   ParentShowHint = False
   ShowHint = True
-  DesignLeft = 151
-  DesignTop = 187
+  DesignLeft = 100
+  DesignTop = 118
   object pnlSettings: TPanel[0]
     Left = 0
     Height = 585
@@ -58,7 +58,7 @@ inherited frmOptionsFileAssoc: TfrmOptionsFileAssoc
         Caption = 'Actions'
         ClientHeight = 193
         ClientWidth = 288
-        TabOrder = 1
+        TabOrder = 2
         object lbActions: TListBox
           Left = 6
           Height = 181
@@ -71,8 +71,10 @@ inherited frmOptionsFileAssoc: TfrmOptionsFileAssoc
           ItemHeight = 0
           OnDragDrop = lbActionsDragDrop
           OnDragOver = lbGenericDragOver
+          OnDrawItem = lbGenericListDrawItem
           OnSelectionChange = lbActionsSelectionChange
           ScrollWidth = 198
+          Style = lbOwnerDrawFixed
           TabOrder = 0
         end
         object pnlActsButtons: TPanel
@@ -106,7 +108,7 @@ inherited frmOptionsFileAssoc: TfrmOptionsFileAssoc
             Width = 73
             AutoSize = True
             BorderSpacing.InnerBorder = 2
-            Caption = '&Down'
+            Caption = 'Do&wn'
             OnClick = btnDownActClick
             TabOrder = 1
           end
@@ -140,7 +142,7 @@ inherited frmOptionsFileAssoc: TfrmOptionsFileAssoc
             Width = 73
             AutoSize = True
             BorderSpacing.InnerBorder = 2
-            Caption = 'Clone'
+            Caption = 'C&lone'
             OnClick = btnCloneActClick
             TabOrder = 4
           end
@@ -184,7 +186,7 @@ inherited frmOptionsFileAssoc: TfrmOptionsFileAssoc
         ChildSizing.LeftRightSpacing = 6
         ClientHeight = 44
         ClientWidth = 288
-        TabOrder = 2
+        TabOrder = 0
         object sbtnIcon: TSpeedButton
           AnchorSideLeft.Control = gbIcon
           AnchorSideTop.Control = gbIcon
@@ -326,7 +328,7 @@ inherited frmOptionsFileAssoc: TfrmOptionsFileAssoc
         ClientHeight = 140
         ClientWidth = 288
         Constraints.MinHeight = 160
-        TabOrder = 0
+        TabOrder = 1
         object lbExts: TListBox
           Left = 6
           Height = 128
@@ -339,8 +341,10 @@ inherited frmOptionsFileAssoc: TfrmOptionsFileAssoc
           ItemHeight = 0
           OnDragDrop = lbExtsDragDrop
           OnDragOver = lbGenericDragOver
+          OnDrawItem = lbGenericListDrawItem
           OnSelectionChange = lbExtsSelectionChange
           ScrollWidth = 198
+          Style = lbOwnerDrawFixed
           TabOrder = 0
         end
         object pnlExtsButtons: TPanel
@@ -363,7 +367,7 @@ inherited frmOptionsFileAssoc: TfrmOptionsFileAssoc
             Width = 73
             AutoSize = True
             BorderSpacing.InnerBorder = 2
-            Caption = 'Edit'
+            Caption = 'Edi&t'
             OnClick = btnEditExtClick
             TabOrder = 0
           end
@@ -375,7 +379,7 @@ inherited frmOptionsFileAssoc: TfrmOptionsFileAssoc
             Width = 73
             AutoSize = True
             BorderSpacing.InnerBorder = 2
-            Caption = 'Insert'
+            Caption = '&Insert'
             OnClick = btnInsertAddExtClick
             TabOrder = 1
           end
@@ -386,7 +390,7 @@ inherited frmOptionsFileAssoc: TfrmOptionsFileAssoc
             Width = 73
             AutoSize = True
             BorderSpacing.InnerBorder = 2
-            Caption = '&Add'
+            Caption = 'Add'
             OnClick = btnInsertAddExtClick
             TabOrder = 2
           end
@@ -538,7 +542,7 @@ inherited frmOptionsFileAssoc: TfrmOptionsFileAssoc
         AutoSize = True
         BorderSpacing.Top = 2
         BorderSpacing.Bottom = 2
-        Caption = 'Action description:'
+        Caption = 'Action description'
         ChildSizing.LeftRightSpacing = 6
         ChildSizing.TopBottomSpacing = 6
         ChildSizing.VerticalSpacing = 10
@@ -612,7 +616,7 @@ inherited frmOptionsFileAssoc: TfrmOptionsFileAssoc
           Top = 6
           Width = 71
           Alignment = taRightJustify
-          Caption = 'Action name:'
+          Caption = 'Action &name:'
           FocusControl = edbActionName
           ParentColor = False
         end
@@ -627,6 +631,7 @@ inherited frmOptionsFileAssoc: TfrmOptionsFileAssoc
           Hint = 'Command to execute. Never quote this string.'
           Top = 27
           Width = 413
+          OnAcceptFileName = fneCommandAcceptFileName
           DialogOptions = []
           FilterIndex = 0
           HideDirectories = False
@@ -645,6 +650,7 @@ inherited frmOptionsFileAssoc: TfrmOptionsFileAssoc
           AnchorSideBottom.Side = asrBottom
           Left = 492
           Height = 23
+          Hint = 'Select your internal command'
           Top = 27
           Width = 23
           Anchors = [akTop, akRight, akBottom]
@@ -694,6 +700,7 @@ inherited frmOptionsFileAssoc: TfrmOptionsFileAssoc
           AnchorSideBottom.Side = asrBottom
           Left = 515
           Height = 23
+          Hint = 'Some functions to select appropriate path'
           Top = 27
           Width = 23
           Anchors = [akTop, akRight, akBottom]
@@ -743,6 +750,7 @@ inherited frmOptionsFileAssoc: TfrmOptionsFileAssoc
           AnchorSideBottom.Side = asrBottom
           Left = 515
           Height = 23
+          Hint = 'Variable reminder helper'
           Top = 52
           Width = 23
           Anchors = [akTop, akRight, akBottom]
@@ -792,7 +800,7 @@ inherited frmOptionsFileAssoc: TfrmOptionsFileAssoc
           Top = 31
           Width = 71
           Alignment = taRightJustify
-          Caption = '&Command:'
+          Caption = 'Command:'
           ParentColor = False
         end
         object edtParams: TEdit
@@ -834,6 +842,7 @@ inherited frmOptionsFileAssoc: TfrmOptionsFileAssoc
           Hint = 'Starting path of the command. Never quote this string.'
           Top = 77
           Width = 413
+          OnAcceptDirectory = deStartPathAcceptDirectory
           ShowHidden = False
           ButtonWidth = 23
           NumGlyphs = 1
@@ -851,6 +860,7 @@ inherited frmOptionsFileAssoc: TfrmOptionsFileAssoc
           AnchorSideBottom.Side = asrBottom
           Left = 515
           Height = 23
+          Hint = 'Variable reminder helper'
           Top = 77
           Width = 23
           Anchors = [akTop, akRight, akBottom]
@@ -899,6 +909,7 @@ inherited frmOptionsFileAssoc: TfrmOptionsFileAssoc
           AnchorSideBottom.Side = asrBottom
           Left = 492
           Height = 23
+          Hint = 'Some functions to select appropriate path'
           Top = 77
           Width = 23
           Anchors = [akTop, akRight, akBottom]
@@ -948,7 +959,7 @@ inherited frmOptionsFileAssoc: TfrmOptionsFileAssoc
           Width = 71
           Alignment = taRightJustify
           Caption = 'Start pat&h:'
-          FocusControl = edtParams
+          FocusControl = deStartPath
           ParentColor = False
         end
       end
@@ -1047,16 +1058,8 @@ inherited frmOptionsFileAssoc: TfrmOptionsFileAssoc
     left = 65
     top = 60
   end
-  object pmVariableParamsHelper: TPopupMenu[5]
-    left = 175
-    top = 193
-  end
-  object pmPathHelper: TPopupMenu[6]
+  object pmPathHelper: TPopupMenu[5]
     left = 65
     top = 187
-  end
-  object pmVariableStartPathHelper: TPopupMenu[7]
-    left = 165
-    top = 263
   end
 end

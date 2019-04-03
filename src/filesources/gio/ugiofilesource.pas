@@ -66,6 +66,7 @@ type
       function CreateDeleteOperation(var FilesToDelete: TFiles): TFileSourceOperation; override;
       function CreateCreateDirectoryOperation(BasePath: String; DirectoryPath: String): TFileSourceOperation; override;
       function CreateExecuteOperation(var ExecutableFile: TFile; BasePath, Verb: String): TFileSourceOperation; override;
+      function CreateCalcStatisticsOperation(var theFiles: TFiles): TFileSourceOperation; override;
       function CreateSetFilePropertyOperation(var theTargetFiles: TFiles;
                                               var theNewProperties: TFileProperties): TFileSourceOperation; override;
     end;
@@ -76,13 +77,14 @@ uses
   DCFileAttributes, DCDateTimeUtils, uGioListOperation, uGioCopyOperation,
   uGioDeleteOperation, uGioExecuteOperation, uGioCreateDirectoryOperation,
   uGioMoveOperation, uGioSetFilePropertyOperation, uDebug, fGioAuthDlg,
-  DCBasicTypes, DCStrUtils, uShowMsg;
+  DCBasicTypes, DCStrUtils, uShowMsg, uGioCalcStatisticsOperation, uGio;
 
 { TGioFileSource }
 
 function TGioFileSource.GetOperationsTypes: TFileSourceOperationTypes;
 begin
-  Result:= [fsoList, fsoCopy, fsoCopyIn, fsoCopyOut, fsoDelete, fsoExecute, fsoCreateDirectory, fsoMove, fsoSetFileProperty];
+  Result:= [fsoList, fsoCopy, fsoCopyIn, fsoCopyOut, fsoDelete, fsoExecute,
+            fsoCreateDirectory, fsoMove, fsoCalcStatistics, fsoSetFileProperty];
 end;
 
 class function TGioFileSource.CreateFile(const APath: String): TFile;
@@ -123,26 +125,32 @@ begin
 
   if AFileType = G_FILE_TYPE_DIRECTORY then
     begin
+      Result.Size:= 0;
       Result.Attributes:= Result.Attributes or S_IFDIR;
     end
   else if AFileType =  G_FILE_TYPE_SYMBOLIC_LINK then
     begin
       ATarget:= g_file_info_get_symlink_target(AFileInfo);
-      AFile:= g_file_get_child(AFolder, ATarget);
-
-      ASymlinkInfo := g_file_query_info (AFile, FILE_ATTRIBUTE_STANDARD_TYPE,
-                                         G_FILE_QUERY_INFO_NONE, nil, nil);
-
-      Result.LinkProperty.LinkTo := ATarget;
-      Result.LinkProperty.IsValid := Assigned(ASymlinkInfo);
-
-      if (Result.LinkProperty.IsValid) then
+      Result.LinkProperty.IsValid := Assigned(ATarget);
+      if Assigned(ATarget) then
       begin
-        AFileType:= g_file_info_get_file_type(ASymlinkInfo);
-        Result.LinkProperty.IsLinkToDirectory := (AFileType = G_FILE_TYPE_DIRECTORY);
-        g_object_unref(ASymlinkInfo);
+        AFile:= g_file_get_child(AFolder, ATarget);
+
+        ASymlinkInfo := g_file_query_info (AFile, FILE_ATTRIBUTE_STANDARD_TYPE,
+                                           G_FILE_QUERY_INFO_NONE, nil, nil);
+
+        Result.LinkProperty.LinkTo := ATarget;
+        Result.LinkProperty.IsValid := Assigned(ASymlinkInfo);
+
+        if (Result.LinkProperty.IsValid) then
+        begin
+          AFileType:= g_file_info_get_file_type(ASymlinkInfo);
+          Result.LinkProperty.IsLinkToDirectory := (AFileType = G_FILE_TYPE_DIRECTORY);
+          if Result.LinkProperty.IsLinkToDirectory then Result.Size := 0;
+          g_object_unref(ASymlinkInfo);
+        end;
+        g_object_unref(PGObject(AFile));
       end;
-      g_object_unref(PGObject(AFile));
     end
   else if AFileType in [G_FILE_TYPE_SHORTCUT, G_FILE_TYPE_MOUNTABLE] then
   begin
@@ -346,7 +354,7 @@ function TGioFileSource.CreateDirectory(const Path: String): Boolean;
 var
   AGFile: PGFile;
 begin
-  AGFile:= g_file_new_for_commandline_arg(Pgchar(Path));
+  AGFile:= GioNewFile(Path);
   Result:= g_file_make_directory_with_parents(AGFile, nil, nil);
   g_object_unref(PGObject(AGFile));
 end;
@@ -356,7 +364,7 @@ var
   AFile: PGFile;
   AInfo: PGFileInfo;
 begin
-  AFile := g_file_new_for_commandline_arg(Pgchar(Path));
+  AFile := GioNewFile(Path);
   AInfo := g_file_query_filesystem_info (AFile, FILE_ATTRIBUTE_FILESYSTEM_FREE + ',' + FILE_ATTRIBUTE_FILESYSTEM_SIZE, nil, nil);
   Result := Assigned(AInfo);
   if Result then
@@ -468,6 +476,14 @@ begin
   Result:=  TGioExecuteOperation.Create(TargetFileSource, ExecutableFile, BasePath, Verb);
 end;
 
+function TGioFileSource.CreateCalcStatisticsOperation(var theFiles: TFiles): TFileSourceOperation;
+var
+  TargetFileSource: IFileSource;
+begin
+  TargetFileSource := Self;
+  Result := TGioCalcStatisticsOperation.Create(TargetFileSource, theFiles);
+end;
+
 function TGioFileSource.CreateSetFilePropertyOperation(
   var theTargetFiles: TFiles; var theNewProperties: TFileProperties
   ): TFileSourceOperation;
@@ -475,11 +491,8 @@ var
   TargetFileSource: IFileSource;
 begin
   TargetFileSource := Self;
-  theTargetFiles.Path:= FCurrentAddress + theTargetFiles.Path;
-  Result := TGioSetFilePropertyOperation.Create(
-                TargetFileSource,
-                theTargetFiles,
-                theNewProperties);
+  if not StrBegins(theTargetFiles.Path, FCurrentAddress) then theTargetFiles.Path:= FCurrentAddress + theTargetFiles.Path;
+  Result := TGioSetFilePropertyOperation.Create(TargetFileSource, theTargetFiles, theNewProperties);
 end;
 
 end.

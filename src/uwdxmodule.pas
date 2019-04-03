@@ -5,7 +5,7 @@
    (TC WDX-API v1.5)
 
    Copyright (C) 2008  Dmitry Kolomiets (B4rr4cuda@rambler.ru)
-   Copyright (C) 2008-2018 Alexander Koblov (alexx2000@mail.ru)
+   Copyright (C) 2008-2019 Alexander Koblov (alexx2000@mail.ru)
 
    Some ideas were found in sources of WdxGuide by Alexey Torgashin
    and SuperWDX by Pavel Dubrovsky and Dmitry Vorotilin.
@@ -21,9 +21,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
+   along with this program. If not, see <http://www.gnu.org/licenses/>.
 }
 
 
@@ -34,9 +32,11 @@ unit uWDXModule;
 interface
 
 uses
-  Classes, SysUtils, DCClassesUtf8,
-  uWdxPrototypes, WdxPlugin,
-  dynlibs, uDetectStr, lua, uFile, DCXmlConfig;
+  //Lazarus, Free-Pascal, etc.
+  Classes, SysUtils, dynlibs,
+
+  //DC
+  uLng, uWdxPrototypes, WdxPlugin, uDetectStr, lua, uFile, DCXmlConfig;
 
 const
   WDX_MAX_LEN = 2048;
@@ -46,9 +46,14 @@ type
   { TWdxField }
 
   TWdxField = class
-    FName:  String;
-    FUnits: String;
+  private
+    OUnits: String;       // Units (original)
+  public
+    FName:  String;       // Field name (english)
+    LName:  String;       // Field name (localized)
     FType:  Integer;
+    FUnits: TStringArray; // Units (english)
+    LUnits: TStringArray; // Units (localized)
     function GetUnitIndex(UnitName: String): Integer;
   end;
 
@@ -59,7 +64,11 @@ type
     FFieldsList: TStringList;
     FParser:     TParserControl;
   protected
+    FFileName: String;
     FMutex: TRTLCriticalSection;
+  protected
+    procedure Translate;
+    procedure AddField(const AName, AUnits: String; AType: Integer);
   protected
     function GetAName: String; virtual; abstract;
     function GetAFileName: String; virtual; abstract;
@@ -110,7 +119,6 @@ type
     FModuleHandle: TLibHandle;  // Handle to .DLL or .so
     FForce:     Boolean;
     FName:      String;
-    FFileName:  String;
     FDetectStr: String;
   protected
     function GetAName: String; override;
@@ -171,7 +179,6 @@ type
     L:      Plua_State;
     FForce: Boolean;
     FName:  String;
-    FFileName: String;
     FDetectStr: String;
   protected
     function GetAName: String; override;
@@ -213,9 +220,9 @@ type
     function GetAName: String; override;
     function GetAFileName: String; override;
     function GetADetectStr: String; override;
-    procedure SetAName(AValue: String); override;
-    procedure SetAFileName(AValue: String); override;
-    procedure SetADetectStr(const AValue: String); override;
+    procedure SetAName({%H-}AValue: String); override;
+    procedure SetAFileName({%H-}AValue: String); override;
+    procedure SetADetectStr(const {%H-}AValue: String); override;
   protected
     procedure AddField(const AName: String; AType: Integer);
   public
@@ -272,9 +279,10 @@ implementation
 
 uses
   //Lazarus, Free-Pascal, etc.
-  StrUtils, LazUTF8, FileUtil,
+  Math, StrUtils, LazUTF8, FileUtil,
 
   //DC
+  DCClassesUtf8, DCStrUtils,
   uComponentsSignature, uGlobs, uGlobsPaths, uDebug, uDCUtils, uOSUtils,
   DCBasicTypes, DCOSUtils, DCDateTimeUtils, DCConvertEncoding, uLuaPas;
 
@@ -283,6 +291,45 @@ const
 
 type
   TWdxModuleClass = class of TWdxModule;
+
+// Language code conversion table
+// Double Commander <-> Total Commander
+
+const
+  WdxLangTable: array[0..16, 0..1] of String =
+  (
+   ('zh_CN', 'CHN'),
+   ('cs',    'CZ' ),
+   ('da',    'DAN'),
+   ('de',    'DEU'),
+   ('nl',    'DUT'),
+   ('es',    'ESP'),
+   ('fr',    'FRA'),
+   ('hu',    'HUN'),
+   ('it',    'ITA'),
+   ('ko',    'KOR'),
+   ('nb',    'NOR'),
+   ('pl',    'POL'),
+   ('ro',    'ROM'),
+   ('ru',    'RUS'),
+   ('sk',    'SK' ),
+   ('sl',    'SVN'),
+   ('sv',    'SWE')
+  );
+
+function GetWdxLang(const Code: String): String;
+var
+  Index: Integer;
+begin
+  for Index:= Low(WdxLangTable) to High(WdxLangTable) do
+  begin
+    if CompareStr(WdxLangTable[Index, 0], Code) = 0 then
+    begin
+      Exit(WdxLangTable[Index, 1]);
+    end;
+  end;
+  Result:= Code;
+end;
 
 function StrToVar(const Value: String; FieldType: Integer): Variant;
 begin
@@ -294,8 +341,7 @@ begin
   ft_date: Result := StrToDate(Value);
   ft_time: Result := StrToTime(Value);
   ft_datetime: Result := StrToDateTime(Value);
-  ft_boolean: Result := StrToBool(Value);
-
+  ft_boolean: Result := ((LowerCase(Value) = 'true') OR (Value = rsSimpleWordTrue));
   ft_multiplechoice,
   ft_string,
   ft_fulltext,
@@ -685,9 +731,11 @@ const
   MAX_LEN = 256;
 var
   sFieldName: String;
-  I, Index, Rez: Integer;
+  Index, Rez: Integer;
   xFieldName, xUnits: array[0..Pred(MAX_LEN)] of AnsiChar;
 begin
+  FFieldsList.Clear;
+
   if Assigned(ContentGetSupportedField) then
   begin
     Index := 0;
@@ -695,19 +743,15 @@ begin
     xFieldName[0] := #0;
     repeat
       Rez := ContentGetSupportedField(Index, xFieldName, xUnits, MAX_LEN);
-      if Rez <> ft_nomorefields then
+      if Rez > ft_nomorefields then
       begin
         sFieldName := CeSysToUtf8(xFieldName);
-        I := FFieldsList.AddObject(sFieldName, TWdxField.Create);
-        with TWdxField(FFieldsList.Objects[I]) do
-        begin
-          FName := sFieldName;
-          FUnits := xUnits;
-          FType := Rez;
-        end;
+        AddField(sFieldName, xUnits, Rez);
       end;
       Inc(Index);
-    until Rez = ft_nomorefields;
+    until (Rez <= ft_nomorefields);
+
+    Translate;
   end;
 end;
 
@@ -792,12 +836,7 @@ begin
       ft_date: Result :=  Format('%2.2d.%2.2d.%4.4d', [fdate.wDay, fdate.wMonth, fdate.wYear]);
       ft_time: Result := Format('%2.2d:%2.2d:%2.2d', [ftime.wHour, ftime.wMinute, ftime.wSecond]);
       ft_datetime: Result := DateTimeToStr(WinFileTimeToDateTime(wtime));
-
-      ft_boolean: if fnval = 0 then
-          Result := 'FALSE'
-        else
-          Result := 'TRUE';
-
+      ft_boolean: Result := ifThen((fnval = 0), rsSimpleWordFalse, rsSimpleWordTrue);
       ft_multiplechoice,
       ft_string,
       ft_fulltext: Result := CeSysToUtf8(AnsiString(PAnsiChar(@Buf[0])));
@@ -980,23 +1019,23 @@ end;
 
 procedure TLuaWdx.CallContentGetSupportedField;
 var
-  Index, Rez, tmp: Integer;
+  Index, Rez: Integer;
   xFieldName, xUnits: String;
 begin
+  FFieldsList.Clear;
+
   Index := 0;
   repeat
     Rez := WdxLuaContentGetSupportedField(Index, xFieldName, xUnits);
     DCDebug('WDX:CallGetSupFields:' + IntToStr(Rez));
     if Rez <> ft_nomorefields then
     begin
-      tmp := FFieldsList.AddObject(xFieldName, TWdxField.Create);
-      TWdxField(FFieldsList.Objects[tmp]).FName := xFieldName;
-      TWdxField(FFieldsList.Objects[tmp]).FUnits := xUnits;
-      TWdxField(FFieldsList.Objects[tmp]).FType := Rez;
+      AddField(xFieldName, xUnits, Rez);
     end;
     Inc(Index);
-
   until Rez = ft_nomorefields;
+
+  Translate;
 end;
 
 procedure TLuaWdx.CallContentSetDefaultParams;
@@ -1084,7 +1123,7 @@ begin
         ft_string,
         ft_fulltext,
         ft_multiplechoice:
-          Result := StrPas(lua_tostring(L, -1));
+          Result := lua_tostring(L, -1);
         ft_numeric_32:
           Result := Int32(lua_tointeger(L, -1));
         ft_numeric_64:
@@ -1134,7 +1173,7 @@ begin
         ft_numeric_floating:
           Result := FloatToStr(lua_tonumber(L, -1));
         ft_boolean:
-          Result := BoolToStr(lua_toboolean(L, -1), True);
+          Result := IfThen(lua_toboolean(L, -1), rsSimpleWordTrue, rsSimpleWordFalse);
       end;
     end;
 
@@ -1231,6 +1270,7 @@ begin
   with TWdxField(FFieldsList.Objects[I]) do
   begin
     FName := AName;
+    LName := FName;
     FType := AType;
   end;
 end;
@@ -1258,11 +1298,70 @@ end;
 
 { TWDXModule }
 
+procedure TWDXModule.Translate;
+var
+  I: Integer;
+  SUnits: String;
+  Ini: TIniFileEx;
+  UserLang: String;
+  AFileName: String;
+  AUnits: TStringArray;
+begin
+  AFileName:= mbExpandFileName(ChangeFileExt(Self.FileName, '.lng'));
+  if mbFileExists(AFileName) then
+  begin
+    UserLang:= GetWdxLang(ExtractDelimited(2, gpoFileName, ['.']));
+    if Length(UserLang) > 0 then
+    try
+      Ini:= TIniFileEx.Create(AFileName, fmOpenRead);
+      try
+        for I:= 0 to FFieldsList.Count - 1 do
+        begin
+          with TWdxField(FFieldsList.Objects[I]) do
+          begin
+            LName:= CeRawToUtf8(Ini.ReadString(UserLang, FName, FName));
+            if Length(OUnits) > 0 then
+            begin
+              SUnits:= CeRawToUtf8(Ini.ReadString(UserLang, OUnits, OUnits));
+              AUnits:= SplitString(sUnits, '|');
+              // Check that translation is valid
+              if Length(AUnits) = Length(FUnits) then
+                LUnits:= CopyArray(AUnits);
+            end;
+          end;
+        end;
+      finally
+        Ini.Free;
+      end;
+    except
+      // Skip
+    end;
+  end;
+end;
+
+procedure TWDXModule.AddField(const AName, AUnits: String; AType: Integer);
+var
+  WdxField: TWdxField;
+begin
+  WdxField:= TWdxField.Create;
+  FFieldsList.AddObject(AName, WdxField);
+  with WdxField do
+  begin
+    FName := AName;
+    LName := FName;
+    OUnits := AUnits;
+    FUnits := SplitString(OUnits, '|');
+    LUnits := CopyArray(FUnits);
+    FType := AType;
+  end;
+end;
+
 constructor TWDXModule.Create;
 begin
   InitCriticalSection(FMutex);
   FParser:= TParserControl.Create;
   FFieldsList:= TStringList.Create;
+  FFieldsList.OwnsObjects:= True;
 end;
 
 destructor TWDXModule.Destroy;
@@ -1270,12 +1369,7 @@ var
   I: Integer;
 begin
   FParser.Free;
-  if Assigned(FFieldsList) then
-  begin
-    for I := 0 to FFieldsList.Count - 1 do
-      TWdxField(FFieldsList.Objects[I]).Free;
-    FFieldsList.Free;
-  end;
+  FFieldsList.Free;
   Self.UnloadModule;
   inherited Destroy;
   DoneCriticalSection(FMutex);
@@ -1360,17 +1454,14 @@ end;
 
 function TWdxField.GetUnitIndex(UnitName: String): Integer;
 var
-  sUnits: String;
+  Index: Integer;
 begin
-  Result := -1;
-  sUnits := FUnits;
-  while sUnits <> EmptyStr do
+  for Index:= 0 to High(FUnits) do
   begin
-    Inc(Result);
-    if SameText(UnitName, Copy2SymbDel(sUnits, '|')) then
-      Exit;
+    if SameText(UnitName, FUnits[Index]) then
+      Exit(Index);
   end;
-  Result := 0;
+  Result := IfThen(FType = FT_MULTIPLECHOICE, -1, 0);
 end;
 
 end.

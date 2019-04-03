@@ -3,7 +3,7 @@
     -------------------------------------------------------------------------
     This unit contains realization of Dialog API functions.
 
-    Copyright (C) 2008-2018 Alexander Koblov (alexx2000@mail.ru)
+    Copyright (C) 2008-2019 Alexander Koblov (alexx2000@mail.ru)
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -45,6 +45,7 @@ type
     DialogLabel: TLabel;
     DialogPanel: TPanel;
     DialogEdit: TEdit;
+    DialogMemo: TMemo;
     DialogImage: TImage;
     DialogTabSheet: TTabSheet;
     DialogRadioGroup: TRadioGroup;
@@ -85,15 +86,18 @@ type
     // CheckBox events
     procedure CheckBoxChange(Sender: TObject);
   private
-    FDlgProc: TDlgProc;
+    FRect: TRect;
+    FText: String;
+    FLRSData: String;
     FResult: LongBool;
+    FDlgProc: TDlgProc;
     FTranslator: TAbstractTranslator;
   protected
     procedure ShowDialogBox;
     procedure ProcessResource; override;
     function InitResourceComponent(Instance: TComponent; RootAncestor: TClass): Boolean;
   public
-    constructor Create(DlgProc: TDlgProc); reintroduce;
+    constructor Create(const LRSData: String; DlgProc: TDlgProc); reintroduce;
     destructor Destroy; override;
   end; 
 
@@ -114,13 +118,9 @@ function InputBox(Caption, Prompt: PAnsiChar; MaskInput: LongBool; Value: PAnsiC
 var
   sValue: String;
 begin
-  Result:= False;
   sValue:= StrPas(Value);
-  if ShowInputQuery(Caption, Prompt, MaskInput, sValue) then
-    begin
-      StrLCopy(Value, PAnsiChar(sValue), ValueMaxLen);
-      Result:= True;
-    end;
+  Result:= ShowInputQuery(Caption, Prompt, MaskInput, sValue);
+  if Result then StrLCopy(Value, PAnsiChar(sValue), ValueMaxLen);
 end;
 
 function MessageBox(Text, Caption: PAnsiChar; Flags: Longint): Integer; dcpcall;
@@ -128,40 +128,27 @@ begin
   Result:= ShowMessageBox(Text, Caption, Flags);
 end;
 
-procedure SetDialogBoxResourceLRS(LRSData: String);
-var
-  LResource: TLResource;
-begin
-  LResource := LazarusResources.Find('TDialogBox','FORMDATA');
-  if Assigned(LResource) then
-    LResource.Value:= LRSData
-  else
-    LazarusResources.Add('TDialogBox','FORMDATA', LRSData);
-end;
-
-procedure SetDialogBoxResourceLFM(LFMData: String);
+function LFMToLRS(const LFMData: String): String;
 var
   LFMStream: TStringStream = nil;
-  BinStream: TStringStream = nil;
+  LRSStream: TStringStream = nil;
 begin
   try
+    LRSStream:= TStringStream.Create('');
     LFMStream:= TStringStream.Create(LFMData);
-    BinStream:= TStringStream.Create('');
-    LRSObjectTextToBinary(LFMStream, BinStream);
-    SetDialogBoxResourceLRS(BinStream.DataString);
+    LRSObjectTextToBinary(LFMStream, LRSStream);
+    Result:= LRSStream.DataString;
   finally
-    if Assigned(LFMStream) then
-      FreeAndNil(LFMStream);
-    if Assigned(BinStream) then
-      FreeAndNil(BinStream);
+    FreeAndNil(LFMStream);
+    FreeAndNil(LRSStream);
   end;
 end;
 
-function DialogBox(DlgProc: TDlgProc): LongBool;
+function DialogBox(const LRSData: String; DlgProc: TDlgProc): LongBool;
 var
-  Dialog: TDialogBox = nil;
+  Dialog: TDialogBox;
 begin
-  Dialog:= TDialogBox.Create(DlgProc);
+  Dialog:= TDialogBox.Create(LRSData, DlgProc);
   try
     with Dialog do
     begin
@@ -169,20 +156,18 @@ begin
       Result:= FResult;
     end;
   finally
-    if Assigned(Dialog) then
-      FreeAndNil(Dialog);
+    FreeAndNil(Dialog);
   end;
 end;
 
-function DialogBoxLFM(LFMData: Pointer; DataSize: LongWord; DlgProc: TDlgProc): LongBool;dcpcall;
+function DialogBoxLFM(LFMData: Pointer; DataSize: LongWord; DlgProc: TDlgProc): LongBool; dcpcall;
 var
   DataString: String;
 begin
   if Assigned(LFMData) and (DataSize > 0) then
   begin
     SetString(DataString, LFMData, DataSize);
-    SetDialogBoxResourceLFM(DataString);
-    Result := DialogBox(DlgProc);
+    Result := DialogBox(LFMToLRS(DataString), DlgProc);
   end
   else
     Result := False;
@@ -195,14 +180,13 @@ begin
   if Assigned(LRSData) and (DataSize > 0) then
   begin
     SetString(DataString, LRSData, DataSize);
-    SetDialogBoxResourceLRS(DataString);
-    Result := DialogBox(DlgProc);
+    Result := DialogBox(DataString, DlgProc);
   end
   else
     Result := False;
 end;
 
-function DialogBoxLFMFile(lfmFileName: PAnsiChar; DlgProc: TDlgProc): LongBool;dcpcall;
+function DialogBoxLFMFile(lfmFileName: PAnsiChar; DlgProc: TDlgProc): LongBool; dcpcall;
 var
   lfmStringList: TStringListEx;
 begin
@@ -211,8 +195,7 @@ begin
     lfmStringList:= TStringListEx.Create;
     try
       lfmStringList.LoadFromFile(lfmFileName);
-      SetDialogBoxResourceLFM(lfmStringList.Text);
-      Result := DialogBox(DlgProc);
+      Result := DialogBox(LFMToLRS(lfmStringList.Text), DlgProc);
     finally
       FreeAndNil(lfmStringList);
     end;
@@ -221,22 +204,23 @@ begin
     Result := False;
 end;
 
-function SendDlgMsg(pDlg: PtrUInt; DlgItemName: PAnsiChar; Msg, wParam, lParam: PtrInt): PtrInt;dcpcall;
+function SendDlgMsg(pDlg: PtrUInt; DlgItemName: PAnsiChar; Msg, wParam, lParam: PtrInt): PtrInt; dcpcall;
 var
-  DialogBox: TDialogBox;
-  Control: TControl;
-  sText: String;
-  I: Integer;
-  Rect: TRect;
   Key: Word;
+  AText: String;
+  Index: Integer;
+  Control: TControl;
+  lText: PAnsiChar absolute lParam;
+  wText: PAnsiChar absolute wParam;
+  pResult: Pointer absolute Result;
+  DialogBox: TDialogBox absolute pDlg;
 begin
-  DialogBox:= TDialogBox(Pointer(pDlg));
   // find component by name
-  for I:= 0 to DialogBox.ComponentCount - 1 do
-    begin
-      Control:= TControl(DialogBox.Components[I]);
-      if CompareText(Control.Name, DlgItemName) = 0 then Break;
-    end;
+  for Index:= 0 to DialogBox.ComponentCount - 1 do
+  begin
+    Control:= TControl(DialogBox.Components[Index]);
+    if CompareText(Control.Name, DlgItemName) = 0 then Break;
+  end;
   // process message
   case Msg of
   DM_CLOSE:
@@ -260,11 +244,14 @@ begin
     end;
   DM_GETDLGBOUNDS:
     begin
-      Rect.Left:= DialogBox.Left;
-      Rect.Top:= DialogBox.Top;
-      Rect.Right:= DialogBox.Left + DialogBox.Width;
-      Rect.Bottom:= DialogBox.Top + DialogBox.Height;
-      Result:= PtrInt(@Rect);
+      with DialogBox do
+      begin
+        FRect.Left:= DialogBox.Left;
+        FRect.Top:= DialogBox.Top;
+        FRect.Right:= DialogBox.Left + DialogBox.Width;
+        FRect.Bottom:= DialogBox.Top + DialogBox.Height;
+        pResult:= @FRect;
+      end;
     end;
   DM_GETDLGDATA:
     begin
@@ -277,11 +264,14 @@ begin
     end;
   DM_GETITEMBOUNDS:
     begin
-      Rect.Left:= Control.Left;
-      Rect.Top:= Control.Top;
-      Rect.Right:= Control.Left + Control.Width;
-      Rect.Bottom:= Control.Top + Control.Height;
-      Result:= PtrInt(@Rect);
+      with DialogBox do
+      begin
+        FRect.Left:= Control.Left;
+        FRect.Top:= Control.Top;
+        FRect.Right:= Control.Left + Control.Width;
+        FRect.Bottom:= Control.Top + Control.Height;
+        pResult:= @FRect;
+      end;
     end;
   DM_GETITEMDATA:
     begin
@@ -289,64 +279,83 @@ begin
     end;
   DM_LISTADD:
     begin
-      sText:= PAnsiChar(wParam);
+      AText:= StrPas(wText);
       if Control is TComboBox then
-        Result:= TComboBox(Control).Items.AddObject(sText, TObject(Pointer(lParam)))
+        Result:= TComboBox(Control).Items.AddObject(AText, TObject(lText))
       else if Control is TListBox then
-        Result:= TListBox(Control).Items.AddObject(sText, TObject(Pointer(lParam)));
+        Result:= TListBox(Control).Items.AddObject(AText, TObject(lText))
+      else if Control is TMemo then
+        Result:= TMemo(Control).Lines.AddObject(AText, TObject(lText));
     end;
   DM_LISTADDSTR:
     begin
-      sText:= PAnsiChar(wParam);
+      AText:= StrPas(wText);
       if Control is TComboBox then
-        Result:= TComboBox(Control).Items.Add(sText)
+        Result:= TComboBox(Control).Items.Add(AText)
       else if Control is TListBox then
-        Result:= TListBox(Control).Items.Add(sText);
+        Result:= TListBox(Control).Items.Add(AText)
+      else if Control is TMemo then
+        Result:= TMemo(Control).Lines.Add(AText);
     end;
   DM_LISTDELETE:
     begin
       if Control is TComboBox then
-         (Control as TComboBox).Items.Delete(wParam);
-      if Control is TListBox then
-        (Control as TListBox).Items.Delete(wParam);
+        TComboBox(Control).Items.Delete(wParam)
+      else if Control is TListBox then
+        TListBox(Control).Items.Delete(wParam)
+      else if Control is TMemo then
+        TMemo(Control).Lines.Delete(wParam);
     end;
   DM_LISTINDEXOF:
     begin
-      sText:= PAnsiChar(lParam);
+      AText:= StrPas(lText);
       if Control is TComboBox then
-        Result:= (Control as TComboBox).Items.IndexOf(sText);
-      if Control is TListBox then
-        Result:= (Control as TListBox).Items.IndexOf(sText);
+        Result:= TComboBox(Control).Items.IndexOf(AText)
+      else if Control is TListBox then
+        Result:= TListBox(Control).Items.IndexOf(AText)
+      else if Control is TMemo then
+        Result:= TMemo(Control).Lines.IndexOf(AText);
     end;
   DM_LISTINSERT:
     begin
-      sText:= PAnsiChar(lParam);
+      AText:= StrPas(lText);
       if Control is TComboBox then
-        (Control as TComboBox).Items.Insert(wParam, sText);
-      if Control is TListBox then
-        (Control as TListBox).Items.Insert(wParam, sText);
+        TComboBox(Control).Items.Insert(wParam, AText)
+      else if Control is TListBox then
+        TListBox(Control).Items.Insert(wParam, AText)
+      else if Control is TMemo then
+        TMemo(Control).Lines.Insert(wParam, AText);
     end;
   DM_LISTGETCOUNT:
     begin
       if Control is TComboBox then
-        Result:= (Control as TComboBox).Items.Count;
-      if Control is TListBox then
-        Result:= (Control as TListBox).Items.Count;
+        Result:= TComboBox(Control).Items.Count
+      else if Control is TListBox then
+        Result:= TListBox(Control).Items.Count
+      else if Control is TMemo then
+        Result:= TMemo(Control).Lines.Count;
     end;
   DM_LISTGETDATA:
     begin
       if Control is TComboBox then
-        Result:= PtrInt((Control as TComboBox).Items.Objects[wParam]);
-      if Control is TListBox then
-        Result:= PtrInt((Control as TListBox).Items.Objects[wParam]);
+        Result:= PtrInt(TComboBox(Control).Items.Objects[wParam])
+      else if Control is TListBox then
+        Result:= PtrInt(TListBox(Control).Items.Objects[wParam])
+      else if Control is TMemo then
+        Result:= PtrInt(TMemo(Control).Lines.Objects[wParam]);
     end;
   DM_LISTGETITEM:
     begin
-      if Control is TComboBox then
-        sText:= (Control as TComboBox).Items[wParam];
-      if Control is TListBox then
-        sText:= (Control as TListBox).Items[wParam];
-      Result:= PtrInt(PAnsiChar(sText));
+      with DialogBox do
+      begin
+        if Control is TComboBox then
+          FText:= TComboBox(Control).Items[wParam]
+        else if Control is TListBox then
+          FText:= TListBox(Control).Items[wParam]
+        else if Control is TMemo then
+          FText:= TMemo(Control).Lines[wParam];
+        pResult:= PAnsiChar(FText);
+      end;
     end;
   DM_LISTGETITEMINDEX:
     begin
@@ -369,27 +378,34 @@ begin
     end;
   DM_LISTUPDATE:
     begin
-      sText:= PAnsiChar(lParam);
+      AText:= StrPas(lText);
       if Control is TComboBox then
-        (Control as TComboBox).Items[wParam]:= sText;
-      if Control is TListBox then
-        (Control as TListBox).Items[wParam]:= sText;
+        TComboBox(Control).Items[wParam]:= AText
+      else if Control is TListBox then
+        TListBox(Control).Items[wParam]:= AText
+      else if Control is TMemo then
+        TMemo(Control).Lines[wParam]:= AText;
     end;
   DM_GETTEXT:
     begin
-      if Control is TButton then
-        sText:= (Control as TButton).Caption;
-      if Control is TComboBox then
-        sText:= (Control as TComboBox).Text;
-      if Control is TEdit then
-        sText:= (Control as TEdit).Text;
-      if Control is TGroupBox then
-        sText:= (Control as TGroupBox).Caption;
-      if Control is TLabel then
-        sText:= (Control as TLabel).Caption;
-      if Control is TFileNameEdit then
-        sText:= TFileNameEdit(Control).Text;
-      Result:= PtrInt(PAnsiChar(sText));
+      with DialogBox do
+      begin
+        if Control is TButton then
+          FText:= TButton(Control).Caption
+        else if Control is TComboBox then
+          FText:= TComboBox(Control).Text
+        else if Control is TMemo then
+          FText:= TMemo(Control).Text
+        else if Control is TEdit then
+          FText:= TEdit(Control).Text
+        else if Control is TGroupBox then
+          FText:= TGroupBox(Control).Caption
+        else if Control is TLabel then
+          FText:= TLabel(Control).Caption
+        else if Control is TFileNameEdit then
+          FText:= TFileNameEdit(Control).Text;
+        pResult:= PAnsiChar(FText);
+      end;
     end;
   DM_KEYDOWN:
     begin
@@ -423,17 +439,22 @@ begin
   DM_LISTSETDATA:
     begin
       if Control is TComboBox then
-        (Control as TComboBox).Items.Objects[wParam]:= TObject(Pointer(lParam));
-      if Control is TListBox then
-        (Control as TListBox).Items.Objects[wParam]:= TObject(Pointer(lParam));
+        TComboBox(Control).Items.Objects[wParam]:= TObject(lText)
+      else if Control is TListBox then
+        TListBox(Control).Items.Objects[wParam]:= TObject(lText)
+      else if Control is TMemo then
+        TMemo(Control).Lines.Objects[wParam]:= TObject(lText);
     end;
   DM_SETDLGBOUNDS:
     begin
-      Rect:= PRect(wParam)^;
-      DialogBox.Left:= Rect.Left;
-      DialogBox.Top:= Rect.Top;
-      DialogBox.Width:= Rect.Right - Rect.Left;
-      DialogBox.Height:= Rect.Bottom - Rect.Top;
+      with DialogBox do
+      begin
+        FRect:= PRect(wText)^;
+        DialogBox.Left:= FRect.Left;
+        DialogBox.Top:= FRect.Top;
+        DialogBox.Width:= FRect.Right - FRect.Left;
+        DialogBox.Height:= FRect.Bottom - FRect.Top;
+      end;
     end;
   DM_SETDLGDATA:
     begin
@@ -452,11 +473,14 @@ begin
     end;
   DM_SETITEMBOUNDS:
     begin
-      Rect:= PRect(wParam)^;
-      Control.Left:= Rect.Left;
-      Control.Top:= Rect.Top;
-      Control.Width:= Rect.Right - Rect.Left;
-      Control.Height:= Rect.Bottom - Rect.Top;
+      with DialogBox do
+      begin
+        FRect:= PRect(wText)^;
+        Control.Left:= FRect.Left;
+        Control.Top:= FRect.Top;
+        Control.Width:= FRect.Right - FRect.Left;
+        Control.Height:= FRect.Bottom - FRect.Top;
+      end;
     end;
   DM_SETITEMDATA:
     begin
@@ -478,19 +502,21 @@ begin
     end;
   DM_SETTEXT:
     begin
-      sText:= PAnsiChar(wParam);
+      AText:= StrPas(wText);
       if Control is TButton then
-        (Control as TButton).Caption:= sText;
-      if Control is TComboBox then
-        (Control as TComboBox).Text:= sText;
-      if Control is TEdit then
-        (Control as TEdit).Text:= sText;
-      if Control is TGroupBox then
-        (Control as TGroupBox).Caption:= sText;
-      if Control is TLabel then
-        (Control as TLabel).Caption:= sText;
-      if Control is TFileNameEdit then
-        TFileNameEdit(Control).Text:= sText;
+        TButton(Control).Caption:= AText
+      else if Control is TComboBox then
+        TComboBox(Control).Text:= AText
+      else if Control is TMemo then
+        TMemo(Control).Text:= AText
+      else if Control is TEdit then
+        TEdit(Control).Text:= AText
+      else if Control is TGroupBox then
+        TGroupBox(Control).Caption:= AText
+      else if Control is TLabel then
+        TLabel(Control).Caption:= AText
+      else if Control is TFileNameEdit then
+        TFileNameEdit(Control).Text:= AText;
     end;
   DM_SHOWDIALOG:
     begin
@@ -528,11 +554,9 @@ function TDialogBox.InitResourceComponent(Instance: TComponent; RootAncestor: TC
 
   function InitComponent(ClassType: TClass): Boolean;
   var
-    ResName: String;
     Stream: TStream;
     Reader: TReader;
     DestroyDriver: Boolean;
-    LazResource: TLResource;
     Driver: TAbstractObjectReader;
   begin
     Result := False;
@@ -541,16 +565,7 @@ function TDialogBox.InitResourceComponent(Instance: TComponent; RootAncestor: TC
     if Assigned(ClassType.ClassParent) then
       Result := InitComponent(ClassType.ClassParent);
 
-    Stream := nil;
-    ResName := ClassType.ClassName;
-
-    LazResource := LazarusResources.Find(ResName);
-    if (LazResource <> nil) and (LazResource.Value <> '') then
-      Stream := TLazarusResourceStream.CreateFromHandle(LazResource);
-    //DCDebug('[InitComponent] CompResource found for ', ClassType.Classname);
-
-    if Stream = nil then
-      Exit;
+    Stream := TStringStream.Create(FLRSData);
 
     try
       //DCDebug('Form Stream "', ClassType.ClassName, '"');
@@ -588,12 +603,13 @@ begin
   end;
 end;
 
-constructor TDialogBox.Create(DlgProc: TDlgProc);
+constructor TDialogBox.Create(const LRSData: String; DlgProc: TDlgProc);
 var
   Path: String;
   Language: String;
   FileName: String;
 begin
+  FLRSData:= LRSData;
   FDlgProc:= DlgProc;
 
   FileName:= mbGetModuleName(DlgProc);
@@ -639,14 +655,14 @@ procedure TDialogBox.ButtonKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if Assigned(fDlgProc) then
-    fDlgProc(PtrUInt(Pointer(Self)), PAnsiChar((Sender as TControl).Name), DN_KEYDOWN,Key,0);
+    fDlgProc(PtrUInt(Pointer(Self)), PAnsiChar((Sender as TControl).Name), DN_KEYDOWN, PtrInt(@Key), Integer(Shift));
 end;
 
 procedure TDialogBox.ButtonKeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if Assigned(fDlgProc) then
-    fDlgProc(PtrUInt(Pointer(Self)), PAnsiChar((Sender as TControl).Name), DN_KEYUP,Key,0);
+    fDlgProc(PtrUInt(Pointer(Self)), PAnsiChar((Sender as TControl).Name), DN_KEYUP, PtrInt(@Key), Integer(Shift));
 end;
 
 procedure TDialogBox.ComboBoxClick(Sender: TObject);
@@ -685,14 +701,14 @@ procedure TDialogBox.ComboBoxKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if Assigned(fDlgProc) then
-    fDlgProc(PtrUInt(Pointer(Self)), PAnsiChar((Sender as TControl).Name), DN_KEYDOWN,Key,0);
+    fDlgProc(PtrUInt(Pointer(Self)), PAnsiChar((Sender as TControl).Name), DN_KEYDOWN, PtrInt(@Key), Integer(Shift));
 end;
 
 procedure TDialogBox.ComboBoxKeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if Assigned(fDlgProc) then
-    fDlgProc(PtrUInt(Pointer(Self)), PAnsiChar((Sender as TControl).Name), DN_KEYUP,Key,0);
+    fDlgProc(PtrUInt(Pointer(Self)), PAnsiChar((Sender as TControl).Name), DN_KEYUP, PtrInt(@Key), Integer(Shift));
 end;
 
 procedure TDialogBox.EditClick(Sender: TObject);
@@ -733,13 +749,13 @@ end;
 procedure TDialogBox.EditKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
   if Assigned(fDlgProc) then
-    fDlgProc(PtrUInt(Pointer(Self)), PAnsiChar((Sender as TControl).Name), DN_KEYDOWN,Key,0);
+    fDlgProc(PtrUInt(Pointer(Self)), PAnsiChar((Sender as TControl).Name), DN_KEYDOWN, PtrInt(@Key), Integer(Shift));
 end;
 
 procedure TDialogBox.EditKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
   if Assigned(fDlgProc) then
-    fDlgProc(PtrUInt(Pointer(Self)), PAnsiChar((Sender as TControl).Name), DN_KEYUP,Key,0);
+    fDlgProc(PtrUInt(Pointer(Self)), PAnsiChar((Sender as TControl).Name), DN_KEYUP, PtrInt(@Key), Integer(Shift));
 end;
 
 procedure TDialogBox.ListBoxClick(Sender: TObject);
@@ -782,14 +798,14 @@ procedure TDialogBox.ListBoxKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if Assigned(fDlgProc) then
-    fDlgProc(PtrUInt(Pointer(Self)), PAnsiChar((Sender as TControl).Name), DN_KEYDOWN,Key,0);
+    fDlgProc(PtrUInt(Pointer(Self)), PAnsiChar((Sender as TControl).Name), DN_KEYDOWN, PtrInt(@Key), Integer(Shift));
 end;
 
 procedure TDialogBox.ListBoxKeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if Assigned(fDlgProc) then
-    fDlgProc(PtrUInt(Pointer(Self)), PAnsiChar((Sender as TControl).Name), DN_KEYUP,Key,0);
+    fDlgProc(PtrUInt(Pointer(Self)), PAnsiChar((Sender as TControl).Name), DN_KEYUP, PtrInt(@Key), Integer(Shift));
 end;
 
 procedure TDialogBox.CheckBoxChange(Sender: TObject);

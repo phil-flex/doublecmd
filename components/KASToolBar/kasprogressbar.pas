@@ -32,7 +32,7 @@ interface
 uses
   LCLType, Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ComCtrls
   {$IFDEF LCLWIN32}
-  , InterfaceBase, ComObj, dwTaskbarList
+  , InterfaceBase, ComObj, LMessages, Windows, Themes, dwTaskbarList
   {$ENDIF}
   {$IFDEF LCLGTK2}
   , Gtk2
@@ -53,6 +53,7 @@ type
   private
     FShowInTaskbar: Boolean;
     {$IFDEF LCLWIN32}
+    FBarText: String;
     FTaskBarEntryHandle: HWND;
     FTaskbarList: ITaskbarList;
     FTaskbarList3: ITaskbarList3;
@@ -60,6 +61,7 @@ type
   protected
     {$IFDEF LCLWIN32}
     procedure InitializeWnd; override;
+    procedure WMPaint(var Msg: TLMPaint); message LM_PAINT;
     {$ENDIF}
     procedure DoOnResize; override;
   public
@@ -94,6 +96,26 @@ begin
       FTaskBarEntryHandle := aOwnerForm.Handle
     else
       FTaskBarEntryHandle := Widgetset.AppHandle;
+  end;
+  BarShowText:= BarShowText and CheckWin32Version(8);
+end;
+
+procedure TKASProgressBar.WMPaint(var Msg: TLMPaint);
+var
+  OldFont: HFONT;
+  OldBkMode: Integer;
+  Details: TThemedElementDetails;
+begin
+  inherited WMPaint(Msg);
+
+  if BarShowText and ThemeServices.ThemesEnabled then
+  begin
+    OldBkMode:= SetBkMode(Msg.DC, TRANSPARENT);
+    Details:= ThemeServices.GetElementDetails(tpBar);
+    OldFont:= SelectObject(Msg.DC, Font.Reference.Handle);
+    ThemeServices.DrawText(Msg.DC, Details, FBarText, Msg.PaintStruct^.rcPaint, DT_SINGLELINE or DT_CENTER or DT_VCENTER, 0);
+    SelectObject(Msg.DC, OldFont);
+    SetBkMode(Msg.DC, OldBkMode);
   end;
 end;
 {$ENDIF}
@@ -146,6 +168,16 @@ begin
     Position := 0;
 
 {$IFDEF LCLWIN32}
+  if BarShowText then
+  begin
+    if MaxValue = 0 then
+      FBarText := BarText
+    else if BarText = '' then
+      FBarText :=  FloatToStrF((CurrentValue / MaxValue) * 100, ffFixed, 0, 0) + '%'
+    else
+      FBarText := BarText + ' (' + FloatToStrF((CurrentValue / MaxValue) * 100, ffFixed, 0, 0) + '%)';
+  end;
+
   if FShowInTaskbar and (FTaskBarEntryHandle <> INVALID_HANDLE_VALUE) and Assigned(FTaskbarList3) then
   begin
     FTaskbarList3.SetProgressValue(FTaskBarEntryHandle, Position, Max);

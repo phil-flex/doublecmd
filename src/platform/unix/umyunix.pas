@@ -130,10 +130,6 @@ function getmntent(stream: PFILE): PMountEntry; cdecl; external libc name 'getmn
 function endmntent(stream: PFILE): LongInt; cdecl; external libc name 'endmntent';
 {$ENDIF}
 {en
-   Set process group ID for job control
-}
-function setpgid(pid, pgid: pid_t): cint; cdecl; external libc name 'setpgid';
-{en
    Get password file entry
    @param(uid User ID)
    @returns(The function returns a pointer to a structure containing the broken-out
@@ -161,6 +157,12 @@ function getgrgid(gid: gid_t): PGroupRecord; cdecl; external libc name 'getgrgid
             fields of the record in the group database that matches the group name)
 }
 function getgrnam(name: PChar): PGroupRecord; cdecl; external libc name 'getgrnam';
+{en
+   The getenv() function searches the environment list to find the
+   environment variable name, and returns a pointer to the corresponding
+   value string.
+}
+function getenv(name: PAnsiChar): PAnsiChar; cdecl; external libc name 'getenv';
 {en
    Change or add an environment variable
    @param(name Environment variable name)

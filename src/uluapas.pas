@@ -3,7 +3,7 @@
    -------------------------------------------------------------------------
    Push some useful functions to Lua
 
-   Copyright (C) 2016-2018 Alexander Koblov (alexx2000@mail.ru)
+   Copyright (C) 2016-2019 Alexander Koblov (alexx2000@mail.ru)
 
    This library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public
@@ -39,7 +39,7 @@ implementation
 uses
   Forms, Dialogs, Clipbrd, LazUTF8, LCLVersion, DCOSUtils,
   DCConvertEncoding, fMain, uFormCommands, uOSUtils, uGlobs, uLog,
-  uClipboard, uShowMsg, uLuaStd, uFindEx;
+  uClipboard, uShowMsg, uLuaStd, uFindEx, uConvEncoding;
 
 procedure luaPushSearchRec(L : Plua_State; Rec: PSearchRecEx);
 begin
@@ -68,9 +68,10 @@ begin
     luaPushSearchRec(L, Rec);
   end
   else begin
-    Result:= 1;
-    Dispose(Rec);
+    FindCloseEx(Rec^);
     lua_pushnil(L);
+    Dispose(Rec);
+    Result:= 1;
   end;
 end;
 
@@ -133,6 +134,36 @@ begin
   lua_pushboolean(L, mbDirectoryExists(lua_tostring(L, 1)));
 end;
 
+function luaExtractFilePath(L : Plua_State) : Integer; cdecl;
+begin
+  Result:= 1;
+  lua_pushstring(L, ExtractFilePath(lua_tostring(L, 1)));
+end;
+
+function luaExtractFileDrive(L : Plua_State) : Integer; cdecl;
+begin
+  Result:= 1;
+  lua_pushstring(L, ExtractFileDrive(lua_tostring(L, 1)));
+end;
+
+function luaExtractFileName(L : Plua_State) : Integer; cdecl;
+begin
+  Result:= 1;
+  lua_pushstring(L, ExtractFileName(lua_tostring(L, 1)));
+end;
+
+function luaExtractFileExt(L : Plua_State) : Integer; cdecl;
+begin
+  Result:= 1;
+  lua_pushstring(L, ExtractFileExt(lua_tostring(L, 1)));
+end;
+
+function luaExtractFileDir(L : Plua_State) : Integer; cdecl;
+begin
+  Result:= 1;
+  lua_pushstring(L, ExtractFileDir(lua_tostring(L, 1)));
+end;
+
 function luaPos(L : Plua_State) : Integer; cdecl;
 var
   Offset: SizeInt = 1;
@@ -184,6 +215,17 @@ begin
   S:= lua_tostring(L, 1);
   S:= UTF8LowerCase(S);
   lua_pushstring(L, PAnsiChar(S));
+end;
+
+function luaConvertEncoding(L : Plua_State) : Integer; cdecl;
+var
+  S, FromEnc, ToEnc: String;
+begin
+  Result:= 1;
+  S:= lua_tostring(L, 1);
+  FromEnc:= lua_tostring(L, 2);
+  ToEnc:= lua_tostring(L, 3);
+  lua_pushstring(L, ConvertEncoding(S, FromEnc, ToEnc));
 end;
 
 function luaClipbrdClear(L : Plua_State) : Integer; cdecl;
@@ -258,8 +300,8 @@ begin
     lua_pushnil(L);
     Exit;
   end;
-  ACaption:= lua_tostring(L, 1);
-  APrompt:= lua_tostring(L, 2);
+  ACaption:= lua_tocstring(L, 1);
+  APrompt:= lua_tocstring(L, 2);
   ACount:= lua_objlen(L, 3);
   AStringList:= TStringList.Create;
   for AIndex := 1 to ACount do
@@ -277,6 +319,24 @@ begin
     lua_pushnil(L);
   end;
   AStringList.Free;
+end;
+
+function luaLogWrite(L : Plua_State) : Integer; cdecl;
+var
+  sText: String;
+  bForce: Boolean = True;
+  bLogFile: Boolean = False;
+  LogMsgType: TLogMsgType = lmtInfo;
+begin
+  Result:= 0;
+  sText:= lua_tostring(L, 1);
+  if lua_isnumber(L, 2) then
+    LogMsgType:= TLogMsgType(lua_tointeger(L, 2));
+  if lua_isboolean(L, 3) then
+    bForce:= lua_toboolean(L, 3);
+  if lua_isboolean(L, 4) then
+    bLogFile:= lua_toboolean(L, 4);
+  logWrite(sText, LogMsgType, bForce, bLogFile);
 end;
 
 function luaExecuteCommand(L : Plua_State) : Integer; cdecl;
@@ -328,6 +388,13 @@ begin
     luaP_register(L, 'FileGetAttr', @luaFileGetAttr);
     luaP_register(L, 'GetTickCount', @luaGetTickCount);
     luaP_register(L, 'DirectoryExists', @luaDirectoryExists);
+
+    luaP_register(L, 'ExtractFileExt', @luaExtractFileExt);
+    luaP_register(L, 'ExtractFileDir', @luaExtractFileDir);
+    luaP_register(L, 'ExtractFilePath', @luaExtractFilePath);
+    luaP_register(L, 'ExtractFileName', @luaExtractFileName);
+    luaP_register(L, 'ExtractFileDrive', @luaExtractFileDrive);
+
     luaC_register(L, 'PathDelim', PathDelim);
   lua_setglobal(L, 'SysUtils');
 
@@ -337,6 +404,7 @@ begin
     luaP_register(L, 'Length', @luaLength);
     luaP_register(L, 'UpperCase', @luaUpperCase);
     luaP_register(L, 'LowerCase', @luaLowerCase);
+    luaP_register(L, 'ConvertEncoding', @luaConvertEncoding);
   lua_setglobal(L, 'LazUtf8');
 
   lua_newtable(L);
@@ -355,6 +423,7 @@ begin
   lua_setglobal(L, 'Dialogs');
 
   lua_newtable(L);
+    luaP_register(L, 'LogWrite', @luaLogWrite);
     luaP_register(L, 'ExecuteCommand', @luaExecuteCommand);
   lua_setglobal(L, 'DC');
 
@@ -366,12 +435,20 @@ var
   APath: String;
 begin
   lua_getglobal(L, 'package');
+    // Set package.path
     lua_getfield(L, -1, 'path');
       APath := lua_tostring(L, -1);
-      APath := APath + ';' + Path + '?.lua';
+      APath := StringReplace(APath, '.' + PathDelim, Path, []);
     lua_pop(L, 1);
     lua_pushstring(L, PAnsiChar(APath));
     lua_setfield(L, -2, 'path');
+    // Set package.cpath
+    lua_getfield(L, -1, 'cpath');
+      APath := lua_tostring(L, -1);
+      APath := StringReplace(APath, '.' + PathDelim, Path, []);
+    lua_pop(L, 1);
+    lua_pushstring(L, PAnsiChar(APath));
+    lua_setfield(L, -2, 'cpath');
   lua_pop(L, 1);
 end;
 
@@ -411,6 +488,7 @@ begin
   begin
     luaL_openlibs(L);
     RegisterPackages(L);
+    SetPackagePath(L, ExtractFilePath(Script));
 
     // Load script from file
     Status := luaL_loadfile(L, PAnsiChar(Script));
@@ -430,8 +508,8 @@ begin
 
     // Check execution result
     if Status <> 0 then begin
-      Script:= StrPas(lua_tostring(L, -1));
-      MessageDlg(Script, mtError, [mbOK], 0);
+      Script:= lua_tostring(L, -1);
+      MessageDlg(CeRawToUtf8(Script), mtError, [mbOK], 0);
     end;
 
     lua_close(L);

@@ -18,7 +18,6 @@ inherited frmExtractDlg: TfrmExtractDlg
   ChildSizing.TopBottomSpacing = 6
   ClientHeight = 222
   ClientWidth = 516
-  Constraints.MinWidth = 500
   OnCreate = FormCreate
   Position = poOwnerFormCenter
   SessionProperties = 'cbOverwrite.Checked'
@@ -31,7 +30,6 @@ inherited frmExtractDlg: TfrmExtractDlg
     ChildSizing.TopBottomSpacing = 4
     ClientHeight = 148
     ClientWidth = 500
-    Constraints.MinWidth = 500
     object pnlLabels: TPanel[0]
       AnchorSideLeft.Control = pnlContent
       AnchorSideTop.Control = cbFileMask
@@ -95,11 +93,10 @@ inherited frmExtractDlg: TfrmExtractDlg
       Left = 171
       Height = 23
       Top = 5
-      Width = 321
-      Anchors = [akTop, akLeft, akRight]
+      Width = 260
       BorderSpacing.Left = 5
       BorderSpacing.Top = 2
-      BorderSpacing.Right = 36
+      Constraints.MinWidth = 260
       ItemHeight = 15
       ParentFont = False
       TabOrder = 0
@@ -119,7 +116,7 @@ inherited frmExtractDlg: TfrmExtractDlg
       ButtonWidth = 23
       NumGlyphs = 1
       Anchors = [akTop, akLeft, akRight]
-      BorderSpacing.Top = 2
+      BorderSpacing.Top = 4
       MaxLength = 0
       TabOrder = 1
     end
@@ -148,7 +145,6 @@ inherited frmExtractDlg: TfrmExtractDlg
       Height = 69
       Top = 53
       Width = 506
-      Anchors = [akTop, akLeft, akRight]
       AutoSize = True
       BevelOuter = bvNone
       ChildSizing.TopBottomSpacing = 6

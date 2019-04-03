@@ -24,8 +24,8 @@
     </i18n>
     <VersionInfo>
       <UseVersionInfo Value="True"/>
-      <MinorVersionNr Value="9"/>
-      <StringTable FileDescription="Double Commander is a cross platform open source file manager with two panels side by side" InternalName="DOUBLECMD" LegalCopyright="Copyright (C) 2006-2018 Alexander Koblov" ProductName="Double Commander"/>
+      <MajorVersionNr Value="1"/>
+      <StringTable FileDescription="Double Commander is a cross platform open source file manager with two panels side by side" InternalName="DOUBLECMD" LegalCopyright="Copyright (C) 2006-2019 Alexander Koblov" ProductName="Double Commander"/>
     </VersionInfo>
     <BuildModes Count="5">
       <Item1 Name="Debug" Default="True"/>
@@ -284,7 +284,7 @@ end;"/>
         <MinVersion Minor="3" Valid="True"/>
       </Item12>
     </RequiredPackages>
-    <Units Count="248">
+    <Units Count="255">
       <Unit0>
         <Filename Value="doublecmd.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -466,7 +466,9 @@ end;"/>
       <Unit24>
         <Filename Value="frames\foptionsfileassocextra.pas"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmOptionsFileAssocExtra"/>
         <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
         <UnitName Value="fOptionsFileAssocExtra"/>
       </Unit24>
       <Unit25>
@@ -1795,6 +1797,55 @@ end;"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="fOptionsFilesViewsComplement"/>
       </Unit247>
+      <Unit248>
+        <Filename Value="frames\foptionstoolbarextra.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmOptionsToolbarExtra"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="fOptionsToolbarExtra"/>
+      </Unit248>
+      <Unit249>
+        <Filename Value="frames\foptionsdirectoryhotlistextra.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmOptionsDirectoryHotlistExtra"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="fOptionsDirectoryHotlistExtra"/>
+      </Unit249>
+      <Unit250>
+        <Filename Value="uvariablemenusupport.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="uVariableMenuSupport"/>
+      </Unit250>
+      <Unit251>
+        <Filename Value="fbenchmark.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmBenchmark"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="fBenchmark"/>
+      </Unit251>
+      <Unit252>
+        <Filename Value="filesources\gio\fgioauthdlg.pas"/>
+        <IsPartOfProject Value="True"/>
+        <HasResources Value="True"/>
+        <UnitName Value="fGioAuthDlg"/>
+      </Unit252>
+      <Unit253>
+        <Filename Value="filesources\gio\fgiocopymoveoperationoptions.pas"/>
+        <IsPartOfProject Value="True"/>
+        <HasResources Value="True"/>
+        <UnitName Value="fGioCopyMoveOperationOptions"/>
+      </Unit253>
+      <Unit254>
+        <Filename Value="fconfirmcommandline.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="TfrmConfirmCommandLine"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="fConfirmCommandLine"/>
+      </Unit254>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

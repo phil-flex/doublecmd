@@ -171,7 +171,6 @@ object frmMain: TfrmMain
         ClientHeight = 167
         ClientWidth = 511
         TabOrder = 0
-        OnDblClick = pnlLeftRightDblClick
         OnResize = pnlLeftResize
         object pnlDiskLeftInner: TPanel
           Left = 0
@@ -298,7 +297,6 @@ object frmMain: TfrmMain
         ClientHeight = 167
         ClientWidth = 123
         TabOrder = 1
-        OnDblClick = pnlLeftRightDblClick
         OnResize = pnlRightResize
         object pnlDiskRightInner: TPanel
           Left = 0
@@ -543,6 +541,8 @@ object frmMain: TfrmMain
     Top = 299
     Width = 760
     Align = alBottom
+    Color = clWindow
+    Font.Color = clWindowText
     Font.Height = -16
     Font.Name = 'courier'
     Font.Pitch = fpFixed
@@ -1410,6 +1410,9 @@ object frmMain: TfrmMain
       object miLine55: TMenuItem
         Caption = '-'
       end
+      object mnuConfigSavePos: TMenuItem
+        Action = actConfigSavePos
+      end
       object mnuConfigSaveSettings: TMenuItem
         Action = actConfigSaveSettings
       end
@@ -1555,7 +1558,7 @@ object frmMain: TfrmMain
     object actSyncDirs: TAction
       Tag = 18
       Category = 'Tools'
-      Caption = 'Synchronize dirs...'
+      Caption = 'Syn&chronize dirs...'
       HelpType = htKeyword
       OnExecute = actExecute
     end
@@ -2338,6 +2341,18 @@ object frmMain: TfrmMain
       Caption = 'Add path and file name to command line'
       OnExecute = actExecute
     end
+    object actGoToFirstEntry: TAction
+      Tag = 14
+      Category = 'Navigation'
+      Caption = 'Place cursor on first folder or file'
+      OnExecute = actExecute
+    end
+    object actGoToLastEntry: TAction
+      Tag = 14
+      Category = 'Navigation'
+      Caption = 'Place cursor on last folder or file'
+      OnExecute = actExecute
+    end
     object actGoToFirstFile: TAction
       Tag = 14
       Category = 'Navigation'
@@ -2366,6 +2381,12 @@ object frmMain: TfrmMain
       Tag = 14
       Category = 'Navigation'
       Caption = 'Go to previous entry in history'
+      OnExecute = actExecute
+    end
+    object actOpenDriveByIndex: TAction
+      Tag = 14
+      Category = 'Navigation'
+      Caption = 'Open Drive by Index'
       OnExecute = actExecute
     end
     object actOpenBar: TAction
@@ -2491,6 +2512,13 @@ object frmMain: TfrmMain
       Tag = 16
       Category = 'Window'
       Caption = '&Tree View Panel'
+      OnExecute = actExecute
+    end
+    object actFocusTreeView: TAction
+      Tag = 16
+      Category = 'Window'
+      Caption = 'Focus on tree view'
+      Hint = 'Switch between current file list and tree view (if enabled)'
       OnExecute = actExecute
     end
     object actConfigFolderTabs: TAction
@@ -2626,6 +2654,12 @@ object frmMain: TfrmMain
       Caption = 'Load the Next Favorite Tabs in the list'
       OnExecute = actExecute
     end
+    object actActivateTabByIndex: TAction
+      Tag = 21
+      Category = 'Tabs'
+      Caption = 'Activate Tab By Index'
+      OnExecute = actExecute
+    end
     object actConfigTreeViewMenus: TAction
       Tag = 5
       Category = 'Configuration'
@@ -2650,6 +2684,12 @@ object frmMain: TfrmMain
       Category = 'Configuration'
       Caption = 'Configuration of hot keys'
       HelpType = htKeyword
+      OnExecute = actExecute
+    end
+    object actConfigSavePos: TAction
+      Tag = 5
+      Category = 'Configuration'
+      Caption = 'Save Position'
       OnExecute = actExecute
     end
     object actConfigSaveSettings: TAction
@@ -2681,6 +2721,18 @@ object frmMain: TfrmMain
       Tag = 5
       Category = 'Configuration'
       Caption = 'Configuration of tooltips'
+      OnExecute = actExecute
+    end
+    object actConfigPlugins: TAction
+      Tag = 5
+      Category = 'Configuration'
+      Caption = 'Configuration of Plugins'
+      OnExecute = actExecute
+    end
+    object actAddPlugin: TAction
+      Tag = 5
+      Category = 'Configuration'
+      Caption = 'Add Plugin'
       OnExecute = actExecute
     end
   end

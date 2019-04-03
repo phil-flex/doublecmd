@@ -3,7 +3,7 @@
     -------------------------------------------------------------------------
     File associations configuration
 
-    Copyright (C) 2008-2018  Alexander Koblov (alexx2000@mail.ru)
+    Copyright (C) 2008-2019  Alexander Koblov (alexx2000@mail.ru)
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -29,8 +29,10 @@ uses
   //Lazarus, Free-Pascal, etc.
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, Buttons,
   ExtCtrls, EditBtn, ExtDlgs, Menus, ActnList, Types,
+
   //DC
-  uExts, fOptionsFrame;
+  uGlobs, uExts, fOptionsFrame;
+
 type
 
   { TfrmOptionsFileAssoc }
@@ -90,9 +92,7 @@ type
     miOpen: TMenuItem;
     OpenDialog: TOpenDialog;
     OpenPictureDialog: TOpenPictureDialog;
-    pmVariableStartPathHelper: TPopupMenu;
     pnlBottomSettings: TPanel;
-    pmVariableParamsHelper: TPopupMenu;
     pmPathHelper: TPopupMenu;
     pnlLeftSettings: TPanel;
     pnlActsEdits: TPanel;
@@ -112,9 +112,11 @@ type
     procedure btnRelativePathIconClick(Sender: TObject);
     procedure btnStartPathPathHelperClick(Sender: TObject);
     procedure btnStartPathVarHelperClick(Sender: TObject);
+    procedure deStartPathAcceptDirectory(Sender: TObject; var Value: String);
     procedure deStartPathChange(Sender: TObject);
     procedure edtParamsChange(Sender: TObject);
     procedure edIconFileNameChange(Sender: TObject);
+    procedure fneCommandAcceptFileName(Sender: TObject; var Value: String);
     procedure FrameResize(Sender: TObject);
     function InsertAddSingleExtensionToLists(sExt: string; iInsertPosition: integer): boolean;
     procedure InsertAddExtensionToLists(sParamExt: string; iPositionToInsert: integer);
@@ -179,6 +181,8 @@ type
     class function GetTitle: string; override;
     function IsSignatureComputedFromAllWindowComponents: boolean; override;
     function ExtraOptionsSignature(CurrentSignature: dword): dword; override;
+    procedure ScanFileAssocForFilenameAndPath;
+    function GetFileAssocFilenameToSave(AFileAssocPathModifierElement: tFileAssocPathModifierElement; sParamFilename: string): string;
   end;
 
 implementation
@@ -190,8 +194,9 @@ uses
   LCLProc, Math, LCLType, LazUTF8,
 
   //DC
-  DCStrUtils, uOSForms, fMain, uFile, uGlobs, uPixMapManager, uLng, uDCUtils,
-  DCOSUtils, uShowMsg, uSpecialDir;
+  uVariableMenuSupport, DCStrUtils, uOSForms, fMain, uFile, uPixMapManager,
+  uLng, uDCUtils, DCOSUtils, uShowMsg, uSpecialDir;
+
 const
   ACTUAL_ADD_ACTION = 1;
   SET_ACTION_WORD = 2;
@@ -301,8 +306,6 @@ begin
 
   // Populate helper menu
   gSpecialDirList.PopulateMenuWithSpecialDir(pmPathHelper, mp_PATHHELPER, nil);
-  gSupportForVariableHelperMenu.PopulateMenuWithVariableHelper(pmVariableParamsHelper, edtParams);
-  gSupportForVariableHelperMenu.PopulateMenuWithVariableHelper(pmVariableStartPathHelper, deStartPath);
 
   inherited Load;
 end;
@@ -772,7 +775,7 @@ begin
     begin
       if OpenDialog.Execute then
       begin
-        sCommandFilename := OpenDialog.Filename;
+        sCommandFilename := GetFileAssocFilenameToSave(fameCommand, OpenDialog.Filename);
 
         case (iDispatcher and $03) of
           $00: sActionWords := 'Open ' + rsMsgWithActionWith + ' ' + ExtractFilename(OpenDialog.Filename);
@@ -820,7 +823,7 @@ begin
 
       // Update icon if possible, if necessary
       case (iDispatcher and $10) of
-        $10: if Exts.Items[lbFileTypes.ItemIndex].Icon = '' then edIconFileName.Text := OpenDialog.FileName; //No quote required here! So "sCommandFilename" is not used.
+        $10: if Exts.Items[lbFileTypes.ItemIndex].Icon = '' then edIconFileName.Text := GetFileAssocFilenameToSave(fameIcon, OpenDialog.FileName); //No quote required here! So "sCommandFilename" is not used.
       end;
 
       UpdateEnabledButtons;
@@ -898,7 +901,7 @@ var
 begin
   sFileName := mbExpandFileName(edIconFileName.Text);
   if ShowOpenIconDialog(Self, sFileName) then
-    edIconFileName.Text := sFileName;
+    edIconFileName.Text := GetFileAssocFilenameToSave(fameIcon, sFileName);
 end;
 
 { TfrmOptionsFileAssoc.InsertAddSingleExtensionToLists }
@@ -964,7 +967,7 @@ end;
 { TfrmOptionsFileAssoc.btnParametersHelperClick }
 procedure TfrmOptionsFileAssoc.btnParametersHelperClick(Sender: TObject);
 begin
-  pmVariableParamsHelper.PopUp;
+  BringPercentVariablePopupMenu(edtParams);
 end;
 
 { TfrmOptionsFileAssoc.btnRelativeCommandClick }
@@ -994,7 +997,12 @@ end;
 { TfrmOptionsFileAssoc.btnStartPathVarHelperClick }
 procedure TfrmOptionsFileAssoc.btnStartPathVarHelperClick(Sender: TObject);
 begin
-  pmVariableStartPathHelper.PopUp;
+  BringPercentVariablePopupMenu(deStartPath);
+end;
+
+procedure TfrmOptionsFileAssoc.deStartPathAcceptDirectory(Sender: TObject; var Value: String);
+begin
+  Value := GetFileAssocFilenameToSave(fameStartingPath, Value);
 end;
 
 { TfrmOptionsFileAssoc.edIconFileNameChange }
@@ -1002,6 +1010,11 @@ procedure TfrmOptionsFileAssoc.edIconFileNameChange(Sender: TObject);
 begin
   if not FUpdatingControls then
     SetIconFileName(edIconFileName.Text);
+end;
+
+procedure TfrmOptionsFileAssoc.fneCommandAcceptFileName(Sender: TObject; var Value: String);
+begin
+  Value := GetFileAssocFilenameToSave(fameCommand, Value);
 end;
 
 { TfrmOptionsFileAssoc.FrameResize }
@@ -1420,6 +1433,52 @@ procedure TfrmOptionsFileAssoc.actSelectActionDescriptionExecute(Sender: TObject
 begin
   if edbActionName.CanFocus then
     edbActionName.SetFocus;
+end;
+
+{ TfrmOptionsFileAssoc.GetFileAssocFilenameToSave }
+function TfrmOptionsFileAssoc.GetFileAssocFilenameToSave(AFileAssocPathModifierElement:tFileAssocPathModifierElement; sParamFilename: string): string;
+var
+  sMaybeBasePath, SubWorkingPath, MaybeSubstitionPossible: string;
+begin
+  sParamFilename := mbExpandFileName(sParamFilename);
+  Result := sParamFilename;
+
+  if AFileAssocPathModifierElement in gFileAssocPathModifierElements then
+  begin
+    if gFileAssocFilenameStyle = pfsRelativeToDC then sMaybeBasePath := EnvVarCommanderPath else sMaybeBasePath := gFileAssocPathToBeRelativeTo;
+    case gFileAssocFilenameStyle of
+      pfsAbsolutePath: ;
+      pfsRelativeToDC, pfsRelativeToFollowingPath:
+      begin
+        SubWorkingPath := IncludeTrailingPathDelimiter(mbExpandFileName(sMaybeBasePath));
+        MaybeSubstitionPossible := ExtractRelativePath(IncludeTrailingPathDelimiter(SubWorkingPath), sParamFilename);
+        if MaybeSubstitionPossible <> sParamFilename then
+          Result := IncludeTrailingPathDelimiter(sMaybeBasePath) + MaybeSubstitionPossible;
+      end;
+    end;
+  end;
+end;
+
+{ TfrmOptionsFileAssoc.ScanFileAssocForFilenameAndPath }
+procedure TfrmOptionsFileAssoc.ScanFileAssocForFilenameAndPath;
+var
+  ActionList: TExtActionList;
+  iFileType, iAction: Integer;
+begin
+  for iFileType := 0 to Pred(Exts.Count) do
+  begin
+    Exts.FileType[iFileType].Icon := GetFileAssocFilenameToSave(fameIcon, Exts.FileType[iFileType].Icon);
+    ActionList := Exts.FileType[iFileType].ActionList;
+    for iAction := 0 to Pred(ActionList.Count) do
+    begin
+      ActionList.ExtActionCommand[iAction].CommandName := GetFileAssocFilenameToSave(fameCommand, ActionList.ExtActionCommand[iAction].CommandName);
+      ActionList.ExtActionCommand[iAction].StartPath := GetFileAssocFilenameToSave(fameStartingPath, ActionList.ExtActionCommand[iAction].StartPath);
+    end;
+  end;
+
+  //Kind of refresh of what might be displayed.
+  if lbFileTypes.ItemIndex <> -1 then
+    lbFileTypesSelectionChange(lbFileTypes, True);
 end;
 
 end.
