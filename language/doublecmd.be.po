@@ -1558,11 +1558,11 @@ msgid "Re&place by"
 msgstr "За&мяніць на"
 
 #: tfrmfinddlg.cbselectedfiles.caption
-msgid "Selected directories and &files"
+msgid "Selected directories and files"
 msgstr "Абраныя каталогі і &файлы"
 
 #: tfrmfinddlg.cbtextregexp.caption
-msgid "Regular &expression"
+msgid "Reg&ular expression"
 msgstr "Рэгулярны &выраз"
 
 #: tfrmfinddlg.cbtimefrom.caption
@@ -1579,7 +1579,7 @@ msgstr "&Выкарыстоўваць убудову пошуку:"
 
 #: tfrmfinddlg.chkhex.caption
 msgctxt "tfrmfinddlg.chkhex.caption"
-msgid "Hexadecimal"
+msgid "Hexadeci&mal"
 msgstr ""
 
 #: tfrmfinddlg.cmbexcludedirectories.hint
@@ -2205,9 +2205,17 @@ msgstr ""
 msgid "Switch between current file list and tree view (if enabled)"
 msgstr ""
 
+#: tfrmmain.actgotofirstentry.caption
+msgid "Place cursor on first folder or file"
+msgstr ""
+
 #: tfrmmain.actgotofirstfile.caption
 msgid "Place cursor on first file in list"
 msgstr "Размясціць курсор на першым файле са спіса"
+
+#: tfrmmain.actgotolastentry.caption
+msgid "Place cursor on last folder or file"
+msgstr ""
 
 #: tfrmmain.actgotolastfile.caption
 msgid "Place cursor on last file in list"
@@ -3254,7 +3262,7 @@ msgstr "&Выдаліць"
 
 #: tfrmmultirename.btnedit.caption
 msgctxt "TFRMMULTIRENAME.BTNEDIT.CAPTION"
-msgid "&Edit"
+msgid "Edit&or"
 msgstr "&Рэдагаваць"
 
 #: tfrmmultirename.btnextmenu.caption
@@ -4972,6 +4980,10 @@ msgstr ""
 #: tfrmoptionseditor.gbinternaleditor.caption
 msgid "Internal editor options"
 msgstr "Параметры ўнутранага рэдактара"
+
+#: tfrmoptionseditor.lblrightedge.caption
+msgid "Right margin:"
+msgstr ""
 
 #: tfrmoptionseditor.lbltabwidth.caption
 msgid "Tab width:"
@@ -7203,7 +7215,8 @@ msgid "&Bar size:"
 msgstr "Памер &панэлі:"
 
 #: tfrmoptionstoolbar.lblexternalcommand.caption
-msgid "Comman&d:"
+msgctxt "tfrmoptionstoolbar.lblexternalcommand.caption"
+msgid "Co&mmand:"
 msgstr "Зага&д:"
 
 #: tfrmoptionstoolbar.lblexternalparameters.caption
@@ -7229,6 +7242,7 @@ msgid "Icon si&ze:"
 msgstr "&Памер значка:"
 
 #: tfrmoptionstoolbar.lblinternalcommand.caption
+msgctxt "tfrmoptionstoolbar.lblinternalcommand.caption"
 msgid "Co&mmand:"
 msgstr "За&гад:"
 
@@ -8796,6 +8810,10 @@ msgstr "Пра праграму для прагляду..."
 #: tfrmviewer.actabout.hint
 msgid "Displays the About message"
 msgstr "Паказвае паведамленне пра праграму"
+
+#: tfrmviewer.actautoreload.caption
+msgid "Auto Reload"
+msgstr ""
 
 #: tfrmviewer.actchangeencoding.caption
 msgid "Change encoding"
@@ -11402,6 +11420,10 @@ msgstr "Аўтаматычна змяняць назву на \"name (1).ext\", 
 #: ulng.rsmulrenfilenamestylelist
 msgid "No change;UPPERCASE;lowercase;First char uppercase;First Char Of Every Word Uppercase;"
 msgstr "Без змен;ВЕРХНІ РЭГІСТР;ніжні рэгістр;З вялікай;Кожнае Слова З Вялікай;"
+
+#: ulng.rsmulrenlastpreset
+msgid "[The last used]"
+msgstr ""
 
 #: ulng.rsmulrenwarningduplicate
 msgid "Warning, duplicate names!"

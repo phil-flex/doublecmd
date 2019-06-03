@@ -1701,11 +1701,11 @@ msgid "Re&place by"
 msgstr "取代文字 (&P)"
 
 #: tfrmfinddlg.cbselectedfiles.caption
-msgid "Selected directories and &files"
+msgid "Selected directories and files"
 msgstr "選取的資料夾及檔案 (&F)"
 
 #: tfrmfinddlg.cbtextregexp.caption
-msgid "Regular &expression"
+msgid "Reg&ular expression"
 msgstr ""
 
 #: tfrmfinddlg.cbtimefrom.caption
@@ -1726,7 +1726,7 @@ msgstr "使用搜尋插件 (&U):"
 
 #: tfrmfinddlg.chkhex.caption
 msgctxt "tfrmfinddlg.chkhex.caption"
-msgid "Hexadecimal"
+msgid "Hexadeci&mal"
 msgstr ""
 
 #: tfrmfinddlg.cmbexcludedirectories.hint
@@ -2401,9 +2401,17 @@ msgstr ""
 msgid "Switch between current file list and tree view (if enabled)"
 msgstr ""
 
+#: tfrmmain.actgotofirstentry.caption
+msgid "Place cursor on first folder or file"
+msgstr ""
+
 #: tfrmmain.actgotofirstfile.caption
 msgid "Place cursor on first file in list"
 msgstr "移到清單中第一個檔案"
+
+#: tfrmmain.actgotolastentry.caption
+msgid "Place cursor on last folder or file"
+msgstr ""
 
 #: tfrmmain.actgotolastfile.caption
 msgid "Place cursor on last file in list"
@@ -3506,10 +3514,8 @@ msgid "&Delete"
 msgstr "刪除 (&D)"
 
 #: tfrmmultirename.btnedit.caption
-#, fuzzy
-#| msgid "Edit"
 msgctxt "tfrmmultirename.btnedit.caption"
-msgid "&Edit"
+msgid "Edit&or"
 msgstr "編輯 (&E)"
 
 #: tfrmmultirename.btnextmenu.caption
@@ -5386,6 +5392,10 @@ msgstr ""
 
 #: tfrmoptionseditor.gbinternaleditor.caption
 msgid "Internal editor options"
+msgstr ""
+
+#: tfrmoptionseditor.lblrightedge.caption
+msgid "Right margin:"
 msgstr ""
 
 #: tfrmoptionseditor.lbltabwidth.caption
@@ -7967,7 +7977,7 @@ msgstr "工具列大小 (&B):"
 
 #: tfrmoptionstoolbar.lblexternalcommand.caption
 msgctxt "tfrmoptionstoolbar.lblexternalcommand.caption"
-msgid "Comman&d:"
+msgid "Co&mmand:"
 msgstr "指令 (&D):"
 
 #: tfrmoptionstoolbar.lblexternalparameters.caption
@@ -9700,6 +9710,10 @@ msgstr "關於檢視器..."
 #: tfrmviewer.actabout.hint
 msgid "Displays the About message"
 msgstr "顯示關於訊息"
+
+#: tfrmviewer.actautoreload.caption
+msgid "Auto Reload"
+msgstr ""
 
 #: tfrmviewer.actchangeencoding.caption
 msgid "Change encoding"
@@ -12355,6 +12369,10 @@ msgstr ""
 #| msgid "No change;UPPERCASE;lowercase;First Char Big;"
 msgid "No change;UPPERCASE;lowercase;First char uppercase;First Char Of Every Word Uppercase;"
 msgstr "不變更;大寫;小寫;首字大寫;每個單字首字大寫;"
+
+#: ulng.rsmulrenlastpreset
+msgid "[The last used]"
+msgstr ""
 
 #: ulng.rsmulrenwarningduplicate
 msgid "Warning, duplicate names!"

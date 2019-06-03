@@ -611,6 +611,8 @@ type
       State: TDragState; var Accept: Boolean);
     function MainToolBarLoadButtonGlyph(ToolItem: TKASToolItem;
       iIconSize: Integer; clBackColor: TColor): TBitmap;
+    function MainToolBarLoadButtonOverlay(ToolItem: TKASToolItem;
+      iIconSize: Integer; clBackColor: TColor): TBitmap;
     procedure MainToolBarMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure frmMainClose(Sender: TObject; var CloseAction: TCloseAction);
@@ -626,6 +628,9 @@ type
     procedure nbPageChanged(Sender: TObject);
     procedure nbPageMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
+    procedure NotebookDragDrop(Sender, Source: TObject; X, Y: Integer);
+    procedure NotebookDragOver(Sender, Source: TObject; X, Y: Integer;
+      State: TDragState; var Accept: Boolean);
     procedure NotebookCloseTabClicked(Sender: TObject);
     procedure pmDropMenuClose(Sender: TObject);
     procedure FormKeyPress(Sender: TObject; var Key: Char);
@@ -955,6 +960,8 @@ procedure TfrmMain.FormCreate(Sender: TObject);
     Result.OnMouseUp := @nbPageMouseUp;
     Result.OnChange := @nbPageChanged;
     Result.OnDblClick := @pnlLeftRightDblClick;
+    Result.OnDragOver:= @NotebookDragOver;
+    Result.OnDragDrop:= @NotebookDragDrop;
   end;
   function GenerateTitle():String;
   var 
@@ -1038,9 +1045,6 @@ begin
   FDrivesListPopup.OnDriveSelected := @DriveListDriveSelected;
   FDrivesListPopup.OnClose := @DriveListClose;
 
-  TDriveWatcher.Initialize(Handle);
-  TDriveWatcher.AddObserver(@OnDriveWatcherEvent);
-
   //NOTE: we don't check gOnlyOneAppInstance anymore, because cmdline option "--client" was implemented,
   //      so, we should always listen for the messages
   if Assigned(UniqueInstance) then
@@ -1074,13 +1078,15 @@ begin
   HMMainForm.RegisterActionList(actionlst);
   { *HotKeys* }
 
-  // frost_asm begin
-    lastWindowState:=WindowState;
-  // frost_asm end
+  lastWindowState:= WindowState;
 
   UpdateActionIcons;
 
-  UpdateWindowView;
+  LoadTabs;
+
+  // Must be after LoadTabs
+  TDriveWatcher.Initialize(Handle);
+  TDriveWatcher.AddObserver(@OnDriveWatcherEvent);
 
 {$IF DEFINED(LCLQT) or DEFINED(LCLQT5)}
   // Fixes bug - [0000033] "DC cancels shutdown in KDE"
@@ -1089,7 +1095,7 @@ begin
   QObject_hook_hook_events(QEventHook, @QObjectEventFilter);
 {$ENDIF}
 
-  LoadTabs;
+  UpdateWindowView;
   gFavoriteTabsList.AssociatedMainMenuItem := mnuFavoriteTabs;
   gFavoriteTabsList.RefreshAssociatedMainMenu;
 
@@ -2109,6 +2115,15 @@ begin
     Result := nil;
 end;
 
+function TfrmMain.MainToolBarLoadButtonOverlay(ToolItem: TKASToolItem;
+  iIconSize: Integer; clBackColor: TColor): TBitmap;
+begin
+  if ToolItem is TKASMenuItem then
+    Result := PixMapManager.LoadBitmapEnhanced('emblem-symbolic-link', iIconSize, True, clBackColor, nil)
+  else
+    Result := nil;
+end;
+
 procedure TfrmMain.tbDeleteClick(Sender: TObject);
 var
   Button: TKASToolButton;
@@ -2416,6 +2431,58 @@ begin
         end;
       end;
 
+  end;
+end;
+
+procedure TfrmMain.NotebookDragDrop(Sender, Source: TObject; X, Y: Integer);
+var
+  ATabIndex: Integer;
+  TargetPath: String;
+  SourceFiles: TFiles;
+  TargetFileSource: IFileSource;
+  ANotebook: TFileViewNotebook absolute Sender;
+begin
+  if (Source is TWinControl) and (TWinControl(Source).Parent is TFileView) then
+  begin
+    ATabIndex := ANotebook.IndexOfPageAt(Classes.Point(X, Y));
+    if (ATabIndex > -1) then
+    begin
+      SourceFiles := ActiveFrame.CloneSelectedOrActiveFiles;
+      try
+        begin
+          TargetPath := ANotebook.View[ATabIndex].CurrentPath;
+          TargetFileSource := ANotebook.View[ATabIndex].FileSource;
+          case GetDropEffectByKeyAndMouse(GetKeyShiftState, mbLeft) of
+            DropCopyEffect:
+              Self.CopyFiles(ActiveFrame.FileSource, TargetFileSource, SourceFiles, TargetPath, gShowDialogOnDragDrop);
+            DropMoveEffect:
+              Self.MoveFiles(ActiveFrame.FileSource, TargetFileSource, SourceFiles, TargetPath, gShowDialogOnDragDrop);
+          end;
+        end;
+      finally
+        SourceFiles.Free;
+      end;
+    end;
+  end;
+end;
+
+procedure TfrmMain.NotebookDragOver(Sender, Source: TObject; X, Y: Integer;
+  State: TDragState; var Accept: Boolean);
+var
+  ATabIndex: Integer;
+  APage: TFileViewPage;
+  ANotebook: TFileViewNotebook absolute Sender;
+begin
+  Accept := False;
+  if (Source is TWinControl) and (TWinControl(Source).Parent is TFileView) then
+  begin
+    ATabIndex := ANotebook.IndexOfPageAt(Classes.Point(X, Y));
+    if (ATabIndex > -1) then
+    begin
+      APage:= ANotebook.Page[ATabIndex];
+      Accept := (APage.FileView <> TWinControl(Source).Parent) and
+                ((APage.LockState = tlsNormal) or (APage.LockPath = APage.FileView.CurrentPath));
+    end;
   end;
 end;
 
@@ -3849,8 +3916,24 @@ end;
 
 procedure TfrmMain.pnlLeftRightDblClick(Sender: TObject);
 var
+  APanel: TPanel;
+  APoint: TPoint;
   FileViewNotebook: TFileViewNotebook;
 begin
+  if Sender is TPanel then
+  begin
+    APanel := Sender as TPanel;
+    if APanel = pnlLeft then
+      begin
+        APoint := FrameLeft.ClientToScreen(Classes.Point(0, FrameLeft.Top));
+        if Mouse.CursorPos.Y < APoint.Y then Commands.DoNewTab(nbLeft);
+      end
+    else if APanel = pnlRight then
+      begin
+        APoint := FrameRight.ClientToScreen(Classes.Point(0, FrameRight.Top));
+        if Mouse.CursorPos.Y < APoint.Y then Commands.DoNewTab(nbRight);
+      end;
+  end;
   if Sender is TFileViewNotebook then
   begin
     FileViewNotebook:= Sender as TFileViewNotebook;
@@ -4249,7 +4332,7 @@ var
 begin
   (*virtual drive button*)
   ToolItem := TKASNormalItem.Create;
-  ToolItem.Hint := actOpenVirtualFileSystemList.Caption;
+  ToolItem.Hint := StripHotkey(actOpenVirtualFileSystemList.Caption);
   ToolItem.Text := btnCaption;
   Button := dskPanel.AddButton(ToolItem);
   bmpBitmap:= PixMapManager.GetVirtualDriveIcon(dskPanel.GlyphSize, clBtnFace);

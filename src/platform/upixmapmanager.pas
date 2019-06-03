@@ -114,6 +114,7 @@ type
     FiSortDescID : PtrInt;
     {$IF DEFINED(MSWINDOWS)}
     FSysImgList : THandle;
+    FiSysDirIconID : PtrInt;
     {$ELSEIF DEFINED(DARWIN)}
     FUseSystemTheme: Boolean;
     {$ELSEIF DEFINED(UNIX)}
@@ -464,7 +465,7 @@ begin
     gdk_pixmap_unref(pbPicture);
 
     // if unsupported BitsPerPixel then exit
-    if ABitmap.RawImage.Description.BitsPerPixel > 32 then
+    if (ABitmap = nil) or (ABitmap.RawImage.Description.BitsPerPixel > 32) then
       raise EInvalidGraphic.Create('Unsupported bits per pixel');
 
     Result:= True;
@@ -1424,6 +1425,9 @@ begin
 
   // add some standard icons
   FiDefaultIconID:=CheckAddThemePixmap('unknown');
+  {$IF DEFINED(MSWINDOWS)}
+  FiSysDirIconID := GetSystemFolderIcon;
+  {$ENDIF}
   {$IF DEFINED(MSWINDOWS) or DEFINED(DARWIN)}
   FiDirIconID := -1;
   if (gShowIcons > sim_standart) and (not (cimFolder in gCustomIcons)) then
@@ -1957,13 +1961,18 @@ begin
     begin
       Result := FileInfo.iIcon + SystemIconIndexStart;
 
-      if (not IsDirectory) and
-         (Ext <> 'exe') and
-         (Ext <> 'ico') and
-         (Ext <> 'ani') and
-         (Ext <> 'cur') and
-         (Ext <> 'lnk') and
-         (Ext <> 'url') then
+      if IsDirectory then
+      begin
+        // In the fact the folder does not have a special icon
+        if (cimFolder in gCustomIcons) and (Result = FiSysDirIconID) then
+          Result := FiDirIconID;
+      end
+      else if (Ext <> 'exe') and
+        (Ext <> 'ico') and
+        (Ext <> 'ani') and
+        (Ext <> 'cur') and
+        (Ext <> 'lnk') and
+        (Ext <> 'url') then
       begin
         FPixmapsLock.Acquire;
         try
@@ -2047,8 +2056,8 @@ begin
     begin
       SFI.hIcon := 0;
       Result := Graphics.TBitMap.Create;
-      iIconSmall:= GetSystemMetrics(SM_CXSMICON);
       iIconLarge:= GetSystemMetrics(SM_CXICON);
+      iIconSmall:= GetSystemMetrics(SM_CXSMICON);
 
       if (IconSize <= iIconSmall) then
         uFlags := SHGFI_SMALLICON  // Use small icon
@@ -2057,29 +2066,20 @@ begin
       end;
 
       if (SHGetFileInfoW(PWideChar(UTF8Decode(Drive^.Path)), 0, SFI,
-                         SizeOf(SFI), uFlags or SHGFI_ICON) <> 0) and
-         (SFI.hIcon <> 0) then
-        begin
-          if (IconSize = iIconSmall) or (IconSize = iIconLarge) then // standart icon size
-            try
-              Icon := CreateIconFromHandle(SFI.hIcon);
-              Result.Assign(Icon);
-              Result.Masked := True; // Need to explicitly set Masked=True, Lazarus issue #0019747
-            finally
-              FreeThenNil(Icon);
-              DestroyIcon(SFI.hIcon);
-            end
-          else // non standart icon size
-            try
-              Icon := CreateIconFromHandle(SFI.hIcon);
-              Result.Assign(Icon);
-              Result.Masked := True; // Need to explicitly set Masked=True, Lazarus issue #0019747
-              Result := StretchBitmap(Result, IconSize, clBackColor, True);
-            finally
-              FreeAndNil(Icon);
-              DestroyIcon(SFI.hIcon);
-            end
+                         SizeOf(SFI), uFlags or SHGFI_ICON) <> 0) then
+      begin
+        if (SFI.hIcon <> 0) then
+        try
+          Icon := CreateIconFromHandle(SFI.hIcon);
+          Result.Assign(Icon);
+          Result.Masked := True; // Need to explicitly set Masked=True, Lazarus issue #0019747
+          if (IconSize <> iIconSmall) and (IconSize <> iIconLarge) then // non standart icon size
+            Result := StretchBitmap(Result, IconSize, clBackColor, True);
+        finally
+          FreeAndNil(Icon);
+          DestroyIcon(SFI.hIcon);
         end;
+      end;
     end // not gCustomDriveIcons
   else
 {$ENDIF}
@@ -2135,9 +2135,9 @@ end;
 function TPixMapManager.GetDefaultDriveIcon(IconSize : Integer; clBackColor : TColor) : Graphics.TBitmap;
 var
   Drive: TDrive = (DisplayName: ''; Path: ''; DriveLabel: ''; DeviceId: '';
-                   DriveType: dtHardDisk; FileSystem: ''; IsMediaAvailable: True;
-                   IsMediaEjectable: False; IsMediaRemovable: False;
-                   IsMounted: True; AutoMount: True);
+                   DriveType: dtHardDisk; DriveSize: 0; FileSystem: '';
+                   IsMediaAvailable: True; IsMediaEjectable: False;
+                   IsMediaRemovable: False; IsMounted: True; AutoMount: True);
 begin
   Result := GetBuiltInDriveIcon(@Drive, IconSize, clBackColor);
 end;

@@ -1596,11 +1596,11 @@ msgid "Re&place by"
 msgstr "Înlocuiește (&p) cu"
 
 #: tfrmfinddlg.cbselectedfiles.caption
-msgid "Selected directories and &files"
+msgid "Selected directories and files"
 msgstr "Directoarele și &fișierele selectate"
 
 #: tfrmfinddlg.cbtextregexp.caption
-msgid "Regular &expression"
+msgid "Reg&ular expression"
 msgstr "&Expresie regulată"
 
 #: tfrmfinddlg.cbtimefrom.caption
@@ -1617,7 +1617,7 @@ msgstr "&Utilizează pluginul căutare:"
 
 #: tfrmfinddlg.chkhex.caption
 msgctxt "tfrmfinddlg.chkhex.caption"
-msgid "Hexadecimal"
+msgid "Hexadeci&mal"
 msgstr ""
 
 #: tfrmfinddlg.cmbexcludedirectories.hint
@@ -2257,9 +2257,17 @@ msgstr ""
 msgid "Switch between current file list and tree view (if enabled)"
 msgstr ""
 
+#: tfrmmain.actgotofirstentry.caption
+msgid "Place cursor on first folder or file"
+msgstr ""
+
 #: tfrmmain.actgotofirstfile.caption
 msgid "Place cursor on first file in list"
 msgstr "Pune cursorul pe primul fișier din listă"
+
+#: tfrmmain.actgotolastentry.caption
+msgid "Place cursor on last folder or file"
+msgstr ""
 
 #: tfrmmain.actgotolastfile.caption
 msgid "Place cursor on last file in list"
@@ -3322,7 +3330,7 @@ msgstr "Șterge (&d)"
 
 #: tfrmmultirename.btnedit.caption
 msgctxt "tfrmmultirename.btnedit.caption"
-msgid "&Edit"
+msgid "Edit&or"
 msgstr "&Editează"
 
 #: tfrmmultirename.btnextmenu.caption
@@ -5074,6 +5082,10 @@ msgstr ""
 
 #: tfrmoptionseditor.gbinternaleditor.caption
 msgid "Internal editor options"
+msgstr ""
+
+#: tfrmoptionseditor.lblrightedge.caption
+msgid "Right margin:"
 msgstr ""
 
 #: tfrmoptionseditor.lbltabwidth.caption
@@ -7388,7 +7400,7 @@ msgstr "Dimensiune &bară:"
 
 #: tfrmoptionstoolbar.lblexternalcommand.caption
 msgctxt "TFRMOPTIONSTOOLBAR.LBLEXTERNALCOMMAND.CAPTION"
-msgid "Comman&d:"
+msgid "Co&mmand:"
 msgstr "Coman&dă:"
 
 #: tfrmoptionstoolbar.lblexternalparameters.caption
@@ -9002,6 +9014,10 @@ msgstr "Despre Vizualizator..."
 #: tfrmviewer.actabout.hint
 msgid "Displays the About message"
 msgstr "Afișează mesajul despre"
+
+#: tfrmviewer.actautoreload.caption
+msgid "Auto Reload"
+msgstr ""
 
 #: tfrmviewer.actchangeencoding.caption
 msgid "Change encoding"
@@ -11603,6 +11619,10 @@ msgstr ""
 #: ulng.rsmulrenfilenamestylelist
 msgid "No change;UPPERCASE;lowercase;First char uppercase;First Char Of Every Word Uppercase;"
 msgstr "Nicio schimbare: MAJUSCULE;minuscule;Majuscule primul char; Primul char din fiecare cuvânt Majusculă"
+
+#: ulng.rsmulrenlastpreset
+msgid "[The last used]"
+msgstr ""
 
 #: ulng.rsmulrenwarningduplicate
 msgid "Warning, duplicate names!"

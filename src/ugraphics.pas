@@ -3,7 +3,7 @@
    -------------------------------------------------------------------------
    Graphic functions
 
-   Copyright (C) 2013-2017 Alexander Koblov (alexx2000@mail.ru)
+   Copyright (C) 2013-2019 Alexander Koblov (alexx2000@mail.ru)
 
    This library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public
@@ -27,7 +27,7 @@ unit uGraphics;
 interface
 
 uses
-  Classes, SysUtils, Graphics, Controls;
+  Classes, SysUtils, Graphics, Controls, IntfGraphics;
 
 type
 
@@ -39,12 +39,14 @@ type
   end;
 
 procedure BitmapAssign(Bitmap: TBitmap; Image: TRasterImage);
+procedure BitmapAssign(Bitmap: TBitmap; Image: TLazIntfImage);
 procedure BitmapAlpha(var ABitmap: TBitmap; APercent: Single);
+procedure BitmapCenter(var Bitmap: TBitmap; Width, Height: Integer);
 
 implementation
 
 uses
-  GraphType, FPimage, IntfGraphics, uPixMapManager;
+  GraphType, FPimage, uPixMapManager;
 
 type
   TRawAccess = class(TRasterImage) end;
@@ -60,6 +62,15 @@ begin
   RawImage^.ReleaseData;
 end;
 
+procedure BitmapAssign(Bitmap: TBitmap; Image: TLazIntfImage);
+var
+  ARawImage: TRawImage;
+begin
+  Image.GetRawImage(ARawImage, True);
+  // Simply change raw image owner without data copy
+  Bitmap.LoadFromRawImage(ARawImage, True);
+end;
+
 procedure BitmapAlpha(var ABitmap: TBitmap; APercent: Single);
 var
   X, Y: Integer;
@@ -68,7 +79,7 @@ var
 begin
   if ABitmap.RawImage.Description.AlphaPrec <> 0 then
   begin
-    AImage:= ABitmap.CreateIntfImage();
+    AImage:= TLazIntfImage.Create(ABitmap.RawImage, False);
     for X:= 0 to AImage.Width - 1 do
     begin
       for Y:= 0 to AImage.Height - 1 do
@@ -78,8 +89,33 @@ begin
         AImage.Colors[X, Y]:= Color;
       end;
     end;
-    ABitmap.LoadFromIntfImage(AImage);
     AImage.Free;
+  end;
+end;
+
+procedure BitmapCenter(var Bitmap: TBitmap; Width, Height: Integer);
+var
+  X, Y: Integer;
+  Source, Target: TLazIntfImage;
+begin
+  if (Bitmap.Width <> Width) or (Bitmap.Height <> Height) then
+  begin
+    Source:= TLazIntfImage.Create(Bitmap.RawImage, False);
+    try
+      Target:= TLazIntfImage.Create(Width, Height, [riqfRGB, riqfAlpha]);
+      try
+        Target.CreateData;
+        Target.FillPixels(colTransparent);
+        X:= (Width - Bitmap.Width) div 2;
+        Y:= (Height - Bitmap.Height) div 2;
+        Target.CopyPixels(Source, X, Y);
+        BitmapAssign(Bitmap, Target);
+      finally
+        Target.Free;
+      end;
+    finally
+      Source.Free;
+    end;
   end;
 end;
 

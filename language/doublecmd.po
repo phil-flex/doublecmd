@@ -1556,11 +1556,11 @@ msgid "Re&place by"
 msgstr ""
 
 #: tfrmfinddlg.cbselectedfiles.caption
-msgid "Selected directories and &files"
+msgid "Selected directories and files"
 msgstr ""
 
 #: tfrmfinddlg.cbtextregexp.caption
-msgid "Regular &expression"
+msgid "Reg&ular expression"
 msgstr ""
 
 #: tfrmfinddlg.cbtimefrom.caption
@@ -1577,7 +1577,7 @@ msgstr ""
 
 #: tfrmfinddlg.chkhex.caption
 msgctxt "tfrmfinddlg.chkhex.caption"
-msgid "Hexadecimal"
+msgid "Hexadeci&mal"
 msgstr ""
 
 #: tfrmfinddlg.cmbexcludedirectories.hint
@@ -2197,8 +2197,16 @@ msgstr ""
 msgid "Switch between current file list and tree view (if enabled)"
 msgstr ""
 
+#: tfrmmain.actgotofirstentry.caption
+msgid "Place cursor on first folder or file"
+msgstr ""
+
 #: tfrmmain.actgotofirstfile.caption
 msgid "Place cursor on first file in list"
+msgstr ""
+
+#: tfrmmain.actgotolastentry.caption
+msgid "Place cursor on last folder or file"
 msgstr ""
 
 #: tfrmmain.actgotolastfile.caption
@@ -3246,7 +3254,7 @@ msgstr ""
 
 #: tfrmmultirename.btnedit.caption
 msgctxt "TFRMMULTIRENAME.BTNEDIT.CAPTION"
-msgid "&Edit"
+msgid "Edit&or"
 msgstr ""
 
 #: tfrmmultirename.btnextmenu.caption
@@ -4961,6 +4969,10 @@ msgstr ""
 
 #: tfrmoptionseditor.gbinternaleditor.caption
 msgid "Internal editor options"
+msgstr ""
+
+#: tfrmoptionseditor.lblrightedge.caption
+msgid "Right margin:"
 msgstr ""
 
 #: tfrmoptionseditor.lbltabwidth.caption
@@ -7149,7 +7161,8 @@ msgid "&Bar size:"
 msgstr ""
 
 #: tfrmoptionstoolbar.lblexternalcommand.caption
-msgid "Comman&d:"
+msgctxt "tfrmoptionstoolbar.lblexternalcommand.caption"
+msgid "Co&mmand:"
 msgstr ""
 
 #: tfrmoptionstoolbar.lblexternalparameters.caption
@@ -7175,6 +7188,7 @@ msgid "Icon si&ze:"
 msgstr ""
 
 #: tfrmoptionstoolbar.lblinternalcommand.caption
+msgctxt "tfrmoptionstoolbar.lblinternalcommand.caption"
 msgid "Co&mmand:"
 msgstr ""
 
@@ -8739,6 +8753,10 @@ msgstr ""
 
 #: tfrmviewer.actabout.hint
 msgid "Displays the About message"
+msgstr ""
+
+#: tfrmviewer.actautoreload.caption
+msgid "Auto Reload"
 msgstr ""
 
 #: tfrmviewer.actchangeencoding.caption
@@ -11288,6 +11306,10 @@ msgstr ""
 
 #: ulng.rsmulrenfilenamestylelist
 msgid "No change;UPPERCASE;lowercase;First char uppercase;First Char Of Every Word Uppercase;"
+msgstr ""
+
+#: ulng.rsmulrenlastpreset
+msgid "[The last used]"
 msgstr ""
 
 #: ulng.rsmulrenwarningduplicate

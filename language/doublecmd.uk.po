@@ -1588,11 +1588,11 @@ msgid "Re&place by"
 msgstr "За&мінити на"
 
 #: tfrmfinddlg.cbselectedfiles.caption
-msgid "Selected directories and &files"
+msgid "Selected directories and files"
 msgstr "Вибрані &файли і каталоги"
 
 #: tfrmfinddlg.cbtextregexp.caption
-msgid "Regular &expression"
+msgid "Reg&ular expression"
 msgstr "Р&егулярний вираз"
 
 #: tfrmfinddlg.cbtimefrom.caption
@@ -1609,7 +1609,7 @@ msgstr "Використовувати пошуковий п&лагін"
 
 #: tfrmfinddlg.chkhex.caption
 msgctxt "tfrmfinddlg.chkhex.caption"
-msgid "Hexadecimal"
+msgid "Hexadeci&mal"
 msgstr "Шістнадцяткове"
 
 #: tfrmfinddlg.cmbexcludedirectories.hint
@@ -2251,9 +2251,17 @@ msgstr "Перейти в дерево каталогів"
 msgid "Switch between current file list and tree view (if enabled)"
 msgstr "Переключитися між списком файлів і деревом (якщо включено)"
 
+#: tfrmmain.actgotofirstentry.caption
+msgid "Place cursor on first folder or file"
+msgstr ""
+
 #: tfrmmain.actgotofirstfile.caption
 msgid "Place cursor on first file in list"
 msgstr "Помістити курсор на перший у списку файл"
+
+#: tfrmmain.actgotolastentry.caption
+msgid "Place cursor on last folder or file"
+msgstr ""
 
 #: tfrmmain.actgotolastfile.caption
 msgid "Place cursor on last file in list"
@@ -3316,7 +3324,7 @@ msgstr "Ви&далити"
 
 #: tfrmmultirename.btnedit.caption
 msgctxt "tfrmmultirename.btnedit.caption"
-msgid "&Edit"
+msgid "Edit&or"
 msgstr "Р&едагувати"
 
 #: tfrmmultirename.btnextmenu.caption
@@ -5080,6 +5088,10 @@ msgstr "Зверніть увагу, опція \"Розумні табуляц�
 #: tfrmoptionseditor.gbinternaleditor.caption
 msgid "Internal editor options"
 msgstr "Опції вбудованого редактора"
+
+#: tfrmoptionseditor.lblrightedge.caption
+msgid "Right margin:"
+msgstr ""
 
 #: tfrmoptionseditor.lbltabwidth.caption
 msgid "Tab width:"
@@ -7412,7 +7424,7 @@ msgstr "Розмір п&анелі:"
 
 #: tfrmoptionstoolbar.lblexternalcommand.caption
 msgctxt "tfrmoptionstoolbar.lblexternalcommand.caption"
-msgid "Comman&d:"
+msgid "Co&mmand:"
 msgstr "Коман&да:"
 
 #: tfrmoptionstoolbar.lblexternalparameters.caption
@@ -9038,6 +9050,10 @@ msgstr "Про переглядач..."
 #: tfrmviewer.actabout.hint
 msgid "Displays the About message"
 msgstr "Відображає інформаційне повідомлення"
+
+#: tfrmviewer.actautoreload.caption
+msgid "Auto Reload"
+msgstr ""
 
 #: tfrmviewer.actchangeencoding.caption
 msgid "Change encoding"
@@ -11675,6 +11691,10 @@ msgstr "Автоматично перейменовувати в \"name (1).ext\
 #: ulng.rsmulrenfilenamestylelist
 msgid "No change;UPPERCASE;lowercase;First char uppercase;First Char Of Every Word Uppercase;"
 msgstr "Без змін;ПРОПИСНІ;рядкові;З Прописної;Кожне Слово З Прописної;"
+
+#: ulng.rsmulrenlastpreset
+msgid "[The last used]"
+msgstr ""
 
 #: ulng.rsmulrenwarningduplicate
 msgid "Warning, duplicate names!"

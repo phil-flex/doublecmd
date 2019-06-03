@@ -1,4 +1,26 @@
 {
+   Double Commander
+   -------------------------------------------------------------------------
+   Multi rename dialog window
+
+   Copyright (C) 2007-2019 Alexander Koblov (alexx2000@mail.ru)
+
+   This program is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation; either version 2 of the License, or
+   (at your option) any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+
+   Original comment:
+   ----------------------------
    Seksi Commander
    ----------------------------
    Licence  : GNU GPL v 2.0
@@ -125,6 +147,7 @@ type
     procedure cbRegExpChange(Sender: TObject);
     procedure cmbNameStyleChange(Sender: TObject);
     procedure edFindChange(Sender: TObject);
+    procedure edReplaceChange(Sender: TObject);
     procedure mnuEditNamesClick(Sender: TObject);
     procedure mnuLoadFromFileClick(Sender: TObject);
     procedure StringGridKeyDown(Sender: TObject; var Key: Word;
@@ -177,12 +200,17 @@ type
     FFiles: TFiles;
     FPresets: TStringHashList; // of PMultiRenamePreset
     FNewNames: TStringHashList;
+    FOldNames: TStringHashList;
     FSourceRow: Integer;
     FMoveRow : Boolean;
     FNames: TStringList;
     FLog: TStringListEx;
     FRegExp: TRegExprW;
+    FFindText: TStringList;
+    FReplaceText: TStringList;
 
+    {Replace bad path chars in string}
+    procedure sReplaceBadChars(var sPath: string);
     {Handles a single formatting string}
     function sHandleFormatString(const sFormatStr: string; ItemNr: Integer): string;
     {Function sReplace call sReplaceXX with parametres}
@@ -239,13 +267,13 @@ implementation
 {$R *.lfm}
 
 uses
-  uDebug, uLng, uGlobs, uFileProcs, DCOSUtils, DCStrUtils,
-  fSelectTextRange, uShowMsg, uFileSourceUtil, uFileFunctions,
-  dmCommonData, fMultiRenameWait, uOSUtils, uFileSourceOperation,
-  uOperationsManager, Dialogs;
+  Math, uDCUtils, uDebug, uLng, uGlobs, uFileProcs, DCOSUtils, DCStrUtils,
+  fSelectTextRange, uShowMsg, uFileFunctions, dmCommonData, fMultiRenameWait,
+  uOSUtils, uFileSourceOperation, uOperationsManager, Dialogs;
 
 const
   sPresetsSection = 'MultiRenamePresets';
+  sLastPreset = '{BC322BF1-2185-47F6-9F99-D27ED1E23E53}';
 
 function ShowMultiRenameForm(aFileSource: IFileSource; var aFiles: TFiles):Boolean;
 begin
@@ -264,8 +292,15 @@ constructor TfrmMultiRename.Create(TheOwner: TComponent; aFileSource: IFileSourc
 begin
   FRegExp := TRegExprW.Create;
   FNames := TStringList.Create;
+  FFindText := TStringList.Create;
+  FFindText.StrictDelimiter := True;
+  FFindText.Delimiter := '|';
+  FReplaceText:= TStringList.Create;
+  FReplaceText.StrictDelimiter := True;
+  FReplaceText.Delimiter := '|';
   FPresets := TStringHashList.Create(False);
   FNewNames:= TStringHashList.Create(FileNameCaseSensitive);
+  FOldNames:= TStringHashList.Create(FileNameCaseSensitive);
   FFileSource := aFileSource;
   FFiles := aFiles;
   aFiles := nil;
@@ -280,9 +315,12 @@ begin
   ClearPresetsList;
   FreeAndNil(FPresets);
   FreeAndNil(FNewNames);
+  FreeAndNil(FOldNames);
   FreeAndNil(FFiles);
   FreeAndNil(FNames);
   FreeAndNil(FRegExp);
+  FreeAndNil(FFindText);
+  FreeAndNil(FReplaceText);
 end;
 
 procedure TfrmMultiRename.FormCreate(Sender: TObject);
@@ -308,7 +346,6 @@ begin
   // Initialize presets.
   LoadPresets;
   FillPresetsList;
-  cbPresets.Text := FLastPreset;
   LoadPreset(FLastPreset);
 end;
 
@@ -324,7 +361,7 @@ end;
 
 procedure TfrmMultiRename.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
-  SavePresets;
+  SavePreset(sLastPreset);
 
   CloseAction:= caFree;
   with StringGrid.Columns do
@@ -417,6 +454,7 @@ end;
 
 function TfrmMultiRename.FreshText(ItemIndex: Integer): String;
 var
+  I: Integer;
   bError: Boolean;
   sTmpName, sTmpExt: String;
 begin
@@ -436,15 +474,23 @@ begin
   end;
 
   // Find and replace
-  if cbRegExp.Checked and (edFind.Text <> '') then
+  if (edFind.Text <> '') then
+  begin
+    if cbRegExp.Checked then
     try
       Result:= UTF16ToUTF8(FRegExp.Replace(UTF8Decode(Result), UTF8Decode(edReplace.Text), cbUseSubs.Checked));
     except
       Result:= rsMsgErrRegExpSyntax;
       bError:= True;
     end
-  else
-    Result:=StringReplace(Result,edFind.Text,edReplace.Text,[rfReplaceAll,rfIgnoreCase]);
+    else begin
+      // Many at once, split find and replace by |
+      if (FReplaceText.Count = 0) then
+        FReplaceText.Add('');
+      for I:= 0 to FFindText.Count - 1 do
+        Result:= StringReplace(Result, FFindText[I], FReplaceText[Min(I, FReplaceText.Count - 1)], [rfReplaceAll, rfIgnoreCase]);
+    end;
+  end;
 
   // File name style
   sTmpExt  := ExtractFileExt(Result);
@@ -475,8 +521,18 @@ end;
 
 procedure TfrmMultiRename.edFindChange(Sender: TObject);
 begin
-  if cbRegExp.Checked then begin
-    FRegExp.Expression:= UTF8Decode(edFind.Text);
+  if cbRegExp.Checked then
+    FRegExp.Expression:= UTF8Decode(edFind.Text)
+  else begin
+    FFindText.DelimitedText := edFind.Text;
+  end;
+  StringGridTopLeftChanged(StringGrid);
+end;
+
+procedure TfrmMultiRename.edReplaceChange(Sender: TObject);
+begin
+  if not cbRegExp.Checked then begin
+    FReplaceText.DelimitedText := edReplace.Text;
   end;
   StringGridTopLeftChanged(StringGrid);
 end;
@@ -638,17 +694,23 @@ end;
 
 procedure TfrmMultiRename.btnLoadPresetClick(Sender: TObject);
 begin
-  LoadPreset(cbPresets.Text);
+  if cbPresets.ItemIndex = 0 then
+    LoadPreset(sLastPreset)
+  else
+    LoadPreset(cbPresets.Text);
 end;
 
 procedure TfrmMultiRename.btnEditClick(Sender: TObject);
 begin
+  DCPlaceCursorNearControlIfNecessary(btnEdit);
   pmEditDirect.PopUp;
 end;
 
 procedure TfrmMultiRename.btnSavePresetClick(Sender: TObject);
 begin
-  if cbPresets.Text <> '' then
+  if cbPresets.ItemIndex = 0 then
+    SavePreset(sLastPreset)
+  else if cbPresets.Text <> '' then
   begin
     if FPresets.Find(cbPresets.Text) <> -1 then
     begin
@@ -667,7 +729,7 @@ procedure TfrmMultiRename.btnDeletePresetClick(Sender: TObject);
 var
   Index: Integer;
 begin
-  if cbPresets.Text <> '' then
+  if (cbPresets.ItemIndex > 0) and (cbPresets.Text <> '') then
   begin
     DeletePreset(cbPresets.Text);
 
@@ -756,7 +818,6 @@ begin
     edFile.Text:= 'default.log';
   edFile.SelStart:= UTF8Length(edFile.Text);
   cbPresets.Text:='';
-  FLastPreset:='';
   FNames.Clear;
   gbMaska.Enabled:= True;
   gbPresets.Enabled:= True;
@@ -764,11 +825,23 @@ begin
   StringGridTopLeftChanged(StringGrid);
 end;
 
+procedure TfrmMultiRename.sReplaceBadChars(var sPath: string);
+var
+  Index: Integer;
+begin
+  for Index := 1 to Length(sPath) do
+  begin
+    if sPath[Index] in ['\', '/', ':', '*', '?', '"', '<', '>', '|'] then
+      sPath[Index] := '.';
+  end;
+end;
+
 function TfrmMultiRename.sHandleFormatString(const sFormatStr: string; ItemNr: Integer): string;
 var
   aFile: TFile;
-  Index: Integer;
+  Index: Int64;
   Counter: Int64;
+  Dirs: TStringArray;
 begin
   Result := '';
   if Length(sFormatStr) > 0 then
@@ -789,18 +862,31 @@ begin
         end;
       'C':
         begin
-          Counter := StrToInt64Def(edPoc.Text, 1) +
-                     StrToInt64Def(edInterval.Text, 1) * ItemNr;
+          // Check for start value after C, e.g. C12
+          if not TryStrToInt64(Copy(sFormatStr, 2, MaxInt), Index) then
+            Index := StrToInt64Def(edPoc.Text, 1);
+          Counter := Index + StrToInt64Def(edInterval.Text, 1) * ItemNr;
           Result := Format('%.' + cmbxWidth.Items[cmbxWidth.ItemIndex] + 'd', [Counter]);
+        end;
+      'A':  // full path
+        begin
+          Result := sReplaceXX(sFormatStr, aFile.FullPath);
+          sReplaceBadChars(Result);
+        end;
+      'P':  // sub path index
+        begin
+          Index := StrToIntDef(Copy(sFormatStr, 2, MaxInt), 0);
+          Dirs := (aFile.Path + ' ').Split([PathDelim]);
+          Dirs[High(Dirs)] := EmptyStr;
+          if Index < 0 then
+            Result := Dirs[Max(0, High(Dirs) + Index)]
+          else
+            Result := Dirs[Min(Index, High(Dirs))];
         end;
       '=':
         begin
           Result := FormatFileFunction(UTF8Copy(sFormatStr, 2, UTF8Length(sFormatStr) - 1), FFiles.Items[ItemNr], FFileSource, True);
-          for Index := 1 to Length(Result) - 1 do
-          begin
-            if Result[Index] in ['\', '/', ':', '*', '?', '"', '<', '>', '|'] then
-              Result[Index] := '.';
-          end;
+          sReplaceBadChars(Result);
         end;
       else
       begin
@@ -845,22 +931,47 @@ end;
 
 function TfrmMultiRename.sReplaceXX(const sFormatStr, sOrig: string): string;
 var
-  iFrom, iTo, iSemiColon: Integer;
+  iFrom, iTo, iDelim: Integer;
 begin
   if Length(sFormatStr) = 1 then
     Result := sOrig
   else
   begin
-    iSemiColon := Pos(':', sFormatStr);
-    if iSemiColon = 0 then
+    iDelim := Pos(':', sFormatStr);
+    if iDelim = 0 then
     begin
-      iFrom := StrToIntDef(Copy(sFormatStr, 2, MaxInt), 1);
-      iTo   := iFrom;
+      iDelim := Pos(',', sFormatStr);
+      // Not found
+      if iDelim = 0 then
+      begin
+        iFrom := StrToIntDef(Copy(sFormatStr, 2, MaxInt), 1);
+        if iFrom < 0 then iFrom := sOrig.Length + iFrom + 1;
+        iTo   := iFrom;
+      end
+      // Range e.g. N1,3 (from 1, 3 symbols)
+      else begin
+        iFrom := StrToIntDef(Copy(sFormatStr, 2, iDelim - 2), 1);
+        iDelim := Abs(StrToIntDef(Copy(sFormatStr, iDelim + 1, MaxSmallint), MaxSmallint));
+        if iFrom >= 0 then
+          iTo := iDelim + iFrom - 1
+        else begin
+          iTo := sOrig.Length + iFrom + 1;
+          iFrom:= Max(iTo - iDelim + 1, 1);
+        end;
+      end;
     end
-    else
-    begin
-      iFrom := StrToIntDef(Copy(sFormatStr, 2, iSemiColon - 2), 1);
-      iTo   := StrToIntDef(Copy(sFormatStr, iSemiColon + 1, MaxInt), MaxInt);
+    // Range e.g. N1:2 (from 1 to 2)
+    else begin
+      iFrom := StrToIntDef(Copy(sFormatStr, 2, iDelim - 2), 1);
+      if iFrom < 0 then iFrom := sOrig.Length + iFrom + 1;
+      iTo := StrToIntDef(Copy(sFormatStr, iDelim + 1, MaxSmallint), MaxSmallint);
+      if iTo < 0 then iTo := sOrig.Length + iTo + 1;;
+      if iTo < iFrom then
+      begin
+        iDelim:= iTo;
+        iTo:= iFrom;
+        iFrom:= iDelim;
+      end;
     end;
     Result := UTF8Copy(sOrig, iFrom, iTo - iFrom + 1);
   end;
@@ -870,6 +981,7 @@ procedure TfrmMultiRename.btnNameMenuClick(Sender: TObject);
 begin
   ppNameMenu.AutoPopup:= False;
   FillContentFieldMenu(miPlugin, @miPluginClick);
+  DCPlaceCursorNearControlIfNecessary(btnNameMenu);
   btnNameMenu.PopupMenu.PopUp;
   ppNameMenu.Tag:= 0;
 end;
@@ -878,6 +990,7 @@ procedure TfrmMultiRename.btnExtMenuClick(Sender: TObject);
 begin
   ppNameMenu.AutoPopup:= False;
   FillContentFieldMenu(miPlugin, @miPluginClick);
+  DCPlaceCursorNearControlIfNecessary(btnExtMenu);
   btnExtMenu.PopupMenu.PopUp;
   ppNameMenu.Tag:= 1;
 end;
@@ -985,7 +1098,12 @@ begin
       sfprSuccess:
         begin
           S:= 'OK      ' + aFile.Name + ' -> ' + Value;
-          FFiles[Index].Name := Value; // Write new name to the file object
+          if Index < FFiles.Count then
+            FFiles[Index].Name := Value // Write new name to the file object
+          else begin
+            Index:= StrToInt(aFile.Extension);
+            FFiles[Index].Name := Value // Write new name to the file object
+          end;
         end;
       sfprError: S:= 'FAILED  ' + aFile.Name + ' -> ' + Value;
       sfprSkipped: S:= 'SKIPPED ' + aFile.Name + ' -> ' + Value;
@@ -999,6 +1117,7 @@ var
   AFile: TFile;
   NewName: String;
   I, J, K: Integer;
+  TempFiles: TStringList;
   OldFiles, NewFiles: TFiles;
   AutoRename: Boolean = False;
   Operation: TFileSourceOperation;
@@ -1013,7 +1132,13 @@ begin
   end;
 
   OldFiles:= FFiles.Clone;
+  TempFiles:= TStringList.Create;
   NewFiles:= TFiles.Create(EmptyStr);
+
+  // OldNames
+  FOldNames.Clear;
+  for I:= 0 to OldFiles.Count -1 do
+    FOldNames.Add(OldFiles[I].Name);
 
   try
     FNewNames.Clear;
@@ -1021,6 +1146,7 @@ begin
     begin
       AFile:= TFile.Create(EmptyStr);
       AFile.Name:= FreshText(I);
+
       // Checking duplicates
       NewName:= FFiles[I].Path + AFile.Name;
       J:= FNewNames.Find(NewName);
@@ -1046,8 +1172,35 @@ begin
         FNewNames.Add(NewName);
         AFile.Name:= ExtractFileName(NewName);
       end;
+
+      // Avoid collisions with OldNames
+      J:= FOldNames.Find(AFile.Name);
+      if (J >= 0) and (J <> I) then
+      begin
+        NewName:= AFile.Name;
+        // Generate temp file name, save file index as extension
+        AFile.FullPath:= GetTempName(FFiles[I].Path) + ExtensionSeparator + IntToStr(I);
+        TempFiles.AddObject(NewName, AFile.Clone);
+      end;
+
       NewFiles.Add(AFile);
     end;
+
+    // Rename temp files back
+    if TempFiles.Count > 0 then
+    begin
+      for I:= 0 to TempFiles.Count - 1 do
+      begin
+        // Temp file name
+        OldFiles.Add(TFile(TempFiles.Objects[I]));
+        // Real new file name
+        AFile:= TFile.Create(EmptyStr);
+        AFile.Name:= TempFiles[I];
+        NewFiles.Add(AFile);
+      end;
+    end;
+
+    // Rename files
     FillChar({%H-}theNewProperties, SizeOf(TFileProperties), 0);
     Operation:= FFileSource.CreateSetFilePropertyOperation(OldFiles, theNewProperties);
     if Assigned(Operation) then
@@ -1071,6 +1224,7 @@ begin
     end;
     OldFiles.Free;
     NewFiles.Free;
+    TempFiles.Free;
   end;
 
   StringGridTopLeftChanged(StringGrid);
@@ -1166,7 +1320,7 @@ begin
   ClearPresetsList;
 
   ANode := AConfig.FindNode(AConfig.RootNode, sPresetsSection);
-  FLastPreset := AConfig.GetValue(ANode, 'LastPreset', '');
+  FLastPreset := AConfig.GetValue(ANode, 'LastPreset', sLastPreset);
 
   ANode := AConfig.FindNode(ANode, 'Presets');
   if Assigned(ANode) then
@@ -1218,7 +1372,6 @@ var
 begin
   ANode := AConfig.FindNode(AConfig.RootNode, sPresetsSection, True);
   AConfig.ClearNode(ANode);
-  AConfig.SetValue(ANode, 'LastPreset', FLastPreset);
 
   ANode := AConfig.FindNode(ANode, 'Presets', True);
   for i := 0 to FPresets.Count - 1 do
@@ -1271,9 +1424,8 @@ begin
       edFile.Text := LogFile;
     end;
 
-    FLastPreset := PresetName;
-
     edFindChange(edFind);
+    edReplaceChange(edReplace);
   end;
 end;
 
@@ -1304,7 +1456,6 @@ begin
       LogFile := edFile.Text;
     end;
 
-    FLastPreset := PresetName;
     SavePresets;
   end;
 end;
@@ -1320,7 +1471,6 @@ begin
     begin
       Dispose(PMultiRenamePreset(FPresets.List[PresetIndex]^.Data));
       FPresets.Remove(PresetName);
-      FLastPreset := '';
       SavePresets;
     end;
   end;
@@ -1332,13 +1482,22 @@ var
   PresetName: String;
 begin
   cbPresets.Clear;
+  cbPresets.Items.Insert(0, rsMulRenLastPreset);
 
   for i := 0 to FPresets.Count - 1 do
   begin
     PresetName := FPresets.List[i]^.Key;
-    if cbPresets.Items.IndexOf(PresetName) = -1 then
-      cbPresets.Items.Add(PresetName);
+    if (PresetName <> sLastPreset) then
+    begin
+      if cbPresets.Items.IndexOf(PresetName) = -1 then
+        cbPresets.Items.Add(PresetName);
+    end;
   end;
+
+  if (FLastPreset = sLastPreset) then
+    cbPresets.ItemIndex := 0
+  else
+    cbPresets.ItemIndex := cbPresets.Items.IndexOf(FLastPreset);
 end;
 
 procedure TfrmMultiRename.ClearPresetsList;

@@ -1594,11 +1594,11 @@ msgid "Re&place by"
 msgstr "置き換え(&p)"
 
 #: tfrmfinddlg.cbselectedfiles.caption
-msgid "Selected directories and &files"
+msgid "Selected directories and files"
 msgstr "選択したディレクトリとファイル(&f)"
 
 #: tfrmfinddlg.cbtextregexp.caption
-msgid "Regular &expression"
+msgid "Reg&ular expression"
 msgstr "正規表現(&e)"
 
 #: tfrmfinddlg.cbtimefrom.caption
@@ -1615,7 +1615,7 @@ msgstr "検索プラグインを使用(&U)："
 
 #: tfrmfinddlg.chkhex.caption
 msgctxt "tfrmfinddlg.chkhex.caption"
-msgid "Hexadecimal"
+msgid "Hexadeci&mal"
 msgstr ""
 
 #: tfrmfinddlg.cmbexcludedirectories.hint
@@ -2255,9 +2255,17 @@ msgstr ""
 msgid "Switch between current file list and tree view (if enabled)"
 msgstr ""
 
+#: tfrmmain.actgotofirstentry.caption
+msgid "Place cursor on first folder or file"
+msgstr ""
+
 #: tfrmmain.actgotofirstfile.caption
 msgid "Place cursor on first file in list"
 msgstr "リストの最初のファイルにカーソルを置く"
+
+#: tfrmmain.actgotolastentry.caption
+msgid "Place cursor on last folder or file"
+msgstr ""
 
 #: tfrmmain.actgotolastfile.caption
 msgid "Place cursor on last file in list"
@@ -3320,7 +3328,7 @@ msgstr "削除(&D)"
 
 #: tfrmmultirename.btnedit.caption
 msgctxt "tfrmmultirename.btnedit.caption"
-msgid "&Edit"
+msgid "Edit&or"
 msgstr "編集(&E)"
 
 #: tfrmmultirename.btnextmenu.caption
@@ -5074,6 +5082,10 @@ msgstr ""
 #: tfrmoptionseditor.gbinternaleditor.caption
 msgid "Internal editor options"
 msgstr "内部エディターのオプション"
+
+#: tfrmoptionseditor.lblrightedge.caption
+msgid "Right margin:"
+msgstr ""
 
 #: tfrmoptionseditor.lbltabwidth.caption
 msgid "Tab width:"
@@ -7393,7 +7405,7 @@ msgstr "バーのサイズ(&B)："
 
 #: tfrmoptionstoolbar.lblexternalcommand.caption
 msgctxt "TFRMOPTIONSTOOLBAR.LBLEXTERNALCOMMAND.CAPTION"
-msgid "Comman&d:"
+msgid "Co&mmand:"
 msgstr "コマンド(&d)："
 
 #: tfrmoptionstoolbar.lblexternalparameters.caption
@@ -9007,6 +9019,10 @@ msgstr "ビューアについて…"
 #: tfrmviewer.actabout.hint
 msgid "Displays the About message"
 msgstr "「この製品について」メッセージを表示"
+
+#: tfrmviewer.actautoreload.caption
+msgid "Auto Reload"
+msgstr ""
 
 #: tfrmviewer.actchangeencoding.caption
 msgid "Change encoding"
@@ -11667,6 +11683,10 @@ msgstr ""
 #: ulng.rsmulrenfilenamestylelist
 msgid "No change;UPPERCASE;lowercase;First char uppercase;First Char Of Every Word Uppercase;"
 msgstr "変更無し;大文字;小文字;最初だけ大文字;各単語の頭を大文字"
+
+#: ulng.rsmulrenlastpreset
+msgid "[The last used]"
+msgstr ""
 
 #: ulng.rsmulrenwarningduplicate
 msgid "Warning, duplicate names!"

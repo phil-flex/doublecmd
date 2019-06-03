@@ -158,7 +158,8 @@ begin
                     'Lazarus: %s' + LineEnding +
                     'FPC: %s' + LineEnding +
                     'Platform: %s' + LineEnding +
-                    'OS version: %s' + LineEnding,
+                    'OS version: %s' + LineEnding +
+                    'Built by: phil-flexhk',
                     [dcVersion, dcRevision, dcBuildDate,
                     GetLazarusVersion, fpcVersion,
                     TargetCPU + '-' + TargetOS + '-' + TargetWS,

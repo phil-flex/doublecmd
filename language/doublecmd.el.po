@@ -1594,11 +1594,11 @@ msgid "Re&place by"
 msgstr "Αντικατάσταση από"
 
 #: tfrmfinddlg.cbselectedfiles.caption
-msgid "Selected directories and &files"
+msgid "Selected directories and files"
 msgstr "Επιλεγμένοι κατάλογοι και αρχεία"
 
 #: tfrmfinddlg.cbtextregexp.caption
-msgid "Regular &expression"
+msgid "Reg&ular expression"
 msgstr "Συνήθης Φράση"
 
 #: tfrmfinddlg.cbtimefrom.caption
@@ -1615,7 +1615,7 @@ msgstr "Χρήση προσθέτου αναζήτησης:"
 
 #: tfrmfinddlg.chkhex.caption
 msgctxt "tfrmfinddlg.chkhex.caption"
-msgid "Hexadecimal"
+msgid "Hexadeci&mal"
 msgstr "Δεκαεξαδικός"
 
 #: tfrmfinddlg.cmbexcludedirectories.hint
@@ -2256,9 +2256,17 @@ msgstr "Επικέντρωση σε προβολή δέντρου"
 msgid "Switch between current file list and tree view (if enabled)"
 msgstr "Εναλλαγή μεταξύ τρέχουσας λίστας αρχείων και προβολής δέντρου (αν είναι ενεργοποιημένη)"
 
+#: tfrmmain.actgotofirstentry.caption
+msgid "Place cursor on first folder or file"
+msgstr ""
+
 #: tfrmmain.actgotofirstfile.caption
 msgid "Place cursor on first file in list"
 msgstr "Τοποθέτηση του κέρσορα στο πρώτο αρχείο της λίστας"
+
+#: tfrmmain.actgotolastentry.caption
+msgid "Place cursor on last folder or file"
+msgstr ""
 
 #: tfrmmain.actgotolastfile.caption
 msgid "Place cursor on last file in list"
@@ -3321,7 +3329,7 @@ msgstr "Διαγραφή"
 
 #: tfrmmultirename.btnedit.caption
 msgctxt "tfrmmultirename.btnedit.caption"
-msgid "&Edit"
+msgid "Edit&or"
 msgstr "Επεξεργασία"
 
 #: tfrmmultirename.btnextmenu.caption
@@ -5069,6 +5077,10 @@ msgstr "Παρακαλώ σημειώσατε οτι η ιδιότητα \"Smart
 #: tfrmoptionseditor.gbinternaleditor.caption
 msgid "Internal editor options"
 msgstr "Ιδιότητες Εσωτερικού επεξεργαστή"
+
+#: tfrmoptionseditor.lblrightedge.caption
+msgid "Right margin:"
+msgstr ""
 
 #: tfrmoptionseditor.lbltabwidth.caption
 msgid "Tab width:"
@@ -7389,7 +7401,7 @@ msgstr "Μέγεθος Μπάρας:"
 
 #: tfrmoptionstoolbar.lblexternalcommand.caption
 msgctxt "TFRMOPTIONSTOOLBAR.LBLEXTERNALCOMMAND.CAPTION"
-msgid "Comman&d:"
+msgid "Co&mmand:"
 msgstr "Εντολή:"
 
 #: tfrmoptionstoolbar.lblexternalparameters.caption
@@ -9002,6 +9014,10 @@ msgstr "Σχετικά με τον Προβολέα..."
 #: tfrmviewer.actabout.hint
 msgid "Displays the About message"
 msgstr "Εμφανίζει το \"Σχετικά\" μήνυμα"
+
+#: tfrmviewer.actautoreload.caption
+msgid "Auto Reload"
+msgstr ""
 
 #: tfrmviewer.actchangeencoding.caption
 msgid "Change encoding"
@@ -11643,6 +11659,10 @@ msgstr "Εκτέλεση αυτόματης μετονομασίας του \"na
 #: ulng.rsmulrenfilenamestylelist
 msgid "No change;UPPERCASE;lowercase;First char uppercase;First Char Of Every Word Uppercase;"
 msgstr "Χωρίς αλλαγή;ΚΕΦΑΛΑΙΟ;μικρό;Πρώτο γράμμα κεφαλαίο;Πρώτο Γράμμα κάθε Λέξης Κεφαλαίο;"
+
+#: ulng.rsmulrenlastpreset
+msgid "[The last used]"
+msgstr ""
 
 #: ulng.rsmulrenwarningduplicate
 msgid "Warning, duplicate names!"

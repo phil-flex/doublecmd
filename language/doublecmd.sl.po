@@ -1567,11 +1567,11 @@ msgid "Re&place by"
 msgstr "&Zamenjaj besedilo z"
 
 #: tfrmfinddlg.cbselectedfiles.caption
-msgid "Selected directories and &files"
+msgid "Selected directories and files"
 msgstr "Izbrane &datoteke in mape"
 
 #: tfrmfinddlg.cbtextregexp.caption
-msgid "Regular &expression"
+msgid "Reg&ular expression"
 msgstr "Logični &izraz"
 
 #: tfrmfinddlg.cbtimefrom.caption
@@ -1588,7 +1588,7 @@ msgstr "Uporabi vstavek &iskanja:"
 
 #: tfrmfinddlg.chkhex.caption
 msgctxt "tfrmfinddlg.chkhex.caption"
-msgid "Hexadecimal"
+msgid "Hexadeci&mal"
 msgstr ""
 
 #: tfrmfinddlg.cmbexcludedirectories.hint
@@ -2214,9 +2214,17 @@ msgstr ""
 msgid "Switch between current file list and tree view (if enabled)"
 msgstr ""
 
+#: tfrmmain.actgotofirstentry.caption
+msgid "Place cursor on first folder or file"
+msgstr ""
+
 #: tfrmmain.actgotofirstfile.caption
 msgid "Place cursor on first file in list"
 msgstr "Postavi kazalko na prvo datoteko seznama"
+
+#: tfrmmain.actgotolastentry.caption
+msgid "Place cursor on last folder or file"
+msgstr ""
 
 #: tfrmmain.actgotolastfile.caption
 msgid "Place cursor on last file in list"
@@ -3263,7 +3271,7 @@ msgstr "&Izbriši"
 
 #: tfrmmultirename.btnedit.caption
 msgctxt "TFRMMULTIRENAME.BTNEDIT.CAPTION"
-msgid "&Edit"
+msgid "Edit&or"
 msgstr "&&Uredi"
 
 #: tfrmmultirename.btnextmenu.caption
@@ -4982,6 +4990,10 @@ msgstr ""
 #: tfrmoptionseditor.gbinternaleditor.caption
 msgid "Internal editor options"
 msgstr "Možnosti notranjega urejevalnika"
+
+#: tfrmoptionseditor.lblrightedge.caption
+msgid "Right margin:"
+msgstr ""
 
 #: tfrmoptionseditor.lbltabwidth.caption
 msgid "Tab width:"
@@ -7213,7 +7225,8 @@ msgid "&Bar size:"
 msgstr "Velikost orodne &vrstice:"
 
 #: tfrmoptionstoolbar.lblexternalcommand.caption
-msgid "Comman&d:"
+msgctxt "tfrmoptionstoolbar.lblexternalcommand.caption"
+msgid "Co&mmand:"
 msgstr "&Ukaz:"
 
 #: tfrmoptionstoolbar.lblexternalparameters.caption
@@ -7239,6 +7252,7 @@ msgid "Icon si&ze:"
 msgstr "Veli&kost ikone:"
 
 #: tfrmoptionstoolbar.lblinternalcommand.caption
+msgctxt "tfrmoptionstoolbar.lblinternalcommand.caption"
 msgid "Co&mmand:"
 msgstr "&Ukaz:"
 
@@ -8806,6 +8820,10 @@ msgstr "O pregledovalniku ..."
 #: tfrmviewer.actabout.hint
 msgid "Displays the About message"
 msgstr "Prikaže pogovorno okno podrobnosti"
+
+#: tfrmviewer.actautoreload.caption
+msgid "Auto Reload"
+msgstr ""
 
 #: tfrmviewer.actchangeencoding.caption
 msgid "Change encoding"
@@ -11415,6 +11433,10 @@ msgstr "Ali želite predmete samodejno preimenovati v »ime (1).pri«, »ime (2)
 #: ulng.rsmulrenfilenamestylelist
 msgid "No change;UPPERCASE;lowercase;First char uppercase;First Char Of Every Word Uppercase;"
 msgstr "Brez spremembe;VELIKE ČRKE;male črke;Prva črka je velika;Prva Črka Vsake Besede Je Velika;"
+
+#: ulng.rsmulrenlastpreset
+msgid "[The last used]"
+msgstr ""
 
 #: ulng.rsmulrenwarningduplicate
 msgid "Warning, duplicate names!"

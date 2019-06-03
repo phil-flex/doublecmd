@@ -1596,11 +1596,11 @@ msgid "Re&place by"
 msgstr "Substituir &por"
 
 #: tfrmfinddlg.cbselectedfiles.caption
-msgid "Selected directories and &files"
+msgid "Selected directories and files"
 msgstr "Pastas e &ficheiros seleccionados"
 
 #: tfrmfinddlg.cbtextregexp.caption
-msgid "Regular &expression"
+msgid "Reg&ular expression"
 msgstr "&Expressão regular"
 
 #: tfrmfinddlg.cbtimefrom.caption
@@ -1617,7 +1617,7 @@ msgstr "&Usar extensão de procura:"
 
 #: tfrmfinddlg.chkhex.caption
 msgctxt "tfrmfinddlg.chkhex.caption"
-msgid "Hexadecimal"
+msgid "Hexadeci&mal"
 msgstr ""
 
 #: tfrmfinddlg.cmbexcludedirectories.hint
@@ -2259,9 +2259,17 @@ msgstr ""
 msgid "Switch between current file list and tree view (if enabled)"
 msgstr ""
 
+#: tfrmmain.actgotofirstentry.caption
+msgid "Place cursor on first folder or file"
+msgstr ""
+
 #: tfrmmain.actgotofirstfile.caption
 msgid "Place cursor on first file in list"
 msgstr "Colocar cursor no primeiro ficheiro da lista"
+
+#: tfrmmain.actgotolastentry.caption
+msgid "Place cursor on last folder or file"
+msgstr ""
 
 #: tfrmmain.actgotolastfile.caption
 msgid "Place cursor on last file in list"
@@ -3324,7 +3332,7 @@ msgstr "&Eliminar"
 
 #: tfrmmultirename.btnedit.caption
 msgctxt "tfrmmultirename.btnedit.caption"
-msgid "&Edit"
+msgid "Edit&or"
 msgstr "&Editar"
 
 #: tfrmmultirename.btnextmenu.caption
@@ -5073,6 +5081,10 @@ msgstr ""
 #: tfrmoptionseditor.gbinternaleditor.caption
 msgid "Internal editor options"
 msgstr "Opções internas do editor"
+
+#: tfrmoptionseditor.lblrightedge.caption
+msgid "Right margin:"
+msgstr ""
 
 #: tfrmoptionseditor.lbltabwidth.caption
 msgid "Tab width:"
@@ -7397,7 +7409,7 @@ msgstr "Tamanho da &barra:"
 
 #: tfrmoptionstoolbar.lblexternalcommand.caption
 msgctxt "TFRMOPTIONSTOOLBAR.LBLEXTERNALCOMMAND.CAPTION"
-msgid "Comman&d:"
+msgid "Co&mmand:"
 msgstr "Coman&do:"
 
 #: tfrmoptionstoolbar.lblexternalparameters.caption
@@ -9011,6 +9023,10 @@ msgstr "Acerca do visualizador..."
 #: tfrmviewer.actabout.hint
 msgid "Displays the About message"
 msgstr "Mostra a mensagem Sobre"
+
+#: tfrmviewer.actautoreload.caption
+msgid "Auto Reload"
+msgstr ""
 
 #: tfrmviewer.actchangeencoding.caption
 msgid "Change encoding"
@@ -11649,6 +11665,10 @@ msgstr "Renomear automaticamente \"nome (1).ext\", \"nome (2).ext\" etc.?"
 #: ulng.rsmulrenfilenamestylelist
 msgid "No change;UPPERCASE;lowercase;First char uppercase;First Char Of Every Word Uppercase;"
 msgstr "Sem alteração;MAIÚSCULAS;minúsculas;Primeira maiúscula;Primeira De Todas As Palavras Maiúscula;"
+
+#: ulng.rsmulrenlastpreset
+msgid "[The last used]"
+msgstr ""
 
 #: ulng.rsmulrenwarningduplicate
 msgid "Warning, duplicate names!"

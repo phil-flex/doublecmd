@@ -1557,11 +1557,11 @@ msgid "Re&place by"
 msgstr "替换为(&P)"
 
 #: tfrmfinddlg.cbselectedfiles.caption
-msgid "Selected directories and &files"
+msgid "Selected directories and files"
 msgstr "选定的文件夹和文件(&F)"
 
 #: tfrmfinddlg.cbtextregexp.caption
-msgid "Regular &expression"
+msgid "Reg&ular expression"
 msgstr "正则表达式(&E)"
 
 #: tfrmfinddlg.cbtimefrom.caption
@@ -1578,7 +1578,7 @@ msgstr "使用搜索插件(&U)："
 
 #: tfrmfinddlg.chkhex.caption
 msgctxt "tfrmfinddlg.chkhex.caption"
-msgid "Hexadecimal"
+msgid "Hexadeci&mal"
 msgstr "十六进制"
 
 #: tfrmfinddlg.cmbexcludedirectories.hint
@@ -2205,9 +2205,17 @@ msgstr "聚集到树状视图"
 msgid "Switch between current file list and tree view (if enabled)"
 msgstr "切换当前文件列表和树状视图（如果已启用）"
 
+#: tfrmmain.actgotofirstentry.caption
+msgid "Place cursor on first folder or file"
+msgstr ""
+
 #: tfrmmain.actgotofirstfile.caption
 msgid "Place cursor on first file in list"
 msgstr "将光标置于列表中的第一个文件"
+
+#: tfrmmain.actgotolastentry.caption
+msgid "Place cursor on last folder or file"
+msgstr ""
 
 #: tfrmmain.actgotolastfile.caption
 msgid "Place cursor on last file in list"
@@ -3255,7 +3263,7 @@ msgstr "删除(&D)"
 
 #: tfrmmultirename.btnedit.caption
 msgctxt "tfrmmultirename.btnedit.caption"
-msgid "&Edit"
+msgid "Edit&or"
 msgstr "编辑(&E)"
 
 #: tfrmmultirename.btnextmenu.caption
@@ -4974,6 +4982,10 @@ msgstr "请注意：<智能制表符> 选项优先于要执行的制表"
 #: tfrmoptionseditor.gbinternaleditor.caption
 msgid "Internal editor options"
 msgstr "内部编辑器选项"
+
+#: tfrmoptionseditor.lblrightedge.caption
+msgid "Right margin:"
+msgstr ""
 
 #: tfrmoptionseditor.lbltabwidth.caption
 msgid "Tab width:"
@@ -7183,7 +7195,8 @@ msgid "&Bar size:"
 msgstr "工具栏大小(&B)："
 
 #: tfrmoptionstoolbar.lblexternalcommand.caption
-msgid "Comman&d:"
+msgctxt "tfrmoptionstoolbar.lblexternalcommand.caption"
+msgid "Co&mmand:"
 msgstr "命令(&D)："
 
 #: tfrmoptionstoolbar.lblexternalparameters.caption
@@ -7209,6 +7222,7 @@ msgid "Icon si&ze:"
 msgstr "图标大小(&Z)："
 
 #: tfrmoptionstoolbar.lblinternalcommand.caption
+msgctxt "tfrmoptionstoolbar.lblinternalcommand.caption"
 msgid "Co&mmand:"
 msgstr "命令(&M)："
 
@@ -8778,6 +8792,10 @@ msgstr "关于查看器"
 #: tfrmviewer.actabout.hint
 msgid "Displays the About message"
 msgstr "显示关于消息"
+
+#: tfrmviewer.actautoreload.caption
+msgid "Auto Reload"
+msgstr ""
 
 #: tfrmviewer.actchangeencoding.caption
 msgid "Change encoding"
@@ -11376,6 +11394,10 @@ msgstr "自动重命名为 \"name (1).ext\"、\"name (2).ext\" 等等吗？"
 #: ulng.rsmulrenfilenamestylelist
 msgid "No change;UPPERCASE;lowercase;First char uppercase;First Char Of Every Word Uppercase;"
 msgstr "不修改;大写;小写;首字大写;"
+
+#: ulng.rsmulrenlastpreset
+msgid "[The last used]"
+msgstr ""
 
 #: ulng.rsmulrenwarningduplicate
 msgid "Warning, duplicate names!"

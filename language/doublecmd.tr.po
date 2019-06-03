@@ -1703,11 +1703,11 @@ msgid "Re&place by"
 msgstr "Metni Değiştir"
 
 #: tfrmfinddlg.cbselectedfiles.caption
-msgid "Selected directories and &files"
+msgid "Selected directories and files"
 msgstr ""
 
 #: tfrmfinddlg.cbtextregexp.caption
-msgid "Regular &expression"
+msgid "Reg&ular expression"
 msgstr ""
 
 #: tfrmfinddlg.cbtimefrom.caption
@@ -1728,7 +1728,7 @@ msgstr "Arama eklentisi kullan"
 
 #: tfrmfinddlg.chkhex.caption
 msgctxt "tfrmfinddlg.chkhex.caption"
-msgid "Hexadecimal"
+msgid "Hexadeci&mal"
 msgstr ""
 
 #: tfrmfinddlg.cmbexcludedirectories.hint
@@ -2400,9 +2400,17 @@ msgstr ""
 msgid "Switch between current file list and tree view (if enabled)"
 msgstr ""
 
+#: tfrmmain.actgotofirstentry.caption
+msgid "Place cursor on first folder or file"
+msgstr ""
+
 #: tfrmmain.actgotofirstfile.caption
 msgid "Place cursor on first file in list"
 msgstr "Listedeki ilk öğeye ekleme noktasını(imleç) ayarla"
+
+#: tfrmmain.actgotolastentry.caption
+msgid "Place cursor on last folder or file"
+msgstr ""
 
 #: tfrmmain.actgotolastfile.caption
 msgid "Place cursor on last file in list"
@@ -3496,9 +3504,8 @@ msgid "&Delete"
 msgstr "&Sil"
 
 #: tfrmmultirename.btnedit.caption
-#, fuzzy
 msgctxt "tfrmmultirename.btnedit.caption"
-msgid "&Edit"
+msgid "Edit&or"
 msgstr "&Düzenle"
 
 #: tfrmmultirename.btnextmenu.caption
@@ -5313,6 +5320,10 @@ msgstr ""
 
 #: tfrmoptionseditor.gbinternaleditor.caption
 msgid "Internal editor options"
+msgstr ""
+
+#: tfrmoptionseditor.lblrightedge.caption
+msgid "Right margin:"
 msgstr ""
 
 #: tfrmoptionseditor.lbltabwidth.caption
@@ -7615,7 +7626,8 @@ msgid "&Bar size:"
 msgstr ""
 
 #: tfrmoptionstoolbar.lblexternalcommand.caption
-msgid "Comman&d:"
+msgctxt "tfrmoptionstoolbar.lblexternalcommand.caption"
+msgid "Co&mmand:"
 msgstr ""
 
 #: tfrmoptionstoolbar.lblexternalparameters.caption
@@ -7641,6 +7653,7 @@ msgid "Icon si&ze:"
 msgstr ""
 
 #: tfrmoptionstoolbar.lblinternalcommand.caption
+msgctxt "tfrmoptionstoolbar.lblinternalcommand.caption"
 msgid "Co&mmand:"
 msgstr ""
 
@@ -9329,6 +9342,10 @@ msgstr "Görüntüleyici Hakkında"
 
 #: tfrmviewer.actabout.hint
 msgid "Displays the About message"
+msgstr ""
+
+#: tfrmviewer.actautoreload.caption
+msgid "Auto Reload"
 msgstr ""
 
 #: tfrmviewer.actchangeencoding.caption
@@ -11972,6 +11989,10 @@ msgstr ""
 #: ulng.rsmulrenfilenamestylelist
 msgid "No change;UPPERCASE;lowercase;First char uppercase;First Char Of Every Word Uppercase;"
 msgstr "Değişiklik yok;TÜMÜ BÜYÜK HARF;tümü küçük harf;İlk karakter büyük harfle;Her kelimeyi büyük harflerle"
+
+#: ulng.rsmulrenlastpreset
+msgid "[The last used]"
+msgstr ""
 
 #: ulng.rsmulrenwarningduplicate
 msgid "Warning, duplicate names!"

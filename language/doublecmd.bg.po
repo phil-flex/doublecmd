@@ -1611,11 +1611,11 @@ msgid "Re&place by"
 msgstr "За&мяна с"
 
 #: tfrmfinddlg.cbselectedfiles.caption
-msgid "Selected directories and &files"
+msgid "Selected directories and files"
 msgstr ""
 
 #: tfrmfinddlg.cbtextregexp.caption
-msgid "Regular &expression"
+msgid "Reg&ular expression"
 msgstr ""
 
 #: tfrmfinddlg.cbtimefrom.caption
@@ -1632,7 +1632,7 @@ msgstr "Използване на приставка за търсене:"
 
 #: tfrmfinddlg.chkhex.caption
 msgctxt "tfrmfinddlg.chkhex.caption"
-msgid "Hexadecimal"
+msgid "Hexadeci&mal"
 msgstr ""
 
 #: tfrmfinddlg.cmbexcludedirectories.hint
@@ -2276,8 +2276,16 @@ msgstr ""
 msgid "Switch between current file list and tree view (if enabled)"
 msgstr ""
 
+#: tfrmmain.actgotofirstentry.caption
+msgid "Place cursor on first folder or file"
+msgstr ""
+
 #: tfrmmain.actgotofirstfile.caption
 msgid "Place cursor on first file in list"
+msgstr ""
+
+#: tfrmmain.actgotolastentry.caption
+msgid "Place cursor on last folder or file"
 msgstr ""
 
 #: tfrmmain.actgotolastfile.caption
@@ -3341,7 +3349,7 @@ msgstr "Из&триване"
 
 #: tfrmmultirename.btnedit.caption
 msgctxt "tfrmmultirename.btnedit.caption"
-msgid "&Edit"
+msgid "Edit&or"
 msgstr "Об&работка"
 
 #: tfrmmultirename.btnextmenu.caption
@@ -5161,6 +5169,10 @@ msgstr ""
 #: tfrmoptionseditor.gbinternaleditor.caption
 msgid "Internal editor options"
 msgstr "Възможности на вътрешния обработчик"
+
+#: tfrmoptionseditor.lblrightedge.caption
+msgid "Right margin:"
+msgstr ""
 
 #: tfrmoptionseditor.lbltabwidth.caption
 msgid "Tab width:"
@@ -7543,7 +7555,7 @@ msgstr "&Размер на лентата:"
 
 #: tfrmoptionstoolbar.lblexternalcommand.caption
 msgctxt "tfrmoptionstoolbar.lblexternalcommand.caption"
-msgid "Comman&d:"
+msgid "Co&mmand:"
 msgstr "&Заповед:"
 
 #: tfrmoptionstoolbar.lblexternalparameters.caption
@@ -9179,6 +9191,10 @@ msgstr "За прегледа..."
 #: tfrmviewer.actabout.hint
 msgid "Displays the About message"
 msgstr "Показване на прозорец „За приложението‟"
+
+#: tfrmviewer.actautoreload.caption
+msgid "Auto Reload"
+msgstr ""
 
 #: tfrmviewer.actchangeencoding.caption
 msgid "Change encoding"
@@ -11788,6 +11804,10 @@ msgstr ""
 #: ulng.rsmulrenfilenamestylelist
 msgid "No change;UPPERCASE;lowercase;First char uppercase;First Char Of Every Word Uppercase;"
 msgstr "Без промяна; ВИСША; низша; Първият знак главен; Първият Знак На Всяка Дума Главен;"
+
+#: ulng.rsmulrenlastpreset
+msgid "[The last used]"
+msgstr ""
 
 #: ulng.rsmulrenwarningduplicate
 msgid "Warning, duplicate names!"

@@ -1556,11 +1556,11 @@ msgid "Re&place by"
 msgstr "&Zamień na"
 
 #: tfrmfinddlg.cbselectedfiles.caption
-msgid "Selected directories and &files"
+msgid "Selected directories and files"
 msgstr "Wybrane katalogi i &pliki"
 
 #: tfrmfinddlg.cbtextregexp.caption
-msgid "Regular &expression"
+msgid "Reg&ular expression"
 msgstr "&Wyrażenie regularne"
 
 #: tfrmfinddlg.cbtimefrom.caption
@@ -1577,7 +1577,7 @@ msgstr "&Użyj wtyczki wyszukiwania:"
 
 #: tfrmfinddlg.chkhex.caption
 msgctxt "tfrmfinddlg.chkhex.caption"
-msgid "Hexadecimal"
+msgid "Hexadeci&mal"
 msgstr "Szesnastkowo"
 
 #: tfrmfinddlg.cmbexcludedirectories.hint
@@ -2204,9 +2204,17 @@ msgstr "Koncentracja na widoku drzewa"
 msgid "Switch between current file list and tree view (if enabled)"
 msgstr "Przełącz między bieżącą listą plików, a widokiem drzewa (jeśli włączone)"
 
+#: tfrmmain.actgotofirstentry.caption
+msgid "Place cursor on first folder or file"
+msgstr ""
+
 #: tfrmmain.actgotofirstfile.caption
 msgid "Place cursor on first file in list"
 msgstr "Umieść kursor na pierwszym pliku listy"
+
+#: tfrmmain.actgotolastentry.caption
+msgid "Place cursor on last folder or file"
+msgstr ""
 
 #: tfrmmain.actgotolastfile.caption
 msgid "Place cursor on last file in list"
@@ -3253,7 +3261,7 @@ msgstr "&Usuń"
 
 #: tfrmmultirename.btnedit.caption
 msgctxt "TFRMMULTIRENAME.BTNEDIT.CAPTION"
-msgid "&Edit"
+msgid "Edit&or"
 msgstr "&Edytuj"
 
 #: tfrmmultirename.btnextmenu.caption
@@ -4971,6 +4979,10 @@ msgstr "Zwróć uwagę, że opcja \"Inteligentne tabulatory\" ma pierwszeństwo 
 #: tfrmoptionseditor.gbinternaleditor.caption
 msgid "Internal editor options"
 msgstr "Opcje edytora wewnętrznego"
+
+#: tfrmoptionseditor.lblrightedge.caption
+msgid "Right margin:"
+msgstr ""
 
 #: tfrmoptionseditor.lbltabwidth.caption
 msgid "Tab width:"
@@ -7179,7 +7191,8 @@ msgid "&Bar size:"
 msgstr "&Rozmiar paska:"
 
 #: tfrmoptionstoolbar.lblexternalcommand.caption
-msgid "Comman&d:"
+msgctxt "tfrmoptionstoolbar.lblexternalcommand.caption"
+msgid "Co&mmand:"
 msgstr "Pole&cenie:"
 
 #: tfrmoptionstoolbar.lblexternalparameters.caption
@@ -7205,6 +7218,7 @@ msgid "Icon si&ze:"
 msgstr "Ro&zmiar ikon:"
 
 #: tfrmoptionstoolbar.lblinternalcommand.caption
+msgctxt "tfrmoptionstoolbar.lblinternalcommand.caption"
 msgid "Co&mmand:"
 msgstr "Po&lecenie:"
 
@@ -8772,6 +8786,10 @@ msgstr "O listerze..."
 #: tfrmviewer.actabout.hint
 msgid "Displays the About message"
 msgstr "Wyświetla komunikat \"O...\""
+
+#: tfrmviewer.actautoreload.caption
+msgid "Auto Reload"
+msgstr ""
 
 #: tfrmviewer.actchangeencoding.caption
 msgid "Change encoding"
@@ -11370,6 +11388,10 @@ msgstr "Zmienić automatycznie nazwy na \"nazwa (1).roz\", \"nazwa (2).roz\" itp
 #: ulng.rsmulrenfilenamestylelist
 msgid "No change;UPPERCASE;lowercase;First char uppercase;First Char Of Every Word Uppercase;"
 msgstr "Bez zmian;WIELKIMI ZNAKAMI;małymi znakami;Pierwsza wielka;Pierwszy Znak Każdego Słowa Wielki;"
+
+#: ulng.rsmulrenlastpreset
+msgid "[The last used]"
+msgstr ""
 
 #: ulng.rsmulrenwarningduplicate
 msgid "Warning, duplicate names!"
