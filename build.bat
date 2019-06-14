@@ -2,8 +2,9 @@
 
 rem the next two line must be changed before run on your computer
 set lazpath=C:\Lazarus
+set Lazarusdir=.
 
-set PATH=%lazpath%;%PATH%
+set PATH=%lazpath%;%PATH%;c:\cygwin64\bin;
 
 rem You can execute this script with different parameters:
 rem components - compiling components needed for DC
