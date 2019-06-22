@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Double Commander 1.0.0 alpha\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2019-06-02 15:24+0300\n"
+"PO-Revision-Date: 2019-06-20 11:05+0300\n"
 "Last-Translator: Alexander Koblov <alexx2000@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -2517,7 +2517,7 @@ msgstr "Восс&тановить выделение"
 
 #: tfrmmain.actreverseorder.caption
 msgid "Re&verse Order"
-msgstr "Обра&тный п&орядок"
+msgstr "Обра&тный порядок"
 
 #: tfrmmain.actrightbriefview.caption
 msgid "Brief view on right panel"
@@ -8253,6 +8253,30 @@ msgstr "Архиватор:"
 msgid "Time:"
 msgstr "Время:"
 
+#: tfrmprintsetup.caption
+msgid "Print configuration"
+msgstr "Параметры печати"
+
+#: tfrmprintsetup.gbmargins.caption
+msgid "Margins (mm)"
+msgstr "Поля (мм)"
+
+#: tfrmprintsetup.lblbottom.caption
+msgid "&Bottom:"
+msgstr "&Нижнее:"
+
+#: tfrmprintsetup.lblleft.caption
+msgid "&Left:"
+msgstr "&Левое:"
+
+#: tfrmprintsetup.lblright.caption
+msgid "&Right:"
+msgstr "&Правое:"
+
+#: tfrmprintsetup.lbltop.caption
+msgid "&Top:"
+msgstr "&Верхнее:"
+
 #: tfrmquicksearch.btncancel.caption
 msgctxt "tfrmquicksearch.btncancel.caption"
 msgid "X"
@@ -8660,6 +8684,18 @@ msgstr "&На что указывает"
 msgctxt "TFRMSYMLINK.LBLLINKTOCREATE.CAPTION"
 msgid "&Link name"
 msgstr "&Имя ссылки"
+
+#: tfrmsyncdirsdlg.actdeleteboth.caption
+msgid "Delete on both sides"
+msgstr "Удалить с обеих сторон"
+
+#: tfrmsyncdirsdlg.actdeleteleft.caption
+msgid "<- Delete left"
+msgstr "<- Удалить слева"
+
+#: tfrmsyncdirsdlg.actdeleteright.caption
+msgid "-> Delete right"
+msgstr "-> Удалить справа"
 
 #: tfrmsyncdirsdlg.actselectclear.caption
 msgid "Remove selection"
@@ -9128,6 +9164,14 @@ msgctxt "tfrmviewer.actpreview.caption"
 msgid "Preview"
 msgstr "Предварительный просмотр"
 
+#: tfrmviewer.actprint.caption
+msgid "P&rint..."
+msgstr "Пе&чать..."
+
+#: tfrmviewer.actprintsetup.caption
+msgid "Print &setup..."
+msgstr "Парам&етры печати..."
+
 #: tfrmviewer.actreload.caption
 msgctxt "TFRMVIEWER.ACTRELOAD.CAPTION"
 msgid "Reload"
@@ -9378,10 +9422,6 @@ msgstr "&Файл"
 #: tfrmviewer.miimage.caption
 msgid "&Image"
 msgstr "Изоб&ражение"
-
-#: tfrmviewer.miprint.caption
-msgid "Print..."
-msgstr "Печать..."
 
 #: tfrmviewer.mirotate.caption
 msgid "Rotate"

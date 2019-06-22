@@ -52,6 +52,10 @@ type
     procedure sbMatchBeginningClick(Sender: TObject);
     procedure sbMatchEndingClick(Sender: TObject);
     procedure tglFilterChange(Sender: TObject);
+    procedure btnMouseUp(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure btnCancelMouseUp(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
   private
     Options: TQuickSearchOptions;
     Mode: TQuickSearchMode;
@@ -529,6 +533,7 @@ end;
 
 procedure TfrmQuickSearch.edtSearchChange(Sender: TObject);
 begin
+  Options.Direction := qsdNone;
   DoOnChangeSearch;
 end;
 
@@ -677,6 +682,8 @@ begin
 
   if gQuickFilterSaveSessionModifications then gQuickSearchOptions.SearchCase := Options.SearchCase;
 
+  Options.Direction := qsdNone;
+
   DoOnChangeSearch;
 end;
 
@@ -696,6 +703,8 @@ begin
 
   if gQuickFilterSaveSessionModifications then gQuickSearchOptions.Items := Options.Items;
 
+  Options.Direction := qsdNone;
+
   DoOnChangeSearch;
 end;
 
@@ -708,6 +717,8 @@ begin
 
   if gQuickFilterSaveSessionModifications then gQuickSearchOptions.Match := Options.Match;
 
+  Options.Direction := qsdNone;
+
   DoOnChangeSearch;
 end;
 
@@ -719,6 +730,8 @@ begin
     Exclude(Options.Match, qsmEnding);
 
   if gQuickFilterSaveSessionModifications then gQuickSearchOptions.Match := Options.Match;
+
+  Options.Direction := qsdNone;
 
   DoOnChangeSearch;
 end;
@@ -739,7 +752,22 @@ begin
   else if Active then
     ClearFilter;
 
+  Options.Direction := qsdNone;
+
   DoOnChangeSearch;
+end;
+
+procedure TfrmQuickSearch.btnMouseUp(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  edtSearch.SetFocus;
+end;
+
+procedure TfrmQuickSearch.btnCancelMouseUp(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+  if Self.Visible then
+    edtSearch.SetFocus;
 end;
 
 end.

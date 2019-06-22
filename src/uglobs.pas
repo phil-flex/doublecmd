@@ -163,7 +163,7 @@ type
 
 const
   { Default hotkey list version number }
-  hkVersion = 47;
+  hkVersion = 48;
   // 47 - In "Copy/Move Dialog" context, add the shortcuts "F5" and "F6" for "cm_ToggleSelectionInName".
   // 40 - In "Main" context, added the "Ctrl+Shift+F7" for "cm_AddNewSearch".
   //      In "Find Files" context, changed "cm_Start" that was "Enter" for "F9".
@@ -258,6 +258,7 @@ var
   gMainMenu,
   gButtonBar,
   gToolBarFlat,
+  gMiddleToolBar,
   gDriveBar1,
   gDriveBar2,
   gDriveBarFlat,
@@ -582,6 +583,7 @@ var
   gBookBackgroundColor,
   gBookFontColor: TColor;
   gTextPosition:PtrInt;
+  gPrintMargins: TRect;
 
   { Editor }
   gEditWaitTime: Integer;
@@ -1123,6 +1125,7 @@ begin
       //AddIfNotExists(['Up'],[],'cm_Rotate270');  // how at once add this keys only to Image control?
       //AddIfNotExists(['Down'],[],'cm_Rotate90');
 
+      AddIfNotExists(VK_P, [ssModifier], 'cm_Print');
       AddIfNotExists(VK_A, [ssModifier], 'cm_SelectAll');
       AddIfNotExists(VK_C, [ssModifier], 'cm_CopyToClipboard');
 
@@ -1593,6 +1596,7 @@ begin
   gMainMenu := True;
   gButtonBar := True;
   gToolBarFlat := True;
+  gMiddleToolBar := False;
   gToolBarButtonSize := 24;
   gToolBarIconSize := 16;
   gToolBarShowCaptions := False;
@@ -1644,7 +1648,7 @@ begin
   gUseTrash := True;
   gSkipFileOpError := False;
   gTypeOfDuplicatedRename := drLegacyWithCopy;
-  gShowDialogOnDragDrop := False;
+  gShowDialogOnDragDrop := True;
   gDragAndDropDesiredTextFormat[DropTextRichText_Index].Name:='Richtext format';
   gDragAndDropDesiredTextFormat[DropTextRichText_Index].DesireLevel:=0;
   gDragAndDropDesiredTextFormat[DropTextHtml_Index].Name:='HTML format';
@@ -1802,6 +1806,7 @@ begin
   gBookFontColor := clWhite;
   gTextPosition:= 0;
   gViewerMode:= 0;
+  gPrintMargins:= Classes.Rect(200, 200, 200, 200);
 
   { Editor }
   gEditWaitTime := 2000;
@@ -2490,6 +2495,11 @@ begin
         gToolbarPathToBeRelativeTo := gConfig.GetValue(SubNode, 'PathToBeRelativeTo', gToolbarPathToBeRelativeTo);
         gToolbarPathModifierElements := tToolbarPathModifierElements(GetValue(SubNode, 'PathModifierElements', Integer(gToolbarPathModifierElements)));
       end;
+      SubNode := Node.FindNode('MiddleBar');
+      if Assigned(SubNode) then
+      begin
+        gMiddleToolBar := GetAttr(SubNode, 'Enabled', gMiddleToolBar);
+      end;
       gDriveBar1 := GetValue(Node, 'DriveBar1', gDriveBar1);
       gDriveBar2 := GetValue(Node, 'DriveBar2', gDriveBar2);
       gDriveBarFlat := GetValue(Node, 'DriveBarFlat', gDriveBarFlat);
@@ -2800,6 +2810,7 @@ begin
       gTabSpaces := GetValue(Node, 'TabSpaces', gTabSpaces);
       gMaxTextWidth := GetValue(Node, 'MaxTextWidth', gMaxTextWidth);
       gViewerMode  := GetValue(Node, 'ViewerMode'  , gViewerMode);
+      gPrintMargins := GetValue(Node, 'PrintMargins'  , gPrintMargins);
 
       gImagePaintColor := GetValue(Node, 'PaintColor', gImagePaintColor);
       gBookBackgroundColor := GetValue(Node, 'BackgroundColor', gBookBackgroundColor);
@@ -3127,6 +3138,9 @@ begin
     SetValue(SubNode, 'PathToBeRelativeTo', gToolbarPathToBeRelativeTo);
     SetValue(SubNode, 'PathModifierElements', Integer(gToolbarPathModifierElements));
 
+    SubNode := FindNode(Node, 'MiddleBar', True);
+    SetAttr(SubNode, 'Enabled', gMiddleToolBar);
+
     SetValue(Node, 'DriveBar1', gDriveBar1);
     SetValue(Node, 'DriveBar2', gDriveBar2);
     SetValue(Node, 'DriveBarFlat', gDriveBarFlat);
@@ -3338,6 +3352,7 @@ begin
     SetValue(Node, 'TabSpaces', gTabSpaces);
     SetValue(Node, 'MaxTextWidth', gMaxTextWidth);
     SetValue(Node, 'ViewerMode' , gViewerMode);
+    SetValue(Node, 'PrintMargins', gPrintMargins);
 
     SetValue(Node, 'PaintColor', gImagePaintColor);
     SetValue(Node, 'BackgroundColor', gBookBackgroundColor);
