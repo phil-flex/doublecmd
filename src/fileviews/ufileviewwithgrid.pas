@@ -133,7 +133,7 @@ begin
       if gDirBrackets and (AFile.IsDirectory or AFile.IsLinkToDirectory) then
         S:= '..]'
       else begin
-        S:= '...';
+        S:= '..';
       end;
       Index:= ACanvas.TextFitInfo(AFileName, ATargetWidth - ACanvas.TextWidth(S));
       Result:= UTF8Copy(AFileName, 1, Index) + S;
@@ -143,7 +143,7 @@ end;
 { FitOtherCellText }
 function FitOtherCellText(const sStringToFit:String; ACanvas:TCanvas; ATargetWidth: Integer): String;
 const
-  ELLIPSIS = '...';
+  ELLIPSIS = '..';
 var
   Index: Integer;
   AMaxWidth: Integer;
@@ -750,7 +750,8 @@ var
   AFile: TFile;
   AFileName: String;
 begin
-  if (FSelectedCount > 0) then
+  if not Assigned(FAllDisplayFiles) or (FAllDisplayFiles.Count = 0)
+     or (FSelectedCount > 0) then
     lblDetails.Caption:= EmptyStr
   else
     begin

@@ -2565,12 +2565,15 @@ object frmViewer: TfrmViewer
         Action = actShowGraphics
         RadioItem = True
       end
-      object miDiv1: TMenuItem
-        Caption = '-'
-      end
       object miPlugins: TMenuItem
         Action = actShowPlugins
         RadioItem = True
+      end
+      object miDiv1: TMenuItem
+        Caption = '-'
+      end
+      object miShowCaret: TMenuItem
+        Action = actShowCaret
       end
     end
     object miEncoding: TMenuItem
@@ -2895,6 +2898,11 @@ object frmViewer: TfrmViewer
       Category = 'File'
       Caption = 'P&rint...'
       Enabled = False
+      OnExecute = actExecute
+    end
+    object actShowCaret: TAction
+      Category = 'View'
+      Caption = 'Show text c&ursor'
       OnExecute = actExecute
     end
   end

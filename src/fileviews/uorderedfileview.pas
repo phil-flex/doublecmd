@@ -54,6 +54,7 @@ type
   protected
     lblFilter: TLabel;
     quickSearch: TfrmQuickSearch;
+    FFocusQuickSearch: Boolean;
     FLastActiveFileIndex: PtrInt;
     FLastTopRowIndex: PtrInt;
     FRangeSelecting: Boolean;
@@ -100,6 +101,7 @@ type
     procedure CloneTo(AFileView: TFileView); override;
     procedure SetActiveFile(aFilePath: String); override; overload;
     procedure ChangePathAndSetActiveFile(aFilePath: String); override; overload;
+    procedure SetFocus; override;
 
   published  // commands
     procedure cm_QuickSearch(const Params: array of string);
@@ -132,7 +134,7 @@ const
 
 procedure TOrderedFileView.AfterChangePath;
 begin
-  if Filtered then
+  if Filtered or quickSearch.Visible then
   begin
     FFileFilter:= EmptyStr;
     quickSearch.Finalize;
@@ -153,6 +155,11 @@ begin
       FRangeSelectionStartIndex := Self.FRangeSelectionStartIndex;
       FRangeSelectionEndIndex := Self.FRangeSelectionEndIndex;
       FRangeSelectionState := Self.FRangeSelectionState;
+
+      lblFilter.Caption := Self.lblFilter.Caption;
+      lblFilter.Visible := Self.lblFilter.Visible;
+      Self.quickSearch.CloneTo(quickSearch);
+      FFocusQuickSearch := Self.quickSearch.edtSearch.Focused;
     end;
   end;
 end;
@@ -278,6 +285,11 @@ begin
   case Key of
     VK_ESCAPE:
       begin
+        if quickSearch.Visible and not Filtered then
+        begin
+          quickSearch.Finalize;
+          Key := 0;
+        end;
         if Filtered and (GetCurrentWorkType <> fvwtNone) then
         begin
           pmOperationsCancel.Items.Clear;
@@ -508,7 +520,8 @@ end;
 
 procedure TOrderedFileView.quickSearchChangeFilter(Sender: TObject; AFilterText: String; const AFilterOptions: TQuickSearchOptions);
 begin
-  Active := True;
+  if not ((FFileFilter = '') and (AFilterText = '')) then
+    Active := True;
 
   // position in file before filtering, otherwise position could be lost if
   // current file is filtered out causing jumps
@@ -781,6 +794,17 @@ begin
   begin
     CurrentPath := ExtractFileDir(aFilePath);
     SetActiveFile(ExtractFileName(aFilePath));
+  end;
+end;
+
+procedure TOrderedFileView.SetFocus;
+begin
+  inherited SetFocus;
+  if FFocusQuickSearch then
+  begin
+    FFocusQuickSearch := False;
+    if quickSearch.Visible then
+      quickSearch.edtSearch.SetFocus;
   end;
 end;
 

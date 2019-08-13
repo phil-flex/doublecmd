@@ -91,6 +91,7 @@ var
   Y: Int32;
   sStr: String;
   tFile: THandle;
+  LastLine: Boolean;
 begin
   FBitmap:= TBitmap.Create;
   with FBitmap do
@@ -104,12 +105,11 @@ begin
     if (tFile <> feInvalidHandle) then
     begin
       Y:= 0;
-      while (Y < gThumbSize.cy) do
-      begin
-        if not FileReadLn(tFile, sStr) then Break;
+      repeat
+        LastLine := not FileReadLn(tFile, sStr);
         Canvas.TextOut(0, Y, sStr);
         Y += Canvas.TextHeight(sStr) + 2;
-      end;
+      until (Y >= gThumbSize.cy) or LastLine;
       FileClose(tFile);
     end;
   end;
@@ -301,13 +301,14 @@ begin
             DCDebug(['Cannot save thumbnail to file "', sThumbFileName, '": ', e.Message]);
         end;
       end;
-      if not Assigned(Result) then Raise Exception.Create(EmptyStr);
     finally
       FreeAndNil(Picture);
     end;
   except
-    Result:= PixMapManager.LoadBitmapEnhanced(sFullPathToFile, gIconsSize, True, FBackColor);
+    Result:= nil;
   end;
+  if not Assigned(Result) then
+    Result:= PixMapManager.LoadBitmapEnhanced(sFullPathToFile, gIconsSize, True, FBackColor);
 end;
 
 function TThumbnailManager.CreatePreview(const FullPathToFile: String): TBitmap;

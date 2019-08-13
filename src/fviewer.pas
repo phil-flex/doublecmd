@@ -60,7 +60,7 @@ uses
   LCLProc, Menus, Dialogs, ExtDlgs, StdCtrls, Buttons, ColorBox, Spin,
   Grids, ActnList, viewercontrol, GifAnim, fFindView, WLXPlugin, uWLXModule,
   uFileSource, fModView, Types, uThumbnails, uFormCommands, uOSForms,Clipbrd,
-  uExifReader, KASStatusBar;
+  uExifReader, KASStatusBar, uShowForm;
 
 type
 
@@ -92,6 +92,7 @@ type
     actCopyToClipboardFormatted: TAction;
     actChangeEncoding: TAction;
     actAutoReload: TAction;
+    actShowCaret: TAction;
     actPrint: TAction;
     actPrintSetup: TAction;
     actShowAsDec: TAction;
@@ -144,6 +145,7 @@ type
     gboxSlideShow: TGroupBox;
     GifAnim: TGifAnim;
     memFolder: TMemo;
+    miShowCaret: TMenuItem;
     miPrintSetup: TMenuItem;
     miAutoReload: TMenuItem;
     pmiCopyFormatted: TMenuItem;
@@ -318,7 +320,7 @@ type
     ImgEdit: Boolean;
     FThumbSize: TSize;
     FFindDialog:TfrmFindView;
-    FFileSource: IFileSource;
+    FWaitData: TWaitData;
     FLastSearchPos: PtrInt;
     tmp_all: TCustomBitmap;
     FModSizeDialog: TfrmModView;
@@ -364,7 +366,7 @@ type
     procedure WMSetFocus(var Message: TLMSetFocus); message LM_SETFOCUS;
 
   public
-    constructor Create(TheOwner: TComponent; aFileSource: IFileSource; aQuickView: Boolean = False); overload;
+    constructor Create(TheOwner: TComponent; aWaitData: TWaitData; aQuickView: Boolean = False); overload;
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
 
@@ -432,10 +434,10 @@ type
 
     procedure cm_Print(const Params:array of string);
     procedure cm_PrintSetup(const Params:array of string);
-
+    procedure cm_ShowCaret(const Params: array of string);
   end;
 
-procedure ShowViewer(const FilesToView:TStringList; const aFileSource: IFileSource = nil);
+procedure ShowViewer(const FilesToView:TStringList; WaitData: TWaitData = nil);
 
 implementation
 
@@ -479,12 +481,12 @@ type
     class procedure Finish(var Thread: TThread);
   end;
 
-procedure ShowViewer(const FilesToView:TStringList; const aFileSource: IFileSource);
+procedure ShowViewer(const FilesToView: TStringList; WaitData: TWaitData);
 var
   Viewer: TfrmViewer;
 begin
   //DCDebug('ShowViewer - Using Internal');
-  Viewer := TfrmViewer.Create(Application, aFileSource);
+  Viewer := TfrmViewer.Create(Application, WaitData);
   Viewer.FileList.Assign(FilesToView);// Make a copy of the list
   Viewer.DrawPreview.RowCount:= Viewer.FileList.Count;
   Viewer.actMoveFile.Enabled := FilesToView.Count > 1;
@@ -498,14 +500,12 @@ begin
     //5: Mode:= vcmBook;
   end;
   Viewer.LoadFile(0);
-  Viewer.Show;
-  Viewer.FormResize(Viewer); //<--Was not supposed to be necessary, but this fix a problem with old "hpg_ed" plugin that needed a resize to be spotted in correct position. Through 27 plugins tried, was the only one required that. :-(
 
-  if Viewer.miPreview.Checked then
-    begin
-      Viewer.miPreview.Checked := not(Viewer.miPreview.Checked);
-      Viewer.cm_Preview(['']);
-    end;
+  if (WaitData = nil) then
+    Viewer.ShowOnTop
+  else begin
+    WaitData.ShowOnTop(Viewer);
+  end;
 end;
 
 { TDrawGrid }
@@ -589,12 +589,12 @@ begin
   end;
 end;
 
-constructor TfrmViewer.Create(TheOwner: TComponent; aFileSource: IFileSource;
+constructor TfrmViewer.Create(TheOwner: TComponent; aWaitData: TWaitData;
   aQuickView: Boolean);
 begin
   bQuickView:= aQuickView;
   inherited Create(TheOwner);
-  FFileSource := aFileSource;
+  FWaitData := aWaitData;
   FLastSearchPos := -1;
   FZoomFactor := 1.0;
   ActivePlugin := -1;
@@ -606,6 +606,8 @@ begin
   FontOptionsToFont(gFonts[dcfMain], memFolder.Font);
   memFolder.Color:= gBackColor;
 
+  actShowCaret.Checked := gShowCaret;
+  ViewerControl.ShowCaret := gShowCaret;
   ViewerControl.TabSpaces := gTabSpaces;
   ViewerControl.MaxTextWidth := gMaxTextWidth;
 end;
@@ -622,7 +624,7 @@ begin
   FreeAndNil(FThumbnailManager);
   inherited Destroy;
   FreeAndNil(WlxPlugins);
-  FFileSource := nil; // If this is temp file source, the files will be deleted.
+  FWaitData.Free; // If this is temp file source, the files will be deleted.
   tmp_all.Free;
 end;
 
@@ -774,6 +776,15 @@ begin
     pnlPreview.Visible:= False;
   end;
 {$ENDIF}
+  // Was not supposed to be necessary, but this fix a problem with old "hpg_ed" plugin
+  // that needed a resize to be spotted in correct position. Through 27 plugins tried, was the only one required that. :-(
+  FormResize(Self);
+
+  if miPreview.Checked then
+  begin
+    miPreview.Checked := not (miPreview.Checked);
+    cm_Preview(['']);
+  end;
 end;
 
 procedure TfrmViewer.GifAnimMouseDown(Sender: TObject; Button: TMouseButton;
@@ -2228,6 +2239,8 @@ begin
 end;
 
 procedure TfrmViewer.DoSearch(bQuickSearch: Boolean; bSearchBackwards: Boolean);
+const
+  bNewSearch: Boolean = False;
 var
   T: QWord;
   PAdr: PtrInt;
@@ -2299,22 +2312,24 @@ begin
       end;
 
       // Choose search start position.
-      if not bSearchBackwards then
+      if FLastSearchPos <> ViewerControl.CaretPos then
+        FLastSearchPos := ViewerControl.CaretPos
+      else if not bSearchBackwards then
       begin
         iSearchParameter:= Length(sSearchTextA);
-        if FLastSearchPos = -1 then
+        if bNewSearch then
           FLastSearchPos := 0
         else if FLastSearchPos < ViewerControl.FileSize - iSearchParameter then
           FLastSearchPos := FLastSearchPos + iSearchParameter;
       end
-      else
-      begin
+      else begin
         iSearchParameter:= IfThen(ViewerControl.Encoding in ViewerEncodingDoubleByte, 2, 1);
-        if FLastSearchPos = -1 then
+        if bNewSearch then
           FLastSearchPos := ViewerControl.FileSize - 1
         else if FLastSearchPos >= iSearchParameter then
           FLastSearchPos := FLastSearchPos - iSearchParameter;
       end;
+      bNewSearch := False;
 
       // Using standard search algorithm if hex or case sensitive and multibyte
       if FFindDialog.chkHex.Checked or (FFindDialog.cbCaseSens.Checked and (ViewerControl.Encoding in ViewerEncodingMultiByte)) then
@@ -2366,6 +2381,7 @@ begin
           // Text found, show it in ViewerControl if not visible
           ViewerControl.MakeVisible(FLastSearchPos);
           // Select found text.
+          ViewerControl.CaretPos := FLastSearchPos;
           ViewerControl.SelectText(FLastSearchPos, FLastSearchPos + Length(sSearchTextA));
         end
       else
@@ -2374,7 +2390,8 @@ begin
           if (ViewerControl.Selection <> sSearchTextU) then begin
             ViewerControl.SelectText(0, 0);
           end;
-          FLastSearchPos := -1;
+          bNewSearch := True;
+          FLastSearchPos := ViewerControl.CaretPos;
         end;
     end;
 end;
@@ -2813,12 +2830,7 @@ end;
 
 procedure TfrmViewer.cm_Find(const Params: array of string);
 begin
-  //if (not (bImage or bAnimation)) then
-  if not miGraphics.Checked then
-  begin
-    FLastSearchPos := -1;
-    DoSearch(False, False);
-  end;
+  if not miGraphics.Checked then DoSearch(False, False);
 end;
 
 procedure TfrmViewer.cm_FindNext(const Params: array of string);
@@ -2924,6 +2936,16 @@ begin
     ShowModal;
   finally
     Free;
+  end;
+end;
+
+procedure TfrmViewer.cm_ShowCaret(const Params: array of string);
+begin
+  if not miGraphics.Checked then
+  begin
+    gShowCaret:= not gShowCaret;
+    actShowCaret.Checked:= gShowCaret;
+    ViewerControl.ShowCaret:= gShowCaret;
   end;
 end;
 

@@ -747,7 +747,7 @@ type
     procedure ConvertToolbarBarConfig(BarFileName: String);
     procedure ConvertIniToolbarItem(Loader: TKASToolBarIniLoader; var Item: TKASToolItem; const Shortcut: String);
     procedure CreateDefaultToolbar;
-    procedure EditToolbarButton(Button: TKASToolButton);
+    procedure EditToolbarButton(Toolbar: TKASToolBar; Button: TKASToolButton);
     procedure ToolbarExecuteCommand(ToolItem: TKASToolItem);
     procedure ToolbarExecuteProgram(ToolItem: TKASToolItem);
     procedure LeftDriveBarExecuteDrive(ToolItem: TKASToolItem);
@@ -838,13 +838,9 @@ type
     procedure LoadWindowState;
     procedure SaveWindowState;
 
-    procedure LoadToolbar(AToolBar: TKASToolBar; const APath: String);
-    procedure SaveToolBar(AToolBar: TKASToolBar; const APath: String);
+    procedure LoadToolbar(AToolBar: TKASToolBar);
+    procedure SaveToolBar(AToolBar: TKASToolBar);
 
-    procedure LoadMainToolbar;
-    procedure SaveMainToolBar;
-    procedure LoadMiddleToolbar;
-    procedure SaveMiddleToolBar;
     procedure ShowLogWindow(Data: PtrInt);
     function  IsCommandLineVisible: Boolean;
     procedure ShowCommandLine(AFocus: Boolean);
@@ -897,7 +893,8 @@ uses
   uShellExecute, fSymLink, fHardLink, uExceptions, uUniqueInstance, Clipbrd, ShellCtrls,
   uFileSourceOperationOptionsUI, uDebug, uHotkeyManager, uFileSourceUtil, uTempFileSystemFileSource,
   Laz2_XMLRead, DCOSUtils, DCStrUtils, fOptions, fOptionsFrame, fOptionsToolbar, uClassesEx,
-  uHotDir, uFileSorting, DCBasicTypes, foptionsDirectoryHotlist, uConnectionManager
+  uHotDir, uFileSorting, DCBasicTypes, foptionsDirectoryHotlist, uConnectionManager,
+  fOptionsToolbarBase, fOptionsToolbarMiddle
   {$IFDEF COLUMNSFILEVIEW_VTV}
   , uColumnsFileViewVtv
   {$ELSE}
@@ -1262,7 +1259,7 @@ begin
       ToolBarLoader := TKASToolBarIniLoader.Create(Commands.Commands);
       try
         ToolBarLoader.Load(BarFileName, MainToolBar, nil, @ConvertIniToolbarItem);
-        SaveMainToolBar;
+        SaveToolBar(MainToolBar);
         SaveGlobs; // Save toolbar and hotkeys
         mbRenameFile(BarFileName, BarFileName + '.obsolete');
       finally
@@ -1332,20 +1329,27 @@ begin
   btnDriveMouseUp(Sender, Button, Shift, X, Y);
 end;
 
-procedure TfrmMain.EditToolbarButton(Button: TKASToolButton);
+procedure TfrmMain.EditToolbarButton(Toolbar: TKASToolBar;
+  Button: TKASToolButton);
 var
   Editor: TOptionsEditor;
   Options: IOptionsDialog;
+  EditorClass: TOptionsEditorClass;
 begin
-  Options := ShowOptions(TfrmOptionsToolbar);
+  if ToolBar = MainToolBar then
+    EditorClass := TfrmOptionsToolbar
+  else begin
+    EditorClass := TfrmOptionsToolbarMiddle;
+  end;
+  Options := ShowOptions(EditorClass);
   Application.ProcessMessages;
-  Editor := Options.GetEditor(TfrmOptionsToolbar);
+  Editor := Options.GetEditor(EditorClass);
   if Assigned(Button) then
   begin
-    (Editor as TfrmOptionsToolbar).SelectButton(Button.Tag);
+    (Editor as TfrmOptionsToolbarBase).SelectButton(Button.Tag);
   end;
   Application.ProcessMessages;
-  if Editor.CanFocus then  Editor.SetFocus;
+  if Editor.CanFocus then Editor.SetFocus;
 end;
 
 procedure TfrmMain.lblAllProgressPctClick(Sender: TObject);
@@ -1359,10 +1363,12 @@ var
   SelectedFiles: TFiles = nil;
   Param: string;
   ToolItem: TKASToolItem;
+  Toolbar: TKASToolBar;
 begin
+  Toolbar:= (Sender as TKASToolButton).ToolBar;
   if (ssShift in GetKeyShiftState) then
     // Button was moved.
-    SaveMainToolBar
+    SaveToolBar(Toolbar)
   else
     if Sender is TKASToolButton and not Draging then
       begin
@@ -1402,7 +1408,9 @@ var
   aFile: TFile;
   tmp: Integer;
   ToolItem: TKASProgramItem;
+  Toolbar: TKASToolBar;
 begin
+  Toolbar:= (Sender as TKASToolButton).ToolBar;
   if (ssShift in GetKeyShiftState) then
     begin
       if not (Source is TKASToolButton) and not Draging then
@@ -1417,7 +1425,7 @@ begin
                 ToolItem.Icon := aFile.FullPath;
                 ToolItem.Hint := ExtractOnlyFileName(aFile.Name);
                 // ToolItem.Text := ExtractOnlyFileName(aFile.Name);
-                MainToolBar.InsertButton(Sender as TKASToolButton, ToolItem);
+                Toolbar.InsertButton(Sender as TKASToolButton, ToolItem);
 
                 NumberOfMoveButton := (Sender as TSpeedButton).Tag;
                 NumberOfNewMoveButton := (Sender as TSpeedButton).Tag-1;
@@ -1437,11 +1445,11 @@ begin
         begin
           Draging := True;
           if Source is TSpeedButton then
-            MainToolBar.MoveButton((Source as TSpeedButton).Tag, (Sender as TSpeedButton).Tag)
+            Toolbar.MoveButton((Source as TSpeedButton).Tag, (Sender as TSpeedButton).Tag)
           else
             begin
               tmp:= (Sender as TSpeedButton).Tag;
-              MainToolBar.MoveButton(NumberOfNewMoveButton, (Sender as TSpeedButton).Tag);
+              Toolbar.MoveButton(NumberOfNewMoveButton, (Sender as TSpeedButton).Tag);
               NumberOfNewMoveButton := tmp;
             end;
           NumberOfMoveButton := (Sender as TSpeedButton).Tag;
@@ -2076,6 +2084,7 @@ procedure TfrmMain.MainToolBarDragDrop(Sender, Source: TObject; X, Y: Integer);
 var
   aFile: TFile;
   ToolItem: TKASProgramItem;
+  Toolbar: TKASToolBar absolute Sender;
 begin
   if not (Source is TSpeedButton) and not Draging and (ssShift in GetKeyShiftState) then
     begin
@@ -2089,13 +2098,13 @@ begin
           ToolItem.Hint := ExtractOnlyFileName(aFile.Name);
           // ToolItem.Text := ExtractOnlyFileName(aFile.Name);
           ToolItem.Icon := GetToolbarFilenameToSave(tpmeIcon, aFile.FullPath);
-          MainToolBar.AddButton(ToolItem);
+          Toolbar.AddButton(ToolItem);
         end;
       finally
         FreeAndNil(aFile);
       end;
     end;
-  SaveMainToolBar;
+  SaveToolBar(Toolbar);
   Draging := False;
 end;
 
@@ -2136,6 +2145,7 @@ end;
 
 procedure TfrmMain.tbDeleteClick(Sender: TObject);
 var
+  Toolbar: TKASToolBar;
   Button: TKASToolButton;
 begin
   Button := TKASToolButton(pmToolBar.Tag);
@@ -2143,8 +2153,9 @@ begin
   begin
     if msgYesNo(Format(rsMsgDelSel, [Button.Hint])) then
     begin
-       MainToolBar.RemoveButton(Button);
-       SaveMainToolBar;
+       Toolbar:= Button.ToolBar;
+       ToolBar.RemoveButton(Button);
+       SaveToolBar(Toolbar);
     end;
   end;
 end;
@@ -2182,9 +2193,14 @@ begin
         Point.Y := Y;
         Point := (Sender as TControl).ClientToScreen(Point);
         if Sender is TKASToolButton then
-          pmToolBar.Tag := PtrInt(Sender)
-        else
+        begin
+          pmToolBar.Tag := PtrInt(Sender);
+          pmToolBar.PopupComponent := TKASToolButton(Sender).ToolBar;
+        end
+        else begin
           pmToolBar.Tag := 0;
+          pmToolBar.PopupComponent := TComponent(Sender);
+        end;
         pmToolBar.PopUp(Point.X, Point.Y);
       end;
   end;
@@ -2814,8 +2830,10 @@ begin
 end;
 
 procedure TfrmMain.CreateDefaultToolbar;
+var
+  AToolbar: TKASToolBar;
 
-  procedure AddCommand(AToolbar: TKASToolBar; Command: String);
+  procedure AddCommand(const Command: String);
   var
     CommandItem: TKASCommandItem;
   begin
@@ -2826,7 +2844,7 @@ procedure TfrmMain.CreateDefaultToolbar;
     AToolbar.AddButton(CommandItem);
   end;
 
-  procedure AddSeparator(AToolbar: TKASToolBar);
+  procedure AddSeparator;
   begin
     AToolbar.AddButton(TKASSeparatorItem.Create);
   end;
@@ -2836,49 +2854,51 @@ var
 begin
   if MainToolBar.ButtonCount = 0 then
   begin
-    MainToolBarNode := gConfig.FindNode(gConfig.RootNode, 'Toolbars/MainToolbar', False);
+    MainToolBarNode := gConfig.FindNode(gConfig.RootNode, 'Toolbars/' + MainToolBar.Name, False);
     if not Assigned(MainToolBarNode) then
     begin
-      AddCommand(MainToolBar, 'cm_Refresh');
-      AddCommand(MainToolBar, 'cm_RunTerm');
-      AddCommand(MainToolBar, 'cm_Options');
-      AddSeparator(MainToolBar);
-      AddCommand(MainToolBar, 'cm_BriefView');
-      AddCommand(MainToolBar, 'cm_ColumnsView');
-      AddCommand(MainToolBar, 'cm_ThumbnailsView');
-      AddSeparator(MainToolBar);
-      AddCommand(MainToolBar, 'cm_FlatView');
-      AddSeparator(MainToolBar);
-      AddCommand(MainToolBar, 'cm_ViewHistoryPrev');
-      AddCommand(MainToolBar, 'cm_ViewHistoryNext');
-      AddSeparator(MainToolBar);
-      AddCommand(MainToolBar, 'cm_MarkPlus');
-      AddCommand(MainToolBar, 'cm_MarkMinus');
-      AddCommand(MainToolBar, 'cm_MarkInvert');
-      AddSeparator(MainToolBar);
-      AddCommand(MainToolBar, 'cm_PackFiles');
-      AddCommand(MainToolBar, 'cm_ExtractFiles');
-      AddSeparator(MainToolBar);
-      AddCommand(MainToolBar, 'cm_Search');
-      AddCommand(MainToolBar, 'cm_MultiRename');
-      AddCommand(MainToolBar, 'cm_SyncDirs');
-      AddCommand(MainToolBar, 'cm_CopyFullNamesToClip');
-      SaveMainToolBar;
+      AToolbar := MainToolBar;
+      AddCommand('cm_Refresh');
+      AddCommand('cm_RunTerm');
+      AddCommand('cm_Options');
+      AddSeparator;
+      AddCommand('cm_BriefView');
+      AddCommand('cm_ColumnsView');
+      AddCommand('cm_ThumbnailsView');
+      AddSeparator;
+      AddCommand('cm_FlatView');
+      AddSeparator;
+      AddCommand('cm_ViewHistoryPrev');
+      AddCommand('cm_ViewHistoryNext');
+      AddSeparator;
+      AddCommand('cm_MarkPlus');
+      AddCommand('cm_MarkMinus');
+      AddCommand('cm_MarkInvert');
+      AddSeparator;
+      AddCommand('cm_PackFiles');
+      AddCommand('cm_ExtractFiles');
+      AddSeparator;
+      AddCommand('cm_Search');
+      AddCommand('cm_MultiRename');
+      AddCommand('cm_SyncDirs');
+      AddCommand('cm_CopyFullNamesToClip');
+      SaveToolBar(MainToolBar);
     end;
   end;
   if MiddleToolBar.ButtonCount = 0 then
   begin
-    MainToolBarNode := gConfig.FindNode(gConfig.RootNode, 'Toolbars/MiddleToolbar', False);
+    MainToolBarNode := gConfig.FindNode(gConfig.RootNode, 'Toolbars/' + MiddleToolBar.Name, False);
     if not Assigned(MainToolBarNode) then
     begin
-      AddCommand(MiddleToolBar, 'cm_View');
-      AddCommand(MiddleToolBar, 'cm_Edit');
-      AddCommand(MiddleToolBar, 'cm_Copy');
-      AddCommand(MiddleToolBar, 'cm_Rename');
-      AddSeparator(MiddleToolBar);
-      AddCommand(MiddleToolBar, 'cm_PackFiles');
-      AddCommand(MiddleToolBar, 'cm_MakeDir');
-      SaveMiddleToolBar;
+      AToolbar := MiddleToolBar;
+      AddCommand('cm_View');
+      AddCommand('cm_Edit');
+      AddCommand('cm_Copy');
+      AddCommand('cm_Rename');
+      AddSeparator;
+      AddCommand('cm_PackFiles');
+      AddCommand('cm_MakeDir');
+      SaveToolBar(MiddleToolBar);
     end;
   end;
 end;
@@ -4291,7 +4311,7 @@ end;
 
 procedure TfrmMain.UpdateTreeViewPath;
 begin
-  if (gSeparateTree = False) then Exit;
+  if (ShellTreeView = nil) then Exit;
   if (ShellTreeView.Tag <> 0) then Exit;
   if (fspDirectAccess in ActiveFrame.FileSource.Properties) then
   try
@@ -4925,8 +4945,11 @@ begin
 
     (* Middle Tool Bar *)
     MiddleToolbar.Visible:= gMiddleToolBar;
-    MiddleToolbar.Flat:= gToolBarFlat;
-    LoadMiddleToolbar;
+    MiddleToolbar.Flat:= gMiddleToolBarFlat;
+    MiddleToolbar.GlyphSize:= gMiddleToolBarIconSize;
+    MiddleToolbar.ShowCaptions:= gMiddleToolBarShowCaptions;
+    MiddleToolbar.SetButtonSize(gMiddleToolBarButtonSize, gMiddleToolBarButtonSize);
+    LoadToolbar(MiddleToolBar);
 
     pnlLeftResize(pnlLeft);
     pnlNotebooksResize(pnlNotebooks);
@@ -4969,7 +4992,7 @@ begin
     MainToolBar.GlyphSize:= gToolBarIconSize;
     MainToolBar.ShowCaptions:= gToolBarShowCaptions;
     MainToolBar.SetButtonSize(gToolBarButtonSize, gToolBarButtonSize);
-    LoadMainToolbar;
+    LoadToolbar(MainToolBar);
 
     btnLeftDrive.Visible := gDrivesListButton;
     btnLeftDrive.Flat := gInterfaceFlat;
@@ -5189,10 +5212,12 @@ var
   Serializer: TKASToolBarSerializer = nil;
   Stream: TStringStream = nil;
   Button: TKASToolButton;
+  Toolbar: TKASToolBar;
 begin
   Button := TKASToolButton(pmToolBar.Tag);
   if Assigned(Button) then
   try
+    Toolbar := Button.ToolBar;
     ToolItem := Button.ToolItem;
 
     // Create a copy so that ID of the button is different.
@@ -5209,9 +5234,9 @@ begin
     Clipboard.SetFormat(PredefinedClipboardFormat(pcfText), Stream);
 
     if Sender = tbCut then
-      MainToolBar.RemoveButton(Button);
+      Toolbar.RemoveButton(Button);
 
-    SaveMainToolBar;
+    SaveToolBar(Toolbar);
   finally
     ItemClone.Free;
     Serializer.Free;
@@ -5221,7 +5246,7 @@ end;
 
 procedure TfrmMain.tbEditClick(Sender: TObject);
 begin
-  EditToolbarButton(TKASToolButton(pmToolBar.Tag));
+  EditToolbarButton(TKASToolBar(pmToolBar.PopupComponent), TKASToolButton(pmToolBar.Tag));
 end;
 
 procedure TfrmMain.OnUniqueInstanceMessage(Sender: TObject; Params: TCommandLineParams);
@@ -5240,11 +5265,13 @@ var
   Stream: TStringStream = nil;
   Pasted: Boolean = False;
   Button: TKASToolButton;
+  Toolbar: TKASToolBar;
 begin
   Stream := TStringStream.Create('');
   if Clipboard.GetFormat(PredefinedClipboardFormat(pcfText), Stream) then
   try
     Button := TKASToolButton(pmToolBar.Tag);
+    Toolbar := TKASToolBar(pmToolBar.PopupComponent);
 
     // Cut any trailing zeros.
     while Stream.DataString[Length(Stream.DataString)] = #0 do
@@ -5265,8 +5292,8 @@ begin
         ProgramItem.Icon      := Data[3];
         ProgramItem.Hint      := Data[4];
         ProgramItem.StartPath := Data[5];
-        MainToolBar.InsertButton(Button, ProgramItem);
-        SaveMainToolBar;
+        Toolbar.InsertButton(Button, ProgramItem);
+        SaveToolBar(Toolbar);
         Pasted := True;
       end;
     end
@@ -5277,8 +5304,8 @@ begin
       Loader := TKASToolBarExtendedLoader.Create(Commands.Commands);
       try
         ToolItem := Serializer.Deserialize(Stream, Loader);
-        MainToolBar.InsertButton(Button, ToolItem);
-        SaveMainToolBar;
+        Toolbar.InsertButton(Button, ToolItem);
+        SaveToolBar(Toolbar);
         Pasted := True;
       except
         on EXMLReadError do;
@@ -5623,7 +5650,7 @@ begin
   gConfig.SetValue(ANode, 'Splitter', FMainSplitterPos);
 end;
 
-procedure TfrmMain.LoadToolbar(AToolBar: TKASToolBar; const APath: String);
+procedure TfrmMain.LoadToolbar(AToolBar: TKASToolBar);
 var
   ToolBarLoader: TKASToolBarExtendedLoader;
   ToolBarNode: TXmlNode;
@@ -5632,7 +5659,7 @@ begin
   ToolBarLoader := TKASToolBarExtendedLoader.Create(Commands.Commands);
   try
     AToolBar.Clear;
-    ToolBarNode := gConfig.FindNode(gConfig.RootNode, APath, False);
+    ToolBarNode := gConfig.FindNode(gConfig.RootNode, 'Toolbars/' + AToolBar.Name, False);
     if Assigned(ToolBarNode) then
       AToolBar.LoadConfiguration(gConfig, ToolBarNode, ToolBarLoader, tocl_FlushCurrentToolbarContent);
   finally
@@ -5641,33 +5668,13 @@ begin
   end;
 end;
 
-procedure TfrmMain.SaveToolBar(AToolBar: TKASToolBar; const APath: String);
+procedure TfrmMain.SaveToolBar(AToolBar: TKASToolBar);
 var
   ToolBarNode: TXmlNode;
 begin
-  ToolBarNode := gConfig.FindNode(gConfig.RootNode, APath, True);
+  ToolBarNode := gConfig.FindNode(gConfig.RootNode, 'Toolbars/' + AToolBar.Name, True);
   gConfig.ClearNode(ToolBarNode);
   AToolBar.SaveConfiguration(gConfig, ToolBarNode);
-end;
-
-procedure TfrmMain.LoadMainToolbar;
-begin
-  LoadToolbar(MainToolBar, 'Toolbars/MainToolbar');
-end;
-
-procedure TfrmMain.SaveMainToolBar;
-begin
-  SaveToolBar(MainToolBar, 'Toolbars/MainToolbar');
-end;
-
-procedure TfrmMain.LoadMiddleToolbar;
-begin
-  LoadToolbar(MiddleToolBar, 'Toolbars/MiddleToolbar');
-end;
-
-procedure TfrmMain.SaveMiddleToolBar;
-begin
-  SaveToolBar(MiddleToolBar, 'Toolbars/MiddleToolbar');
 end;
 
 procedure TfrmMain.ShowLogWindow(Data: PtrInt);
@@ -5696,7 +5703,7 @@ begin
 
     if gSaveWindowState then SaveWindowState;
 
-    if gButtonBar then SaveMainToolBar;
+    if gButtonBar then SaveToolBar(MainToolBar);
 
     SaveGlobs; // Should be last, writes configuration file
   except

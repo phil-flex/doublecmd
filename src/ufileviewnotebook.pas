@@ -146,6 +146,7 @@ type
     procedure ActivatePrevTab;
     procedure ActivateNextTab;
     procedure ActivateTabByIndex(Index: Integer);
+    function IndexOfPageAt(P: TPoint): Integer; override;
 
     procedure DragDrop(Source: TObject; X,Y: Integer); override;
     procedure DragOver(Source: TObject; X,Y: Integer; State: TDragState;
@@ -565,6 +566,12 @@ begin
     Page[Index].MakeActive;
 end;
 
+function TFileViewNotebook.IndexOfPageAt(P: TPoint): Integer;
+begin
+  Result:= inherited IndexOfPageAt(P);
+  if (Result >= PageCount) then Result:= -1;
+end;
+
 procedure TFileViewNotebook.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 {$IF DEFINED(LCLGTK2)}
 var
@@ -699,6 +706,7 @@ var
 begin
   if (Source is TFileViewNotebook) then
   begin
+    SourceNotebook := TFileViewNotebook(Source);
     ATabIndex := IndexOfPageAt(Classes.Point(X, Y));
 
     if Source = Self then
@@ -707,10 +715,9 @@ begin
       if ATabIndex <> -1 then
         Tabs.Move(FDraggedPageIndex, ATabIndex);
     end
-    else
+    else if (SourceNotebook.FDraggedPageIndex < SourceNotebook.PageCount) then
     begin
       // Move page between panels.
-      SourceNotebook := (Source as TFileViewNotebook);
       DraggedPage := SourceNotebook.Page[SourceNotebook.FDraggedPageIndex];
 
       if ATabIndex = -1 then
