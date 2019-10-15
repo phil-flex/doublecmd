@@ -84,6 +84,10 @@ procedure mbWaitLabelChange(const sDrv: String; const sCurLabel: String);
 }
 procedure mbCloseCD(const sDrv: String);
 function mbDriveBusType(Drive: AnsiChar): UInt32;
+{en
+   Get physical drive serial number
+}
+function mbGetDriveSerialNumber(Drive: AnsiChar): String;
 procedure mbDriveUnlock(const sDrv: String);
 {en
    Get remote file name by local file name
@@ -135,7 +139,7 @@ function GetAsyncKeyStateEx(vKey: Integer): Boolean;
    process is a member of the Administrators local group.
    @returns(The function returns @true if caller has Administrators local group, @false otherwise)
 }
-function IsUserAdmin: LongBool;
+function IsUserAdmin: TDuplicates;
 {en
    This routine returns @true if the caller's process is running in the remote desktop session
 }
@@ -425,6 +429,9 @@ begin
   mciSendCommandA(OpenParms.wDeviceID, MCI_CLOSE, MCI_OPEN_TYPE or MCI_OPEN_ELEMENT, DWORD_PTR(@OpenParms));
 end;
 
+const
+  IOCTL_STORAGE_QUERY_PROPERTY = $2D1400;
+
 type
   STORAGE_PROPERTY_QUERY = record
     PropertyId: DWORD;
@@ -449,8 +456,6 @@ type
   end;
 
 function mbDriveBusType(Drive: AnsiChar): UInt32;
-const
-  IOCTL_STORAGE_QUERY_PROPERTY = $2D1400;
 var
   Dummy: DWORD;
   Handle: THandle;
@@ -475,6 +480,37 @@ begin
                         @Dummy, nil)) then
     begin
       Result := Descr.BusType;
+    end;
+
+    CloseHandle(Handle);
+  end;
+end;
+
+function mbGetDriveSerialNumber(Drive: AnsiChar): String;
+var
+  Handle: THandle;
+  dwBytesReturned: DWORD;
+  Query: STORAGE_PROPERTY_QUERY;
+  ABuffer: array[0..4095] of Byte;
+  VolumePath: UnicodeString = '\\.\X:';
+  Descr: STORAGE_DEVICE_DESCRIPTOR absolute ABuffer;
+begin
+  Result:= EmptyStr;
+  VolumePath[5] := WideChar(Drive);
+  Handle:= CreateFileW(PWideChar(VolumePath), 0,
+                      FILE_SHARE_READ or FILE_SHARE_WRITE, nil, OPEN_EXISTING, 0, 0);
+
+  if Handle <> INVALID_HANDLE_VALUE then
+  begin
+    ZeroMemory(@ABuffer[0], SizeOf(ABuffer));
+    ZeroMemory(@Query, SizeOf(STORAGE_PROPERTY_QUERY));
+
+    if DeviceIoControl(Handle, IOCTL_STORAGE_QUERY_PROPERTY,
+                       @Query, SizeOf(STORAGE_PROPERTY_QUERY),
+                       @ABuffer[0], SizeOf(ABuffer), @dwBytesReturned, nil) then
+    begin
+      if (Descr.SerialNumberOffset > 0) then
+        Result := StrPas(PAnsiChar(@ABuffer[0] + Descr.SerialNumberOffset));
     end;
 
     CloseHandle(Handle);
@@ -830,33 +866,36 @@ begin
   Result:= False;
 end;
 
-function IsUserAdmin: LongBool;
+function IsUserAdmin: TDuplicates;
 var
+  Success: Boolean;
   ReturnLength: DWORD = 0;
   TokenHandle: HANDLE = INVALID_HANDLE_VALUE;
   TokenInformation: array [0..1023] of Byte;
   ElevationType: JwaVista.TTokenElevationType absolute TokenInformation;
 begin
-  Result:= OpenThreadToken(GetCurrentThread, TOKEN_QUERY, True, TokenHandle);
-  if not Result then
+  if (Win32MajorVersion < 6) then Exit(dupIgnore);
+  Success:= OpenThreadToken(GetCurrentThread, TOKEN_QUERY, True, TokenHandle);
+  if not Success then
   begin
     if GetLastError = ERROR_NO_TOKEN then
-      Result:= OpenProcessToken(GetCurrentProcess, TOKEN_QUERY, TokenHandle);
+      Success:= OpenProcessToken(GetCurrentProcess, TOKEN_QUERY, TokenHandle);
   end;
-  if Result then
+  if Success then
   begin
-    Result:= GetTokenInformation(TokenHandle, Windows.TTokenInformationClass(TokenElevationType),
+    Success:= GetTokenInformation(TokenHandle, Windows.TTokenInformationClass(TokenElevationType),
                                  @TokenInformation, SizeOf(TokenInformation), ReturnLength);
     CloseHandle(TokenHandle);
-    if Result then
+    if Success then
     begin
       case ElevationType of
-        TokenElevationTypeDefault: Result:= False; // The token does not have a linked token. (UAC disabled)
-        TokenElevationTypeFull:    Result:= True;  // The token is an elevated token. (Administrator)
-        TokenElevationTypeLimited: Result:= False; // The token is a limited token. (User)
+        TokenElevationTypeDefault: Result:= dupIgnore;  // The token does not have a linked token. (UAC disabled)
+        TokenElevationTypeFull:    Result:= dupAccept;  // The token is an elevated token. (Administrator)
+        TokenElevationTypeLimited: Result:= dupError;   // The token is a limited token. (User)
       end;
     end;
   end;
+  if not Success then Result:= dupError;
 end;
 
 function RemoteSession: Boolean;

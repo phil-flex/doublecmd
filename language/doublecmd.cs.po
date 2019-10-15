@@ -19,6 +19,10 @@ msgstr ""
 msgid "Comparing... %d%% (ESC to cancel)"
 msgstr "Porovnávám... %d%% (ESC pro zrušení)"
 
+#: fsyncdirsdlg.rsdeleteleft
+msgid "Left: Delete %d file(s)"
+msgstr ""
+
 #: fsyncdirsdlg.rsdeleteright
 msgid "Right: Delete %d file(s)"
 msgstr "Vpravo: Smazáno %d soubor(ů)"
@@ -8506,9 +8510,17 @@ msgstr "Otočit směr kopírování"
 msgid "Select for copying <- (right to left)"
 msgstr "Směr kopírování <- (zprava doleva)"
 
+#: tfrmsyncdirsdlg.actselectdeleteleft.caption
+msgid "Select for deleting <- (left)"
+msgstr ""
+
 #: tfrmsyncdirsdlg.actselectdeleteright.caption
 msgid "Select for deleting -> (right)"
 msgstr "Označit pro výmaz -> (vpravo)"
+
+#: tfrmsyncdirsdlg.actselectdeleteboth.caption
+msgid "Select for deleting <-> (both)"
+msgstr ""
 
 #: tfrmsyncdirsdlg.btnclose.caption
 msgctxt "TFRMSYNCDIRSDLG.BTNCLOSE.CAPTION"

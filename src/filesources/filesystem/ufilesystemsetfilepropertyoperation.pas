@@ -51,10 +51,8 @@ implementation
 
 uses
   uGlobs, uLng, DCDateTimeUtils, uFileSystemUtil,
-  DCOSUtils, DCStrUtils, DCBasicTypes
-  {$IF DEFINED(MSWINDOWS)}
-    , Windows, ShellAPI
-  {$ELSEIF DEFINED(UNIX)}
+  DCOSUtils, DCStrUtils, DCBasicTypes, uAdministrator
+  {$IF DEFINED(UNIX)}
     , BaseUnix, DCUnix
   {$ENDIF}
   ;
@@ -182,7 +180,7 @@ begin
         if (aTemplateProperty as TFileAttributesProperty).Value <>
            (aFile.Properties[fpAttributes] as TFileAttributesProperty).Value then
         begin
-          if mbFileSetAttr(
+          if FileSetAttrUAC(
             aFile.FullPath,
             (aTemplateProperty as TFileAttributesProperty).Value) <> 0 then
           begin
@@ -196,7 +194,7 @@ begin
         if (aTemplateProperty as TFileModificationDateTimeProperty).Value <>
            (aFile.Properties[fpModificationTime] as TFileModificationDateTimeProperty).Value then
         begin
-          if not mbFileSetTime(
+          if not FileSetTimeUAC(
             aFile.FullPath,
             DateTimeToFileTime((aTemplateProperty as TFileModificationDateTimeProperty).Value),
             0,
@@ -212,7 +210,7 @@ begin
         if (aTemplateProperty as TFileCreationDateTimeProperty).Value <>
            (aFile.Properties[fpCreationTime] as TFileCreationDateTimeProperty).Value then
         begin
-          if not mbFileSetTime(
+          if not FileSetTimeUAC(
             aFile.FullPath,
             0,
             DateTimeToFileTime((aTemplateProperty as TFileCreationDateTimeProperty).Value),
@@ -228,7 +226,7 @@ begin
         if (aTemplateProperty as TFileLastAccessDateTimeProperty).Value <>
            (aFile.Properties[fpLastAccessTime] as TFileLastAccessDateTimeProperty).Value then
         begin
-          if not mbFileSetTime(
+          if not FileSetTimeUAC(
             aFile.FullPath,
             0,
             0,
@@ -321,37 +319,6 @@ var
       end;
     end;
   end;
-
-{$IFDEF MSWINDOWS}
-  function CanShellRename: Boolean;
-  begin
-    Result := (FFullFilesTree.Count = 1) and
-              (UTF8Length(OldName) < MAX_PATH - 1) and (UTF8Length(NewName) < MAX_PATH - 1) and
-              (not StrBegins(ExtractFileName(OldName), ' ')) and (StrBegins(ExtractFileName(NewName), ' '));
-  end;
-
-  function ShellRename: Boolean;
-  var
-    wsFromName, wsToName: WideString;
-    FileOpStruct: TSHFileOpStructW;
-  begin
-    wsFromName := UTF8Decode(OldName) + #0;
-    wsToName   := UTF8Decode(NewName) + #0;
-    FillByte(FileOpStruct, SizeOf(FileOpStruct), 0);
-    with FileOpStruct do
-    begin
-      Wnd   := GetForegroundWindow;
-      // Use rename operation when only file name case is changed
-      if UTF8LowerCase(OldName) = UTF8LowerCase(NewName) then
-        wFunc := FO_RENAME
-      else
-        wFunc := FO_MOVE;
-      pFrom := PWideChar(wsFromName);
-      pTo   := PWideChar(wsToName);
-    end;
-    Result := (SHFileOperationW(@FileOpStruct) = 0) and (not FileOpStruct.fAnyOperationsAborted);
-  end;
-{$ENDIF}
 
 var
 {$IFDEF UNIX}
@@ -464,36 +431,26 @@ begin
 
 {$ELSE}
 
-  if gUseShellForFileOperations and CanShellRename then
+  // Windows XP doesn't allow two filenames that differ only by case (even on NTFS).
+  if UTF8LowerCase(OldName) <> UTF8LowerCase(NewName) then
   begin
-    if ShellRename then
-      Result := sfprSuccess
-    else
-      Result := sfprError;
-  end
-  else
-  begin
-    // Windows XP doesn't allow two filenames that differ only by case (even on NTFS).
-    if UTF8LowerCase(OldName) <> UTF8LowerCase(NewName) then
+    NewFileAttrs := FileGetAttrUAC(NewName);
+    if NewFileAttrs <> faInvalidAttributes then  // If target file exists.
     begin
-      NewFileAttrs := mbFileGetAttr(NewName);
-      if NewFileAttrs <> faInvalidAttributes then  // If target file exists.
-      begin
-        case AskIfOverwrite(NewFileAttrs) of
-          fsourOverwrite: ; // continue
-          fsourSkip:
-            Exit(sfprSkipped);
-          fsourAbort:
-            RaiseAbortOperation;
-        end;
+      case AskIfOverwrite(NewFileAttrs) of
+        fsourOverwrite: ; // continue
+        fsourSkip:
+          Exit(sfprSkipped);
+        fsourAbort:
+          RaiseAbortOperation;
       end;
     end;
-
-    if mbRenameFile(OldName, NewName) then
-      Result := sfprSuccess
-    else
-      Result := sfprError;
   end;
+
+  if RenameFileUAC(OldName, NewName) then
+    Result := sfprSuccess
+  else
+    Result := sfprError;
 {$ENDIF}
 end;
 
