@@ -3,10 +3,10 @@ rem Set Double Commander version
 set DC_VER=1.0.0
 
 rem Path to subversion
-set SVN_EXE="c:\Program Files\TortoiseSVN\bin\svn.exe"
+set SVN_EXE="%ProgramFiles%\TortoiseSVN\bin\svn.exe"
 
 rem Path to Inno Setup compiler
-set ISCC_EXE="c:\Program Files (x86)\Inno Setup 6\ISCC.exe"
+set ISCC_EXE="%ProgramFiles(x86)%\Inno Setup 6\ISCC.exe"
 
 rem The new package will be created from here
 set BUILD_PACK_DIR=%TEMP%\doublecmd-%DATE: =%
@@ -15,19 +15,23 @@ rem The new package will be saved here
 set PACK_DIR=%CD%\windows\release
 
 rem Create temp dir for building
-set BUILD_DC_TMP_DIR=%TEMP%\doublecmd-%DC_VER%
+rem set BUILD_DC_TMP_DIR=%TEMP%\doublecmd-%DC_VER%
+set BUILD_DC_TMP_DIR=%BUILD_PACK_DIR%
 
 rm -rf %BUILD_DC_TMP_DIR%
-%SVN_EXE% export ..\ %BUILD_DC_TMP_DIR%
+REM %SVN_EXE% export ..\ %BUILD_DC_TMP_DIR%
+xcopy /Q /E /Y ..\* %BUILD_DC_TMP_DIR%\
+
+rm -rf %BUILD_DC_TMP_DIR%\install\windows\release\*
 
 rem Save revision number
-mkdir %BUILD_DC_TMP_DIR%\.svn
-copy ..\.svn\entries %BUILD_DC_TMP_DIR%\.svn\
+REM mkdir %BUILD_DC_TMP_DIR%\.svn
+REM copy ..\.svn\entries %BUILD_DC_TMP_DIR%\.svn\
 
 rem Prepare package build dir
-rm -rf %BUILD_PACK_DIR%
-mkdir %BUILD_PACK_DIR%
-mkdir %BUILD_PACK_DIR%\release
+REM rm -rf %BUILD_PACK_DIR%
+REM mkdir %BUILD_PACK_DIR%
+REM mkdir %BUILD_PACK_DIR%\release
 
 rem Copy needed files
 copy windows\doublecmd.iss %BUILD_PACK_DIR%\
@@ -44,6 +48,8 @@ if "%CPU_TARGET%" == "" (
   )
 )
 
+pause
+
 rem Copy libraries
 copy windows\lib\%CPU_TARGET%\*.dll    %BUILD_DC_TMP_DIR%\
 
@@ -53,7 +59,8 @@ rem Build all components of Double Commander
 call build.bat beta
 
 rem Prepare install files
-call %BUILD_DC_TMP_DIR%\install\windows\install.bat
+cd /D %BUILD_DC_TMP_DIR%
+call install\windows\install.bat
 
 cd /D %BUILD_PACK_DIR%
 rem Create *.exe package
@@ -75,6 +82,6 @@ cd %BUILD_PACK_DIR%\doublecmd
 for /D %%f in (doc\*) do zip -9 -Dr %PACK_DIR%\doublecmd-help-%%~nf-%DC_VER%.noarch.zip %%f
 
 rem Clean temp directories
-cd \
-rm -rf %BUILD_DC_TMP_DIR%
-rm -rf %BUILD_PACK_DIR%
+rem cd \
+rem rm -rf %BUILD_DC_TMP_DIR%
+rem rm -rf %BUILD_PACK_DIR%

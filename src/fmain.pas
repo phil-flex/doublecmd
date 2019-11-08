@@ -2086,24 +2086,24 @@ var
   ToolItem: TKASProgramItem;
   Toolbar: TKASToolBar absolute Sender;
 begin
-  if not (Source is TSpeedButton) and not Draging and (ssShift in GetKeyShiftState) then
-    begin
-      aFile := ActiveFrame.CloneActiveFile;
-      try
-        if Assigned(aFile) and aFile.IsNameValid then
-        begin
-          ToolItem := TKASProgramItem.Create;
-          ToolItem.Command := GetToolbarFilenameToSave(tpmeCommand, aFile.FullPath);
-          ToolItem.StartPath := GetToolbarFilenameToSave(tpmeStartingPath, aFile.Path);
-          ToolItem.Hint := ExtractOnlyFileName(aFile.Name);
-          // ToolItem.Text := ExtractOnlyFileName(aFile.Name);
-          ToolItem.Icon := GetToolbarFilenameToSave(tpmeIcon, aFile.FullPath);
-          Toolbar.AddButton(ToolItem);
-        end;
-      finally
-        FreeAndNil(aFile);
+  if not (Source is TSpeedButton) and not Draging then
+  begin
+    aFile := ActiveFrame.CloneActiveFile;
+    try
+      if Assigned(aFile) and aFile.IsNameValid then
+      begin
+        ToolItem := TKASProgramItem.Create;
+        ToolItem.Command := GetToolbarFilenameToSave(tpmeCommand, aFile.FullPath);
+        ToolItem.StartPath := GetToolbarFilenameToSave(tpmeStartingPath, aFile.Path);
+        ToolItem.Hint := ExtractOnlyFileName(aFile.Name);
+        // ToolItem.Text := ExtractOnlyFileName(aFile.Name);
+        ToolItem.Icon := GetToolbarFilenameToSave(tpmeIcon, aFile.FullPath);
+        Toolbar.AddButton(ToolItem);
       end;
+    finally
+      FreeAndNil(aFile);
     end;
+  end;
   SaveToolBar(Toolbar);
   Draging := False;
 end;
@@ -2113,16 +2113,16 @@ procedure TfrmMain.MainToolBarDragOver(Sender, Source: TObject; X, Y: Integer;
 var
   aFile: TFile;
 begin
-  if (ssShift in GetKeyShiftState) and not (Source is TSpeedButton) then
-    begin
-      aFile := ActiveFrame.CloneActiveFile;
-      try
-        Accept := Assigned(aFile) and aFile.IsNameValid;
-      finally
-        FreeAndNil(aFile);
-      end;
-    end
-  else  Accept := false;
+  if (Source is TSpeedButton) then
+    Accept := False
+  else begin
+    aFile := ActiveFrame.CloneActiveFile;
+    try
+      Accept := Assigned(aFile) and aFile.IsNameValid;
+    finally
+      FreeAndNil(aFile);
+    end;
+  end;
 end;
 
 function TfrmMain.MainToolBarLoadButtonGlyph(ToolItem: TKASToolItem;
@@ -4262,9 +4262,6 @@ begin
   end;
 end;
 
-type
-  TCustomShellTreeViewCrack = class(TCustomShellTreeView);
-
 procedure TfrmMain.UpdateShellTreeView;
 begin
   actTreeView.Checked := gSeparateTree;
@@ -4283,7 +4280,7 @@ begin
       ReadOnly := True;
       RightClickSelect := True;
       FileSortType := fstFoldersFirst;
-      TCustomShellTreeViewCrack(ShellTreeView).PopulateWithBaseFiles;
+      PopulateWithBaseFiles;
 
       Images := TImageList.Create(Self);
       Images.Width := gIconsSize;
@@ -4372,6 +4369,12 @@ begin
   end;
   dskLeft.AddToolItemExecutor(TKASDriveItem, @LeftDriveBarExecuteDrive);
   dskRight.AddToolItemExecutor(TKASDriveItem, @RightDriveBarExecuteDrive);
+
+  if gSeparateTree and Assigned(ShellTreeView) then
+  begin
+    TShellTreeView(ShellTreeView).PopulateWithBaseFiles;
+    UpdateTreeViewPath;
+  end;
 end;
 
 procedure TfrmMain.AddVirtualDriveButton(dskPanel: TKASToolBar);
