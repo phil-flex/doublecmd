@@ -1,0 +1,8 @@
+{"version":1,"strings":[
+{"hash":43225858,"name":"uexifreader.rsmake","sourcebytes":[77,97,110,117,102,97,99,116,117,114,101,114],"value":"Manufacturer"},
+{"hash":135030332,"name":"uexifreader.rsmodel","sourcebytes":[67,97,109,101,114,97,32,109,111,100,101,108],"value":"Camera model"},
+{"hash":6159272,"name":"uexifreader.rsimagewidth","sourcebytes":[87,105,100,116,104],"value":"Width"},
+{"hash":82574836,"name":"uexifreader.rsimageheight","sourcebytes":[72,101,105,103,104,116],"value":"Height"},
+{"hash":100540830,"name":"uexifreader.rsorientation","sourcebytes":[79,114,105,101,110,116,97,116,105,111,110],"value":"Orientation"},
+{"hash":125757726,"name":"uexifreader.rsdatetimeoriginal","sourcebytes":[68,97,116,101,32,116,97,107,101,110],"value":"Date taken"}
+]}
