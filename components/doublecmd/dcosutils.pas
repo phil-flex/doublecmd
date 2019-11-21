@@ -49,6 +49,8 @@ type
                            caoCopyPermissions,
                            caoRemoveReadOnlyAttr);
   TCopyAttributesOptions = set of TCopyAttributesOption;
+  TCopyAttributesResult = array[TCopyAttributesOption] of Integer;
+  PCopyAttributesResult = ^TCopyAttributesResult;
 
 const
   faInvalidAttributes: TFileAttrs = TFileAttrs(-1);
@@ -121,7 +123,6 @@ function mbFileCreate(const FileName: String): System.THandle; overload; inline;
 function mbFileCreate(const FileName: String; Mode: LongWord): System.THandle; overload; inline;
 function mbFileCreate(const FileName: String; Mode, Rights: LongWord): System.THandle; overload;
 function mbFileAge(const FileName: String): DCBasicTypes.TFileTime;
-function mbFileSame(const FirstName, SecondName: String): Boolean;
 // On success returns True.
 function mbFileGetTime(const FileName: String;
                        var ModificationTime: DCBasicTypes.TFileTime;
@@ -141,15 +142,16 @@ function mbFileSetTime(const FileName: String;
 function mbFileExists(const FileName: String): Boolean;
 function mbFileAccess(const FileName: String; Mode: Word): Boolean;
 function mbFileGetAttr(const FileName: String): TFileAttrs; overload;
-function mbFileSetAttr(const FileName: String; Attr: TFileAttrs) : LongInt;
-function mbFileGetAttr(const FileName: String; out Attr: TSearchRec): Boolean; overload;
+function mbFileSetAttr(const FileName: String; Attr: TFileAttrs): Boolean;
 {en
    If any operation in Options is performed and does not succeed it is included
    in the result set. If all performed operations succeed the function returns empty set.
    For example for Options=[caoCopyTime, caoCopyOwnership] setting ownership
    doesn't succeed then the function returns [caoCopyOwnership].
 }
-function mbFileCopyAttr(const sSrc, sDst: String; Options: TCopyAttributesOptions): TCopyAttributesOptions;
+function mbFileCopyAttr(const sSrc, sDst: String;
+                       Options: TCopyAttributesOptions;
+                       Errors: PCopyAttributesResult = nil): TCopyAttributesOptions;
 // Returns True on success.
 function mbFileSetReadOnly(const FileName: String; ReadOnly: Boolean): Boolean;
 function mbDeleteFile(const FileName: String): Boolean;
@@ -176,7 +178,7 @@ function mbRemoveDir(const Dir: String): Boolean;
 }
 function mbFileSystemEntryExists(const Path: String): Boolean;
 function mbCompareFileNames(const FileName1, FileName2: String): Boolean;
-function mbSameFile(const FileName1, FileName2: String): Boolean;
+function mbFileSame(const FileName1, FileName2: String): Boolean;
 { Other functions }
 function mbGetEnvironmentString(Index : Integer) : String;
 {en
@@ -192,7 +194,25 @@ function mbSysErrorMessage(ErrorCode: Integer): String; overload;
 function mbGetModuleName(Address: Pointer = nil): String;
 function mbLoadLibrary(const Name: String): TLibHandle;
 function SafeGetProcAddress(Lib: TLibHandle; const ProcName: AnsiString): Pointer;
-
+{en
+   Reads the concrete file's name that the link points to.
+   If the link points to a link then it's resolved recursively
+   until a valid file name that is not a link is found.
+   @param(PathToLink Name of symbolic link (absolute path))
+   @returns(The absolute filename the symbolic link name is pointing to,
+            or an empty string when the link is invalid or
+            the file it points to does not exist.)
+}
+function mbReadAllLinks(const PathToLink : String) : String;
+{en
+   If PathToLink points to a link then it returns file that the link points to (recursively).
+   If PathToLink does not point to a link then PathToLink value is returned.
+}
+function mbCheckReadLinks(const PathToLink : String) : String;
+{en
+   Same as mbFileGetAttr, but dereferences any encountered links.
+}
+function mbFileGetAttrNoLinks(const FileName: String): TFileAttrs;
 {en
    Create a hard link to a file
    @param(Path Name of file)
@@ -215,11 +235,16 @@ function CreateSymLink(const Path, LinkName: string) : Boolean;
 }
 function ReadSymLink(const LinkName : String) : String;
 
+{en
+   Sets the last-error code for the calling thread
+}
+procedure SetLastOSError(LastError: Integer);
+
 implementation
 
 uses
 {$IF DEFINED(MSWINDOWS)}
-  Windows, JwaWinNetWk, DCDateTimeUtils, DCWindows, DCNtfsLinks,
+  Windows, DCDateTimeUtils, DCWindows, DCNtfsLinks,
 {$ENDIF}
 {$IF DEFINED(UNIX)}
   BaseUnix, Unix, dl, DCUnix,
@@ -352,7 +377,9 @@ begin
 end;
 {$ENDIF}
 
-function mbFileCopyAttr(const sSrc, sDst: String; Options: TCopyAttributesOptions): TCopyAttributesOptions;
+function mbFileCopyAttr(const sSrc, sDst: String;
+  Options: TCopyAttributesOptions; Errors: PCopyAttributesResult
+  ): TCopyAttributesOptions;
 {$IFDEF MSWINDOWS}
 var
   Attr : TFileAttrs;
@@ -367,18 +394,26 @@ begin
     begin
       if (caoRemoveReadOnlyAttr in Options) and ((Attr and faReadOnly) <> 0) then
         Attr := (Attr and not faReadOnly);
-      if mbFileSetAttr(sDst, Attr) <> 0 then
+      if not mbFileSetAttr(sDst, Attr) then
+      begin
         Include(Result, caoCopyAttributes);
+        if Assigned(Errors) then Errors^[caoCopyAttributes]:= GetLastOSError;
+      end;
     end
-    else
+    else begin
       Include(Result, caoCopyAttributes);
+      if Assigned(Errors) then Errors^[caoCopyAttributes]:= GetLastOSError;
+    end;
   end;
 
   if caoCopyTime in Options then
   begin
     if not (mbFileGetTime(sSrc, ModificationTime, CreationTime, LastAccessTime) and
             mbFileSetTime(sDst, ModificationTime, CreationTime, LastAccessTime)) then
+    begin
       Include(Result, caoCopyTime);
+      if Assigned(Errors) then Errors^[caoCopyTime]:= GetLastOSError;
+    end;
   end;
 
   if caoCopyPermissions in Options then
@@ -386,17 +421,27 @@ begin
     if not CopyNtfsPermissions(sSrc, sDst) then
     begin
       Include(Result, caoCopyPermissions);
+      if Assigned(Errors) then Errors^[caoCopyPermissions]:= GetLastOSError;
     end;
   end;
 end;
 {$ELSE}  // *nix
 var
+  Option: TCopyAttributesOption;
   StatInfo : BaseUnix.Stat;
   utb : BaseUnix.TUTimBuf;
   mode : TMode;
 begin
-  if fpLStat(UTF8ToSys(sSrc), StatInfo) >= 0 then
+  if fpLStat(UTF8ToSys(sSrc), StatInfo) < 0 then
   begin
+    Result := Options;
+    if Assigned(Errors) then
+    begin
+      for Option in Result do
+        Errors^[Option]:= GetLastOSError;
+    end;
+  end
+  else begin
     Result := [];
     if FPS_ISLNK(StatInfo.st_mode) then
     begin
@@ -406,6 +451,7 @@ begin
         if fpLChown(sDst, StatInfo.st_uid, StatInfo.st_gid) = -1 then
         begin
           Include(Result, caoCopyOwnership);
+          if Assigned(Errors) then Errors^[caoCopyOwnership]:= GetLastOSError;
         end;
       end;
     end
@@ -416,7 +462,10 @@ begin
         utb.actime  := time_t(StatInfo.st_atime);  // last access time
         utb.modtime := time_t(StatInfo.st_mtime);  // last modification time
         if fputime(UTF8ToSys(sDst), @utb) <> 0 then
+        begin
           Include(Result, caoCopyTime);
+          if Assigned(Errors) then Errors^[caoCopyTime]:= GetLastOSError;
+        end;
       end;
 
       if caoCopyOwnership in Options then
@@ -424,6 +473,7 @@ begin
         if fpChown(PChar(UTF8ToSys(sDst)), StatInfo.st_uid, StatInfo.st_gid) = -1 then
         begin
           Include(Result, caoCopyOwnership);
+          if Assigned(Errors) then Errors^[caoCopyOwnership]:= GetLastOSError;
         end;
       end;
 
@@ -435,12 +485,11 @@ begin
         if fpChmod(UTF8ToSys(sDst), mode) = -1 then
         begin
           Include(Result, caoCopyAttributes);
+          if Assigned(Errors) then Errors^[caoCopyAttributes]:= GetLastOSError;
         end;
       end;
     end;
-  end
-  else
-    Result := Options;
+  end;
 end;
 {$ENDIF}
 
@@ -674,48 +723,6 @@ begin
 end;
 {$ENDIF}
 
-function mbFileSame(const FirstName, SecondName: String): Boolean;
-{$IFDEF MSWINDOWS}
-var
-  Handle: System.THandle;
-  lpFirstFileInfo,
-  lpSecondFileInfo: TByHandleFileInformation;
-begin
-  // Read first file info
-  Handle:= CreateFileW(PWideChar(UTF16LongName(FirstName)), FILE_READ_ATTRIBUTES,
-                       FILE_SHARE_READ or FILE_SHARE_WRITE or FILE_SHARE_DELETE,
-                       nil, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, 0);
-  if Handle = INVALID_HANDLE_VALUE then Exit(False);
-  Result:= GetFileInformationByHandle(Handle, lpFirstFileInfo);
-  CloseHandle(Handle);
-  if not Result then Exit;
-  // Read second file info
-  Handle:= CreateFileW(PWideChar(UTF16LongName(SecondName)), FILE_READ_ATTRIBUTES,
-                       FILE_SHARE_READ or FILE_SHARE_WRITE or FILE_SHARE_DELETE,
-                       nil, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, 0);
-  if Handle = INVALID_HANDLE_VALUE then Exit(False);
-  Result:= GetFileInformationByHandle(Handle, lpSecondFileInfo);
-  CloseHandle(Handle);
-  if not Result then Exit;
-  // Compare file info
-  Result:= CompareByte(lpFirstFileInfo, lpSecondFileInfo,
-                       SizeOf(TByHandleFileInformation)) = 0;
-end;
-{$ELSE}
-var
-  FirstStat,
-  SecondStat: BaseUnix.Stat;
-begin
-  // Read first file info
-  if fpStat(UTF8ToSys(FirstName), FirstStat) < 0 then Exit(False);
-  // Read second file info
-  if fpStat(UTF8ToSys(SecondName), SecondStat) < 0 then Exit(False);
-  // Compare file info
-  Result:= (FirstStat.st_dev = SecondStat.st_dev) and
-           (FirstStat.st_ino = SecondStat.st_ino);
-end;
-{$ENDIF}
-
 function mbFileGetTime(const FileName: String;
                        var ModificationTime: DCBasicTypes.TFileTime;
                        var CreationTime    : DCBasicTypes.TFileTime;
@@ -895,46 +902,14 @@ begin
 end;
 {$ENDIF}
 
-function mbFileSetAttr(const FileName: String; Attr: TFileAttrs): LongInt;
+function mbFileSetAttr(const FileName: String; Attr: TFileAttrs): Boolean;
 {$IFDEF MSWINDOWS}
 begin
-  if SetFileAttributesW(PWideChar(UTF16LongName(FileName)), Attr) then
-    Result:= 0
-  else
-    Result:= GetLastError;
+  Result:= SetFileAttributesW(PWideChar(UTF16LongName(FileName)), Attr);
 end;
 {$ELSE}
 begin
-  Result:= fpchmod(UTF8ToSys(FileName), Attr);
-end;
-{$ENDIF}
-
-function mbFileGetAttr(const FileName: String; out Attr: TSearchRec): Boolean;
-{$IFDEF MSWINDOWS}
-var
-  FileInfo: Windows.TWin32FileAttributeData;
-begin
-  Result:= GetFileAttributesExW(PWideChar(UTF16LongName(FileName)),
-                                GetFileExInfoStandard, @FileInfo);
-  if Result then
-  begin
-    WinToDosTime(FileInfo.ftLastWriteTime, Attr.Time);
-    Int64Rec(Attr.Size).Lo:= FileInfo.nFileSizeLow;
-    Int64Rec(Attr.Size).Hi:= FileInfo.nFileSizeHigh;
-    Attr.Attr:= FileInfo.dwFileAttributes;
-  end;
-end;
-{$ELSE}
-var
-  StatInfo: BaseUnix.Stat;
-begin
-  Result:= fpLStat(UTF8ToSys(FileName), StatInfo) >= 0;
-  if Result then
-  begin
-    Attr.Time:= StatInfo.st_mtime;
-    Attr.Size:= StatInfo.st_size;
-    Attr.Attr:= StatInfo.st_mode;
-  end;
+  Result:= fpchmod(UTF8ToSys(FileName), Attr) = 0;
 end;
 {$ENDIF}
 
@@ -1273,9 +1248,10 @@ begin
 end;
 {$ENDIF}
 
-function mbSameFile(const FileName1, FileName2: String): Boolean;
+function mbFileSame(const FileName1, FileName2: String): Boolean;
 {$IF DEFINED(MSWINDOWS)}
 var
+  Device1, Device2: TStringArray;
   FileHandle1, FileHandle2: System.THandle;
   FileInfo1, FileInfo2: BY_HANDLE_FILE_INFORMATION;
 begin
@@ -1303,6 +1279,13 @@ begin
           Result := (FileInfo1.dwVolumeSerialNumber = FileInfo2.dwVolumeSerialNumber) and
                     (FileInfo1.nFileIndexHigh       = FileInfo2.nFileIndexHigh) and
                     (FileInfo1.nFileIndexLow        = FileInfo2.nFileIndexLow);
+          // Check that both files on the same physical drive (bug 0001774)
+          if Result then
+          begin
+            Device1:= AnsiString(GetFinalPathNameByHandle(FileHandle1)).Split([PathDelim]);
+            Device2:= AnsiString(GetFinalPathNameByHandle(FileHandle2)).Split([PathDelim]);
+            Result:= (Length(Device1) > 2) and (Length(Device2) > 2) and (Device1[2] = Device2[2]);
+          end;
         end;
         CloseHandle(FileHandle2);
       end;
@@ -1458,6 +1441,92 @@ begin
   if (Result = nil) then raise Exception.Create(ProcName);
 end;
 
+function mbReadAllLinks(const PathToLink: String) : String;
+var
+  Attrs: TFileAttrs;
+  LinkTargets: TStringList;  // A list of encountered filenames (for detecting cycles)
+
+  function mbReadAllLinksRec(const PathToLink: String): String;
+  begin
+    Result := ReadSymLink(PathToLink);
+    if Result <> '' then
+    begin
+      if GetPathType(Result) <> ptAbsolute then
+        Result := GetAbsoluteFileName(ExtractFilePath(PathToLink), Result);
+
+      if LinkTargets.IndexOf(Result) >= 0 then
+      begin
+        // Link already encountered - links form a cycle.
+        Result := '';
+{$IFDEF UNIX}
+        fpseterrno(ESysELOOP);
+{$ENDIF}
+        Exit;
+      end;
+
+      Attrs := mbFileGetAttr(Result);
+      if (Attrs <> faInvalidAttributes) then
+      begin
+        if FPS_ISLNK(Attrs) then
+        begin
+          // Points to a link - read recursively.
+          LinkTargets.Add(Result);
+          Result := mbReadAllLinksRec(Result);
+        end;
+        // else points to a file/dir
+      end
+      else
+      begin
+        Result := '';  // Target of link doesn't exist
+{$IFDEF UNIX}
+        fpseterrno(ESysENOENT);
+{$ENDIF}
+      end;
+    end;
+  end;
+
+begin
+  LinkTargets := TStringList.Create;
+  try
+    Result := mbReadAllLinksRec(PathToLink);
+  finally
+    FreeAndNil(LinkTargets);
+  end;
+end;
+
+function mbCheckReadLinks(const PathToLink : String): String;
+var
+  Attrs: TFileAttrs;
+begin
+  Attrs := mbFileGetAttr(PathToLink);
+  if (Attrs <> faInvalidAttributes) and FPS_ISLNK(Attrs) then
+    Result := mbReadAllLinks(PathToLink)
+  else
+    Result := PathToLink;
+end;
+
+function mbFileGetAttrNoLinks(const FileName: String): TFileAttrs;
+{$IFDEF UNIX}
+var
+  Info: BaseUnix.Stat;
+begin
+  if fpStat(UTF8ToSys(FileName), Info) >= 0 then
+    Result := Info.st_mode
+  else
+    Result := faInvalidAttributes;
+end;
+{$ELSE}
+var
+  LinkTarget: String;
+begin
+  LinkTarget := mbReadAllLinks(FileName);
+  if LinkTarget <> '' then
+    Result := mbFileGetAttr(LinkTarget)
+  else
+    Result := faInvalidAttributes;
+end;
+{$ENDIF}
+
 function CreateHardLink(const Path, LinkName: String) : Boolean;
 {$IFDEF MSWINDOWS}
 var
@@ -1502,6 +1571,17 @@ end;
 {$ELSE}
 begin
   Result := SysToUTF8(fpReadlink(UTF8ToSys(LinkName)));
+end;
+{$ENDIF}
+
+procedure SetLastOSError(LastError: Integer);
+{$IFDEF MSWINDOWS}
+begin
+  SetLastError(UInt32(LastError));
+end;
+{$ELSE}
+begin
+  fpseterrno(LastError);
 end;
 {$ENDIF}
 

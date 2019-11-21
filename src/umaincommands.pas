@@ -372,7 +372,7 @@ implementation
 
 uses fOptionsPluginsBase, fOptionsPluginsDSX, fOptionsPluginsWCX,
      fOptionsPluginsWDX, fOptionsPluginsWFX, fOptionsPluginsWLX,
-     uFindFiles, Forms, Controls, Dialogs, Clipbrd, strutils, LCLProc, HelpIntfs, StringHashList,
+     uFindFiles, Forms, Controls, Dialogs, Clipbrd, strutils, LCLProc, HelpIntfs, DCStringHashListUtf8,
      dmHelpManager, typinfo, fMain, fPackDlg, fMkDir, DCDateTimeUtils, KASToolBar, KASToolItems,
      fExtractDlg, fAbout, fOptions, fDiffer, fFindDlg, fSymLink, fHardLink, fMultiRename,
      fLinker, fSplitter, fDescrEdit, fCheckSumVerify, fCheckSumCalc, fSetFileProperties,
@@ -390,7 +390,7 @@ uses fOptionsPluginsBase, fOptionsPluginsDSX, fOptionsPluginsWCX,
      DCOSUtils, DCStrUtils, DCBasicTypes, uFileSourceCopyOperation, fSyncDirsDlg,
      uHotDir, DCXmlConfig, dmCommonData, fOptionsFrame, foptionsDirectoryHotlist,
      fMainCommandsDlg, uConnectionManager, fOptionsFavoriteTabs, fTreeViewMenu,
-     uArchiveFileSource, fOptionsHotKeys, fBenchmark
+     uArchiveFileSource, fOptionsHotKeys, fBenchmark, uAdministrator
      {$IFDEF COLUMNSFILEVIEW_VTV}
      , uColumnsFileViewVtv
      {$ELSE}
@@ -833,8 +833,7 @@ begin
         // Change file source, if the file under cursor can be opened as another file source.
         try
           if not ChooseFileSource(TargetPage.FileView, SourcePage.FileView.FileSource, aFile) then
-            TargetPage.FileView.AddFileSource(SourcePage.FileView.FileSource,
-                                              SourcePage.FileView.CurrentPath);
+            TargetPage.FileView.AddFileSource(SourcePage.FileView.FileSource, aFile.Path);
           TargetPage.FileView.SetActiveFile(aFile.Name);
         except
           on e: EFileSourceException do
@@ -2006,13 +2005,20 @@ begin
   begin
     // Save current file view type
     WorkingNotebook.ActivePage.BackupViewClass := TFileViewClass(WorkingFileView.ClassType);
+    // Save current columns set name
+    if (WorkingFileView is TColumnsFileView) then begin
+      WorkingNotebook.ActivePage.BackupColumnSet:= TColumnsFileView(WorkingFileView).ActiveColm;
+    end;
     // Create thumbnails view
     aFileView:= TThumbFileView.Create(WorkingNotebook.ActivePage, WorkingFileView);
   end
   else
   begin
     // Restore previous file view type
-    aFileView:= WorkingNotebook.ActivePage.BackupViewClass.Create(WorkingNotebook.ActivePage, WorkingFileView);
+    if WorkingNotebook.ActivePage.BackupViewClass <> TColumnsFileView then
+      aFileView:= WorkingNotebook.ActivePage.BackupViewClass.Create(WorkingNotebook.ActivePage, WorkingFileView)
+    else
+      aFileView:= TColumnsFileView.Create(WorkingNotebook.ActivePage, WorkingFileView, WorkingNotebook.ActivePage.BackupColumnSet);
   end;
   WorkingNotebook.ActivePage.FileView:= aFileView;
 end;
@@ -3523,6 +3529,7 @@ var
   sCmd: string = '';
   sParams: string = '';
   sStartPath: string = '';
+  AElevate: TDuplicates = dupIgnore;
 begin
   frmMain.ActiveFrame.ExecuteCommand('cm_EditNew', Params);
 
@@ -3548,23 +3555,28 @@ begin
     if ExtractFilePath(sNewFile) = '' then
       sNewFile:= ActiveFrame.CurrentPath + sNewFile;
 
-    Attrs := mbFileGetAttr(sNewFile);
-    if Attrs = faInvalidAttributes then
-    begin
-      hFile := mbFileCreate(sNewFile);
-      if hFile = feInvalidHandle then
+    PushPop(AElevate);
+    try
+      Attrs := FileGetAttrUAC(sNewFile);
+      if Attrs = faInvalidAttributes then
       begin
-        MessageDlg(rsMsgErrECreate, mbSysErrorMessage(GetLastOSError), mtWarning, [mbOK], 0);
+        hFile := FileCreateUAC(sNewFile, fmShareDenyWrite);
+        if hFile = feInvalidHandle then
+        begin
+          MessageDlg(rsMsgErrECreate, mbSysErrorMessage(GetLastOSError), mtWarning, [mbOK], 0);
+          Exit;
+        end;
+        FileClose(hFile);
+        ActiveFrame.FileSource.Reload(ExtractFilePath(sNewFile));
+      end
+      else if FPS_ISDIR(Attrs) then
+      begin
+        MessageDlg(rsMsgErrECreate, Format(rsMsgErrCreateFileDirectoryExists,
+          [ExtractFileName(sNewFile)]), mtWarning, [mbOK], 0);
         Exit;
       end;
-      FileClose(hFile);
-      ActiveFrame.FileSource.Reload(ExtractFilePath(sNewFile));
-    end
-    else if FPS_ISDIR(Attrs) then
-    begin
-      MessageDlg(rsMsgErrECreate, Format(rsMsgErrCreateFileDirectoryExists,
-        [ExtractFileName(sNewFile)]), mtWarning, [mbOK], 0);
-      Exit;
+    finally
+      PushPop(AElevate);
     end;
 
     aFile := TFileSystemFileSource.CreateFileFromFile(sNewFile);
@@ -4294,11 +4306,11 @@ var
   NtfsShift: Boolean;
   SourceFile: TDisplayFile;
   TargetFile: TDisplayFile;
-  SourceList: TStringHashList;
+  SourceList: TStringHashListUtf8;
   SourceFiles: TDisplayFiles = nil;
   TargetFiles: TDisplayFiles = nil;
 begin
-  SourceList:= TStringHashList.Create(FileNameCaseSensitive);
+  SourceList:= TStringHashListUtf8.Create(FileNameCaseSensitive);
   with frmMain do
   try
     NtfsShift:= gNtfsHourTimeDelay and NtfsHourTimeDelay(ActiveFrame.CurrentPath, NotActiveFrame.CurrentPath);

@@ -496,6 +496,9 @@ begin
   if Succ(FFileNameColumn) = FExtensionColumn then
     Inc(ARect.Right, dgPanel.ColWidths[FExtensionColumn]);
 
+  if gInplaceRenameButton and (ARect.Right + edtRename.ButtonWidth < dgPanel.ClientWidth) then
+    Inc(ARect.Right, edtRename.ButtonWidth);
+
   edtRename.SetBounds(ARect.Left, ARect.Top, ARect.Right - ARect.Left, ARect.Bottom - ARect.Top);
 end;
 
@@ -925,16 +928,20 @@ begin
 end;
 
 procedure TColumnsFileView.DisplayFileListChanged;
+var
+  ScrollTo: Boolean;
 begin
+  ScrollTo := IsActiveFileVisible;
+
   // Update grid row count.
   SetRowCount(FFiles.Count);
   SetFilesDisplayItems;
   RedrawFiles;
 
-  if SetActiveFileNow(RequestedActiveFile, FLastTopRowIndex) then
+  if SetActiveFileNow(RequestedActiveFile, True, FLastTopRowIndex) then
     RequestedActiveFile := ''
   // Requested file was not found, restore position to last active file.
-  else if not SetActiveFileNow(LastActiveFile, FLastTopRowIndex) then
+  else if not SetActiveFileNow(LastActiveFile, ScrollTo, FLastTopRowIndex) then
   // Make sure at least that the previously active file is still visible after displaying file list.
     MakeActiveVisible;
 
@@ -1309,9 +1316,16 @@ begin
     begin
       // First reduce number of rows so that the 0'th row, which will be changed
       // to not-fixed, won't be counted as a row having a file.
-      if RowCount > 0 then
+      if RowCount > 1 then
+      begin
         RowCount := RowCount - 1;
-      FixedRows := 0;
+        FixedRows := 0;
+      end
+      else
+      begin
+        FixedRows := 0;
+        RowCount := 0;
+      end;
     end;
   end;
 

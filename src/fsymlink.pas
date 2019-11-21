@@ -35,7 +35,7 @@ implementation
 {$R *.lfm}
 
 uses
-  LazFileUtils, uLng, uGlobs, uLog, uShowMsg, uOSUtils, DCStrUtils, DCOSUtils;
+  LazFileUtils, uLng, uGlobs, uLog, uShowMsg, DCStrUtils, DCOSUtils, uAdministrator;
 
 function ShowSymLinkForm(const sExistingFile, sLinkToCreate, CurrentPath: String): Boolean;
 begin
@@ -61,6 +61,7 @@ end;
 procedure TfrmSymLink.btnOKClick(Sender: TObject);
 var
   sSrc, sDst, Message: String;
+  AElevate: TDuplicates = dupIgnore;
 begin
   sSrc:=edtExistingFile.Text;
   sDst:=edtLinkToCreate.Text;
@@ -73,21 +74,26 @@ begin
     sSrc:= CreateRelativePath(sSrc, ExtractFileDir(sDst));
   end;
 
-  if CreateSymLink(sSrc, sDst) then
-    begin
-      // write log
-      if (log_cp_mv_ln in gLogOptions) and (log_success in gLogOptions) then
-        logWrite(Format(rsMsgLogSuccess+rsMsgLogSymLink,[sSrc+' -> '+sDst]), lmtSuccess);
-    end
-  else
-    begin
-      Message:= mbSysErrorMessage;
-      // write log
-      if (log_cp_mv_ln in gLogOptions) and (log_errors in gLogOptions) then
-        logWrite(Format(rsMsgLogError+rsMsgLogSymLink,[sSrc+' -> '+sDst]), lmtError);
-      // Standart error modal dialog
-      MsgError(rsSymErrCreate + LineEnding + LineEnding + Message);
-    end;
+  PushPop(AElevate);
+  try
+    if CreateSymbolicLinkUAC(sSrc, sDst) then
+      begin
+        // write log
+        if (log_cp_mv_ln in gLogOptions) and (log_success in gLogOptions) then
+          logWrite(Format(rsMsgLogSuccess+rsMsgLogSymLink,[sSrc+' -> '+sDst]), lmtSuccess);
+      end
+    else
+      begin
+        Message:= mbSysErrorMessage;
+        // write log
+        if (log_cp_mv_ln in gLogOptions) and (log_errors in gLogOptions) then
+          logWrite(Format(rsMsgLogError+rsMsgLogSymLink,[sSrc+' -> '+sDst]), lmtError);
+        // Standart error modal dialog
+        MsgError(rsSymErrCreate + LineEnding + LineEnding + Message);
+      end;
+  finally
+    PushPop(AElevate);
+  end;
 end;
 
 procedure TfrmSymLink.FormShow(Sender: TObject);

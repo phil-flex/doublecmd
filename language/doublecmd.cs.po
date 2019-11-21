@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: Double Commander 1.0.0 alpha\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-01-17 23:08+0300\n"
-"PO-Revision-Date: 2019-04-07 08:18+0200\n"
+"PO-Revision-Date: 2019-06-22 11:50+0200\n"
 "Last-Translator: Zdeněk Fuchs <zephycz@centrum.cz>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -18,6 +18,10 @@ msgstr ""
 #: fsyncdirsdlg.rscomparingpercent
 msgid "Comparing... %d%% (ESC to cancel)"
 msgstr "Porovnávám... %d%% (ESC pro zrušení)"
+
+#: fsyncdirsdlg.rsdeleteleft
+msgid "Left: Delete %d file(s)"
+msgstr ""
 
 #: fsyncdirsdlg.rsdeleteright
 msgid "Right: Delete %d file(s)"
@@ -470,22 +474,22 @@ msgstr "Zrušit"
 #: tfrmdiffer.actcopylefttoright.caption
 msgctxt "TFRMDIFFER.ACTCOPYLEFTTORIGHT.CAPTION"
 msgid "Copy Block Right"
-msgstr "Kopírovat pravý blok"
+msgstr "Kopírovat doprava"
 
 #: tfrmdiffer.actcopylefttoright.hint
 msgctxt "TFRMDIFFER.ACTCOPYLEFTTORIGHT.HINT"
 msgid "Copy Block Right"
-msgstr "Kopírovat pravý blok"
+msgstr "Kopírovat doprava"
 
 #: tfrmdiffer.actcopyrighttoleft.caption
 msgctxt "TFRMDIFFER.ACTCOPYRIGHTTOLEFT.CAPTION"
 msgid "Copy Block Left"
-msgstr "Kopírovat levý blok"
+msgstr "Kopírovat doleva"
 
 #: tfrmdiffer.actcopyrighttoleft.hint
 msgctxt "TFRMDIFFER.ACTCOPYRIGHTTOLEFT.HINT"
 msgid "Copy Block Left"
-msgstr "Kopírovat levý blok"
+msgstr "Kopírovat doleva"
 
 #: tfrmdiffer.acteditcopy.caption
 msgctxt "TFRMDIFFER.ACTEDITCOPY.CAPTION"
@@ -2210,7 +2214,7 @@ msgstr "Zaměnit aktuální seznam a stromové zobrazení"
 
 #: tfrmmain.actgotofirstentry.caption
 msgid "Place cursor on first folder or file"
-msgstr ""
+msgstr "Kurzor umístit na první položku"
 
 #: tfrmmain.actgotofirstfile.caption
 msgid "Place cursor on first file in list"
@@ -2218,7 +2222,7 @@ msgstr "Umístit kurzor na první soubor v seznamu"
 
 #: tfrmmain.actgotolastentry.caption
 msgid "Place cursor on last folder or file"
-msgstr ""
+msgstr "Kurzor umístit na poslední položku"
 
 #: tfrmmain.actgotolastfile.caption
 msgid "Place cursor on last file in list"
@@ -4984,7 +4988,7 @@ msgstr "Možnosti interního editoru"
 
 #: tfrmoptionseditor.lblrightedge.caption
 msgid "Right margin:"
-msgstr ""
+msgstr "Pravý okraj:"
 
 #: tfrmoptionseditor.lbltabwidth.caption
 msgid "Tab width:"
@@ -6339,7 +6343,7 @@ msgstr "Panel disků:"
 
 #: tfrmoptionsicons.lblfilepanel.caption
 msgid "File panel:"
-msgstr ""
+msgstr "Panel souborů:"
 
 #: tfrmoptionsicons.rbiconsshowall.caption
 msgctxt "TFRMOPTIONSICONS.RBICONSSHOWALL.CAPTION"
@@ -6407,10 +6411,6 @@ msgstr "&Plochá tlačítka"
 #: tfrmoptionslayout.cbflatinterface.caption
 msgid "Flat i&nterface"
 msgstr "Ploché &rozhraní"
-
-#: tfrmoptionslayout.cbflattoolbar.caption
-msgid "Flat b&uttons"
-msgstr "Plochá t&lačítka"
 
 #: tfrmoptionslayout.cbfreespaceind.caption
 msgid "Show fr&ee space indicator on drive label"
@@ -6483,6 +6483,10 @@ msgstr "Zobrazit okno te&rminálu"
 #: tfrmoptionslayout.cbtwodiskpanels.caption
 msgid "Show two drive button bars (fi&xed width, above file windows)"
 msgstr "Zobrazit 2 seznamy disků (pe&vná šířka, nad souborovými okny)"
+
+#: tfrmoptionslayout.chkshowmiddletoolbar.caption
+msgid "Show middle toolbar"
+msgstr ""
 
 #: tfrmoptionslayout.gbscreenlayout.caption
 msgid " Screen layout "
@@ -6952,7 +6956,7 @@ msgstr "Aktivovat cílový &panel při kliknutí na jeho libovolnou záložku"
 
 #: tfrmoptionstabs.cbtabsalwaysvisible.caption
 msgid "&Show tab header also when there is only one tab"
-msgstr "&Zobrazit záložku, i když bude pouze 1"
+msgstr "&Zobrazit záložku, i když bude pouze jedna"
 
 #: tfrmoptionstabs.cbtabscloseduplicatewhenclosing.caption
 msgid "Close duplicate tabs when closing application"
@@ -6960,11 +6964,11 @@ msgstr "Zavřít stejné záložky při ukončování aplikace"
 
 #: tfrmoptionstabs.cbtabsconfirmcloseall.caption
 msgid "Con&firm close all tabs"
-msgstr "Potv&rdit uzavření všech záložek"
+msgstr "Potvrzovat zavření všech záložek"
 
 #: tfrmoptionstabs.cbtabsconfirmcloselocked.caption
 msgid "Confirm close locked tabs"
-msgstr "Potvrdit zavření uzamčené záložky"
+msgstr "Potvrzovat zavření zamknuté záložky"
 
 #: tfrmoptionstabs.cbtabslimitoption.caption
 msgid "&Limit tab title length to"
@@ -6972,7 +6976,7 @@ msgstr "&Omezit šířku záložky na"
 
 #: tfrmoptionstabs.cbtabslockedasterisk.caption
 msgid "Show locked tabs &with an asterisk *"
-msgstr "Zobrazit u uzamčené záložky znak *"
+msgstr "U zamknuté záložky zobrazit znak *"
 
 #: tfrmoptionstabs.cbtabsmultilines.caption
 msgid "&Tabs on multiple lines"
@@ -6984,7 +6988,7 @@ msgstr "Ctrl+&Nahoru otevře novou záložku na pozadí"
 
 #: tfrmoptionstabs.cbtabsopennearcurrent.caption
 msgid "Open &new tabs near current tab"
-msgstr "Otevřít &novou záložku vedle aktuální"
+msgstr "&Novou záložku otevřít vedle aktuální"
 
 #: tfrmoptionstabs.cbtabsreusetabwhenpossible.caption
 msgid "Reuse existing tab when possible"
@@ -7008,7 +7012,7 @@ msgstr "znaky"
 
 #: tfrmoptionstabs.lbltabsactionondoubleclick.caption
 msgid "Action to do when double click on a tab:"
-msgstr "Akce k provedení když poklikáme na záložku:"
+msgstr "Akce při dvojkliku na záložku:"
 
 #: tfrmoptionstabs.lbltabsposition.caption
 msgid "Ta&bs position"
@@ -7132,443 +7136,443 @@ msgctxt "tfrmoptionsterminal.lbruntermparams.caption"
 msgid "Parameters:"
 msgstr "Parametry:"
 
-#: tfrmoptionstoolbar.btnclonebutton.caption
+#: tfrmoptionstoolbarbase.btnclonebutton.caption
 msgid "C&lone button"
 msgstr "K&lonovat tlačítko"
 
-#: tfrmoptionstoolbar.btndeletebutton.caption
-msgctxt "TFRMOPTIONSTOOLBAR.BTNDELETEBUTTON.CAPTION"
+#: tfrmoptionstoolbarbase.btndeletebutton.caption
+msgctxt "tfrmoptionstoolbarbase.BTNDELETEBUTTON.CAPTION"
 msgid "&Delete"
 msgstr "&Vymazat"
 
-#: tfrmoptionstoolbar.btnedithotkey.caption
+#: tfrmoptionstoolbarbase.btnedithotkey.caption
 msgid "Edit hot&key"
 msgstr "Upravit kláveso&vou zkratku"
 
-#: tfrmoptionstoolbar.btninsertbutton.caption
+#: tfrmoptionstoolbarbase.btninsertbutton.caption
 msgid "&Insert new button"
-msgstr "&Vložit nové tlačítko"
+msgstr "&Přidat nové tlačítko"
 
-#: tfrmoptionstoolbar.btnopencmddlg.caption
+#: tfrmoptionstoolbarbase.btnopencmddlg.caption
 msgid "Select"
 msgstr "Vybrat"
 
-#: tfrmoptionstoolbar.btnopenfile.caption
-msgctxt "TFRMOPTIONSTOOLBAR.BTNOPENFILE.CAPTION"
+#: tfrmoptionstoolbarbase.btnopenfile.caption
+msgctxt "tfrmoptionstoolbarbase.BTNOPENFILE.CAPTION"
 msgid ">>"
 msgstr ">>"
 
-#: tfrmoptionstoolbar.btnother.caption
-msgctxt "TFRMOPTIONSTOOLBAR.BTNOTHER.CAPTION"
+#: tfrmoptionstoolbarbase.btnother.caption
+msgctxt "tfrmoptionstoolbarbase.BTNOTHER.CAPTION"
 msgid "Other..."
 msgstr "Ostatní..."
 
-#: tfrmoptionstoolbar.btnremovehotkey.caption
+#: tfrmoptionstoolbarbase.btnremovehotkey.caption
 msgid "Remove hotke&y"
 msgstr "Odstranit kláveso&vou zkratku"
 
-#: tfrmoptionstoolbar.btnstartpath.caption
-msgctxt "TFRMOPTIONSTOOLBAR.BTNSTARTPATH.CAPTION"
+#: tfrmoptionstoolbarbase.btnstartpath.caption
+msgctxt "tfrmoptionstoolbarbase.BTNSTARTPATH.CAPTION"
 msgid ">>"
 msgstr ">>"
 
-#: tfrmoptionstoolbar.btnsuggestiontooltip.caption
+#: tfrmoptionstoolbarbase.btnsuggestiontooltip.caption
 msgid "Suggest"
 msgstr "Navrhnout"
 
-#: tfrmoptionstoolbar.btnsuggestiontooltip.hint
+#: tfrmoptionstoolbarbase.btnsuggestiontooltip.hint
 msgid "Have DC suggest the tooltip based on button type, command and parameters"
 msgstr "DC navrhne popisek založený na typu tlačítka, příkazu a parametru"
 
-#: tfrmoptionstoolbar.cbflatbuttons.caption
-msgctxt "tfrmoptionstoolbar.cbflatbuttons.caption"
+#: tfrmoptionstoolbarbase.cbflatbuttons.caption
+msgctxt "tfrmoptionstoolbarbase.cbflatbuttons.caption"
 msgid "&Flat buttons"
 msgstr "&Plochá tlačítka"
 
-#: tfrmoptionstoolbar.cbreporterrorwithcommands.caption
+#: tfrmoptionstoolbarbase.cbreporterrorwithcommands.caption
 msgid "Report errors with commands"
 msgstr "Oznámit chyby a příkazy"
 
-#: tfrmoptionstoolbar.cbshowcaptions.caption
+#: tfrmoptionstoolbarbase.cbshowcaptions.caption
 msgid "Sho&w captions"
-msgstr ""
+msgstr "Zobrazit popisky"
 
-#: tfrmoptionstoolbar.edtinternalparameters.hint
+#: tfrmoptionstoolbarbase.edtinternalparameters.hint
 msgid "Enter command parameters, each in a separate line. Press F1 to see help on parameters."
 msgstr "Zadejte parametry příkazů, každý na samostatném řádku. Stisknutím klávesy F1 zobrazíte nápovědu k parametrům."
 
-#: tfrmoptionstoolbar.gbgroupbox.caption
+#: tfrmoptionstoolbarbase.gbgroupbox.caption
 msgid "Appearance"
 msgstr "Vzhled"
 
-#: tfrmoptionstoolbar.lblbarsize.caption
+#: tfrmoptionstoolbarbase.lblbarsize.caption
 msgid "&Bar size:"
 msgstr "&Velikost lišty:"
 
-#: tfrmoptionstoolbar.lblexternalcommand.caption
-msgctxt "tfrmoptionstoolbar.lblexternalcommand.caption"
+#: tfrmoptionstoolbarbase.lblexternalcommand.caption
+msgctxt "tfrmoptionstoolbarbase.lblexternalcommand.caption"
 msgid "Co&mmand:"
 msgstr "Příka&z"
 
-#: tfrmoptionstoolbar.lblexternalparameters.caption
-msgctxt "TFRMOPTIONSTOOLBAR.LBLEXTERNALPARAMETERS.CAPTION"
+#: tfrmoptionstoolbarbase.lblexternalparameters.caption
+msgctxt "tfrmoptionstoolbarbase.LBLEXTERNALPARAMETERS.CAPTION"
 msgid "Parameter&s:"
 msgstr "Parametr&y:"
 
-#: tfrmoptionstoolbar.lblhelponinternalcommand.caption
-msgctxt "TFRMOPTIONSTOOLBAR.LBLHELPONINTERNALCOMMAND.CAPTION"
+#: tfrmoptionstoolbarbase.lblhelponinternalcommand.caption
+msgctxt "tfrmoptionstoolbarbase.LBLHELPONINTERNALCOMMAND.CAPTION"
 msgid "Help"
 msgstr "Nápověda"
 
-#: tfrmoptionstoolbar.lblhotkey.caption
+#: tfrmoptionstoolbarbase.lblhotkey.caption
 msgid "Hot key:"
 msgstr "Klávesová zkratka:"
 
-#: tfrmoptionstoolbar.lbliconfile.caption
+#: tfrmoptionstoolbarbase.lbliconfile.caption
 msgid "Ico&n:"
 msgstr "Ik&ona:"
 
-#: tfrmoptionstoolbar.lbliconsize.caption
+#: tfrmoptionstoolbarbase.lbliconsize.caption
 msgid "Icon si&ze:"
 msgstr "Ve&likost ikony:"
 
-#: tfrmoptionstoolbar.lblinternalcommand.caption
-msgctxt "tfrmoptionstoolbar.lblinternalcommand.caption"
+#: tfrmoptionstoolbarbase.lblinternalcommand.caption
+msgctxt "tfrmoptionstoolbarbase.lblinternalcommand.caption"
 msgid "Co&mmand:"
 msgstr "Pří&kaz:"
 
-#: tfrmoptionstoolbar.lblinternalparameters.caption
+#: tfrmoptionstoolbarbase.lblinternalparameters.caption
 msgid "&Parameters:"
 msgstr "&Parametry:"
 
-#: tfrmoptionstoolbar.lblstartpath.caption
-msgctxt "tfrmoptionstoolbar.lblstartpath.caption"
+#: tfrmoptionstoolbarbase.lblstartpath.caption
+msgctxt "tfrmoptionstoolbarbase.lblstartpath.caption"
 msgid "Start pat&h:"
 msgstr "Výchozí cest&a:"
 
-#: tfrmoptionstoolbar.lbltooltip.caption
+#: tfrmoptionstoolbarbase.lbltooltip.caption
 msgid "&Tooltip:"
 msgstr "ToolTip:"
 
-#: tfrmoptionstoolbar.miaddallcmds.caption
+#: tfrmoptionstoolbarbase.miaddallcmds.caption
 msgid "Add toolbar with ALL DC commands"
 msgstr "Přidat nástrojovou lištu se VŠEMI příkazy DC"
 
-#: tfrmoptionstoolbar.miaddexternalcommandsubmenu.caption
+#: tfrmoptionstoolbarbase.miaddexternalcommandsubmenu.caption
 msgid "for an external command"
-msgstr "pro externí příkaz"
+msgstr "externí příkaz"
 
-#: tfrmoptionstoolbar.miaddinternalcommandsubmenu.caption
+#: tfrmoptionstoolbarbase.miaddinternalcommandsubmenu.caption
 msgid "for an internal command"
-msgstr "pro vnitřní příkaz"
+msgstr "vnitřní příkaz"
 
-#: tfrmoptionstoolbar.miaddseparatorsubmenu.caption
+#: tfrmoptionstoolbarbase.miaddseparatorsubmenu.caption
 msgid "for a separator"
-msgstr "pro oddělovač"
+msgstr "oddělovač"
 
-#: tfrmoptionstoolbar.miaddsubtoolbarsubmenu.caption
+#: tfrmoptionstoolbarbase.miaddsubtoolbarsubmenu.caption
 msgid "for a sub-tool bar"
-msgstr "pro podnabídku nástrojové lišty"
+msgstr "podnabídka nástrojové lišty"
 
-#: tfrmoptionstoolbar.mibackup.caption
-msgctxt "TFRMOPTIONSTOOLBAR.MIBACKUP.CAPTION"
+#: tfrmoptionstoolbarbase.mibackup.caption
+msgctxt "tfrmoptionstoolbarbase.MIBACKUP.CAPTION"
 msgid "Backup..."
 msgstr "Zálohovat..."
 
-#: tfrmoptionstoolbar.miexport.caption
-msgctxt "TFRMOPTIONSTOOLBAR.MIEXPORT.CAPTION"
+#: tfrmoptionstoolbarbase.miexport.caption
+msgctxt "tfrmoptionstoolbarbase.MIEXPORT.CAPTION"
 msgid "Export..."
 msgstr "Exportovat..."
 
-#: tfrmoptionstoolbar.miexportcurrent.caption
+#: tfrmoptionstoolbarbase.miexportcurrent.caption
 msgid "Current toolbar..."
 msgstr "Aktuální nástrojovou lištu..."
 
-#: tfrmoptionstoolbar.miexportcurrenttodcbar.caption
-msgctxt "TFRMOPTIONSTOOLBAR.MIEXPORTCURRENTTODCBAR.CAPTION"
+#: tfrmoptionstoolbarbase.miexportcurrenttodcbar.caption
+msgctxt "tfrmoptionstoolbarbase.MIEXPORTCURRENTTODCBAR.CAPTION"
 msgid "to a Toolbar File (.toolbar)"
 msgstr "do souboru nástrojové lišty (.toolbar)"
 
-#: tfrmoptionstoolbar.miexportcurrenttotcbarkeep.caption
-msgctxt "TFRMOPTIONSTOOLBAR.MIEXPORTCURRENTTOTCBARKEEP.CAPTION"
+#: tfrmoptionstoolbarbase.miexportcurrenttotcbarkeep.caption
+msgctxt "tfrmoptionstoolbarbase.MIEXPORTCURRENTTOTCBARKEEP.CAPTION"
 msgid "to a TC .BAR file (keep existing)"
 msgstr "do souboru .BAR z TC (neměnit existující)"
 
-#: tfrmoptionstoolbar.miexportcurrenttotcbarnokeep.caption
-msgctxt "TFRMOPTIONSTOOLBAR.MIEXPORTCURRENTTOTCBARNOKEEP.CAPTION"
+#: tfrmoptionstoolbarbase.miexportcurrenttotcbarnokeep.caption
+msgctxt "tfrmoptionstoolbarbase.MIEXPORTCURRENTTOTCBARNOKEEP.CAPTION"
 msgid "to a TC .BAR file (erase existing)"
 msgstr "do souboru .BAR z TC (smazat existující)"
 
-#: tfrmoptionstoolbar.miexportcurrenttotcinikeep.caption
-msgctxt "TFRMOPTIONSTOOLBAR.MIEXPORTCURRENTTOTCINIKEEP.CAPTION"
+#: tfrmoptionstoolbarbase.miexportcurrenttotcinikeep.caption
+msgctxt "tfrmoptionstoolbarbase.MIEXPORTCURRENTTOTCINIKEEP.CAPTION"
 msgid "to a \"wincmd.ini\" of TC (keep existing)"
 msgstr "do Total Commanderu (\"wincmd.ini\") - nechat existující"
 
-#: tfrmoptionstoolbar.miexportcurrenttotcininokeep.caption
-msgctxt "TFRMOPTIONSTOOLBAR.MIEXPORTCURRENTTOTCININOKEEP.CAPTION"
+#: tfrmoptionstoolbarbase.miexportcurrenttotcininokeep.caption
+msgctxt "tfrmoptionstoolbarbase.MIEXPORTCURRENTTOTCININOKEEP.CAPTION"
 msgid "to a \"wincmd.ini\" of TC (erase existing)"
 msgstr "do Total Commanderu (\"wincmd.ini\") - smazat existující"
 
-#: tfrmoptionstoolbar.miexporttop.caption
+#: tfrmoptionstoolbarbase.miexporttop.caption
 msgid "Top toolbar..."
 msgstr "Horní nástrojovou lištu..."
 
-#: tfrmoptionstoolbar.miexporttoptobackup.caption
+#: tfrmoptionstoolbarbase.miexporttoptobackup.caption
 msgid "Save a backup of Toolbar"
 msgstr "Uložit zálohu nástrojové lišty"
 
-#: tfrmoptionstoolbar.miexporttoptodcbar.caption
-msgctxt "tfrmoptionstoolbar.miexporttoptodcbar.caption"
+#: tfrmoptionstoolbarbase.miexporttoptodcbar.caption
+msgctxt "tfrmoptionstoolbarbase.miexporttoptodcbar.caption"
 msgid "to a Toolbar File (.toolbar)"
 msgstr "do souboru nástrojové lišty (.toolbar)"
 
-#: tfrmoptionstoolbar.miexporttoptotcbarkeep.caption
-msgctxt "tfrmoptionstoolbar.miexporttoptotcbarkeep.caption"
+#: tfrmoptionstoolbarbase.miexporttoptotcbarkeep.caption
+msgctxt "tfrmoptionstoolbarbase.miexporttoptotcbarkeep.caption"
 msgid "to a TC .BAR file (keep existing)"
 msgstr "do souboru .BAR  z  TC (neměnit existující)"
 
-#: tfrmoptionstoolbar.miexporttoptotcbarnokeep.caption
-msgctxt "tfrmoptionstoolbar.miexporttoptotcbarnokeep.caption"
+#: tfrmoptionstoolbarbase.miexporttoptotcbarnokeep.caption
+msgctxt "tfrmoptionstoolbarbase.miexporttoptotcbarnokeep.caption"
 msgid "to a TC .BAR file (erase existing)"
 msgstr "do souboru .BAR z TC (smazat existující)"
 
-#: tfrmoptionstoolbar.miexporttoptotcinikeep.caption
-msgctxt "TFRMOPTIONSTOOLBAR.MIEXPORTTOPTOTCINIKEEP.CAPTION"
+#: tfrmoptionstoolbarbase.miexporttoptotcinikeep.caption
+msgctxt "tfrmoptionstoolbarbase.MIEXPORTTOPTOTCINIKEEP.CAPTION"
 msgid "to a \"wincmd.ini\" of TC (keep existing)"
 msgstr "do Total Commanderu (\"wincmd.ini\") - nechat existující"
 
-#: tfrmoptionstoolbar.miexporttoptotcininokeep.caption
-msgctxt "TFRMOPTIONSTOOLBAR.MIEXPORTTOPTOTCININOKEEP.CAPTION"
+#: tfrmoptionstoolbarbase.miexporttoptotcininokeep.caption
+msgctxt "tfrmoptionstoolbarbase.MIEXPORTTOPTOTCININOKEEP.CAPTION"
 msgid "to a \"wincmd.ini\" of TC (erase existing)"
 msgstr "do Total Commanderu (\"wincmd.ini\") - smazat existující"
 
-#: tfrmoptionstoolbar.miexternalcommandaftercurrent.caption
-msgctxt "TFRMOPTIONSTOOLBAR.MIEXTERNALCOMMANDAFTERCURRENT.CAPTION"
+#: tfrmoptionstoolbarbase.miexternalcommandaftercurrent.caption
+msgctxt "tfrmoptionstoolbarbase.MIEXTERNALCOMMANDAFTERCURRENT.CAPTION"
 msgid "just after current selection"
-msgstr "hned za aktuální výběr"
+msgstr "za aktuálně vybraný"
 
-#: tfrmoptionstoolbar.miexternalcommandfirstelement.caption
-msgctxt "TFRMOPTIONSTOOLBAR.MIEXTERNALCOMMANDFIRSTELEMENT.CAPTION"
+#: tfrmoptionstoolbarbase.miexternalcommandfirstelement.caption
+msgctxt "tfrmoptionstoolbarbase.MIEXTERNALCOMMANDFIRSTELEMENT.CAPTION"
 msgid "as first element"
-msgstr "jako první prvek"
+msgstr "na začátek"
 
-#: tfrmoptionstoolbar.miexternalcommandlastelement.caption
-msgctxt "TFRMOPTIONSTOOLBAR.MIEXTERNALCOMMANDLASTELEMENT.CAPTION"
+#: tfrmoptionstoolbarbase.miexternalcommandlastelement.caption
+msgctxt "tfrmoptionstoolbarbase.MIEXTERNALCOMMANDLASTELEMENT.CAPTION"
 msgid "as last element"
-msgstr "jako poslední prvek"
+msgstr "na konec"
 
-#: tfrmoptionstoolbar.miexternalcommandpriorcurrent.caption
-msgctxt "TFRMOPTIONSTOOLBAR.MIEXTERNALCOMMANDPRIORCURRENT.CAPTION"
+#: tfrmoptionstoolbarbase.miexternalcommandpriorcurrent.caption
+msgctxt "tfrmoptionstoolbarbase.MIEXTERNALCOMMANDPRIORCURRENT.CAPTION"
 msgid "just prior current selection"
-msgstr "hned před aktuální výběr"
+msgstr "před aktuálně vybraný"
 
-#: tfrmoptionstoolbar.miimport.caption
-msgctxt "TFRMOPTIONSTOOLBAR.MIIMPORT.CAPTION"
+#: tfrmoptionstoolbarbase.miimport.caption
+msgctxt "tfrmoptionstoolbarbase.MIIMPORT.CAPTION"
 msgid "Import..."
 msgstr "Importovat..."
 
-#: tfrmoptionstoolbar.miimportbackup.caption
+#: tfrmoptionstoolbarbase.miimportbackup.caption
 msgid "Restore a backup of Toolbar"
 msgstr "Obnovit zálohu nástrojové lišty"
 
-#: tfrmoptionstoolbar.miimportbackupaddcurrent.caption
-msgctxt "TFRMOPTIONSTOOLBAR.MIIMPORTBACKUPADDCURRENT.CAPTION"
+#: tfrmoptionstoolbarbase.miimportbackupaddcurrent.caption
+msgctxt "tfrmoptionstoolbarbase.MIIMPORTBACKUPADDCURRENT.CAPTION"
 msgid "to add to current toolbar"
 msgstr "přidat do aktuální nástrojové lišty"
 
-#: tfrmoptionstoolbar.miimportbackupaddmenucurrent.caption
-msgctxt "TFRMOPTIONSTOOLBAR.MIIMPORTBACKUPADDMENUCURRENT.CAPTION"
+#: tfrmoptionstoolbarbase.miimportbackupaddmenucurrent.caption
+msgctxt "tfrmoptionstoolbarbase.MIIMPORTBACKUPADDMENUCURRENT.CAPTION"
 msgid "to add to a new toolbar to current toolbar"
 msgstr "přidat novou lištu do aktuální nástrojové lišty"
 
-#: tfrmoptionstoolbar.miimportbackupaddmenutop.caption
-msgctxt "TFRMOPTIONSTOOLBAR.MIIMPORTBACKUPADDMENUTOP.CAPTION"
+#: tfrmoptionstoolbarbase.miimportbackupaddmenutop.caption
+msgctxt "tfrmoptionstoolbarbase.MIIMPORTBACKUPADDMENUTOP.CAPTION"
 msgid "to add to a new toolbar to top toolbar"
 msgstr "přidat novou lištu do horní nástrojové lišty"
 
-#: tfrmoptionstoolbar.miimportbackupaddtop.caption
-msgctxt "TFRMOPTIONSTOOLBAR.MIIMPORTBACKUPADDTOP.CAPTION"
+#: tfrmoptionstoolbarbase.miimportbackupaddtop.caption
+msgctxt "tfrmoptionstoolbarbase.MIIMPORTBACKUPADDTOP.CAPTION"
 msgid "to add to top toolbar"
 msgstr "přidat do horní nástrojové lišty"
 
-#: tfrmoptionstoolbar.miimportbackupreplacetop.caption
-msgctxt "TFRMOPTIONSTOOLBAR.MIIMPORTBACKUPREPLACETOP.CAPTION"
+#: tfrmoptionstoolbarbase.miimportbackupreplacetop.caption
+msgctxt "tfrmoptionstoolbarbase.MIIMPORTBACKUPREPLACETOP.CAPTION"
 msgid "to replace top toolbar"
 msgstr "nahradit horní nástrojovou lištu"
 
-#: tfrmoptionstoolbar.miimportdcbar.caption
+#: tfrmoptionstoolbarbase.miimportdcbar.caption
 msgid "from a Toolbar File (.toolbar)"
 msgstr "z souboru nástrojové lišty (.toolbar)"
 
-#: tfrmoptionstoolbar.miimportdcbaraddcurrent.caption
-msgctxt "tfrmoptionstoolbar.miimportdcbaraddcurrent.caption"
+#: tfrmoptionstoolbarbase.miimportdcbaraddcurrent.caption
+msgctxt "tfrmoptionstoolbarbase.miimportdcbaraddcurrent.caption"
 msgid "to add to current toolbar"
 msgstr "přidat do aktuální nástrojové lišty"
 
-#: tfrmoptionstoolbar.miimportdcbaraddmenucurrent.caption
-msgctxt "tfrmoptionstoolbar.miimportdcbaraddmenucurrent.caption"
+#: tfrmoptionstoolbarbase.miimportdcbaraddmenucurrent.caption
+msgctxt "tfrmoptionstoolbarbase.miimportdcbaraddmenucurrent.caption"
 msgid "to add to a new toolbar to current toolbar"
 msgstr "přidat novou lištu do aktuální nástrojové lišty"
 
-#: tfrmoptionstoolbar.miimportdcbaraddmenutop.caption
-msgctxt "tfrmoptionstoolbar.miimportdcbaraddmenutop.caption"
+#: tfrmoptionstoolbarbase.miimportdcbaraddmenutop.caption
+msgctxt "tfrmoptionstoolbarbase.miimportdcbaraddmenutop.caption"
 msgid "to add to a new toolbar to top toolbar"
 msgstr "přidat novou lištu do horní nástrojové lišty"
 
-#: tfrmoptionstoolbar.miimportdcbaraddtop.caption
-msgctxt "tfrmoptionstoolbar.miimportdcbaraddtop.caption"
+#: tfrmoptionstoolbarbase.miimportdcbaraddtop.caption
+msgctxt "tfrmoptionstoolbarbase.miimportdcbaraddtop.caption"
 msgid "to add to top toolbar"
 msgstr "přidat do horní nástrojové lišty"
 
-#: tfrmoptionstoolbar.miimportdcbarreplacetop.caption
-msgctxt "tfrmoptionstoolbar.miimportdcbarreplacetop.caption"
+#: tfrmoptionstoolbarbase.miimportdcbarreplacetop.caption
+msgctxt "tfrmoptionstoolbarbase.miimportdcbarreplacetop.caption"
 msgid "to replace top toolbar"
 msgstr "nahradit horní nástrojovou lištu"
 
-#: tfrmoptionstoolbar.miimporttcbar.caption
+#: tfrmoptionstoolbarbase.miimporttcbar.caption
 msgid "from a single TC .BAR file"
 msgstr "z jednoho .BAR souboru od TC..."
 
-#: tfrmoptionstoolbar.miimporttcbaraddcurrent.caption
-msgctxt "TFRMOPTIONSTOOLBAR.MIIMPORTTCBARADDCURRENT.CAPTION"
+#: tfrmoptionstoolbarbase.miimporttcbaraddcurrent.caption
+msgctxt "tfrmoptionstoolbarbase.MIIMPORTTCBARADDCURRENT.CAPTION"
 msgid "to add to current toolbar"
 msgstr "přidat do aktuální nástrojové lišty"
 
-#: tfrmoptionstoolbar.miimporttcbaraddmenucurrent.caption
-msgctxt "TFRMOPTIONSTOOLBAR.MIIMPORTTCBARADDMENUCURRENT.CAPTION"
+#: tfrmoptionstoolbarbase.miimporttcbaraddmenucurrent.caption
+msgctxt "tfrmoptionstoolbarbase.MIIMPORTTCBARADDMENUCURRENT.CAPTION"
 msgid "to add to a new toolbar to current toolbar"
 msgstr "přidat novou lištu do aktuální nástrojové lišty"
 
-#: tfrmoptionstoolbar.miimporttcbaraddmenutop.caption
-msgctxt "TFRMOPTIONSTOOLBAR.MIIMPORTTCBARADDMENUTOP.CAPTION"
+#: tfrmoptionstoolbarbase.miimporttcbaraddmenutop.caption
+msgctxt "tfrmoptionstoolbarbase.MIIMPORTTCBARADDMENUTOP.CAPTION"
 msgid "to add to a new toolbar to top toolbar"
 msgstr "přidat novou lištu do horní nástrojové lišty"
 
-#: tfrmoptionstoolbar.miimporttcbaraddtop.caption
-msgctxt "TFRMOPTIONSTOOLBAR.MIIMPORTTCBARADDTOP.CAPTION"
+#: tfrmoptionstoolbarbase.miimporttcbaraddtop.caption
+msgctxt "tfrmoptionstoolbarbase.MIIMPORTTCBARADDTOP.CAPTION"
 msgid "to add to top toolbar"
 msgstr "přidat do horní nástrojové lišty"
 
-#: tfrmoptionstoolbar.miimporttcbarreplacetop.caption
-msgctxt "TFRMOPTIONSTOOLBAR.MIIMPORTTCBARREPLACETOP.CAPTION"
+#: tfrmoptionstoolbarbase.miimporttcbarreplacetop.caption
+msgctxt "tfrmoptionstoolbarbase.MIIMPORTTCBARREPLACETOP.CAPTION"
 msgid "to replace top toolbar"
 msgstr "nahradit horní nástrojovou lištu"
 
-#: tfrmoptionstoolbar.miimporttcini.caption
+#: tfrmoptionstoolbarbase.miimporttcini.caption
 msgid "from \"wincmd.ini\" of TC..."
 msgstr "z Total Commanderu (\"wincmd.ini\")"
 
-#: tfrmoptionstoolbar.miimporttciniaddcurrent.caption
-msgctxt "TFRMOPTIONSTOOLBAR.MIIMPORTTCINIADDCURRENT.CAPTION"
+#: tfrmoptionstoolbarbase.miimporttciniaddcurrent.caption
+msgctxt "tfrmoptionstoolbarbase.MIIMPORTTCINIADDCURRENT.CAPTION"
 msgid "to add to current toolbar"
 msgstr "přidat do aktuální nástrojové lišty"
 
-#: tfrmoptionstoolbar.miimporttciniaddmenucurrent.caption
-msgctxt "TFRMOPTIONSTOOLBAR.MIIMPORTTCINIADDMENUCURRENT.CAPTION"
+#: tfrmoptionstoolbarbase.miimporttciniaddmenucurrent.caption
+msgctxt "tfrmoptionstoolbarbase.MIIMPORTTCINIADDMENUCURRENT.CAPTION"
 msgid "to add to a new toolbar to current toolbar"
 msgstr "přidat novou lištu do aktuální nástrojové lišty"
 
-#: tfrmoptionstoolbar.miimporttciniaddmenutop.caption
-msgctxt "TFRMOPTIONSTOOLBAR.MIIMPORTTCINIADDMENUTOP.CAPTION"
+#: tfrmoptionstoolbarbase.miimporttciniaddmenutop.caption
+msgctxt "tfrmoptionstoolbarbase.MIIMPORTTCINIADDMENUTOP.CAPTION"
 msgid "to add to a new toolbar to top toolbar"
 msgstr "přidat novou lištu do horní nástrojové lišty"
 
-#: tfrmoptionstoolbar.miimporttciniaddtop.caption
-msgctxt "TFRMOPTIONSTOOLBAR.MIIMPORTTCINIADDTOP.CAPTION"
+#: tfrmoptionstoolbarbase.miimporttciniaddtop.caption
+msgctxt "tfrmoptionstoolbarbase.MIIMPORTTCINIADDTOP.CAPTION"
 msgid "to add to top toolbar"
 msgstr "přidat do horní nástrojové lišty"
 
-#: tfrmoptionstoolbar.miimporttcinireplacetop.caption
-msgctxt "TFRMOPTIONSTOOLBAR.MIIMPORTTCINIREPLACETOP.CAPTION"
+#: tfrmoptionstoolbarbase.miimporttcinireplacetop.caption
+msgctxt "tfrmoptionstoolbarbase.MIIMPORTTCINIREPLACETOP.CAPTION"
 msgid "to replace top toolbar"
 msgstr "nahradit horní nástrojovou lištu"
 
-#: tfrmoptionstoolbar.miinternalcommandaftercurrent.caption
-msgctxt "TFRMOPTIONSTOOLBAR.MIINTERNALCOMMANDAFTERCURRENT.CAPTION"
+#: tfrmoptionstoolbarbase.miinternalcommandaftercurrent.caption
+msgctxt "tfrmoptionstoolbarbase.MIINTERNALCOMMANDAFTERCURRENT.CAPTION"
 msgid "just after current selection"
-msgstr "hned za aktuální výběr"
+msgstr "za aktuálně vybraný"
 
-#: tfrmoptionstoolbar.miinternalcommandfirstelement.caption
-msgctxt "TFRMOPTIONSTOOLBAR.MIINTERNALCOMMANDFIRSTELEMENT.CAPTION"
+#: tfrmoptionstoolbarbase.miinternalcommandfirstelement.caption
+msgctxt "tfrmoptionstoolbarbase.MIINTERNALCOMMANDFIRSTELEMENT.CAPTION"
 msgid "as first element"
-msgstr "jako první prvek"
+msgstr "na začátek"
 
-#: tfrmoptionstoolbar.miinternalcommandlastelement.caption
-msgctxt "TFRMOPTIONSTOOLBAR.MIINTERNALCOMMANDLASTELEMENT.CAPTION"
+#: tfrmoptionstoolbarbase.miinternalcommandlastelement.caption
+msgctxt "tfrmoptionstoolbarbase.MIINTERNALCOMMANDLASTELEMENT.CAPTION"
 msgid "as last element"
-msgstr "jako poslední prvek"
+msgstr "na konec"
 
-#: tfrmoptionstoolbar.miinternalcommandpriorcurrent.caption
-msgctxt "TFRMOPTIONSTOOLBAR.MIINTERNALCOMMANDPRIORCURRENT.CAPTION"
+#: tfrmoptionstoolbarbase.miinternalcommandpriorcurrent.caption
+msgctxt "tfrmoptionstoolbarbase.MIINTERNALCOMMANDPRIORCURRENT.CAPTION"
 msgid "just prior current selection"
-msgstr "hned před aktuální výběr"
+msgstr "před aktuálně vybraný"
 
-#: tfrmoptionstoolbar.misearchandreplace.caption
-msgctxt "TFRMOPTIONSTOOLBAR.MISEARCHANDREPLACE.CAPTION"
+#: tfrmoptionstoolbarbase.misearchandreplace.caption
+msgctxt "tfrmoptionstoolbarbase.MISEARCHANDREPLACE.CAPTION"
 msgid "Search and replace..."
 msgstr "Vyhledat a nahradit..."
 
-#: tfrmoptionstoolbar.miseparatoraftercurrent.caption
-msgctxt "tfrmoptionstoolbar.miseparatoraftercurrent.caption"
+#: tfrmoptionstoolbarbase.miseparatoraftercurrent.caption
+msgctxt "tfrmoptionstoolbarbase.miseparatoraftercurrent.caption"
 msgid "just after current selection"
-msgstr "hned za aktuální výběr"
+msgstr "za aktuálně vybraný"
 
-#: tfrmoptionstoolbar.miseparatorfirstitem.caption
-msgctxt "tfrmoptionstoolbar.miseparatorfirstitem.caption"
+#: tfrmoptionstoolbarbase.miseparatorfirstitem.caption
+msgctxt "tfrmoptionstoolbarbase.miseparatorfirstitem.caption"
 msgid "as first element"
-msgstr "jako první prvek"
+msgstr "na začátek"
 
-#: tfrmoptionstoolbar.miseparatorlastelement.caption
-msgctxt "tfrmoptionstoolbar.miseparatorlastelement.caption"
+#: tfrmoptionstoolbarbase.miseparatorlastelement.caption
+msgctxt "tfrmoptionstoolbarbase.miseparatorlastelement.caption"
 msgid "as last element"
-msgstr "jako poslední prvek"
+msgstr "na konec"
 
-#: tfrmoptionstoolbar.miseparatorpriorcurrent.caption
-msgctxt "tfrmoptionstoolbar.miseparatorpriorcurrent.caption"
+#: tfrmoptionstoolbarbase.miseparatorpriorcurrent.caption
+msgctxt "tfrmoptionstoolbarbase.miseparatorpriorcurrent.caption"
 msgid "just prior current selection"
-msgstr "hned před aktuální výběr"
+msgstr "před aktuálně vybraný"
 
-#: tfrmoptionstoolbar.misrcrplallofall.caption
+#: tfrmoptionstoolbarbase.misrcrplallofall.caption
 msgid "in all of all the above..."
 msgstr "ve všech výše uvedených ..."
 
-#: tfrmoptionstoolbar.misrcrplcommands.caption
+#: tfrmoptionstoolbarbase.misrcrplcommands.caption
 msgid "in all commands..."
 msgstr "ve všech příkazech..."
 
-#: tfrmoptionstoolbar.misrcrpliconnames.caption
+#: tfrmoptionstoolbarbase.misrcrpliconnames.caption
 msgid "in all icon names..."
 msgstr "ve všech názvech ikon..."
 
-#: tfrmoptionstoolbar.misrcrplparameters.caption
+#: tfrmoptionstoolbarbase.misrcrplparameters.caption
 msgid "in all parameters..."
 msgstr "ve všech parametrech..."
 
-#: tfrmoptionstoolbar.misrcrplstartpath.caption
+#: tfrmoptionstoolbarbase.misrcrplstartpath.caption
 msgid "in all start path..."
 msgstr "ve všech spouštěcích cestách..."
 
-#: tfrmoptionstoolbar.misubtoolbaraftercurrent.caption
-msgctxt "TFRMOPTIONSTOOLBAR.MISUBTOOLBARAFTERCURRENT.CAPTION"
+#: tfrmoptionstoolbarbase.misubtoolbaraftercurrent.caption
+msgctxt "tfrmoptionstoolbarbase.MISUBTOOLBARAFTERCURRENT.CAPTION"
 msgid "just after current selection"
-msgstr "hned za aktuální výběr"
+msgstr "za aktuálně vybraný"
 
-#: tfrmoptionstoolbar.misubtoolbarfirstelement.caption
-msgctxt "TFRMOPTIONSTOOLBAR.MISUBTOOLBARFIRSTELEMENT.CAPTION"
+#: tfrmoptionstoolbarbase.misubtoolbarfirstelement.caption
+msgctxt "tfrmoptionstoolbarbase.MISUBTOOLBARFIRSTELEMENT.CAPTION"
 msgid "as first element"
-msgstr "jako první prvek"
+msgstr "na začátek"
 
-#: tfrmoptionstoolbar.misubtoolbarlastelement.caption
-msgctxt "TFRMOPTIONSTOOLBAR.MISUBTOOLBARLASTELEMENT.CAPTION"
+#: tfrmoptionstoolbarbase.misubtoolbarlastelement.caption
+msgctxt "tfrmoptionstoolbarbase.MISUBTOOLBARLASTELEMENT.CAPTION"
 msgid "as last element"
-msgstr "jako poslední prvek"
+msgstr "na konec"
 
-#: tfrmoptionstoolbar.misubtoolbarpriorcurrent.caption
-msgctxt "TFRMOPTIONSTOOLBAR.MISUBTOOLBARPRIORCURRENT.CAPTION"
+#: tfrmoptionstoolbarbase.misubtoolbarpriorcurrent.caption
+msgctxt "tfrmoptionstoolbarbase.MISUBTOOLBARPRIORCURRENT.CAPTION"
 msgid "just prior current selection"
-msgstr "hned před aktuální výběr"
+msgstr "před aktuálně vybraný"
 
-#: tfrmoptionstoolbar.rgtoolitemtype.caption
+#: tfrmoptionstoolbarbase.rgtoolitemtype.caption
 msgid "Button type"
 msgstr "Typ tlačítka"
 
@@ -8052,6 +8056,30 @@ msgstr "Komprimátor:"
 msgid "Time:"
 msgstr "Čas:"
 
+#: tfrmprintsetup.caption
+msgid "Print configuration"
+msgstr "Nastavení tisku"
+
+#: tfrmprintsetup.gbmargins.caption
+msgid "Margins (mm)"
+msgstr "Okraje (mm)"
+
+#: tfrmprintsetup.lblbottom.caption
+msgid "&Bottom:"
+msgstr "Dolní:"
+
+#: tfrmprintsetup.lblleft.caption
+msgid "&Left:"
+msgstr "Levý:"
+
+#: tfrmprintsetup.lblright.caption
+msgid "&Right:"
+msgstr "Pravý:"
+
+#: tfrmprintsetup.lbltop.caption
+msgid "&Top:"
+msgstr "Horní:"
+
 #: tfrmquicksearch.btncancel.caption
 msgctxt "TFRMQUICKSEARCH.BTNCANCEL.CAPTION"
 msgid "X"
@@ -8450,6 +8478,18 @@ msgctxt "TFRMSYMLINK.LBLLINKTOCREATE.CAPTION"
 msgid "&Link name"
 msgstr "&Název odkazu"
 
+#: tfrmsyncdirsdlg.actdeleteboth.caption
+msgid "Delete on both sides"
+msgstr "Smazat na obou stranách"
+
+#: tfrmsyncdirsdlg.actdeleteleft.caption
+msgid "<- Delete left"
+msgstr "<- Smazat levý"
+
+#: tfrmsyncdirsdlg.actdeleteright.caption
+msgid "-> Delete right"
+msgstr "-> Smazat pravý"
+
 #: tfrmsyncdirsdlg.actselectclear.caption
 msgid "Remove selection"
 msgstr "Zrušit výběr"
@@ -8469,6 +8509,14 @@ msgstr "Otočit směr kopírování"
 #: tfrmsyncdirsdlg.actselectcopyrighttoleft.caption
 msgid "Select for copying <- (right to left)"
 msgstr "Směr kopírování <- (zprava doleva)"
+
+#: tfrmsyncdirsdlg.actselectdeleteboth.caption
+msgid "Select for deleting <-> (both)"
+msgstr ""
+
+#: tfrmsyncdirsdlg.actselectdeleteleft.caption
+msgid "Select for deleting <- (left)"
+msgstr ""
 
 #: tfrmsyncdirsdlg.actselectdeleteright.caption
 msgid "Select for deleting -> (right)"
@@ -8501,11 +8549,13 @@ msgstr "Synchronizovat"
 
 #: tfrmsyncdirsdlg.caption
 msgid "Synchronize directories"
-msgstr "Synchronizovat adresáře"
+msgstr "Synchronizovat složky"
 
 #: tfrmsyncdirsdlg.cbextfilter.text
+#, fuzzy
+#| msgid "*.*"
 msgctxt "TFRMSYNCDIRSDLG.CBEXTFILTER.TEXT"
-msgid "*.*"
+msgid "*"
 msgstr "*.*"
 
 #: tfrmsyncdirsdlg.chkasymmetric.caption
@@ -8622,7 +8672,7 @@ msgstr "Synchronizovat"
 
 #: tfrmsyncdirsperformdlg.chkconfirmoverwrites.caption
 msgid "Confirm overwrites"
-msgstr "Ověření přepsání"
+msgstr "Potvrzovat přepsání"
 
 #: tfrmtreeviewmenu.caption
 msgctxt "tfrmtreeviewmenu.caption"
@@ -8909,6 +8959,14 @@ msgctxt "tfrmviewer.actpreview.caption"
 msgid "Preview"
 msgstr "Miniatury souborů"
 
+#: tfrmviewer.actprint.caption
+msgid "P&rint..."
+msgstr "Tisk..."
+
+#: tfrmviewer.actprintsetup.caption
+msgid "Print &setup..."
+msgstr "Nastavení tisku..."
+
 #: tfrmviewer.actreload.caption
 msgctxt "TFRMVIEWER.ACTRELOAD.CAPTION"
 msgid "Reload"
@@ -8996,6 +9054,10 @@ msgstr "Pouze text"
 #: tfrmviewer.actshowaswraptext.caption
 msgid "Show as &Wrap text"
 msgstr "Zalomit text"
+
+#: tfrmviewer.actshowcaret.caption
+msgid "Show text c&ursor"
+msgstr ""
 
 #: tfrmviewer.actshowgraphics.caption
 msgctxt "tfrmviewer.actshowgraphics.caption"
@@ -9146,10 +9208,6 @@ msgstr "&Soubor"
 #: tfrmviewer.miimage.caption
 msgid "&Image"
 msgstr "&Obrázek"
-
-#: tfrmviewer.miprint.caption
-msgid "Print..."
-msgstr "Vytisknout..."
 
 #: tfrmviewer.mirotate.caption
 msgid "Rotate"
@@ -9863,7 +9921,7 @@ msgstr "soubory Oblíbených složek"
 
 #: ulng.rsfilterexecutablefiles
 msgid "Executables files"
-msgstr ""
+msgstr "Spustitelné soubory"
 
 #: ulng.rsfilteriniconfigfiles
 msgid ".ini Config files"
@@ -10761,7 +10819,7 @@ msgstr "Nalezení souboru \".hotlist\" pro import"
 
 #: ulng.rsmsghotdirname
 msgid "Hotdir name"
-msgstr "Název rychlého adresáře"
+msgstr "Název složky"
 
 #: ulng.rsmsghotdirnbnewentries
 msgid "Number of new entries: %d"
@@ -10773,7 +10831,7 @@ msgstr "Pro import není nic vybráno!"
 
 #: ulng.rsmsghotdirpath
 msgid "Hotdir path"
-msgstr "Cesta rychlého adresáře"
+msgstr "Cesta ke složce ve zdrojovém panelu"
 
 #: ulng.rsmsghotdirreaddselecteddirectory
 msgid "Re-Add selected dir: "
@@ -10819,7 +10877,7 @@ msgstr "Název podnabídky"
 
 #: ulng.rsmsghotdirtarget
 msgid "Hotdir target"
-msgstr "Cíl rychlého adresáře"
+msgstr "Cesta ke složce v cílovém panelu"
 
 #: ulng.rsmsghotdirtiporderpath
 msgid "Determine if you want the active frame to be sorted in a specified order after changing directory"
@@ -11404,7 +11462,7 @@ msgstr "Neměnit;VELKÁ;malá;1. znak velkým;1. znak každého slova velkým;"
 
 #: ulng.rsmulrenlastpreset
 msgid "[The last used]"
-msgstr ""
+msgstr "[Poslední použitý]"
 
 #: ulng.rsmulrenwarningduplicate
 msgid "Warning, duplicate names!"
@@ -12145,6 +12203,10 @@ msgstr "Nástrojová lišta"
 msgid "Toolbar Extra"
 msgstr "Rozšířené nastavení"
 
+#: ulng.rsoptionseditortoolbarmiddle
+msgid "Toolbar Middle"
+msgstr ""
+
 #: ulng.rsoptionseditortools
 msgid "Tools"
 msgstr "Nástroje"
@@ -12262,7 +12324,7 @@ msgstr "Nahoře;Dole;"
 
 #: ulng.rsopttoolbarbuttontype
 msgid "S&eparator;Inte&rnal command;E&xternal command;Men&u"
-msgstr "O&ddělovač;Vni&třní příkaz;V&nější příkaz;Nabíd&ka"
+msgstr "O&ddělovač;Vni&třní příkaz;V&nější příkaz;Podnabíd&ka"
 
 #: ulng.rsopttooltipconfiguresavetochange
 msgid "To change file type tooltip configuration, either APPLY or DELETE current editing one"
@@ -12682,7 +12744,7 @@ msgstr "Prostý text"
 
 #: ulng.rstabsactionondoubleclickchoices
 msgid "Do nothing;Close tab;Access Favorite Tabs;Tabs popup menu"
-msgstr "Žádná;Zavřít záložku;Přístup k oblíbeným záložkám;Roletovou nabídku záložek"
+msgstr "Žádná;Zavřít záložku;Zobrazit oblíbené záložky;Zobrazit menu s akcemi pro záložky"
 
 #: ulng.rstimeunitday
 msgid "Day(s)"

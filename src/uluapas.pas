@@ -38,7 +38,8 @@ implementation
 uses
   Forms, Dialogs, Clipbrd, LazUTF8, LCLVersion, uLng, DCOSUtils,
   DCConvertEncoding, fMain, uFormCommands, uOSUtils, uGlobs, uLog,
-  uClipboard, uShowMsg, uLuaStd, uFindEx, uConvEncoding;
+  uClipboard, uShowMsg, uLuaStd, uFindEx, uConvEncoding, uFileProcs,
+  uFilePanelSelect;
 
 procedure luaPushSearchRec(L : Plua_State; Rec: PSearchRecEx);
 begin
@@ -131,6 +132,12 @@ function luaDirectoryExists(L : Plua_State) : Integer; cdecl;
 begin
   Result:= 1;
   lua_pushboolean(L, mbDirectoryExists(lua_tostring(L, 1)));
+end;
+
+function luaCreateDirectory(L : Plua_State) : Integer; cdecl;
+begin
+  Result:= 1;
+  lua_pushboolean(L, mbForceDirectory(lua_tostring(L, 1)));
 end;
 
 function luaExtractFilePath(L : Plua_State) : Integer; cdecl;
@@ -364,6 +371,17 @@ begin
   lua_pushboolean(L, Res = cfrSuccess);
 end;
 
+function luaCurrentPanel(L : Plua_State) : Integer; cdecl;
+var
+  Count: Integer;
+begin
+  Result:= 1;
+  Count:= lua_gettop(L);
+  lua_pushinteger(L, Integer(frmMain.SelectedPanel));
+  if (Count > 0) then
+    frmMain.SetActiveFrame(TFilePanelSelect(lua_tointeger(L, 1)));
+end;
+
 procedure luaP_register(L : Plua_State; n : PChar; f : lua_CFunction);
 begin
   lua_pushcfunction(L, f);
@@ -387,6 +405,7 @@ begin
     luaP_register(L, 'FileGetAttr', @luaFileGetAttr);
     luaP_register(L, 'GetTickCount', @luaGetTickCount);
     luaP_register(L, 'DirectoryExists', @luaDirectoryExists);
+    luaP_register(L, 'CreateDirectory', @luaCreateDirectory);
 
     luaP_register(L, 'ExtractFileExt', @luaExtractFileExt);
     luaP_register(L, 'ExtractFileDir', @luaExtractFileDir);
@@ -423,6 +442,7 @@ begin
 
   lua_newtable(L);
     luaP_register(L, 'LogWrite', @luaLogWrite);
+    luaP_register(L, 'CurrentPanel', @luaCurrentPanel);
     luaP_register(L, 'ExecuteCommand', @luaExecuteCommand);
   lua_setglobal(L, 'DC');
 

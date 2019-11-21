@@ -155,7 +155,7 @@ implementation
 
 uses
   uDebug, uOSUtils, DCStrUtils, FileUtil, uFindEx, DCClassesUtf8, uFileProcs, uLng,
-  DCBasicTypes, uFileSource, uFileSystemFileSource, uFileProperty,
+  DCBasicTypes, uFileSource, uFileSystemFileSource, uFileProperty, uAdministrator,
   StrUtils, DCDateTimeUtils, uShowMsg, Forms, LazUTF8, uHash;
 
 const
@@ -249,13 +249,13 @@ end;
 function FileExistsMessage(const TargetName, SourceName: String;
                            SourceSize: Int64; SourceTime: TDateTime): String;
 var
-  TargetInfo: TSearchRec;
+  TargetInfo: TSearchRecEx;
 begin
   Result:= rsMsgFileExistsOverwrite + LineEnding + WrapTextSimple(TargetName, 100) + LineEnding;
   if mbFileGetAttr(TargetName, TargetInfo) then
   begin
     Result:= Result + Format(rsMsgFileExistsFileInfo, [Numb2USA(IntToStr(TargetInfo.Size)),
-                             DateTimeToStr(FileDateToDateTime(TargetInfo.Time))]) + LineEnding;
+                             DateTimeToStr(FileTimeToDateTime(TargetInfo.Time))]) + LineEnding;
   end;
   Result:= Result + LineEnding + rsMsgFileExistsWithFile + LineEnding + WrapTextSimple(SourceName, 100) + LineEnding +
            Format(rsMsgFileExistsFileInfo, [Numb2USA(IntToStr(SourceSize)), DateTimeToStr(SourceTime)]);
@@ -405,8 +405,8 @@ begin
   SplitFileMask(FRenameMask, FRenameNameMask, FRenameExtMask);
 
   // Create destination path if it doesn't exist.
-  if not mbDirectoryExists(FRootTargetPath) then
-    if not mbForceDirectory(FRootTargetPath) then
+  if not DirectoryExistsUAC(FRootTargetPath) then
+    if not ForceDirectoriesUAC(FRootTargetPath) then
       Exit; // do error
 end;
 
@@ -440,7 +440,7 @@ function TFileSystemOperationHelper.CopyFile(
            TargetFileName: String;
            Mode: TFileSystemOperationHelperCopyMode): Boolean;
 var
-  SourceFileStream, TargetFileStream: TFileStreamEx;
+  SourceFileStream, TargetFileStream: TFileStreamUAC;
   iTotalDiskSize, iFreeDiskSize: Int64;
   bRetryRead, bRetryWrite: Boolean;
   BytesRead, BytesToRead, BytesWrittenTry, BytesWritten: Int64;
@@ -459,7 +459,7 @@ var
       bRetry := False;
       SourceFileStream.Free; // In case stream was created but 'while' loop run again
       try
-        SourceFileStream := TFileStreamEx.Create(SourceFile.FullPath, fmOpenRead or fmShareDenyNone);
+        SourceFileStream := TFileStreamUAC.Create(SourceFile.FullPath, fmOpenRead or fmShareDenyNone);
       except
         on EFOpenError do
           begin
@@ -523,20 +523,20 @@ var
         case Mode of
         fsohcmAppend:
           begin
-            TargetFileStream := TFileStreamEx.Create(TargetFileName, fmOpenReadWrite or Flags);
+            TargetFileStream := TFileStreamUAC.Create(TargetFileName, fmOpenReadWrite or Flags);
             TargetFileStream.Seek(0, soFromEnd); // seek to end
             TotalBytesToRead := SourceFileStream.Size;
           end;
         fsohcmResume:
           begin
-            TargetFileStream := TFileStreamEx.Create(TargetFileName, fmOpenReadWrite or Flags);
+            TargetFileStream := TFileStreamUAC.Create(TargetFileName, fmOpenReadWrite or Flags);
             NewPos := TargetFileStream.Seek(0, soFromEnd);
             SourceFileStream.Seek(NewPos, soFromBeginning);
             TotalBytesToRead := SourceFileStream.Size - NewPos;
           end
         else
           begin
-            TargetFileStream := TFileStreamEx.Create(TargetFileName, fmCreate or Flags);
+            TargetFileStream := TFileStreamUAC.Create(TargetFileName, fmCreate or Flags);
             TotalBytesToRead := SourceFileStream.Size;
             if FReserveSpace then
             begin
@@ -752,7 +752,7 @@ begin
            (AskQuestion('', rsMsgDeletePartiallyCopied,
                         [fsourYes, fsourNo], fsourYes, fsourNo) = fsourYes) then
         begin
-          mbDeleteFile(TargetFileName);
+          DeleteFileUAC(TargetFileName);
         end;
       end;
       if Result and FVerify then begin
@@ -778,14 +778,14 @@ begin
     ACopyTime := (FMode = fsohmMove) and (caoCopyTime in ACopyAttributesOptions);
     if ACopyTime then ACopyAttributesOptions -= [caoCopyTime];
     if ACopyAttributesOptions <> [] then begin
-      CopyAttrResult := mbFileCopyAttr(SourceFile.FullPath, TargetFileName, ACopyAttributesOptions);
+      CopyAttrResult := FileCopyAttrUAC(SourceFile.FullPath, TargetFileName, ACopyAttributesOptions);
     end;
     if ACopyTime then
     try
       // Copy time from properties because move operation change time of original folder
-      if not mbFileSetTime(TargetFileName, DateTimeToFileTime(SourceFile.ModificationTime),
-                   {$IF DEFINED(MSWINDOWS)}DateTimeToFileTime(SourceFile.CreationTime){$ELSE}0{$ENDIF},
-                                           DateTimeToFileTime(SourceFile.LastAccessTime)) then
+      if not FileSetTimeUAC(TargetFileName, DateTimeToFileTime(SourceFile.ModificationTime),
+                    {$IF DEFINED(MSWINDOWS)}DateTimeToFileTime(SourceFile.CreationTime){$ELSE}0{$ENDIF},
+                                            DateTimeToFileTime(SourceFile.LastAccessTime)) then
         CopyAttrResult += [caoCopyTime];
     except
       on E: EDateOutOfRange do CopyAttrResult += [caoCopyTime];
@@ -834,7 +834,7 @@ var
   RetryDelete: Boolean;
 begin
   if (Mode in [fsohcmAppend, fsohcmResume]) or
-     (not mbRenameFile(SourceFile.FullPath, TargetFileName)) then
+     (not RenameFileUAC(SourceFile.FullPath, TargetFileName)) then
   begin
     if FVerify then FStatistics.TotalBytes += SourceFile.Size;
     if CopyFile(SourceFile, TargetFileName, Mode) then
@@ -842,8 +842,8 @@ begin
       repeat
         RetryDelete := True;
         if FileIsReadOnly(SourceFile.Attributes) then
-          mbFileSetReadOnly(SourceFile.FullPath, False);
-        Result := mbDeleteFile(SourceFile.FullPath);
+          FileSetReadOnlyUAC(SourceFile.FullPath, False);
+        Result := DeleteFileUAC(SourceFile.FullPath);
         if (not Result) and (FDeleteFileOption = fsourInvalid) then
         begin
           Message := Format(rsMsgNotDelete, [WrapTextSimple(SourceFile.FullPath, 100)]) + LineEnding + LineEnding + mbSysErrorMessage;
@@ -897,7 +897,7 @@ begin
     UpdateStatistics(FStatistics);
 
     // Check if moving to the same file.
-    if mbSameFile(TargetName, aFile.FullPath) then
+    if mbFileSame(TargetName, aFile.FullPath) then
     begin
       if (FMode = fsohmCopy) and FAutoRenameItSelf then
         TargetName := GetNextCopyName(TargetName, aFile.IsDirectory or aFile.IsLinkToDirectory)
@@ -995,7 +995,7 @@ begin
            (not FRenamingFiles) and
            ((FCorrectSymlinks = False) or (NodeData.SubnodesHaveLinks = False)) and
            (NodeData.SubnodesHaveExclusions = False) and
-           mbRenameFile(aNode.TheFile.FullPath, AbsoluteTargetFileName) then
+           RenameFileUAC(aNode.TheFile.FullPath, AbsoluteTargetFileName) then
         begin
           // Success.
           CountStatistics(aNode);
@@ -1005,7 +1005,7 @@ begin
         else
         begin
           // Create target directory.
-          if mbCreateDir(AbsoluteTargetFileName) then
+          if CreateDirectoryUAC(AbsoluteTargetFileName) then
           begin
             // Copy/Move all files inside.
             Result := ProcessNode(aNode, IncludeTrailingPathDelimiter(AbsoluteTargetFileName));
@@ -1035,8 +1035,8 @@ begin
   if bRemoveDirectory and Result then
   begin
     if FileIsReadOnly(aNode.TheFile.Attributes) then
-      mbFileSetReadOnly(aNode.TheFile.FullPath, False);
-    mbRemoveDir(aNode.TheFile.FullPath);
+      FileSetReadOnlyUAC(aNode.TheFile.FullPath, False);
+    RemoveDirectoryUAC(aNode.TheFile.FullPath);
   end;
 end;
 
@@ -1072,7 +1072,7 @@ begin
     fsoterDeleted, fsoterNotExists:
       begin
         if (FMode <> fsohmMove) or
-           (not mbRenameFile(aFile.FullPath, AbsoluteTargetFileName)) then
+           (not RenameFileUAC(aFile.FullPath, AbsoluteTargetFileName)) then
         begin
           LinkTarget := ReadSymLink(aFile.FullPath);     // use sLinkTo ?
           if LinkTarget <> '' then
@@ -1088,7 +1088,7 @@ begin
                 LinkTarget := CorrectedLink;
             end;
 
-            if CreateSymlink(LinkTarget, AbsoluteTargetFileName) then
+            if CreateSymbolicLinkUAC(LinkTarget, AbsoluteTargetFileName) then
             begin
               CopyProperties(aFile, AbsoluteTargetFileName);
             end
@@ -1193,7 +1193,7 @@ var
         Exit(fsoterSkip);
       fsoodeDelete:
         begin
-          mbDeleteFile(AbsoluteTargetFileName);
+          DeleteFileUAC(AbsoluteTargetFileName);
           Exit(fsoterDeleted);
         end;
       fsoodeCopyInto:
@@ -1213,10 +1213,10 @@ var
       fsoofeOverwrite:
         begin
           if FileIsReadOnly(Attrs) then
-            mbFileSetReadOnly(AbsoluteTargetFileName, False);
+            FileSetReadOnlyUAC(AbsoluteTargetFileName, False);
           if FPS_ISLNK(Attrs) or (FMode = fsohmMove) then
           begin
-            mbDeleteFile(AbsoluteTargetFileName);
+            DeleteFileUAC(AbsoluteTargetFileName);
             Exit(fsoterDeleted);
           end;
           Exit(fsoterNotExists);
@@ -1268,7 +1268,7 @@ begin
       if FPS_ISLNK(Attrs) then
       begin
         // Check if target of the link exists.
-        LinkTargetAttrs := mbFileGetAttrNoLinks(AbsoluteTargetFileName);
+        LinkTargetAttrs := FileGetAttrUAC(AbsoluteTargetFileName, True);
         if (LinkTargetAttrs <> faInvalidAttributes) then
         begin
           if FPS_ISDIR(LinkTargetAttrs) then
@@ -1580,7 +1580,7 @@ begin
   {$POP}
   HashInit(Context, HASH_TYPE);
   try
-    Handle:= mbFileOpen(FileName, fmOpenRead or fmShareDenyWrite or fmOpenSync or fmOpenDirect);
+    Handle:= FileOpenUAC(FileName, fmOpenRead or fmShareDenyWrite or fmOpenSync or fmOpenDirect);
 
     if Handle = feInvalidHandle then
     begin

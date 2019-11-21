@@ -30,15 +30,15 @@ uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
   StdCtrls, ExtCtrls, Buttons, ComCtrls, Grids, Menus, ActnList, LazUTF8Classes,
   uFileView, uFileSource, uFileSourceCopyOperation, uFile, uFileSourceOperation,
-  uFileSourceOperationMessageBoxesUI, uFormCommands, uHotkeyManager;
+  uFileSourceOperationMessageBoxesUI, uFormCommands, uHotkeyManager, uClassesEx;
 
 const
   HotkeysCategory = 'Synchronize Directories';
 
 type
 
-  TSyncRecState = (srsUnknown, srsEqual, srsNotEq, srsCopyLeft, srsCopyRight, srsDeleteRight,
-    srsDoNothing);
+  TSyncRecState = (srsUnknown, srsEqual, srsNotEq, srsCopyLeft, srsCopyRight, srsDeleteLeft,
+    srsDeleteRight, srsDeleteBoth, srsDoNothing);
 
   { TDrawGrid }
 
@@ -53,7 +53,9 @@ type
     actDeleteLeft: TAction;
     actDeleteRight: TAction;
     actDeleteBoth: TAction;
+    actSelectDeleteLeft: TAction;
     actSelectDeleteRight: TAction;
+    actSelectDeleteBoth: TAction;
     actSelectCopyReverse: TAction;
     actSelectClear: TAction;
     actSelectCopyLeftToRight: TAction;
@@ -86,7 +88,9 @@ type
     miDeleteRight: TMenuItem;
     miDeleteLeft: TMenuItem;
     miSeparator3: TMenuItem;
+    miSelectDeleteLeft: TMenuItem;
     miSelectDeleteRight: TMenuItem;
+    miSelectDeleteBoth: TMenuItem;
     miSeparator2: TMenuItem;
     miSelectCopyReverse: TMenuItem;
     miSeparator1: TMenuItem;
@@ -114,6 +118,7 @@ type
     procedure btnSelDir1Click(Sender: TObject);
     procedure btnCompareClick(Sender: TObject);
     procedure btnSynchronizeClick(Sender: TObject);
+    procedure RestoreProperties(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure FormCreate(Sender: TObject);
@@ -135,6 +140,7 @@ type
     procedure pmGridMenuPopup(Sender: TObject);
   private
     FCommands: TFormCommands;
+    FIniPropStorage: TIniPropStorageEx;
   private
     { private declarations }
     FCancel: Boolean;
@@ -180,9 +186,13 @@ type
     constructor Create(AOwner: TComponent;
       FileView1, FileView2: TFileView); reintroduce;
     destructor Destroy; override;
+  public
+    procedure CopyToClipboard;
   published
     procedure cm_SelectClear(const {%H-}Params:array of string);
+    procedure cm_SelectDeleteLeft(const {%H-}Params:array of string);
     procedure cm_SelectDeleteRight(const {%H-}Params:array of string);
+    procedure cm_SelectDeleteBoth(const {%H-}Params:array of string);
     procedure cm_SelectCopyDefault(const {%H-}Params:array of string);
     procedure cm_SelectCopyReverse(const {%H-}Params:array of string);
     procedure cm_SelectCopyLeftToRight(const {%H-}Params:array of string);
@@ -198,6 +208,7 @@ resourcestring
   rsComparingPercent = 'Comparing... %d%% (ESC to cancel)';
   rsLeftToRightCopy = 'Left to Right: Copy %d files, total size: %d bytes';
   rsRightToLeftCopy = 'Right to Left: Copy %d files, total size: %d bytes';
+  rsDeleteLeft = 'Left: Delete %d file(s)';
   rsDeleteRight = 'Right: Delete %d file(s)';
   rsFilesFound = 'Files found: %d  (Identical: %d, Different: %d, '
     + 'Unique left: %d, Unique right: %d)';
@@ -209,10 +220,13 @@ implementation
 uses
   fMain, uDebug, fDiffer, fSyncDirsPerformDlg, uGlobs, LCLType, LazUTF8, LazFileUtils,
   DCClassesUtf8, uFileSystemFileSource, uFileSourceOperationOptions, DCDateTimeUtils,
-  uDCUtils, uFileSourceUtil, uFileSourceOperationTypes, uShowForm,
-  uFileSourceDeleteOperation, uOSUtils, uLng, uMasks, Math;
+  uDCUtils, uFileSourceUtil, uFileSourceOperationTypes, uShowForm, uAdministrator,
+  uOSUtils, uLng, uMasks, Math, uClipboard, IntegerList;
 
 {$R *.lfm}
+
+const
+  GRID_COLUMN_FMT = 'HeaderDG_Column%d_Width';
 
 type
 
@@ -402,7 +416,11 @@ begin
       if FileTimeDiff < 0 then
         FState := srsCopyLeft;
   end;
-  FAction := FState;
+  if FForm.chkAsymmetric.Checked and (FState = srsCopyLeft) then
+    FAction := srsDoNothing
+  else begin
+    FAction := FState;
+  end;
 end;
 
 { TfrmSyncDirsDlg }
@@ -518,6 +536,7 @@ var
         MessageDlg(rsMsgErrNotSupported, mtError, [mbOK], 0);
         Exit(False);
       end;
+      FOperation.Elevate:= ElevateAction;
       TFileSourceCopyOperation(FOperation).FileExistsOption := FileExistsOption;
       FOperation.AddUserInterface(FFileSourceOperationMessageBoxesUI);
       try
@@ -532,17 +551,17 @@ var
 
 var
   i,
-  DeleteRightCount,
+  DeleteLeftCount, DeleteRightCount,
   CopyLeftCount, CopyRightCount: Integer;
   CopyLeftSize, CopyRightSize: Int64;
   fsr: TFileSyncRec;
-  DeleteRight,
+  DeleteLeft, DeleteRight,
   CopyLeft, CopyRight: Boolean;
-  DeleteRightFiles,
+  DeleteLeftFiles, DeleteRightFiles,
   CopyLeftFiles, CopyRightFiles: TFiles;
   Dest: string;
 begin
-  DeleteRightCount := 0;
+  DeleteLeftCount := 0; DeleteRightCount := 0;
   CopyLeftCount := 0; CopyRightCount := 0;
   CopyLeftSize := 0;  CopyRightSize := 0;
   for i := 0 to FVisibleItems.Count - 1 do
@@ -560,8 +579,17 @@ begin
           Inc(CopyRightCount);
           Inc(CopyRightSize, fsr.FFileL.Size);
         end;
+      srsDeleteLeft:
+        begin
+          Inc(DeleteLeftCount);
+        end;
       srsDeleteRight:
         begin
+          Inc(DeleteRightCount);
+        end;
+      srsDeleteBoth:
+        begin
+          Inc(DeleteLeftCount);
           Inc(DeleteRightCount);
         end;
       end;
@@ -584,8 +612,11 @@ begin
       chkLeftToRight.Checked := True;
       edRightPath.Enabled := True;
     end;
+    chkDeleteLeft.Enabled := DeleteLeftCount > 0;
+    chkDeleteLeft.Checked := chkDeleteLeft.Enabled;
     chkDeleteRight.Enabled := DeleteRightCount > 0;
     chkDeleteRight.Checked := chkDeleteRight.Enabled;
+    chkDeleteLeft.Caption := Format(rsDeleteLeft, [DeleteLeftCount]);
     chkDeleteRight.Caption := Format(rsDeleteRight, [DeleteRightCount]);
     chkLeftToRight.Caption :=
       Format(rsLeftToRightCopy, [CopyRightCount, CopyRightSize]);
@@ -601,12 +632,14 @@ begin
       end;
       CopyLeft := chkRightToLeft.Checked;
       CopyRight := chkLeftToRight.Checked;
+      DeleteLeft := chkDeleteLeft.Checked;
       DeleteRight := chkDeleteRight.Checked;
       i := 0;
       while i < FVisibleItems.Count do
       begin
         CopyLeftFiles := TFiles.Create('');
         CopyRightFiles := TFiles.Create('');
+        DeleteLeftFiles := TFiles.Create('');
         DeleteRightFiles := TFiles.Create('');
         if FVisibleItems.Objects[i] <> nil then
           repeat
@@ -619,6 +652,13 @@ begin
               if CopyLeft then CopyLeftFiles.Add(fsr.FFileR.Clone);
             srsDeleteRight:
               if DeleteRight then DeleteRightFiles.Add(fsr.FFileR.Clone);
+            srsDeleteLeft:
+              if DeleteLeft then DeleteLeftFiles.Add(fsr.FFileL.Clone);
+            srsDeleteBoth:
+              begin
+                if DeleteRight then DeleteRightFiles.Add(fsr.FFileR.Clone);
+                if DeleteLeft then DeleteLeftFiles.Add(fsr.FFileL.Clone);
+              end;
             end;
             i := i + 1;
           until (i = FVisibleItems.Count) or (FVisibleItems.Objects[i] = nil);
@@ -633,6 +673,11 @@ begin
           if not CopyFiles(FCmpFileSourceL, FCmpFileSourceR, CopyRightFiles,
             FCmpFilePathR + Dest) then Break;
         end else CopyRightFiles.Free;
+        if DeleteLeftFiles.Count > 0 then
+        begin
+          if not DeleteFiles(FCmpFileSourceL, DeleteLeftFiles) then Break;
+        end
+        else DeleteLeftFiles.Free;
         if DeleteRightFiles.Count > 0 then
         begin
           if not DeleteFiles(FCmpFileSourceR, DeleteRightFiles) then Break;
@@ -648,14 +693,28 @@ begin
   end;
 end;
 
+procedure TfrmSyncDirsDlg.RestoreProperties(Sender: TObject);
+var
+  Index: Integer;
+begin
+  with HeaderDG.Columns do
+  begin
+    for Index := 0 to Count - 1 do
+      Items[Index].Width:= StrToIntDef(FIniPropStorage.StoredValue[Format(GRID_COLUMN_FMT, [Index])], Items[Index].Width);
+  end;
+  RecalcHeaderCols;
+end;
+
 procedure TfrmSyncDirsDlg.FormClose(Sender: TObject;
   var CloseAction: TCloseAction);
+var
+  Index: Integer;
 begin
   StopCheckContentThread;
   CloseAction := caFree;
   { settings }
   gSyncDirsSubdirs              := chkSubDirs.Checked;
-  gSyncDirsAsymmetric           := chkAsymmetric.Checked;
+  gSyncDirsAsymmetric           := chkAsymmetric.Checked and gSyncDirsAsymmetricSave;
   gSyncDirsIgnoreDate           := chkIgnoreDate.Checked;
   gSyncDirsShowFilterCopyRight  := sbCopyRight.Down;
   gSyncDirsShowFilterEqual      := sbEqual.Down;
@@ -667,6 +726,12 @@ begin
   if chkByContent.Enabled then
     gSyncDirsByContent          := chkByContent.Checked;
   glsMaskHistory.Assign(cbExtFilter.Items);
+
+  with HeaderDG.Columns do
+  begin
+    for Index := 0 to Count - 1 do
+      FIniPropStorage.StoredValue[Format(GRID_COLUMN_FMT, [Index])]:= IntToStr(Items[Index].Width);
+  end;
 end;
 
 procedure TfrmSyncDirsDlg.FormCloseQuery(Sender: TObject; var CanClose: boolean);
@@ -685,11 +750,18 @@ end;
 
 procedure TfrmSyncDirsDlg.FormCreate(Sender: TObject);
 var
+  Index: Integer;
   HMSync: THMForm;
 begin
   // Initialize property storage
-  InitPropStorage(Self);
-  lblProgress.Caption := rsOperWorking;
+  FIniPropStorage := InitPropStorage(Self);
+  FIniPropStorage.OnRestoreProperties:= @RestoreProperties;
+  for Index := 0 to HeaderDG.Columns.Count - 1 do
+  begin
+    FIniPropStorage.StoredValues.Add.DisplayName:= Format(GRID_COLUMN_FMT, [Index]);
+  end;
+
+  lblProgress.Caption    := rsOperWorking;
   { settings }
   chkSubDirs.Checked     := gSyncDirsSubdirs;
   chkAsymmetric.Checked  := gSyncDirsAsymmetric;
@@ -754,6 +826,7 @@ begin
       srsNotEq:       Font.Color := clRed;
       srsCopyLeft:    Font.Color := clBlue;
       srsCopyRight:   Font.Color := clGreen;
+      srsDeleteLeft:  Font.Color := clGreen;
       srsDeleteRight: Font.Color := clBlue;
       else Font.Color := clWindowText;
       end;
@@ -788,10 +861,33 @@ end;
 
 procedure TfrmSyncDirsDlg.MainDrawGridKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
+var
+  ASelection: TGridRect;
 begin
   case Key of
     VK_SPACE:
       UpdateSelection(MainDrawGrid.Row);
+    VK_A:
+    begin
+      if (Shift = [ssModifier]) then
+      begin
+        ASelection.Top:= 0;
+        ASelection.Left:= 0;
+        ASelection.Right:= MainDrawGrid.ColCount - 1;
+        ASelection.Bottom:= MainDrawGrid.RowCount - 1;
+        MainDrawGrid.Selection:= ASelection;
+      end;
+    end;
+    VK_C:
+      if (Shift = [ssModifier]) then
+      begin
+        CopyToClipboard;
+      end;
+    VK_INSERT:
+      if (Shift = [ssModifier]) then
+      begin
+        CopyToClipboard;
+      end;
   end;
 end;
 
@@ -863,8 +959,8 @@ end;
 
 procedure TfrmSyncDirsDlg.pmGridMenuPopup(Sender: TObject);
 begin
-  miSeparator2.Visible := chkAsymmetric.Checked;
-  miSelectDeleteRight.Visible := chkAsymmetric.Checked;
+  miSelectDeleteLeft.Visible := not chkAsymmetric.Checked;
+  miSelectDeleteBoth.Visible := not chkAsymmetric.Checked;
 end;
 
 procedure TfrmSyncDirsDlg.SetSortIndex(AValue: Integer);
@@ -1009,6 +1105,7 @@ begin
            and
            ((r.FState = srsCopyLeft) and filter.copyLeft or
             (r.FState = srsCopyRight) and filter.copyRight or
+            (r.FState = srsDeleteLeft) and filter.copyRight or
             (r.FState = srsDeleteRight) and filter.copyLeft or
             (r.FState = srsEqual) and filter.eq or
             (r.FState = srsNotEq) and filter.neq or
@@ -1366,7 +1463,14 @@ begin
     else
       ca := srsDoNothing;
   srsDeleteRight:
-    ca := srsDoNothing;
+    if not chkAsymmetric.Checked then
+      ca := sr.FState
+    else
+      ca := srsDoNothing;
+  srsDeleteLeft:
+    ca := sr.FState;
+  srsDeleteBoth:
+    ca := sr.FState;
   srsDoNothing:
     if Assigned(sr.FFileL) then
       ca := srsCopyRight
@@ -1402,10 +1506,10 @@ var
         NewAction:= SyncRec.FState;
       srsNotEq:
         begin
-          if SyncRec.FAction = srsCopyLeft then
-            NewAction:= srsCopyRight
-          else if SyncRec.FAction = srsCopyRight then
-            NewAction:= srsCopyLeft
+          if (SyncRec.FAction = srsCopyLeft) and Assigned(SyncRec.FFileL) then
+              NewAction:= srsCopyRight
+          else if (SyncRec.FAction = srsCopyRight) and Assigned(SyncRec.FFileR) then
+              NewAction:= srsCopyLeft
           else
             NewAction:= SyncRec.FAction
         end;
@@ -1419,10 +1523,22 @@ var
           if not Assigned(SyncRec.FFileL) then
             NewAction:= srsDoNothing;
         end;
+      srsDeleteLeft:
+        begin
+          if not Assigned(SyncRec.FFileL) then
+            NewAction:= srsDoNothing;
+        end;
       srsDeleteRight:
         begin
           if not Assigned(SyncRec.FFileR) then
             NewAction:= srsDoNothing;
+        end;
+      srsDeleteBoth:
+        begin
+          if not Assigned(SyncRec.FFileL) then
+            NewAction:= srsDeleteRight;
+          if not Assigned(SyncRec.FFileR) then
+            NewAction:= srsDeleteLeft;
         end;
     end;
     SyncRec.FAction:= NewAction;
@@ -1519,6 +1635,7 @@ begin
     MessageDlg(rsMsgErrNotSupported, mtError, [mbOK], 0);
     Exit(False);
   end;
+  FOperation.Elevate:= ElevateAction;
   FOperation.AddUserInterface(FFileSourceOperationMessageBoxesUI);
   try
     FOperation.Execute;
@@ -1685,14 +1802,125 @@ begin
   inherited Destroy;
 end;
 
+procedure TfrmSyncDirsDlg.CopyToClipboard;
+var
+  sl: TStringList;
+  RowList: TIntegerList;
+  I: Integer;
+
+  procedure FillRowList(RowList: TIntegerList);
+  var
+    R, Y: Integer;
+    Selection: TGridRect;
+  begin
+    Selection := MainDrawGrid.Selection;
+    if (MainDrawGrid.HasMultiSelection) or (Selection.Bottom <> Selection.Top) then
+    begin
+      for Y:= 0 to MainDrawGrid.SelectedRangeCount - 1 do
+      begin
+        Selection:= MainDrawGrid.SelectedRange[Y];
+        for R := Selection.Top to Selection.Bottom do
+        begin
+          if RowList.IndexOf(R) = -1 then
+          begin
+            RowList.Add(R);
+          end;
+        end;
+      end;
+    end
+    else
+    begin
+      R := MainDrawGrid.Row;
+      if RowList.IndexOf(R) = -1 then
+      begin
+        RowList.Add(R);
+      end;
+    end;
+    RowList.Sort;
+  end;
+
+  procedure PrintRow(R: Integer);
+  var
+    s: string;
+    SyncRec: TFileSyncRec;
+  begin
+    s := '';
+    SyncRec := TFileSyncRec(FVisibleItems.Objects[R]);
+    if not Assigned(SyncRec) then
+    begin
+      s := s + FVisibleItems[R];
+    end
+    else
+    begin
+      if Assigned(SyncRec.FFileL) then
+      begin
+        s := s + FVisibleItems[R];
+        s := s + #9;
+        s := s + IntToStr(SyncRec.FFileL.Size);
+        s := s + #9;
+        s := s + DateTimeToStr(SyncRec.FFileL.ModificationTime);
+      end;
+      if Length(s) <> 0 then
+        s := s + #9;
+      case SyncRec.FState of
+        srsUnknown:
+          s := s + '?';
+        srsEqual:
+          s := s + '=';
+        srsNotEq:
+          s := s + '!=';
+        srsCopyLeft:
+          s := s + '<-';
+        srsCopyRight:
+          s := s + '->';
+      end;
+      if Length(s) <> 0 then
+        s := s + #9;
+      if Assigned(SyncRec.FFileR) then
+      begin
+        s := s + DateTimeToStr(SyncRec.FFileR.ModificationTime);
+        s := s + #9;
+        s := s + IntToStr(SyncRec.FFileR.Size);
+        s := s + #9;
+        s := s + FVisibleItems[R];
+      end;
+    end;
+    sl.Add(s);
+  end;
+begin
+  sl := TStringList.Create;
+  RowList := TIntegerList.Create;
+  try
+    FillRowList(RowList);
+    for I := 0 to RowList.Count - 1 do
+    begin
+      PrintRow(RowList[I]);
+    end;
+    ClipboardSetText(sl.Text);
+  finally
+    FreeAndNil(sl);
+    FreeAndNil(RowList);
+  end;
+end;
+
 procedure TfrmSyncDirsDlg.cm_SelectClear(const Params: array of string);
 begin
   SetSyncRecState(srsDoNothing);
 end;
 
+procedure TfrmSyncDirsDlg.cm_SelectDeleteLeft(const Params: array of string);
+begin
+  SetSyncRecState(srsDeleteLeft);
+end;
+
 procedure TfrmSyncDirsDlg.cm_SelectDeleteRight(const Params: array of string);
 begin
   SetSyncRecState(srsDeleteRight);
+end;
+
+procedure TfrmSyncDirsDlg.cm_SelectDeleteBoth(const Params: array of string);
+begin
+  SetSyncRecState(srsDeleteBoth);
 end;
 
 procedure TfrmSyncDirsDlg.cm_SelectCopyDefault(const Params: array of string);

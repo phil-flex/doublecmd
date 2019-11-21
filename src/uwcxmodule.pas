@@ -24,15 +24,23 @@
 unit uWCXmodule;
 
 {$mode objfpc}{$H+}
+{$include calling.inc}
 
 interface
 
 uses
-  LCLType, Classes, Dialogs, LazUTF8Classes, dynlibs,
+  LCLType, Classes, Dialogs, LazUTF8Classes, dynlibs, SysUtils,
   uWCXprototypes, WcxPlugin, Extension, DCClassesUtf8, DCBasicTypes, DCXmlConfig;
 
 Type
   TWCXOperation = (OP_EXTRACT, OP_PACK, OP_DELETE);
+
+  { EWcxModuleException }
+
+  EWcxModuleException = class(EOSError)
+  public
+    constructor Create(AErrorCode: Integer);
+  end;
 
   { TWCXHeaderData }
 
@@ -125,7 +133,8 @@ Type
     function WcxDeleteFiles(PackedFile, DeleteList: String): LongInt;
     function WcxCanYouHandleThisFile(FileName: String): Boolean;
     function WcxStartMemPack(Options: LongInt;  FileName: String): TArcHandle;
-    procedure WcxSetChangeVolProc(hArcData: TArcHandle; ChangeVolProcA: TChangeVolProc; ChangeVolProcW: TChangeVolProcW);
+    procedure WcxSetChangeVolProc(hArcData: TArcHandle); overload;
+    procedure WcxSetChangeVolProc(hArcData: TArcHandle; ChangeVolProcA: TChangeVolProc; ChangeVolProcW: TChangeVolProcW); overload;
     procedure WcxSetProcessDataProc(hArcData: TArcHandle; ProcessDataProcA: TProcessDataProc; ProcessDataProcW: TProcessDataProcW);
     procedure WcxSetCryptCallback(CryptoNr, Flags: Integer; PkCryptProcA: TPkCryptProc; PkCryptProcW: TPkCryptProcW);
 
@@ -175,14 +184,57 @@ implementation
 
 uses
   //Lazarus, Free-Pascal, etc.
-  StrUtils, SysUtils, LazUTF8, FileUtil,
+  SysConst, LazUTF8, FileUtil,
 
   //DC
   uDCUtils, uComponentsSignature, uGlobsPaths, uLng, uOSUtils, DCOSUtils,
-  DCDateTimeUtils, DCConvertEncoding, fDialogBox, uDebug;
+  DCDateTimeUtils, DCConvertEncoding, fDialogBox, uDebug, uShowMsg, uLog, uGlobs;
 
 const
   WcxIniFileName = 'wcx.ini';
+
+function ChangeVolProc(var ArcName : String; Mode: LongInt): LongInt;
+begin
+  Result:= 1;
+  case Mode of
+  PK_VOL_ASK:
+    begin
+      if not ShowInputQuery('Double Commander', rsMsgSelLocNextVol, ArcName) then
+        Result := 0; // Abort operation
+    end;
+  PK_VOL_NOTIFY:
+    if log_arc_op in gLogOptions then
+      LogWrite(rsMsgNextVolUnpack + #32 + ArcName);
+  end;
+end;
+
+function ChangeVolProcA(ArcName : PAnsiChar; Mode: LongInt): LongInt; dcpcall;
+var
+  sArcName: String;
+begin
+  sArcName:= CeSysToUtf8(StrPas(ArcName));
+  Result:= ChangeVolProc(sArcName, Mode);
+  if (Mode = PK_VOL_ASK) and (Result <> 0) then
+    StrPLCopy(ArcName, CeUtf8ToSys(sArcName), MAX_PATH);
+end;
+
+function ChangeVolProcW(ArcName : PWideChar; Mode: LongInt): LongInt; dcpcall;
+var
+  sArcName: String;
+begin
+  sArcName:= UTF16ToUTF8(UnicodeString(ArcName));
+  Result:= ChangeVolProc(sArcName, Mode);
+  if (Mode = PK_VOL_ASK) and (Result <> 0) then
+    StrPLCopy(ArcName, UTF8Decode(sArcName), MAX_PATH);
+end;
+
+{ EWcxModuleException }
+
+constructor EWcxModuleException.Create(AErrorCode: Integer);
+begin
+  ErrorCode:= AErrorCode;
+  inherited Create(GetErrorMsg(ErrorCode));
+end;
 
 constructor TWcxModule.Create;
 begin
@@ -304,6 +356,11 @@ begin
     Result:= StartMemPackW(Options, PWideChar(UTF8Decode(FileName)))
   else if Assigned(StartMemPack) then
     Result:= StartMemPack(Options, PAnsiChar(CeUtf8ToSys(FileName)));
+end;
+
+procedure TWcxModule.WcxSetChangeVolProc(hArcData: TArcHandle);
+begin
+  WcxSetChangeVolProc(hArcData, @ChangeVolProcA, @ChangeVolProcW);
 end;
 
 procedure TWcxModule.WcxSetChangeVolProc(hArcData: TArcHandle;
@@ -498,7 +555,7 @@ begin
     E_NO_FILES       :   Result := rsMsgErrNoFiles;
     E_TOO_MANY_FILES :   Result := rsMsgErrTooManyFiles;
     E_NOT_SUPPORTED  :   Result := rsMsgErrNotSupported;
-    else                 Result := IntToStr(iErrorMsg);
+    else                 Result := Format(SUnknownErrorCode, [iErrorMsg]);
   end;
 end;
 

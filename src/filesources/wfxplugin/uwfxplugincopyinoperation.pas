@@ -9,7 +9,6 @@ uses
   uFileSourceCopyOperation,
   uFileSource,
   uFileSourceOperation,
-  uFileSourceOperationOptions,
   uFileSourceOperationOptionsUI,
   uFile,
   uWfxPluginFileSource,
@@ -25,7 +24,7 @@ type
     FWfxPluginFileSource: IWfxPluginFileSource;
     FOperationHelper: TWfxPluginOperationHelper;
     FCallbackDataClass: TCallbackDataClass;
-    FFullFilesTreeToCopy: TFiles;  // source files including all files/dirs in subdirectories
+    FSourceFilesTree: TFileTree;  // source files including all files/dirs in subdirectories
     FStatistics: TFileSourceCopyOperationStatistics; // local copy of statistics
     // Options
     FInfoOperation: LongInt;
@@ -55,7 +54,7 @@ type
 implementation
 
 uses
-  fWfxPluginCopyMoveOperationOptions, WfxPlugin, uFileSystemUtil;
+  uFileSourceOperationOptions, fWfxPluginCopyMoveOperationOptions, WfxPlugin, uFileSystemUtil;
 
 // -- TWfxPluginCopyInOperation ---------------------------------------------
 
@@ -122,20 +121,28 @@ begin
 end;
 
 procedure TWfxPluginCopyInOperation.Initialize;
+var
+  TreeBuilder: TFileSystemTreeBuilder;
 begin
   with FWfxPluginFileSource do
   begin
-    WfxModule.WfxStatusInfo(SourceFiles.Path, FS_STATUS_START, FInfoOperation);
+    WfxModule.WfxStatusInfo(TargetPath, FS_STATUS_START, FInfoOperation);
     FCallbackDataClass.UpdateProgressFunction:= @UpdateProgress;
     UpdateProgressFunction:= @UpdateProgress;
   end;
   // Get initialized statistics; then we change only what is needed.
   FStatistics := RetrieveStatistics;
 
-  FillAndCount(SourceFiles, False, False,
-               FFullFilesTreeToCopy,
-               FStatistics.TotalFiles,
-               FStatistics.TotalBytes);     // gets full list of files (recursive)
+  TreeBuilder := TFileSystemTreeBuilder.Create(@AskQuestion, @CheckOperationState);
+  try
+    TreeBuilder.SymLinkOption:= fsooslFollow;
+    TreeBuilder.BuildFromFiles(SourceFiles);
+    FSourceFilesTree := TreeBuilder.ReleaseTree;
+    FStatistics.TotalFiles := TreeBuilder.FilesCount;
+    FStatistics.TotalBytes := TreeBuilder.FilesSize;
+  finally
+    FreeAndNil(TreeBuilder);
+  end;
 
   if Assigned(FOperationHelper) then
     FreeAndNil(FOperationHelper);
@@ -161,14 +168,14 @@ end;
 
 procedure TWfxPluginCopyInOperation.MainExecute;
 begin
-  FOperationHelper.ProcessFiles(FFullFilesTreeToCopy, FStatistics);
+  FOperationHelper.ProcessTree(FSourceFilesTree, FStatistics);
 end;
 
 procedure TWfxPluginCopyInOperation.Finalize;
 begin
   with FWfxPluginFileSource do
   begin
-    WfxModule.WfxStatusInfo(SourceFiles.Path, FS_STATUS_END, FInfoOperation);
+    WfxModule.WfxStatusInfo(TargetPath, FS_STATUS_END, FInfoOperation);
     FCallbackDataClass.UpdateProgressFunction:= nil;
     UpdateProgressFunction:= nil;
   end;

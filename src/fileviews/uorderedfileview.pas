@@ -54,6 +54,7 @@ type
   protected
     lblFilter: TLabel;
     quickSearch: TfrmQuickSearch;
+    FFocusQuickSearch: Boolean;
     FLastActiveFileIndex: PtrInt;
     FLastTopRowIndex: PtrInt;
     FRangeSelecting: Boolean;
@@ -74,7 +75,9 @@ type
     function GetActiveFileIndex: PtrInt; virtual; abstract;
     function GetFileRect(FileIndex: PtrInt): TRect; virtual; abstract;
     function GetVisibleFilesIndexes: TRange; virtual; abstract;
+    function IsFileIndexVisible(FileIndex: PtrInt): Boolean;
     function IsFileIndexInRange(FileIndex: PtrInt): Boolean; inline;
+    function IsActiveFileVisible: Boolean;
     {en
        If marking a single file only redraws that file.
        Otherwise files are marked and full update is performed.
@@ -94,12 +97,13 @@ type
        Sets a file as active if the file currently exists.
        @returns(@true if the file was found and selected.)
     }
-    function SetActiveFileNow(aFilePath: String; aLastTopRowIndex: PtrInt = -1): Boolean;
+    function SetActiveFileNow(aFilePath: String; ScrollTo: Boolean = True; aLastTopRowIndex: PtrInt = -1): Boolean;
 
   public
     procedure CloneTo(AFileView: TFileView); override;
     procedure SetActiveFile(aFilePath: String); override; overload;
     procedure ChangePathAndSetActiveFile(aFilePath: String); override; overload;
+    procedure SetFocus; override;
 
   published  // commands
     procedure cm_QuickSearch(const Params: array of string);
@@ -132,7 +136,7 @@ const
 
 procedure TOrderedFileView.AfterChangePath;
 begin
-  if Filtered then
+  if Filtered or quickSearch.Visible then
   begin
     FFileFilter:= EmptyStr;
     quickSearch.Finalize;
@@ -153,6 +157,11 @@ begin
       FRangeSelectionStartIndex := Self.FRangeSelectionStartIndex;
       FRangeSelectionEndIndex := Self.FRangeSelectionEndIndex;
       FRangeSelectionState := Self.FRangeSelectionState;
+
+      lblFilter.Caption := Self.lblFilter.Caption;
+      lblFilter.Visible := Self.lblFilter.Visible;
+      Self.quickSearch.CloneTo(quickSearch);
+      FFocusQuickSearch := Self.quickSearch.edtSearch.Focused;
     end;
   end;
 end;
@@ -278,6 +287,11 @@ begin
   case Key of
     VK_ESCAPE:
       begin
+        if quickSearch.Visible and not Filtered then
+        begin
+          quickSearch.Finalize;
+          Key := 0;
+        end;
         if Filtered and (GetCurrentWorkType <> fvwtNone) then
         begin
           pmOperationsCancel.Items.Clear;
@@ -472,9 +486,22 @@ begin
     Result := nil;
 end;
 
+function TOrderedFileView.IsFileIndexVisible(FileIndex: PtrInt): Boolean;
+var
+  VisibleFiles: TRange;
+begin
+  VisibleFiles := GetVisibleFilesIndexes;
+  Result := InRange(FileIndex, VisibleFiles.First, VisibleFiles.Last);
+end;
+
 function TOrderedFileView.IsFileIndexInRange(FileIndex: PtrInt): Boolean;
 begin
   Result := InRange(FileIndex, 0, FFiles.Count - 1);
+end;
+
+function TOrderedFileView.IsActiveFileVisible: Boolean;
+begin
+  Result := IsFileIndexVisible(GetActiveFileIndex);
 end;
 
 procedure TOrderedFileView.lblFilterClick(Sender: TObject);
@@ -508,7 +535,8 @@ end;
 
 procedure TOrderedFileView.quickSearchChangeFilter(Sender: TObject; AFilterText: String; const AFilterOptions: TQuickSearchOptions);
 begin
-  Active := True;
+  if not ((FFileFilter = '') and (AFilterText = '')) then
+    Active := True;
 
   // position in file before filtering, otherwise position could be lost if
   // current file is filtered out causing jumps
@@ -784,12 +812,24 @@ begin
   end;
 end;
 
-function TOrderedFileView.SetActiveFileNow(aFilePath: String; aLastTopRowIndex: PtrInt = -1): Boolean;
+procedure TOrderedFileView.SetFocus;
+begin
+  inherited SetFocus;
+  if FFocusQuickSearch then
+  begin
+    FFocusQuickSearch := False;
+    if quickSearch.Visible then
+      quickSearch.edtSearch.SetFocus;
+  end;
+end;
+
+function TOrderedFileView.SetActiveFileNow(aFilePath: String;
+  ScrollTo: Boolean; aLastTopRowIndex: PtrInt): Boolean;
 
   procedure SetUpdate(Index: PtrInt);
   begin
     FUpdatingActiveFile := True;
-    SetActiveFile(Index, True, aLastTopRowIndex);
+    SetActiveFile(Index, ScrollTo, aLastTopRowIndex);
     FUpdatingActiveFile := False;
     SetLastActiveFile(Index, aLastTopRowIndex);
   end;

@@ -3,7 +3,7 @@
     -------------------------------------------------------------------------
     This unit contains platform depended functions.
 
-    Copyright (C) 2006-2018 Alexander Koblov (alexx2000@mail.ru)
+    Copyright (C) 2006-2019 Alexander Koblov (alexx2000@mail.ru)
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@ unit uOSUtils;
 interface
 
 uses
-    SysUtils, Classes, LCLType, uDrive, DCBasicTypes
+    SysUtils, Classes, LCLType, uDrive, DCBasicTypes, uFindEx
     {$IF DEFINED(UNIX)}
     , DCFileAttributes
       {$IFDEF DARWIN}
@@ -113,8 +113,6 @@ function ExecCmdFork(sCmd: String): Boolean;
 }
 function ExecCmdFork(sCmd: String; sParams: String; sStartPath: String = ''; bShowCommandLinePriorToExecute: Boolean = False;
                      bTerm: Boolean = False; bKeepTerminalOpen: tTerminalEndindMode = termStayOpen): Boolean;
-
-function ExecCmdAdmin(sCmd: String; sParams: String; sStartPath: String = ''): Boolean;
 {en
    Opens a file or URL in the user's preferred application
    @param(URL File name or URL)
@@ -128,21 +126,7 @@ function GetDiskFreeSpace(const Path : String; out FreeSize, TotalSize : Int64) 
    @returns(The maximum file size for a mounted file system)
 }
 function GetDiskMaxFileSize(const Path : String) : Int64;
-{en
-   Reads the concrete file's name that the link points to.
-   If the link points to a link then it's resolved recursively
-   until a valid file name that is not a link is found.
-   @param(PathToLink Name of symbolic link (absolute path))
-   @returns(The absolute filename the symbolic link name is pointing to,
-            or an empty string when the link is invalid or
-            the file it points to does not exist.)
-}
-function mbReadAllLinks(const PathToLink : String) : String;
-{en
-   If PathToLink points to a link then it returns file that the link points to (recursively).
-   If PathToLink does not point to a link then PathToLink value is returned.
-}
-function mbCheckReadLinks(const PathToLink : String) : String;
+function mbFileGetAttr(const FileName: String; out Attr: TSearchRecEx): Boolean; overload;
 {en
    Get the user home directory
    @returns(The user home directory)
@@ -182,10 +166,6 @@ function FormatShell(const Command: String): String;
 }
 procedure FormatTerminal(var sCmd: String; var sParams: String; bKeepTerminalOpen: tTerminalEndindMode);
 {en
-   Same as mbFileGetAttr, but dereferences any encountered links.
-}
-function mbFileGetAttrNoLinks(const FileName: String): TFileAttrs;
-{en
    Convert file name to system encoding, if name can not be represented in
    current locale then use short file name under Windows.
 }
@@ -218,11 +198,6 @@ function GetCurrentUserName : String;
   Get the current machine name
 }
 function GetComputerNetName: String;
-
-var
-  // While elevated operations is not implemented
-  // https://doublecmd.sourceforge.io/mantisbt/view.php?id=110
-  AdministratorPrivileges: Boolean = True;
 
 implementation
 
@@ -407,26 +382,6 @@ begin
 end;
 {$ENDIF}
 
-function ExecCmdAdmin(sCmd: String; sParams: String; sStartPath: String): Boolean;
-{$IF DEFINED(MSWINDOWS)}
-begin
-  sStartPath:= RemoveQuotation(sStartPath);
-
-  if sStartPath = '' then
-    sStartPath:= mbGetCurrentDir;
-
-  sCmd:= NormalizePathDelimiters(sCmd);
-
-  Result:= ShellExecuteW(0, 'runas', PWideChar(UTF8Decode(sCmd)),
-                         PWideChar(UTF8Decode(sParams)),
-                         PWideChar(UTF8Decode(sStartPath)), SW_SHOW) > 32;
-end;
-{$ELSE}
-begin
-  Result:= False;
-end;
-{$ENDIF}
-
 function ShellExecute(URL: String): Boolean;
 {$IF DEFINED(MSWINDOWS)}
 var
@@ -586,69 +541,34 @@ begin
 end;
 {$ENDIF}
 
-function mbReadAllLinks(const PathToLink: String) : String;
+function mbFileGetAttr(const FileName: String; out Attr: TSearchRecEx): Boolean;
+{$IFDEF MSWINDOWS}
 var
-  Attrs: TFileAttrs;
-  LinkTargets: TStringList;  // A list of encountered filenames (for detecting cycles)
-
-  function mbReadAllLinksRec(const PathToLink: String): String;
+  FileInfo: Windows.TWin32FileAttributeData;
+begin
+  Result:= GetFileAttributesExW(PWideChar(UTF16LongName(FileName)),
+                                GetFileExInfoStandard, @FileInfo);
+  if Result then
   begin
-    Result := ReadSymLink(PathToLink);
-    if Result <> '' then
-    begin
-      if GetPathType(Result) <> ptAbsolute then
-        Result := GetAbsoluteFileName(ExtractFilePath(PathToLink), Result);
-
-      if LinkTargets.IndexOf(Result) >= 0 then
-      begin
-        // Link already encountered - links form a cycle.
-        Result := '';
-{$IFDEF UNIX}
-        fpseterrno(ESysELOOP);
-{$ENDIF}
-        Exit;
-      end;
-
-      Attrs := mbFileGetAttr(Result);
-      if (Attrs <> faInvalidAttributes) then
-      begin
-        if FPS_ISLNK(Attrs) then
-        begin
-          // Points to a link - read recursively.
-          LinkTargets.Add(Result);
-          Result := mbReadAllLinksRec(Result);
-        end;
-        // else points to a file/dir
-      end
-      else
-      begin
-        Result := '';  // Target of link doesn't exist
-{$IFDEF UNIX}
-        fpseterrno(ESysENOENT);
-{$ENDIF}
-      end;
-    end;
-  end;
-
-begin
-  LinkTargets := TStringList.Create;
-  try
-    Result := mbReadAllLinksRec(PathToLink);
-  finally
-    FreeAndNil(LinkTargets);
+    Attr.Time:= TWinFileTime(FileInfo.ftLastWriteTime);
+    Int64Rec(Attr.Size).Lo:= FileInfo.nFileSizeLow;
+    Int64Rec(Attr.Size).Hi:= FileInfo.nFileSizeHigh;
+    Attr.Attr:= FileInfo.dwFileAttributes;
   end;
 end;
-
-function mbCheckReadLinks(const PathToLink : String): String;
+{$ELSE}
 var
-  Attrs: TFileAttrs;
+  StatInfo: BaseUnix.Stat;
 begin
-  Attrs := mbFileGetAttr(PathToLink);
-  if (Attrs <> faInvalidAttributes) and FPS_ISLNK(Attrs) then
-    Result := mbReadAllLinks(PathToLink)
-  else
-    Result := PathToLink;
+  Result:= fpLStat(UTF8ToSys(FileName), StatInfo) >= 0;
+  if Result then
+  begin
+    Attr.Time:= StatInfo.st_mtime;
+    Attr.Size:= StatInfo.st_size;
+    Attr.Attr:= StatInfo.st_mode;
+  end;
 end;
+{$ENDIF}
 
 function GetHomeDir : String;
 {$IFDEF MSWINDOWS}
@@ -936,28 +856,6 @@ end;
 {$ELSE}
 begin
   Result:= True;
-end;
-{$ENDIF}
-
-function mbFileGetAttrNoLinks(const FileName: String): TFileAttrs;
-{$IFDEF UNIX}
-var
-  Info: BaseUnix.Stat;
-begin
-  if fpStat(UTF8ToSys(FileName), Info) >= 0 then
-    Result := Info.st_mode
-  else
-    Result := faInvalidAttributes;
-end;
-{$ELSE}
-var
-  LinkTarget: String;
-begin
-  LinkTarget := mbReadAllLinks(FileName);
-  if LinkTarget <> '' then
-    Result := mbFileGetAttr(LinkTarget)
-  else
-    Result := faInvalidAttributes;
 end;
 {$ENDIF}
 

@@ -49,6 +49,7 @@ type
     FOnActivate: TNotifyEvent;
     FCurrentTitle: String;
     FPermanentTitle: String;
+    FBackupColumnSet: String;
     FOnChangeFileView: TNotifyEvent;
     FBackupViewClass: TFileViewClass;
 
@@ -95,6 +96,7 @@ type
     property PermanentTitle: String read FPermanentTitle write SetPermanentTitle;
     property CurrentTitle: String read FCurrentTitle;
     property OnActivate: TNotifyEvent read FOnActivate write FOnActivate;
+    property BackupColumnSet: String read FBackupColumnSet write FBackupColumnSet;
     property BackupViewClass: TFileViewClass read FBackupViewClass write FBackupViewClass;
     property OnChangeFileView: TNotifyEvent read FOnChangeFileView write FOnChangeFileView;
   end;
@@ -117,6 +119,7 @@ type
 
   protected
     procedure DoChange; override;
+    function GetPageClass: TCustomPageClass; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
@@ -144,6 +147,7 @@ type
     procedure ActivatePrevTab;
     procedure ActivateNextTab;
     procedure ActivateTabByIndex(Index: Integer);
+    function IndexOfPageAt(P: TPoint): Integer; override;
 
     procedure DragDrop(Source: TObject; X,Y: Integer); override;
     procedure DragOver(Source: TObject; X,Y: Integer; State: TDragState;
@@ -389,7 +393,6 @@ end;
 constructor TFileViewNotebook.Create(ParentControl: TWinControl;
                                      NotebookSide: TFilePanelSelect);
 begin
-  PageClass := TFileViewPage;
   inherited Create(ParentControl);
   ControlStyle := ControlStyle + [csNoFocus];
 
@@ -563,6 +566,12 @@ begin
     Page[Index].MakeActive;
 end;
 
+function TFileViewNotebook.IndexOfPageAt(P: TPoint): Integer;
+begin
+  Result:= inherited IndexOfPageAt(P);
+  if (Result >= PageCount) then Result:= -1;
+end;
+
 procedure TFileViewNotebook.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 {$IF DEFINED(LCLGTK2)}
 var
@@ -697,6 +706,7 @@ var
 begin
   if (Source is TFileViewNotebook) then
   begin
+    SourceNotebook := TFileViewNotebook(Source);
     ATabIndex := IndexOfPageAt(Classes.Point(X, Y));
 
     if Source = Self then
@@ -705,10 +715,9 @@ begin
       if ATabIndex <> -1 then
         Tabs.Move(FDraggedPageIndex, ATabIndex);
     end
-    else
+    else if (SourceNotebook.FDraggedPageIndex < SourceNotebook.PageCount) then
     begin
       // Move page between panels.
-      SourceNotebook := (Source as TFileViewNotebook);
       DraggedPage := SourceNotebook.Page[SourceNotebook.FDraggedPageIndex];
 
       if ATabIndex = -1 then
@@ -735,6 +744,11 @@ procedure TFileViewNotebook.DoChange;
 begin
   inherited DoChange;
   ActivePage.DoActivate;
+end;
+
+function TFileViewNotebook.GetPageClass: TCustomPageClass;
+begin
+  Result:= TFileViewPage;
 end;
 
 end.

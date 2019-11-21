@@ -57,7 +57,7 @@ uses
    , BSD, BaseUnix, StrUtils, FileUtil
    {$ENDIF}
    {$IFDEF LINUX}
-   , uUDisks, uUDev, uMountWatcher, DCStrUtils, uOSUtils, FileUtil, uGVolume
+   , uUDisks, uUDev, uMountWatcher, DCStrUtils, uOSUtils, FileUtil, uGVolume, DCOSUtils
    {$ENDIF}
   {$ENDIF}
   {$IFDEF MSWINDOWS}
@@ -542,6 +542,7 @@ begin
       begin
         case DriveType of
           dtFloppy: ; // Don't retrieve, it's slow.
+          dtFlash,
           dtHardDisk:
             begin
               DriveLabel := mbGetVolumeLabel(Path, True);
@@ -551,6 +552,13 @@ begin
             DriveLabel := mbGetRemoteFileName(Path);
           else
             DriveLabel := mbGetVolumeLabel(Path, True);
+        end;
+        if DriveType in [dtFlash, dtHardDisk] then
+        begin
+          case mbDriveBusType(DriveLetter) of
+            BusTypeUsb: DriveType := dtRemovableUsb;
+            BusTypeSd, BusTypeMmc: DriveType := dtFlash;
+          end;
         end;
       end;
     end;

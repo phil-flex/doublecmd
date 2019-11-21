@@ -42,7 +42,7 @@ interface
 }
 
 uses
-  Classes, SysUtils, Graphics, syncobjs, uFileSorting, StringHashList,
+  Classes, SysUtils, Graphics, syncobjs, uFileSorting, DCStringHashListUtf8,
   uFile, uIconTheme, uDrive, uDisplayFile, uGlobs, uDCReadPSD, uOSUtils
   {$IF DEFINED(UNIX)}
     {$IF DEFINED(DARWIN)}
@@ -82,12 +82,12 @@ type
     {en
        Maps file extension to index of bitmap (in FPixmapList) for this file extension.
     }
-    FExtList : TStringHashList;
+    FExtList : TStringHashListUtf8;
     {en
        Maps icon filename to index of bitmap (in FPixmapList) for this icon.
        Uses absolute file names.
     }
-    FPixmapsFileNames : TStringHashList;
+    FPixmapsFileNames : TStringHashListUtf8;
     {en
        A list of loaded bitmaps.
        Stores TBitmap objects (on GTK2 it stores PGdkPixbuf pointers).
@@ -132,7 +132,7 @@ type
     {en
        Maps theme icon name to index of bitmap (in FPixmapList) for this icon.
     }
-    FThemePixmapsFileNames: TStringHashList;
+    FThemePixmapsFileNames: TStringHashListUtf8;
     FDCIconTheme: TIconTheme;
 
     procedure CreateIconTheme;
@@ -161,6 +161,10 @@ type
        This function should only be called under FPixmapLock.
     }
     function LoadIconThemeBitmapLocked(AIconName: String; AIconSize: Integer): TBitmap;
+    {en
+       Loads a plugin icon.
+    }
+    function GetPluginIcon(const AIconName: String; ADefaultIcon: PtrInt): PtrInt;
 
   {$IF DEFINED(WINDOWS)}
     {en
@@ -174,7 +178,6 @@ type
        @returns(@true if AIconName points to an icon resource, @false otherwise.)
     }
     function GetIconResourceIndex(const IconPath: String; out IconFile: String; out IconIndex: PtrInt): Boolean;
-    function GetPluginIcon(const AIconName: String; ADefaultIcon: PtrInt): PtrInt;
     function GetSystemFolderIcon: PtrInt;
     function GetSystemArchiveIcon: PtrInt;
     function GetSystemExecutableIcon: PtrInt;
@@ -202,6 +205,10 @@ type
     function GetMimeIcon(AFileExt: String; AIconSize: Integer): PtrInt;
   {$ENDIF}
     function GetBuiltInDriveIcon(Drive : PDrive; IconSize : Integer; clBackColor : TColor) : Graphics.TBitmap;
+
+{$IF NOT DEFINED(DARWIN)}
+    procedure LoadApplicationThemeIcon;
+{$ENDIF}
 
   public
     constructor Create;
@@ -332,7 +339,7 @@ uses
     , CommCtrl, ShellAPI, Windows, DCFileAttributes, uIcoFiles, uGdiPlus,
       IntfGraphics, uShlObjAdditional
   {$ELSE}
-    , StrUtils, DCBasicTypes
+    , StrUtils, Types, DCBasicTypes
   {$ENDIF}
   {$IFDEF DARWIN}
     , CocoaAll, MacOSAll, uClassesEx
@@ -1090,6 +1097,94 @@ begin
     end;
 end;
 
+function TPixMapManager.GetPluginIcon(const AIconName: String; ADefaultIcon: PtrInt): PtrInt;
+{$IF DEFINED(MSWINDOWS)}
+var
+  phIcon: HICON;
+  fileIndex: PtrInt;
+  AIconSize: Integer;
+  phIconLarge : HICON = 0;
+  phIconSmall : HICON = 0;
+begin
+  FPixmapsLock.Acquire;
+  try
+    // Determine if this file is already loaded.
+    fileIndex := FPixmapsFileNames.Find(AIconName);
+    if fileIndex >= 0 then
+      Result:= PtrInt(FPixmapsFileNames.List[fileIndex]^.Data)
+    else begin
+      if ExtractIconExW(PWChar(UTF8Decode(AIconName)), 0, phIconLarge, phIconSmall, 1) = 0 then
+        Result:= ADefaultIcon
+      else begin
+        if not ImageList_GetIconSize(FSysImgList, @AIconSize, @AIconSize) then
+          AIconSize:= gIconsSize;
+        // Get system metrics
+        if AIconSize <= GetSystemMetrics(SM_CXSMICON) then
+          phIcon:= phIconSmall // Use small icon
+        else begin
+          phIcon:= phIconLarge // Use large icon
+        end;
+        if phIcon = 0 then
+          Result:= ADefaultIcon
+        else begin
+          Result:= ImageList_AddIcon(FSysImgList, phIcon) + SystemIconIndexStart;
+        end;
+        if (phIconLarge <> 0) then DestroyIcon(phIconLarge);
+        if (phIconSmall <> 0) then DestroyIcon(phIconSmall);
+      end;
+      FPixmapsFileNames.Add(AIconName, Pointer(Result));
+    end;
+  finally
+    FPixmapsLock.Release;
+  end;
+end;
+{$ELSE}
+var
+  AIcon: TIcon;
+  ABitmap: TBitmap;
+  AFileName: String;
+  AResult: Pointer absolute Result;
+begin
+  AFileName:= ChangeFileExt(AIconName, '.ico');
+  if not mbFileExists(AFileName) then Exit(ADefaultIcon);
+
+  FPixmapsLock.Acquire;
+  try
+    Result:= FPixmapsFileNames.Find(AFileName);
+
+    if Result >= 0 then
+      AResult:= FPixmapsFileNames.List[Result]^.Data
+    else begin
+{$IF DEFINED(LCLGTK2)}
+      AResult := gdk_pixbuf_new_from_file_at_size(PChar(AFileName), gIconsSize, gIconsSize, nil);
+      if (AResult = nil) then Exit(ADefaultIcon);
+      Result := FPixmapList.Add(AResult);
+      FPixmapsFileNames.Add(AFileName, AResult);
+{$ELSE}
+      AIcon:= TIcon.Create;
+      try
+        AIcon.LoadFromFile(AFileName);
+        AIcon.Current:= AIcon.GetBestIndexForSize(TSize.Create(gIconsSize, gIconsSize));
+        ABitmap:= TBitmap.Create;
+        try
+          BitmapAssign(ABitmap, AIcon);
+          Result := FPixmapList.Add(ABitmap);
+          FPixmapsFileNames.Add(AFileName, AResult);
+        except
+          FreeAndNil(ABitmap);
+        end;
+      except
+        Result:= ADefaultIcon;
+      end;
+      AIcon.Free;
+{$ENDIF}
+    end;
+  finally
+    FPixmapsLock.Release;
+  end;
+end;
+{$ENDIF}
+
 {$IFDEF DARWIN}
 function TPixMapManager.GetSystemFolderIcon: PtrInt;
 var
@@ -1230,47 +1325,6 @@ begin
     Result := FileInfo.iIcon + SystemIconIndexStart;
 end;
 
-function TPixMapManager.GetPluginIcon(const AIconName: String; ADefaultIcon: PtrInt): PtrInt;
-var
-  phIcon: HICON;
-  fileIndex: PtrInt;
-  AIconSize: Integer;
-  phIconLarge : HICON = 0;
-  phIconSmall : HICON = 0;
-begin
-  FPixmapsLock.Acquire;
-  try
-    // Determine if this file is already loaded.
-    fileIndex := FPixmapsFileNames.Find(AIconName);
-    if fileIndex >= 0 then
-      Result:= PtrInt(FPixmapsFileNames.List[fileIndex]^.Data)
-    else begin
-      if ExtractIconExW(PWChar(UTF8Decode(AIconName)), 0, phIconLarge, phIconSmall, 1) = 0 then
-        Result:= ADefaultIcon
-      else begin
-        if not ImageList_GetIconSize(FSysImgList, @AIconSize, @AIconSize) then
-          AIconSize:= gIconsSize;
-        // Get system metrics
-        if AIconSize <= GetSystemMetrics(SM_CXSMICON) then
-          phIcon:= phIconSmall // Use small icon
-        else begin
-          phIcon:= phIconLarge // Use large icon
-        end;
-        if phIcon = 0 then
-          Result:= ADefaultIcon
-        else begin
-          Result:= ImageList_AddIcon(FSysImgList, phIcon) + SystemIconIndexStart;
-        end;
-        if (phIconLarge <> 0) then DestroyIcon(phIconLarge);
-        if (phIconSmall <> 0) then DestroyIcon(phIconSmall);
-      end;
-      FPixmapsFileNames.Add(AIconName, Pointer(Result));
-    end;
-  finally
-    FPixmapsLock.Release;
-  end;
-end;
-
 {$ENDIF}
 
 constructor TPixMapManager.Create;
@@ -1282,8 +1336,8 @@ var
   iIconSize : Integer;
 {$ENDIF}
 begin
-  FExtList := TStringHashList.Create(True);
-  FPixmapsFileNames := TStringHashList.Create(True);
+  FExtList := TStringHashListUtf8.Create(True);
+  FPixmapsFileNames := TStringHashListUtf8.Create(True);
   FPixmapList := TFPList.Create;
 
   {$IF DEFINED(DARWIN)}
@@ -1293,7 +1347,7 @@ begin
   FHomeFolder := IncludeTrailingBackslash(GetHomeDir);
   {$ENDIF}
 
-  FThemePixmapsFileNames := TStringHashList.Create(True);
+  FThemePixmapsFileNames := TStringHashListUtf8.Create(True);
   CreateIconTheme;
 
   {$IFDEF MSWINDOWS}
@@ -1539,6 +1593,10 @@ begin
     end;
 
   (* /Set archive icons *)
+
+{$IF NOT DEFINED(DARWIN)}
+  LoadApplicationThemeIcon;
+{$ENDIF}
 end;
 
 function TPixMapManager.GetBitmap(iIndex: PtrInt): Graphics.TBitmap;
@@ -1778,17 +1836,15 @@ begin
       end;
     end;
 
-{$IF DEFINED(MSWINDOWS)}
     if (DirectAccess = False) and (AFile.Attributes = (FILE_ATTRIBUTE_NORMAL or FILE_ATTRIBUTE_VIRTUAL)) and Assigned(AFile.LinkProperty) then
     begin
       if not LoadIcon then
         Result := -1
       else begin
-        Result := GetPluginIcon(AFile.LinkProperty.LinkTo, FiDefaultIconID);
+        Result := GetPluginIcon(AFile.LinkProperty.LinkTo, FiDirIconID);
       end;
       Exit;
     end;
-{$ENDIF}
 
     if IsDirectory or IsLinkToDirectory then
     begin
@@ -2131,6 +2187,38 @@ begin
     end;
   // 'Bitmap' should not be freed, because it only points to DriveIconList.
 end;
+
+{$IF NOT DEFINED(DARWIN)}
+
+procedure TPixMapManager.LoadApplicationThemeIcon;
+var
+  AIcon: TIcon;
+  SmallIcon, LargeIcon: Graphics.TBitmap;
+begin
+  LargeIcon:= LoadIconThemeBitmapLocked('doublecmd', GetSystemMetrics(SM_CXICON));
+  SmallIcon:= LoadIconThemeBitmapLocked('doublecmd', GetSystemMetrics(SM_CXSMICON));
+  if Assigned(LargeIcon) or Assigned(SmallIcon) then
+  begin
+    AIcon:= TIcon.Create;
+    if Assigned(SmallIcon) then
+    begin
+      AIcon.Add(pf32bit, SmallIcon.Height, SmallIcon.Width);
+      AIcon.AssignImage(SmallIcon);
+      SmallIcon.Free;
+    end;
+    if Assigned(LargeIcon) then
+    begin
+      AIcon.Add(pf32bit, LargeIcon.Height, LargeIcon.Width);
+      AIcon.Current := AIcon.Current + 1;
+      AIcon.AssignImage(LargeIcon);
+      LargeIcon.Free;
+    end;
+    Application.Icon.Assign(AIcon);
+    AIcon.Free;
+  end;
+end;
+
+{$ENDIF}
 
 function TPixMapManager.GetDefaultDriveIcon(IconSize : Integer; clBackColor : TColor) : Graphics.TBitmap;
 var
