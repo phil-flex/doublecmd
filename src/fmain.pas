@@ -2,7 +2,7 @@
    Double Commander
    -------------------------------------------------------------------------
    Licence  : GNU GPL v 2.0
-   Copyright (C) 2006-2019 Alexander Koblov (Alexx2000@mail.ru)
+   Copyright (C) 2006-2020 Alexander Koblov (Alexx2000@mail.ru)
 
    Main Dialog window
 
@@ -43,7 +43,7 @@ uses
   ufavoritetabs, Graphics, Forms, Menus, Controls, StdCtrls, ExtCtrls, ActnList,
   Buttons, SysUtils, Classes, SynEdit, LCLType, ComCtrls, LResources,
   KASToolBar, KASComboBox, uCmdBox, uFilePanelSelect, uBriefFileView,
-  uFileView, uFileSource, uFileViewNotebook, uFile, LCLVersion,
+  uFileView, uFileSource, uFileViewNotebook, uFile, LCLVersion, KASToolPanel,
   uOperationsManager, uFileSourceOperation, uDrivesList, uTerminal, DCClassesUtf8,
   DCXmlConfig, uDrive, uDriveWatcher, uDCVersion, uMainCommands, uFormCommands,
   uOperationsPanel, KASToolItems, uKASToolItemsExtended, uCmdLineParams, uOSForms
@@ -277,9 +277,9 @@ type
     miNetworkConnect: TMenuItem;
     mnuNetwork: TMenuItem;
     pnlDskLeft: TPanel;
-    pnlDiskLeftInner: TPanel;
+    pnlDiskLeftInner: TKASToolPanel;
     pnlDskRight: TPanel;
-    pnlDiskRightInner: TPanel;
+    pnlDiskRightInner: TKASToolPanel;
     Timer: TTimer;
     PanelAllProgress: TPanel;
     pbxRightDrive: TPaintBox;
@@ -400,7 +400,7 @@ type
     tbEdit: TMenuItem;
     mnuMain: TMainMenu;
     pnlNotebooks: TPanel;
-    pnlDisk: TPanel;
+    pnlDisk: TKASToolPanel;
     mnuHelp: TMenuItem;
     mnuHelpAbout: TMenuItem;
     mnuShow: TMenuItem;
@@ -553,7 +553,7 @@ type
     procedure btnF8MouseDown(Sender: TObject; Button: TMouseButton;
       {%H-}Shift: TShiftState; X, Y: Integer);
     procedure FormKeyUp( Sender: TObject; var {%H-}Key: Word; Shift: TShiftState) ;
-    function MainToolBarToolItemShortcutsHint(ToolItem: TKASNormalItem): String;
+    function MainToolBarToolItemShortcutsHint(Sender: TObject; ToolItem: TKASNormalItem): String;
     procedure mnuAllOperStartClick(Sender: TObject);
     procedure mnuAllOperStopClick(Sender: TObject);
     procedure mnuAllOperPauseClick(Sender: TObject);
@@ -566,8 +566,6 @@ type
     procedure btnDriveMouseUp(Sender: TObject; Button: TMouseButton; {%H-}Shift: TShiftState; X, Y: Integer);
     procedure ConsoleSplitterCanResize(Sender: TObject; var NewSize: Integer;
       var {%H-}Accept: Boolean);
-    procedure dskLeftResize(Sender: TObject);
-    procedure dskRightResize(Sender: TObject);
     procedure dskLeftRightToolButtonDragDrop(Sender, {%H-}Source: TObject; {%H-}X, {%H-}Y: Integer);
     procedure dskToolButtonMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure lblAllProgressPctClick(Sender: TObject);
@@ -937,6 +935,16 @@ var
       (ACaption: ''; ACommand: 'cm_RunTerm'),
       (ACaption: ''; ACommand: 'cm_Exit'));
 
+type
+
+  { TShellTreeView }
+
+  TShellTreeView = class(ShellCtrls.TShellTreeView)
+  protected
+    function CanExpand(Node: TTreeNode): Boolean; override;
+    function ShellTreeViewSort(Node1, Node2: TTreeNode): Integer;
+  end;
+
 function HistoryIndexesToTag(aFileSourceIndex, aPathIndex: Integer): Longint;
 begin
   Result := (aFileSourceIndex << 16) or aPathIndex;
@@ -947,6 +955,21 @@ begin
   aFileSourceIndex := aTag >> 16;
   aPathIndex := aTag and ((1<<16) - 1);
 end;
+
+{ TShellTreeView }
+
+function TShellTreeView.CanExpand(Node: TTreeNode): Boolean;
+begin
+  Result:= inherited CanExpand(Node);
+  if Result then Node.CustomSort(@ShellTreeViewSort);
+end;
+
+function TShellTreeView.ShellTreeViewSort(Node1, Node2: TTreeNode): Integer;
+begin
+  Result:= CompareStrings(Node1.Text, Node2.Text, gSortNatural, gSortSpecial, gSortCaseSensitivity);
+end;
+
+{ TfrmMain }
 
 procedure TfrmMain.FormCreate(Sender: TObject);
 
@@ -1132,7 +1155,7 @@ end;
 procedure TfrmMain.btnF3MouseWheelDown(Sender: TObject; Shift: TShiftState;
   MousePos: TPoint; var Handled: Boolean);
 begin
-  if (ssCtrl in Shift) and (gFonts[dcfFunctionButtons].Size > MIN_FONT_SIZE_FUNCTION_BUTTONS) then
+  if (ssCtrl in Shift) and (gFonts[dcfFunctionButtons].Size > gFonts[dcfFunctionButtons].MinValue) then
   begin
     Dec(gFonts[dcfFunctionButtons].Size);
     UpdateGUIFunctionKeys;
@@ -1142,7 +1165,7 @@ end;
 procedure TfrmMain.btnF3MouseWheelUp(Sender: TObject; Shift: TShiftState;
   MousePos: TPoint; var Handled: Boolean);
 begin
-  if (ssCtrl in Shift) and (gFonts[dcfFunctionButtons].Size < MAX_FONT_SIZE_FUNCTION_BUTTONS) then
+  if (ssCtrl in Shift) and (gFonts[dcfFunctionButtons].Size < gFonts[dcfFunctionButtons].MaxValue) then
   begin
     Inc(gFonts[dcfFunctionButtons].Size);
     UpdateGUIFunctionKeys;
@@ -1267,18 +1290,6 @@ begin
       end;
     end;
   end;
-end;
-
-procedure TfrmMain.dskLeftResize(Sender: TObject);
-begin
-  pnlDskLeft.ClientHeight := dskLeft.Height + pnlDskLeft.BevelWidth * 2;
-  pnlDiskLeftInner.ClientHeight := dskLeft.Height + pnlDiskLeftInner.BevelWidth * 2;
-end;
-
-procedure TfrmMain.dskRightResize(Sender: TObject);
-begin
-  pnlDskRight.ClientHeight := dskRight.Height + pnlDskRight.BevelWidth * 2;
-  pnlDiskRightInner.ClientHeight := dskRight.Height + pnlDiskRightInner.BevelWidth * 2;
 end;
 
 procedure TfrmMain.dskRightToolButtonClick(Sender: TObject);
@@ -1490,9 +1501,13 @@ begin
     MainToolBarMouseUp(Sender, Button, Shift, X, Y);
 end;
 
-function TfrmMain.MainToolBarToolItemShortcutsHint(ToolItem: TKASNormalItem): String;
+function TfrmMain.MainToolBarToolItemShortcutsHint(Sender: TObject;
+  ToolItem: TKASNormalItem): String;
 begin
-  Result := ShortcutsToText(TfrmOptionsToolbar.GetShortcuts(ToolItem));
+  if Sender = MainToolBar then
+    Result := ShortcutsToText(TfrmOptionsToolbar.GetShortcuts(ToolItem))
+  else
+    Result := ShortcutsToText(TfrmOptionsToolbarMiddle.GetShortcuts(ToolItem));
 end;
 
 procedure TfrmMain.miLogMenuClick(Sender: TObject);
@@ -2239,7 +2254,7 @@ end;
 procedure TfrmMain.frmMainShow(Sender: TObject);
 begin
   DCDebug('frmMain.frmMainShow');
-{$IF NOT (DEFINED(LCLWIN32) or DEFINED(LCLGTK2) or (DEFINED(DARWIN) and DEFINED(LCLQT)))}
+{$IF NOT (DEFINED(LCLWIN32) or DEFINED(LCLGTK2) or DEFINED(LCLCOCOA) OR (DEFINED(DARWIN) and DEFINED(LCLQT)))}
   OnPaint := @frmMainAfterShow;
 {$ELSE}
   Application.QueueAsyncCall(TDataEvent(@frmMainAfterShow), 0);
@@ -2844,9 +2859,13 @@ var
     AToolbar.AddButton(CommandItem);
   end;
 
-  procedure AddSeparator;
+  procedure AddSeparator(Style: Boolean = False);
+  var
+    SeparatorItem: TKASSeparatorItem;
   begin
-    AToolbar.AddButton(TKASSeparatorItem.Create);
+    SeparatorItem:= TKASSeparatorItem.Create;
+    SeparatorItem.Style:= Style;
+    AToolbar.AddButton(SeparatorItem);
   end;
 
 var
@@ -2895,7 +2914,7 @@ begin
       AddCommand('cm_Edit');
       AddCommand('cm_Copy');
       AddCommand('cm_Rename');
-      AddSeparator;
+      AddSeparator(True);
       AddCommand('cm_PackFiles');
       AddCommand('cm_MakeDir');
       SaveToolBar(MiddleToolBar);
@@ -3347,7 +3366,7 @@ begin
        ((not (SourceFiles[0].IsDirectory or SourceFiles[0].IsLinkToDirectory)) or
         (TargetPath = ''))
     then
-      sDestination := TargetPath + SourceFiles[0].Name
+      sDestination := TargetPath + ReplaceInvalidChars(SourceFiles[0].Name)
     else
       sDestination := TargetPath + '*.*';
 
@@ -3947,7 +3966,10 @@ end;
 procedure TfrmMain.pnlLeftResize(Sender: TObject);
 begin
   if gDriveBar1 and gDriveBar2 and not gHorizontalFilePanels then
-    pnlDskLeft.Width := pnlNotebooks.Width - pnlRight.Width;
+  begin
+    pnlDskLeft.Constraints.MinWidth:= pnlLeft.Width;
+    pnlDskLeft.Constraints.MaxWidth:= pnlLeft.Width;
+  end;
 
   // Put splitter after left panel.
   if not gHorizontalFilePanels then
@@ -4032,13 +4054,24 @@ begin
 end;
 
 procedure TfrmMain.pnlRightResize(Sender: TObject);
+var
+  AWidth: Integer;
 begin
   if gDriveBar1 and not gHorizontalFilePanels then
   begin
     if gDriveBar2 then
-      pnlDskRight.Width := pnlRight.Width + 1
-    else
-      pnlDskRight.Width := pnlNotebooks.Width - 2;
+      AWidth := pnlRight.Width + 1
+    else begin
+      AWidth := pnlNotebooks.Width - 2;
+    end;
+    pnlDskRight.Constraints.MinWidth := AWidth;
+    pnlDskRight.Constraints.MaxWidth := AWidth;
+  end
+  else if gHorizontalFilePanels and not gDriveBar2 then
+  begin
+    AWidth := pnlNotebooks.Width - 2;
+    pnlDskRight.Constraints.MinWidth := AWidth;
+    pnlDskRight.Constraints.MaxWidth := AWidth;
   end;
 end;
 
@@ -4279,8 +4312,9 @@ begin
     begin
       ReadOnly := True;
       RightClickSelect := True;
-      FileSortType := fstFoldersFirst;
+      FileSortType := fstNone;
       PopulateWithBaseFiles;
+      CustomSort(@ShellTreeViewSort);
 
       Images := TImageList.Create(Self);
       Images.Width := gIconsSize;
@@ -4757,9 +4791,9 @@ begin
         cmdConsole.CaretType:= cartSubBar;
         cmdConsole.OnInput:= @OnCmdBoxInput;
         ShowScrollBar(cmdConsole.Handle, SB_Horz, False);
-        FontOptionsToFont(gFonts[dcfConsole], cmdConsole.Font);
         cmdConsole.Hint:= Format(fmtCommandPath, [GetComputerNetName]);
       end;
+      FontOptionsToFont(gFonts[dcfConsole], cmdConsole.Font); //We set the font here because if we're coming back from configuration the font in options, we'll later pass here to affect that font if ever displayed.
       if gCmdLine then
       begin
         cmdConsole.Tag := 0;
@@ -4969,6 +5003,8 @@ begin
       dskRight.Parent := pnlDskRight;
     end;
 
+    pnlRightResize(pnlRight);
+
     dskLeft.GlyphSize:= gDiskIconsSize;
     dskRight.GlyphSize:= gDiskIconsSize;
     dskLeft.ButtonHeight:= gDiskIconsSize + 6;
@@ -4979,6 +5015,12 @@ begin
     pnlDskLeft.Visible := not gHorizontalFilePanels and gDriveBar1 and gDriveBar2;
     pnlDskRight.Visible := gDriveBar1 and (not gHorizontalFilePanels or not gDriveBar2);
     pnlDisk.Visible := pnlDskLeft.Visible or pnlDskRight.Visible;
+
+    if gHorizontalFilePanels and gDriveBar1 and gDriveBar2 then
+    begin
+      pnlLeftTools.Top := pnlDiskLeftInner.Height + 1;
+      pnlRightTools.Top := pnlDiskRightInner.Height + 1;
+    end;
 
     // Create disk panels after assigning parent.
     UpdateDiskCount; // Update list of showed drives
@@ -5469,19 +5511,54 @@ begin
     begin
       aFile:= ActiveFrame.CloneActiveFile;
       if Assigned(aFile) then
-        try
-          sCmd:= 'quote' + #32 + sCmd;
-          aFile.FullPath:= ActiveFrame.CurrentPath;
-          Operation:= ActiveFrame.FileSource.CreateExecuteOperation(
-                                           aFile,
-                                           ActiveFrame.CurrentPath,
-                                           sCmd) as TFileSourceExecuteOperation;
-          if Assigned(Operation) then
-            Operation.Execute;
-        finally
-          FreeThenNil(aFile);
-          FreeThenNil(Operation);
+      try
+        sCmd:= 'quote' + #32 + sCmd;
+        aFile.FullPath:= ActiveFrame.CurrentPath;
+        Operation:= ActiveFrame.FileSource.CreateExecuteOperation(
+                                         aFile,
+                                         ActiveFrame.CurrentPath,
+                                         sCmd) as TFileSourceExecuteOperation;
+        if Assigned(Operation) then
+        begin
+          Operation.Execute;
+          case Operation.ExecuteOperationResult of
+            fseorSuccess:
+              begin
+                ActiveFrame.Reload(True);
+              end;
+            fseorError:
+              begin
+                // Show error message
+                if Length(Operation.ResultString) = 0 then
+                  msgError(rsMsgErrEOpen)
+                else
+                  msgError(Operation.ResultString);
+              end;
+            fseorSymLink:
+              begin
+                // Change directory to new path (returned in Operation.ResultString)
+                with ActiveFrame do
+                begin
+                  // If path is URI
+                  if Pos('://', Operation.ResultString) > 0 then
+                    ChooseFileSource(ActiveFrame, Operation.ResultString)
+                  else if not mbSetCurrentDir(ExcludeTrailingPathDelimiter(Operation.ResultString)) then
+                  begin
+                    // Simply change path
+                    CurrentPath:= Operation.ResultString;
+                  end
+                  else begin
+                    // Get a new filesystem file source
+                    AddFileSource(TFileSystemFileSource.GetFileSource, Operation.ResultString);
+                  end;
+                end;
+              end;
+          end;
         end;
+      finally
+        FreeAndNil(aFile);
+        FreeAndNil(Operation);
+      end;
     end;
 end;
 
@@ -5873,7 +5950,7 @@ begin
     if pnlKeys.Controls[I] is TSpeedButton then
     begin
       AButton:= TSpeedButton(pnlKeys.Controls[I]);
-      AButton.Font.Size := gFonts[dcfFunctionButtons].Size;
+      FontOptionsToFont(gFonts[dcfFunctionButtons], AButton.Font);
       H:= Max(H, AButton.Canvas.TextHeight(AButton.Caption));
     end;
   end;

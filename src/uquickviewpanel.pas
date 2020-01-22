@@ -166,7 +166,7 @@ begin
         if not (fsoCopyOut in Sender.FileSource.GetOperationsTypes) then Exit;
 
        ActiveFile:= aFile.Clone;
-       TempFiles:= TFiles.Create(Sender.CurrentPath);
+       TempFiles:= TFiles.Create(ActiveFile.Path);
        TempFiles.Add(aFile.Clone);
 
        if FFileSource.IsClass(TTempFileSystemFileSource) then
@@ -181,8 +181,13 @@ begin
 
        if not Assigned(Operation) then Exit;
 
-       Operation.Execute;
-       FreeAndNil(Operation);
+       Sender.Enabled:= False;
+       try
+         Operation.Execute;
+       finally
+         FreeAndNil(Operation);
+         Sender.Enabled:= True;
+       end;
 
        FFileName:= ActiveFile.Name;
        FFileSource := TempFileSource;

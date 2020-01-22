@@ -4,7 +4,7 @@
    This unit contains DC actions of the main form
 
    Copyright (C) 2008  Dmitry Kolomiets (B4rr4cuda@rambler.ru)
-   Copyright (C) 2008-2019 Alexander Koblov (alexx2000@mail.ru)
+   Copyright (C) 2008-2020 Alexander Koblov (alexx2000@mail.ru)
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -1071,10 +1071,19 @@ end;
 
 procedure TMainCommands.cm_ExecuteToolbarItem(const Params: array of string);
 var
-  ToolItemID: String;
+  ToolItemID, ToolBarID: String;
 begin
   if GetParamValue(Params, 'ToolItemID', ToolItemID) then
-    frmMain.MainToolBar.ClickItem(ToolItemID);
+  begin
+    if not GetParamValue(Params, 'ToolBarID', ToolBarID) then
+      frmMain.MainToolBar.ClickItem(ToolItemID)
+    else begin
+      if (ToolBarID = 'TfrmOptionsToolbar') then
+        frmMain.MainToolBar.ClickItem(ToolItemID)
+      else if (ToolBarID = 'TfrmOptionsToolbarMiddle') then
+        frmMain.MiddleToolBar.ClickItem(ToolItemID);
+    end;
+  end;
 end;
 
 procedure TMainCommands.cm_FlatView(const Params: array of string);
@@ -1170,8 +1179,10 @@ begin
       NewPage := OpenTab(aFile.FullPath)
     else if FileIsArchive(aFile.FullPath) then
       NewPage := OpenArchive(aFile)
-    else
+    else begin
       NewPage := OpenTab(aFile.Path);
+      NewPage.FileView.SetActiveFile(aFile.Name);
+    end;
   finally
     FreeAndNil(aFile);
   end;
@@ -3488,6 +3499,8 @@ end;
 procedure TMainCommands.cm_MultiRename(const Params: array of string);
 var
   aFiles: TFiles;
+  sValue, Param: string;
+  sPresetToLoad: string = '';
 begin
   with frmMain do
   begin
@@ -3501,7 +3514,13 @@ begin
     if Assigned(aFiles) then
       try
         if aFiles.Count > 0 then
-          ShowMultiRenameForm(ActiveFrame.FileSource, aFiles)
+        begin
+          for Param in Params do
+            if GetParamValue(Param, 'preset', sValue) then
+              sPresetToLoad := sValue;
+
+          ShowMultiRenameForm(ActiveFrame.FileSource, aFiles, sPresetToLoad)
+        end
         else
           msgWarning(rsMsgNoFilesSelected);
       finally
@@ -4305,13 +4324,29 @@ end;
 procedure TMainCommands.cm_CompareDirectories(const Params: array of string);
 var
   I: LongWord;
+  Param: String;
+  BoolValue: Boolean;
   NtfsShift: Boolean;
   SourceFile: TDisplayFile;
   TargetFile: TDisplayFile;
+  AFiles, AFolders: Boolean;
   SourceList: TStringHashListUtf8;
   SourceFiles: TDisplayFiles = nil;
   TargetFiles: TDisplayFiles = nil;
 begin
+  AFiles := True;
+  AFolders := False;
+  for Param in Params do
+  begin
+    if GetParamBoolValue(Param, 'files', BoolValue) then
+      AFiles := BoolValue
+    else if GetParamBoolValue(Param, 'directories', BoolValue) then
+    begin
+      AFolders := BoolValue
+    end;
+  end;
+  if (AFiles = False) and (AFolders = False) then AFiles := True;
+
   SourceList:= TStringHashListUtf8.Create(FileNameCaseSensitive);
   with frmMain do
   try
@@ -4322,7 +4357,12 @@ begin
     begin
       SourceFile:= SourceFiles[I];
       if SourceFile.FSFile.IsDirectory or SourceFile.FSFile.IsLinkToDirectory then
-        Continue;
+      begin
+        if not AFolders then Continue;
+      end
+      else begin
+        if not AFiles then Continue;
+      end;
       ActiveFrame.MarkFile(SourceFile, True);
       SourceList.Add(SourceFile.FSFile.Name, SourceFile);
     end;
@@ -4330,7 +4370,12 @@ begin
     begin
       TargetFile:= TargetFiles[I];
       if TargetFile.FSFile.IsDirectory or TargetFile.FSFile.IsLinkToDirectory then
-        Continue;
+      begin
+        if not AFolders then Continue;
+      end
+      else begin
+        if not AFiles then Continue;
+      end;
       SourceFile:= TDisplayFile(SourceList.Data[TargetFile.FSFile.Name]);
       if (SourceFile = nil) then
         NotActiveFrame.MarkFile(TargetFile, True)
@@ -4781,7 +4826,7 @@ begin
     end;
 
     sMaybeMenuItem := GetUserChoiceFromTreeViewMenuLoadedFromPopupMenu(frmMain.pmFavoriteTabs, tvmcFavoriteTabs, p.X, p.Y, iWantedWidth, iWantedHeight);
-    if sMaybeMenuItem <> nil then sMaybeMenuItem.OnClick(sMaybeMenuItem);
+    if sMaybeMenuItem <> nil then sMaybeMenuItem.Click;
   end
   else
   begin

@@ -4,7 +4,7 @@
    Directories synchronization utility (specially for DC)
 
    Copyright (C) 2013 Anton Panferov (ast.a_s@mail.ru)
-   Copyright (C) 2014-2019 Alexander Koblov (alexx2000@mail.ru)
+   Copyright (C) 2014-2020 Alexander Koblov (alexx2000@mail.ru)
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -27,10 +27,11 @@ unit fSyncDirsDlg;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, ExtCtrls, Buttons, ComCtrls, Grids, Menus, ActnList, LazUTF8Classes,
+  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
+  ExtCtrls, Buttons, ComCtrls, Grids, Menus, ActnList, EditBtn, LazUTF8Classes,
   uFileView, uFileSource, uFileSourceCopyOperation, uFile, uFileSourceOperation,
-  uFileSourceOperationMessageBoxesUI, uFormCommands, uHotkeyManager, uClassesEx;
+  uFileSourceOperationMessageBoxesUI, uFormCommands, uHotkeyManager, uClassesEx,
+  uFileSourceDeleteOperation, KASProgressBar;
 
 const
   HotkeysCategory = 'Synchronize Directories';
@@ -63,8 +64,6 @@ type
     actSelectCopyDefault: TAction;
     ActionList: TActionList;
     btnAbort: TBitBtn;
-    btnSelDir1: TButton;
-    btnSelDir2: TButton;
     btnCompare: TButton;
     btnSynchronize: TButton;
     btnClose: TButton;
@@ -74,11 +73,12 @@ type
     chkIgnoreDate: TCheckBox;
     chkOnlySelected: TCheckBox;
     cbExtFilter: TComboBox;
+    edPath1: TDirectoryEdit;
+    edPath2: TDirectoryEdit;
     HeaderDG: TDrawGrid;
     lblProgress: TLabel;
+    lblProgressDelete: TLabel;
     MainDrawGrid: TDrawGrid;
-    edPath1: TEdit;
-    edPath2: TEdit;
     GroupBox1: TGroupBox;
     ImageList1: TImageList;
     Label1: TLabel;
@@ -101,23 +101,30 @@ type
     MenuItemCompare: TMenuItem;
     MenuItemViewRight: TMenuItem;
     MenuItemViewLeft: TMenuItem;
+    pnlFilter: TPanel;
     pnlProgress: TPanel;
+    pnlCopyProgress: TPanel;
+    pnlDeleteProgress: TPanel;
     pmGridMenu: TPopupMenu;
-    ProgressBar: TProgressBar;
+    ProgressBar: TKASProgressBar;
+    ProgressBarDelete: TKASProgressBar;
     sbCopyRight: TSpeedButton;
     sbEqual: TSpeedButton;
     sbNotEqual: TSpeedButton;
     sbCopyLeft: TSpeedButton;
     sbDuplicates: TSpeedButton;
     sbSingles: TSpeedButton;
+    btnSearchTemplate: TSpeedButton;
     StatusBar1: TStatusBar;
+    Timer: TTimer;
     TopPanel: TPanel;
     procedure actExecute(Sender: TObject);
     procedure btnAbortClick(Sender: TObject);
     procedure btnCloseClick(Sender: TObject);
-    procedure btnSelDir1Click(Sender: TObject);
+    procedure btnSearchTemplateClick(Sender: TObject);
     procedure btnCompareClick(Sender: TObject);
     procedure btnSynchronizeClick(Sender: TObject);
+    procedure edPath1AcceptDirectory(Sender: TObject; var Value: String);
     procedure RestoreProperties(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
@@ -138,6 +145,7 @@ type
     procedure FilterSpeedButtonClick(Sender: TObject);
     procedure MenuItemViewClick(Sender: TObject);
     procedure pmGridMenuPopup(Sender: TObject);
+    procedure TimerTimer(Sender: TObject);
   private
     FCommands: TFormCommands;
     FIniPropStorage: TIniPropStorageEx;
@@ -160,6 +168,8 @@ type
     CheckContentThread: TObject;
     Ftotal, Fequal, Fnoneq, FuniqueL, FuniqueR: Integer;
     FOperation: TFileSourceOperation;
+    FCopyStatistics: TFileSourceCopyOperationStatistics;
+    FDeleteStatistics: TFileSourceDeleteOperationStatistics;
     FFileSourceOperationMessageBoxesUI: TFileSourceOperationMessageBoxesUI;
     procedure ClearFoundItems;
     procedure Compare;
@@ -178,6 +188,8 @@ type
     procedure DeleteFiles(ALeft, ARight: Boolean);
     function DeleteFiles(FileSource: IFileSource; var Files: TFiles): Boolean;
     procedure UpdateList(ALeft, ARight: TFiles; ARemoveLeft, ARemoveRight: Boolean);
+    procedure SetProgressBytes(AProgressBar: TKASProgressBar; CurrentBytes: Int64; TotalBytes: Int64);
+    procedure SetProgressFiles(AProgressBar: TKASProgressBar; CurrentFiles: Int64; TotalFiles: Int64);
   private
     property SortIndex: Integer read FSortIndex write SetSortIndex;
     property Commands: TFormCommands read FCommands implements IFormCommands;
@@ -221,7 +233,7 @@ uses
   fMain, uDebug, fDiffer, fSyncDirsPerformDlg, uGlobs, LCLType, LazUTF8, LazFileUtils,
   DCClassesUtf8, uFileSystemFileSource, uFileSourceOperationOptions, DCDateTimeUtils,
   uDCUtils, uFileSourceUtil, uFileSourceOperationTypes, uShowForm, uAdministrator,
-  uOSUtils, uLng, uMasks, Math, uClipboard, IntegerList;
+  uOSUtils, uLng, uMasks, Math, uClipboard, IntegerList, fMaskInputDlg, uSearchTemplate;
 
 {$R *.lfm}
 
@@ -439,6 +451,20 @@ begin
   Close
 end;
 
+procedure TfrmSyncDirsDlg.btnSearchTemplateClick(Sender: TObject);
+var
+  sMask: String;
+  bTemplate: Boolean;
+begin
+  sMask:= cbExtFilter.Text;
+  if ShowMaskInputDlg(rsMarkPlus, rsMaskInput, glsMaskHistory, sMask) then
+  begin
+    bTemplate:= IsMaskSearchTemplate(sMask);
+    cbExtFilter.Enabled:= not bTemplate;
+    cbExtFilter.Text:= sMask;
+  end;
+end;
+
 procedure TfrmSyncDirsDlg.btnAbortClick(Sender: TObject);
 begin
   if Assigned(FOperation) then
@@ -448,42 +474,10 @@ begin
   end;
 end;
 
-procedure TfrmSyncDirsDlg.btnSelDir1Click(Sender: TObject);
-var w: TEdit;
-begin
-  w := nil;
-  case TComponent(Sender).Tag of
-  0: w := edPath1;
-  1: w := edPath2;
-  end;
-  if w = nil then Exit;
-  with TSelectDirectoryDialog.Create(Self) do
-  try
-    InitialDir := w.Text;
-    if Execute then
-    begin
-      w.Text := FileName;
-      case TComponent(Sender).Tag of
-      0:
-        begin
-          FFileSourceL := TFileSystemFileSource.GetFileSource;
-          FAddressL := '';
-        end;
-      1:
-        begin
-          FFileSourceR := TFileSystemFileSource.GetFileSource;
-          FAddressR := '';
-        end;
-      end;
-    end;
-  finally
-    Free
-  end;
-end;
-
 procedure TfrmSyncDirsDlg.btnCompareClick(Sender: TObject);
 begin
-  InsertFirstItem(Trim(cbExtFilter.Text), cbExtFilter);
+  if not IsMaskSearchTemplate(cbExtFilter.Text) then
+    InsertFirstItem(Trim(cbExtFilter.Text), cbExtFilter);
   StatusBar1.Panels[0].Text := Format(rsComparingPercent, [0]);
   StopCheckContentThread;
   Compare;
@@ -543,6 +537,8 @@ var
         FOperation.Execute;
         Result := FOperation.Result = fsorFinished;
         FileExistsOption := TFileSourceCopyOperation(FOperation).FileExistsOption;
+        FCopyStatistics.DoneBytes+= TFileSourceCopyOperation(FOperation).RetrieveStatistics.TotalBytes;
+        SetProgressBytes(ProgressBar, FCopyStatistics.DoneBytes, FCopyStatistics.TotalBytes);
       finally
         FreeAndNil(FOperation);
       end;
@@ -594,6 +590,11 @@ begin
         end;
       end;
     end;
+  FCopyStatistics.DoneBytes:= 0;
+  FDeleteStatistics.DoneFiles:= 0;
+  FCopyStatistics.TotalBytes:= CopyLeftSize + CopyRightSize;
+  FDeleteStatistics.TotalFiles:= DeleteLeftCount + DeleteRightCount;
+
   with TfrmSyncDirsPerformDlg.Create(Self) do
   try
     edLeftPath.Text := FCmpFileSourceL.CurrentAddress + FCmpFilePathL;
@@ -634,6 +635,8 @@ begin
       CopyRight := chkLeftToRight.Checked;
       DeleteLeft := chkDeleteLeft.Checked;
       DeleteRight := chkDeleteRight.Checked;
+      pnlCopyProgress.Visible:= CopyLeft or CopyRight;
+      pnlDeleteProgress.Visible:= DeleteLeft or DeleteRight;
       i := 0;
       while i < FVisibleItems.Count do
       begin
@@ -693,6 +696,21 @@ begin
   end;
 end;
 
+procedure TfrmSyncDirsDlg.edPath1AcceptDirectory(Sender: TObject;
+  var Value: String);
+begin
+  if Sender = edPath1 then
+  begin
+    FFileSourceL := TFileSystemFileSource.GetFileSource;
+    FAddressL := '';
+  end
+  else if Sender = edPath2 then
+  begin
+    FFileSourceR := TFileSystemFileSource.GetFileSource;
+    FAddressR := '';
+  end;
+end;
+
 procedure TfrmSyncDirsDlg.RestoreProperties(Sender: TObject);
 var
   Index: Integer;
@@ -722,7 +740,8 @@ begin
   gSyncDirsShowFilterCopyLeft   := sbCopyLeft.Down;
   gSyncDirsShowFilterDuplicates := sbDuplicates.Down;
   gSyncDirsShowFilterSingles    := sbSingles.Down;
-  gSyncDirsFileMask             := cbExtFilter.Text;
+  if not IsMaskSearchTemplate(cbExtFilter.Text) then
+    gSyncDirsFileMask           := cbExtFilter.Text;
   if chkByContent.Enabled then
     gSyncDirsByContent          := chkByContent.Checked;
   glsMaskHistory.Assign(cbExtFilter.Items);
@@ -761,7 +780,8 @@ begin
     FIniPropStorage.StoredValues.Add.DisplayName:= Format(GRID_COLUMN_FMT, [Index]);
   end;
 
-  lblProgress.Caption    := rsOperWorking;
+  lblProgress.Caption    := rsOperCopying;
+  lblProgressDelete.Caption   := rsOperDeleting;
   { settings }
   chkSubDirs.Checked     := gSyncDirsSubdirs;
   chkAsymmetric.Checked  := gSyncDirsAsymmetric;
@@ -784,6 +804,7 @@ end;
 procedure TfrmSyncDirsDlg.FormResize(Sender: TObject);
 begin
   ProgressBar.Width:= ClientWidth div 3;
+  ProgressBarDelete.Width:= ProgressBar.Width;
 end;
 
 procedure TfrmSyncDirsDlg.MainDrawGridDblClick(Sender: TObject);
@@ -963,6 +984,28 @@ begin
   miSelectDeleteBoth.Visible := not chkAsymmetric.Checked;
 end;
 
+procedure TfrmSyncDirsDlg.TimerTimer(Sender: TObject);
+var
+  CopyStatistics: TFileSourceCopyOperationStatistics;
+  DeleteStatistics: TFileSourceDeleteOperationStatistics;
+begin
+  if Assigned(FOperation) then
+  begin
+    if (FOperation is TFileSourceCopyOperation) then
+    begin
+      CopyStatistics:= TFileSourceCopyOperation(FOperation).RetrieveStatistics;
+      SetProgressBytes(ProgressBar, FCopyStatistics.DoneBytes +
+                       CopyStatistics.DoneBytes, FCopyStatistics.TotalBytes);
+    end
+    else if (FOperation is TFileSourceDeleteOperation) then
+    begin
+      DeleteStatistics:= TFileSourceDeleteOperation(FOperation).RetrieveStatistics;
+      SetProgressFiles(ProgressBarDelete, FDeleteStatistics.DoneFiles +
+                       DeleteStatistics.DoneFiles, FDeleteStatistics.TotalFiles);
+    end;
+  end;
+end;
+
 procedure TfrmSyncDirsDlg.SetSortIndex(AValue: Integer);
 var
   s: string;
@@ -1139,6 +1182,7 @@ procedure TfrmSyncDirsDlg.ScanDirs;
 
 var
   MaskList: TMaskList;
+  Template: TSearchTemplate;
   LeftFirst: Boolean = True;
   RightFirst: Boolean = True;
   BaseDirL, BaseDirR: string;
@@ -1171,30 +1215,33 @@ var
         for i := 0 to fs.Count - 1 do
         begin
           f := fs.Items[i];
-          if not f.IsDirectory and MaskList.Matches(f.Name) then
+          if (Template = nil) or Template.CheckFile(f) then
           begin
-            j := it.IndexOf(f.Name);
-            if j < 0 then
-              r := TFileSyncRec.Create(Self, dir)
-            else
-              r := TFileSyncRec(it.Objects[j]);
-            if sideLeft then
+            if not f.IsDirectory and ((MaskList = nil) or MaskList.Matches(f.Name)) then
             begin
-              r.FFileL := f.Clone;
-              r.UpdateState(ignoreDate);
-            end else begin
-              r.FFileR := f.Clone;
-              r.UpdateState(ignoreDate);
-              if ByContent and (r.FState = srsEqual) and (r.FFileR.Size > 0) then
+              j := it.IndexOf(f.Name);
+              if j < 0 then
+                r := TFileSyncRec.Create(Self, dir)
+              else
+                r := TFileSyncRec(it.Objects[j]);
+              if sideLeft then
               begin
-                r.FAction := srsUnknown;
-                r.FState := srsUnknown;
+                r.FFileL := f.Clone;
+                r.UpdateState(ignoreDate);
+              end else begin
+                r.FFileR := f.Clone;
+                r.UpdateState(ignoreDate);
+                if ByContent and (r.FState = srsEqual) and (r.FFileR.Size > 0) then
+                begin
+                  r.FAction := srsUnknown;
+                  r.FState := srsUnknown;
+                end;
               end;
-            end;
-            it.AddObject(f.Name, r);
-          end else
-          if (f.NameNoExt <> '.') and (f.NameNoExt <> '..') then
-            dirs.Add(f.Name);
+              it.AddObject(f.Name, r);
+            end else
+            if (f.NameNoExt <> '.') and (f.NameNoExt <> '..') then
+              dirs.Add(f.Name);
+          end;
         end;
       finally
         fs.Free;
@@ -1268,7 +1315,15 @@ begin
   FCmpFileSourceL := FFileSourceL;
   FCmpFileSourceR := FFileSourceR;
   BaseDirL := AppendPathDelim(edPath1.Text);
-  MaskList := TMaskList.Create(cbExtFilter.Text);
+  if IsMaskSearchTemplate(cbExtFilter.Text) then
+  begin
+    MaskList := nil;
+    Template:= gSearchTemplateList.TemplateByName[cbExtFilter.Text];
+  end
+  else begin
+    Template := nil;
+    MaskList := TMaskList.Create(cbExtFilter.Text);
+  end;
   if (FAddressL <> '') and (Copy(BaseDirL, 1, Length(FAddressL)) = FAddressL) then
     Delete(BaseDirL, 1, Length(FAddressL));
   BaseDirR := AppendPathDelim(edPath2.Text);
@@ -1486,11 +1541,10 @@ begin
   edPath1.Enabled:= AEnabled;
   edPath2.Enabled:= AEnabled;
   TopPanel.Enabled:= AEnabled;
-  btnSelDir1.Enabled:= AEnabled;
-  btnSelDir2.Enabled:= AEnabled;
-  cbExtFilter.Enabled:= AEnabled;
+  pnlFilter.Enabled:= AEnabled;
   MainDrawGrid.Enabled:= AEnabled;
   pnlProgress.Visible:= not AEnabled;
+  Timer.Enabled:= not AEnabled;
 end;
 
 procedure TfrmSyncDirsDlg.SetSyncRecState(AState: TSyncRecState);
@@ -1606,15 +1660,26 @@ begin
 
     if (ALeft = False) and (ARight = False) then Exit;
 
+    FDeleteStatistics.DoneFiles:= 0;
+    FDeleteStatistics.TotalFiles:= 0;
+
     if ALeft then
+    begin
+      FDeleteStatistics.TotalFiles+= ALeftList.Count;
       Message:= Format(rsVarLeftPanel + ': ' + rsMsgDelFlDr, [ALeftList.Count]) + LineEnding;
+    end;
 
     if ARight then
+    begin
+      FDeleteStatistics.TotalFiles+= ARightList.Count;
       Message+= Format(rsVarRightPanel + ': ' + rsMsgDelFlDr, [ARightList.Count]) + LineEnding;
+    end;
 
     if MessageDlg(Message, mtWarning, [mbYes, mbNo], 0, mbYes) = mrYes then
     begin
       EnableControls(False);
+      pnlCopyProgress.Visible:= False;
+      pnlDeleteProgress.Visible:= True;
       if ALeft then DeleteFiles(FCmpFileSourceL, ALeftList);
       if ARight then DeleteFiles(FCmpFileSourceR, ARightList);
       UpdateList(nil, nil, ALeft, ARight);
@@ -1640,6 +1705,8 @@ begin
   try
     FOperation.Execute;
     Result := FOperation.Result = fsorFinished;
+    FDeleteStatistics.DoneFiles+= TFileSourceDeleteOperation(FOperation).RetrieveStatistics.TotalFiles;
+    SetProgressFiles(ProgressBarDelete, FDeleteStatistics.DoneFiles, FDeleteStatistics.TotalFiles);
   finally
     FreeAndNil(FOperation);
   end;
@@ -1720,6 +1787,24 @@ begin
     end;
   end;
   if ARemove then MainDrawGrid.EndUpdate;
+end;
+
+procedure TfrmSyncDirsDlg.SetProgressBytes(AProgressBar: TKASProgressBar;
+  CurrentBytes: Int64; TotalBytes: Int64);
+begin
+  AProgressBar.SetProgress(CurrentBytes, TotalBytes,
+                           cnvFormatFileSize(CurrentBytes, uoscOperation) + '/' +
+                           cnvFormatFileSize(TotalBytes, uoscOperation)
+                           );
+end;
+
+procedure TfrmSyncDirsDlg.SetProgressFiles(AProgressBar: TKASProgressBar;
+  CurrentFiles: Int64; TotalFiles: Int64);
+begin
+  AProgressBar.SetProgress(CurrentFiles, TotalFiles,
+                           cnvFormatFileSize(CurrentFiles, uoscNoUnit) + '/' +
+                           cnvFormatFileSize(TotalFiles, uoscNoUnit)
+                           );
 end;
 
 constructor TfrmSyncDirsDlg.Create(AOwner: TComponent; FileView1,

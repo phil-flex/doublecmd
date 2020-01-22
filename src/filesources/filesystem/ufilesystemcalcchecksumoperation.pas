@@ -165,7 +165,7 @@ begin
 
     UpdateStatistics(FStatistics);
 
-    if not aFile.IsDirectory then
+    if not (aFile.IsDirectory or aFile.IsLinkToDirectory) then
     begin
       // If there will be an error in ProcessFile the DoneBytes value
       // will be inconsistent, so remember it here.
@@ -516,7 +516,7 @@ begin
   BytesToRead := FBufferSize;
 
   repeat
-    hFile:= mbFileOpen(aFile.FullPath, fmOpenRead or fmShareDenyNone);
+    hFile:= mbFileOpen(aFile.FullPath, fmOpenRead or fmShareDenyWrite);
     Result:= hFile <> feInvalidHandle;
     if not Result then
     begin
@@ -537,7 +537,7 @@ begin
   HashInit(Context, Algorithm);
 
   try
-    TotalBytesToRead := mbFileSize(aFile.FullPath);
+    TotalBytesToRead := FileGetSize(hFile);
 
     while TotalBytesToRead > 0 do
     begin

@@ -46,7 +46,7 @@ type
   TOnLoadButtonGlyph = function (ToolItem: TKASToolItem; iIconSize: Integer; clBackColor: TColor): TBitmap of object;
   TOnToolItemExecute = procedure (ToolItem: TKASToolItem) of object;
   TOnConfigLoadItem = function (Config: TXmlConfig; Node: TXmlNode): TKASToolItem of object;
-  TOnToolItemShortcutsHint = function (ToolItem: TKASNormalItem): String of object;
+  TOnToolItemShortcutsHint = function (Sender: TObject; ToolItem: TKASNormalItem): String of object;
   TTypeOfConfigurationLoad = (tocl_FlushCurrentToolbarContent, tocl_AddToCurrentToolbarContent);
   
   TKASToolBar = class;
@@ -512,7 +512,7 @@ function TKASToolBar.GetToolItemShortcutsHint(Item: TKASToolItem): String;
 begin
   Result := '';
   if Assigned(FOnToolItemShortcutsHint) and (Item is TKASNormalItem) then
-    Result := FOnToolItemShortcutsHint(TKASNormalItem(Item));
+    Result := FOnToolItemShortcutsHint(Self, TKASNormalItem(Item));
 end;
 
 function TKASToolBar.GetButton(Index: Integer): TKASToolButton;
@@ -1087,7 +1087,8 @@ procedure TKASToolDivider.CalculatePreferredSize(var PreferredWidth,
   PreferredHeight: integer; WithThemeSpace: Boolean);
 begin
   if Assigned(Parent) and (Parent is TKASToolBar) and
-     not TKASToolBar(Parent).FShowDividerAsButton then
+     (not TKASSeparatorItem(FToolItem).Style) and
+     (not TKASToolBar(Parent).FShowDividerAsButton) then
   begin
     if ToolBar.IsVertical then
     begin
@@ -1111,6 +1112,8 @@ begin
   if Assigned(Parent) and (Parent is TKASToolBar) and
      not TKASToolBar(Parent).FShowDividerAsButton then
   begin
+    if TKASSeparatorItem(FToolItem).Style then Exit;
+
     DividerRect:= ClientRect;
 
     if ToolBar.IsVertical then
@@ -1123,6 +1126,16 @@ begin
       begin
         DividerRect.Top := (DividerRect.Top + DividerRect.Bottom) div 2 - 3;
         DividerRect.Bottom := DividerRect.Top + 5;
+      end;
+
+      if not ThemeServices.ThemesEnabled then
+      begin
+        InflateRect(DividerRect, -2, 0);
+        Canvas.Pen.Color := clBtnShadow;
+        Canvas.Line(DividerRect.Left, DividerRect.Top + 1, DividerRect.Right, DividerRect.Top + 1);
+        Canvas.Pen.Color := clBtnHighlight;
+        Canvas.Line(DividerRect.Left, DividerRect.Top + 2, DividerRect.Right, DividerRect.Top + 2);
+        Exit;
       end;
     end
     else begin

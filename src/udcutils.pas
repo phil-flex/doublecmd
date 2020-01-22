@@ -3,7 +3,7 @@
    -------------------------------------------------------------------------
    Several useful functions
    
-   Copyright (C) 2006-2019 Alexander Koblov (alexx2000@mail.ru)
+   Copyright (C) 2006-2020 Alexander Koblov (alexx2000@mail.ru)
 
    contributors:
    
@@ -186,14 +186,13 @@ procedure SplitCmdLine(sCmdLine: String; out sCommand: String; out Args: TDynami
 }
 procedure SplitCmdLine(sCmdLine : String; var sCmd, sParams : String);
 {$ENDIF}
-function CompareStrings(const s1, s2: String; Natural: Boolean; CaseSensitivity: TCaseSensitivity): PtrInt;
+function CompareStrings(const s1, s2: String; Natural: Boolean; Special: Boolean; CaseSensitivity: TCaseSensitivity): PtrInt;
 
-procedure InsertFirstItem(sLine: String; comboBox: TCustomComboBox);
+procedure InsertFirstItem(sLine: String; comboBox: TCustomComboBox; AValue: UIntPtr = 0);
 {en
-   Compares two strings taking into account the numbers.
-   Strings must have tailing zeros (#0).
+   Compares two strings taking into account the numbers or special chararcters
 }
-function StrFloatCmpW(str1, str2: PWideChar; CaseSensitivity: TCaseSensitivity): PtrInt;
+function StrChunkCmp(const str1, str2: String; Natural: Boolean; Special: Boolean; CaseSensitivity: TCaseSensitivity): PtrInt;
 
 function EstimateRemainingTime(StartValue, CurrentValue, EndValue: Int64;
                                StartTime: TDateTime; CurrentTime: TDateTime;
@@ -230,7 +229,7 @@ implementation
 
 uses
   uLng, LCLProc, LCLType, uMasks, FileUtil, StrUtils, uOSUtils, uGlobs, uGlobsPaths,
-  DCStrUtils, DCOSUtils, LazUTF8;
+  DCStrUtils, DCOSUtils, DCConvertEncoding, LazUTF8;
 
 var
   dtLastDateSubstitutionCheck:TDateTime=0;
@@ -817,17 +816,38 @@ begin
 end;
 {$ENDIF}
 
-function CompareStrings(const s1, s2: String; Natural: Boolean; CaseSensitivity: TCaseSensitivity): PtrInt; inline;
+function CompareStrings(const s1, s2: String; Natural: Boolean; Special: Boolean; CaseSensitivity: TCaseSensitivity): PtrInt; inline;
+{$IF DEFINED(MSWINDOWS)}
+var
+  CompareOptions: TCompareOptions;
+{$ENDIF}
 begin
-  if Natural then
-    Result:= StrFloatCmpW(PWideChar(UTF8Decode(s1)), PWideChar(UTF8Decode(s2)), CaseSensitivity)
+  if Natural or Special then
+  begin
+{$IF DEFINED(MSWINDOWS)}
+    if (CaseSensitivity <> cstCharValue) and
+       ((Win32MajorVersion > 6) or ((Win32MajorVersion = 6) and (Win32MinorVersion >= 1))) then
+    begin
+      CompareOptions := [];
+      if CaseSensitivity = cstNotSensitive then
+        Include(CompareOptions, coIgnoreCase);
+      if Natural then
+        Include(CompareOptions, coDigitAsNumbers);
+      if Special then
+        Include(CompareOptions, coStringSort);
+      Result := widestringmanager.CompareUnicodeStringProc(CeUtf8ToUtf16(s1), CeUtf8ToUtf16(s2), CompareOptions);
+    end
+    else
+{$ENDIF}
+    Result := StrChunkCmp(s1, s2, Natural, Special, CaseSensitivity)
+  end
   else
     begin
       case CaseSensitivity of
         cstNotSensitive:
-          Result := WideCompareText(UTF8Decode(s1), UTF8Decode(s2));
+          Result := UnicodeCompareText(CeUtf8ToUtf16(s1), CeUtf8ToUtf16(s2));
         cstLocale:
-          Result := WideCompareStr(UTF8Decode(s1), UTF8Decode(s2));
+          Result := UnicodeCompareStr(CeUtf8ToUtf16(s1), CeUtf8ToUtf16(s2));
         cstCharValue:
           Result := SysUtils.CompareStr(S1, S2);
         else
@@ -836,7 +856,7 @@ begin
     end;
 end;
 
-procedure InsertFirstItem(sLine: String; comboBox: TCustomComboBox);
+procedure InsertFirstItem(sLine: String; comboBox: TCustomComboBox; AValue: UIntPtr);
 var
   I: Integer = 0;
 begin
@@ -857,10 +877,11 @@ begin
         // Reset selected item (and combobox text), because Move has destroyed it.
         comboBox.ItemIndex := 0;
       end;
+    Objects[0]:= TObject(AValue);
   end;
 end;
 
-function WideStrComp(const Str1, Str2 : WideString): PtrInt;
+function UnicodeStrComp(const Str1, Str2 : UnicodeString): PtrInt;
  var
   counter: SizeInt = 0;
   pstr1, pstr2: PWideChar;
@@ -876,161 +897,159 @@ function WideStrComp(const Str1, Str2 : WideString): PtrInt;
    Result := ord(pstr1[counter]) - ord(pstr2[counter]);
  end;
 
-function StrFloatCmpW(str1, str2: PWideChar; CaseSensitivity: TCaseSensitivity): PtrInt;
-var
-  is_digit1, is_digit2: boolean;
-  string_result: ptrint = 0;
-  number_result: ptrint = 0;
-  number1_size: ptrint = 0;
-  number2_size: ptrint = 0;
-  str_cmp: function(const s1, s2: WideString): PtrInt;
+function StrChunkCmp(const str1, str2: String; Natural: Boolean; Special: Boolean; CaseSensitivity: TCaseSensitivity): PtrInt;
 
-  function is_digit(c: widechar): boolean; inline;
-  begin
-    result:= (c in ['0'..'9']);
+type
+  TCategory = (cNone, cNumber, cSpecial, cString);
+
+  TChunk = record
+    FullStr: String;
+    Str: String;
+    Category: TCategory;
+    PosStart: Integer;
+    PosEnd: Integer;
   end;
 
-  function is_point(c: widechar): boolean; inline;
+var
+  Chunk1, Chunk2: TChunk;
+
+  function Categorize(c: Char): TCategory; inline;
   begin
-    result:= (c in [',', '.']);
+    if Natural and (c in ['0'..'9']) then
+      Result := cNumber
+    else if Special and (c in [' '..'/', ':'..'@', '['..'`', '{'..'~']) then
+      Result := cSpecial
+    else
+      Result := cString;
+  end;
+
+  procedure NextChunkInit(var Chunk: TChunk); inline;
+  begin
+    Chunk.PosStart := Chunk.PosEnd;
+    if Chunk.PosStart > Length(Chunk.FullStr) then
+      Chunk.Category := cNone
+    else
+      Chunk.Category := Categorize(Chunk.FullStr[Chunk.PosStart]);
+  end;
+
+  procedure FindChunk(var Chunk: TChunk); inline;
+  begin
+    Chunk.PosEnd := Chunk.PosStart;
+    repeat
+      inc(Chunk.PosEnd);
+    until (Chunk.PosEnd > Length(Chunk.FullStr)) or
+          (Categorize(Chunk.FullStr[Chunk.PosEnd]) <> Chunk.Category);
+  end;
+
+  procedure FindSameCategoryChunks; inline;
+  begin
+    Chunk1.PosEnd := Chunk1.PosStart;
+    Chunk2.PosEnd := Chunk2.PosStart;
+    repeat
+      inc(Chunk1.PosEnd);
+      inc(Chunk2.PosEnd);
+    until (Chunk1.PosEnd > Length(Chunk1.FullStr)) or
+          (Chunk2.PosEnd > Length(Chunk2.FullStr)) or
+          (Categorize(Chunk1.FullStr[Chunk1.PosEnd]) <> Chunk1.Category) or
+          (Categorize(Chunk2.FullStr[Chunk2.PosEnd]) <> Chunk2.Category);
+  end;
+
+  procedure PrepareChunk(var Chunk: TChunk); inline;
+  begin
+    Chunk.Str := Copy(Chunk.FullStr, Chunk.PosStart, Chunk.PosEnd - Chunk.PosStart);
+  end;
+
+  procedure PrepareNumberChunk(var Chunk: TChunk); inline;
+  begin
+    while (Chunk.PosStart <= Length(Chunk.FullStr)) and
+          (Chunk.FullStr[Chunk.PosStart] = '0') do
+      inc(Chunk.PosStart);
+    PrepareChunk(Chunk);
   end;
 
 begin
-  // Set up compare function
-  case CaseSensitivity of
-    cstNotSensitive: str_cmp:= @WideCompareText;
-    cstLocale:       str_cmp:= @WideCompareStr;
-    cstCharValue:    str_cmp:= @WideStrComp;
-    else
-      raise Exception.Create('Invalid CaseSensitivity parameter');
+  Chunk1.FullStr := str1;
+  Chunk2.FullStr := str2;
+  Chunk1.PosEnd := 1;
+  Chunk2.PosEnd := 1;
+
+  NextChunkInit(Chunk1);
+  NextChunkInit(Chunk2);
+
+  if (Chunk1.Category = cSpecial) and (Chunk2.Category <> cSpecial) then
+    Exit(-1);
+  if (Chunk2.Category = cSpecial) and (Chunk1.Category <> cSpecial) then
+    Exit(1);
+
+  if Chunk1.Category = cSpecial then
+    FindSameCategoryChunks
+  else
+  begin
+    FindChunk(Chunk1);
+    FindChunk(Chunk2);
   end;
 
-  while (true) do
+  if (Chunk1.Category = cNumber) xor (Chunk2.Category = cNumber) then // one of them is number
+    Chunk1.Category := cString; // compare as strings to put numbers in a natural position
+
+  while True do
   begin
-    // compare string part
-    while (true) do
-    begin
-      if str1^ = #0 then
-      begin
-        if str2^ <> #0 then
-          exit(-1)
-        else
-          exit(0);
-      end;
 
-      if str2^ = #0 then
-      begin
-        if str1^ <> #0 then
-          exit(+1)
-        else
-          exit(0);
-      end;
-
-      is_digit1 := is_digit(str1^);
-      is_digit2 := is_digit(str2^);
-
-      if (is_digit1 and is_digit2) then break;
-
-      string_result:= str_cmp(str1^, str2^);
-
-      if (string_result <> 0) then exit(string_result);
-
-      inc(str1);
-      inc(str2);
-    end;
-
-    // skip leading zeroes for number
-    while (str1^ = '0') do
-      inc(str1);
-    while (str2^ = '0') do
-      inc(str2);
-
-    // compare number before decimal point
-    while (true) do
-    begin
-      is_digit1 := is_digit(str1^);
-      is_digit2 := is_digit(str2^);
-
-      if (not is_digit1 and not is_digit2) then
-        break;
-
-      if ((number_result = 0) and is_digit1 and is_digit2) then
-      begin
-        if (str1^ > str2^) then
-          number_result := +1
-        else if (str1^ < str2^) then
-          number_result := -1
-        else
-          number_result := 0;
-      end;
-
-      if (is_digit1) then
-      begin
-        inc(str1);
-        inc(number1_size);
-      end;
-
-      if (is_digit2) then
-      begin
-        inc(str2);
-        inc(number2_size);
-      end;
-    end;
-
-    if (number1_size <> number2_size) then
-      exit(number1_size - number2_size);
-
-    if (number_result <> 0) then
-      exit(number_result);
-
-    // if there is a decimal point, compare number after one
-    if (is_point(str1^) or is_point(str2^)) then
-    begin
-      if (is_point(str1^)) then
-        inc(str1);
-
-      if (is_point(str2^)) then
-        inc(str2);
-
-      while (true) do
-      begin
-        is_digit1 := is_digit(str1^);
-        is_digit2 := is_digit(str2^);
-
-        if (not is_digit1 and not is_digit2) then
-          break;
-
-        if (is_digit1 and not is_digit2) then
+    case Chunk1.Category of
+      cString:
         begin
-          while (str1^ = '0') do
-            inc(str1);
-
-          if (is_digit(str1^)) then
-            exit(+1)
-          else
-            break;
+          PrepareChunk(Chunk1);
+          PrepareChunk(Chunk2);
+          case CaseSensitivity of
+            cstNotSensitive: Result := UnicodeCompareText(CeUtf8ToUtf16(Chunk1.Str), CeUtf8ToUtf16(Chunk2.Str));
+            cstLocale:       Result := UnicodeCompareStr(CeUtf8ToUtf16(Chunk1.Str), CeUtf8ToUtf16(Chunk2.Str));
+            cstCharValue:    Result := UnicodeStrComp(CeUtf8ToUtf16(Chunk1.Str), CeUtf8ToUtf16(Chunk2.Str));
+            else
+              raise Exception.Create('Invalid CaseSensitivity parameter');
+          end;
+          if Result <> 0 then
+            Exit;
         end;
-
-        if (is_digit2 and not is_digit1) then
+      cNumber:
         begin
-          while (str2^ = '0') do
-            inc(str2);
-
-          if (is_digit(str2^)) then
-            exit(-1)
-          else
-            break;
+          PrepareNumberChunk(Chunk1);
+          PrepareNumberChunk(Chunk2);
+          Result := Length(Chunk1.Str) - Length(Chunk2.Str);
+          if Result <> 0 then
+            Exit;
+          Result := CompareStr(Chunk1.Str, Chunk2.Str);
+          if Result <> 0 then
+            Exit;
         end;
-
-        if (str1^ > str2^) then
-          exit(+1)
-        else if (str1^ < str2^) then
-          exit(-1);
-
-        inc(str1);
-        inc(str2);
-      end;
+      cSpecial:
+        begin
+          PrepareChunk(Chunk1);
+          PrepareChunk(Chunk2);
+          Result := CompareStr(Chunk1.Str, Chunk2.Str);
+          if Result <> 0 then
+            Exit;
+        end;
+      cNone:
+        Exit(UnicodeStrComp(CeUtf8ToUtf16(str1), CeUtf8ToUtf16(str2)));
     end;
+
+    NextChunkInit(Chunk1);
+    NextChunkInit(Chunk2);
+
+    if Chunk1.Category <> Chunk2.Category then
+      if Chunk1.Category < Chunk2.Category then
+        Exit(-1)
+      else
+        Exit(1);
+
+    if Chunk1.Category = cSpecial then
+      FindSameCategoryChunks
+    else
+    begin
+      FindChunk(Chunk1);
+      FindChunk(Chunk2);
+    end;
+
   end;
 end;
 

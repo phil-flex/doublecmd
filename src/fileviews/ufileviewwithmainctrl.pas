@@ -713,7 +713,7 @@ begin
   if not AtFileList then
     Exit;
 
-{$IFDEF LCLWIN32}
+{$IF DEFINED(LCLWIN32) OR DEFINED(LCLCOCOA)}
   FMouseFocus:= MainControl.Focused;
   SetFocus;
 {$ELSE}
@@ -811,8 +811,10 @@ begin
           end;
         end;//of mouse selection handler
       end;
-    else
-      SetActiveFile(FileIndex);
+      else begin
+        SetActiveFile(FileIndex);
+        Exit;
+      end;
     end;
 
     { Dragging }
@@ -883,7 +885,8 @@ begin
   else
 
   // if we are about to start dragging
-  if FStartDrag then
+  if FStartDrag and ((Abs(FDragStartPoint.X - X) > DragManager.DragThreshold) or
+                     (Abs(FDragStartPoint.Y - Y) > DragManager.DragThreshold)) then
     begin
       FStartDrag := False;
 

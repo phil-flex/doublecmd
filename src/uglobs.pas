@@ -3,7 +3,7 @@
    -------------------------------------------------------------------------
    Globals variables and some consts
 
-   Copyright (C) 2008-2019 Alexander Koblov (alexx2000@mail.ru)
+   Copyright (C) 2008-2020 Alexander Koblov (alexx2000@mail.ru)
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -91,6 +91,12 @@ type
   { Operations with confirmation }
   TFileOperationsConfirmation = (focCopy, focMove, focDelete, focDeleteToTrash, focVerifyChecksum);
   TFileOperationsConfirmations = set of TFileOperationsConfirmation;
+
+  { Multi-Rename }
+  TMulRenLaunchBehavior = (mrlbLastMaskUnderLastOne, mrlbLastPreset, mrlbFreshNew);
+  TMulRenExitModifiedPreset = (mrempIgnoreSaveLast, mrempPromptUser, mrempSaveAutomatically);
+  TMulRenSaveRenamingLog = (mrsrlPerPreset, mrsrlAppendSameLog);
+
   { Internal Associations}
   //What the use wish for the context menu
   // uwcmComplete : DEFAULT, or user specifically wish the "Windows' one + the actions".
@@ -114,12 +120,15 @@ type
   TPluginType = (ptDSX, ptWCX, ptWDX, ptWFX, ptWLX); //*Important: Keep that order to to fit with procedures LoadXmlConfig/SaveXmlConfig when we save/restore widths of "TfrmTweakPlugin".
   TWcxCfgViewMode = (wcvmByPlugin, wcvmByExtension);
 
-  TDCFont = (dcfMain, dcfViewer, dcfEditor, dcfLog, dcfViewerBook, dcfConsole, dcfSearchResults, dcfPathEdit, dcfFunctionButtons, dcfOptionsTree, dcfOptionsMain);
+  TDCFont = (dcfMain, dcfEditor, dcfViewer, dcfViewerBook, dcfLog, dcfConsole, dcfPathEdit, dcfSearchResults, dcfFunctionButtons, dcfTreeViewMenu);
   TDCFontOptions = record
-    Name: String;
+    Usage: string;
+    Name: string;
     Size: Integer;
     Style: TFontStyles;
     Quality: TFontQuality;
+    MinValue: integer;
+    MaxValue: integer;
   end;
   TDCFontsOptions = array[TDCFont] of TDCFontOptions;
 
@@ -163,8 +172,18 @@ type
 
 const
   { Default hotkey list version number }
-  hkVersion = 49;
+  hkVersion = 51;
+  // 51 - In "Multi-Rename" context, added the "Shift+F4" shortcut for the "cm_EditNewNames".
+  // 50 - To load shortcut keys for the "Multi-Rename" which is now driven with "cm_Actions".
+  // 49 - In "Viewer" context, added the "F6" for "cm_ShowCaret".
+  // 48 - In "Viewer" context, added the "CTRL+P" for the "cm_Print".
   // 47 - In "Copy/Move Dialog" context, add the shortcuts "F5" and "F6" for "cm_ToggleSelectionInName".
+  // 46 - In "Main" context, add shortcut "Shift+Tab" for "cm_FocusTreeView".
+  // 45 - Automatically add default shortcuts to internal editor (shortcuts had not converted correctly without hkVersion update)
+  // 44 - Attempt to repair shortcut keys for "cm_ShowCmdLineHistory" in "Main" context.
+  // 43 - To load shortcut keys for the "Synchronize Directories" which is driven with "cm_Actions".
+  // 42 - In "Find Files" context, added the "CTRL+TAB" and "CTRL+SHIFT+TAB" shortcut keys for the "cm_PageNext" and "cm_PagePrev" commands.
+  // 41 - Keyboard shortcuts to change encoding in Viewer (A, S, Z and X).
   // 40 - In "Main" context, added the "Ctrl+Shift+F7" for "cm_AddNewSearch".
   //      In "Find Files" context, changed "cm_Start" that was "Enter" for "F9".
   //      In "Find Files" context, added "Alt+F7" as a valid alternative for "cm_PageStandard".
@@ -184,7 +203,9 @@ const
   // 8   - changed Behaviours/BriefViewFileExtAligned to FilesViews/BriefView/FileExtAligned
   // 9   - few new options regarding tabs
   // 10  - changed Icons/CustomDriveIcons to Icons/CustomIcons
-  ConfigVersion = 10;
+  // 11  - During the last 2-3 years the default font for search result was set in file, not loaded and different visually than was was stored.
+  //       Loading a config prior of version 11 should ignore that setting and keep default.
+  ConfigVersion = 11;
 
   // Configuration related filenames
   sMULTIARC_FILENAME = 'multiarc.ini';
@@ -198,33 +219,6 @@ const
   DropTextHtml_Index=1;
   DropTextUnicode_Index=2;
   DropTextSimpleText_Index=3;
-
-  { Global font sizes limitations }
-
-  MAX_FONT_SIZE_MAIN=50;
-  MIN_FONT_SIZE_MAIN=6;
-
-  MAX_FONT_SIZE_EDITOR=70;
-  MIN_FONT_SIZE_EDITOR=6;
-
-  MAX_FONT_SIZE_VIEWER=70;
-  MIN_FONT_SIZE_VIEWER=6;
-
-  MAX_FONT_SIZE_FILE_SEARCH_RESULTS=70;
-  MIN_FONT_SIZE_FILE_SEARCH_RESULTS=6;
-
-  MAX_FONT_SIZE_PATHEDIT=40;
-  MIN_FONT_SIZE_PATHEDIT=8;
-
-  MAX_FONT_SIZE_FUNCTION_BUTTONS=20;
-  MIN_FONT_SIZE_FUNCTION_BUTTONS=8;
-
-  MAX_FONT_SIZE_OPTIONS_TREE=14;
-  MIN_FONT_SIZE_OPTIONS_TREE=10;
-
-  MAX_FONT_SIZE_OPTIONS_MAIN=12;
-  MIN_FONT_SIZE_OPTIONS_MAIN=8;
-
 
 var
   { For localization }
@@ -306,6 +300,7 @@ var
   gRunTermParams: String;
   gSortCaseSensitivity: TCaseSensitivity;
   gSortNatural: Boolean;
+  gSortSpecial: Boolean;
   gSortFolderMode: TSortFolderMode;
   gNewFilesPosition: TNewFilesPosition;
   gUpdatedFilesPosition: TUpdatedFilesPosition;
@@ -406,8 +401,6 @@ var
   gFileInfoToolTip: TFileInfoToolTip;
   gFileInfoToolTipValue: array[0..ord(ttthtNeverHide)] of integer = (-1, 1000, 2000, 3000, 5000, 10000, 30000, 60000, integer.MaxValue);
 
-
-
   { Fonts page }
   gFonts: TDCFontsOptions;
 
@@ -483,6 +476,17 @@ var
   gAutoExtractOpenMask: String;
   gFileOperationsProgressKind: TFileOperationsProgressKind;
   gFileOperationsConfirmations: TFileOperationsConfirmations;
+
+  { Multi-Rename}
+  gMulRenShowMenuBarOnTop : boolean;
+  gMulRenInvalidCharReplacement : string;
+  gMulRenLaunchBehavior : TMulRenLaunchBehavior;
+  gMulRenExitModifiedPreset : TMulRenExitModifiedPreset;
+  gMulRenSaveRenamingLog : TMulRenSaveRenamingLog;
+  gMulRenLogFilename : string;
+  gMultRenDailyIndividualDirLog: boolean;
+  gMulRenFilenameWithFullPathInLog:boolean;
+  gMulRenPathRangeSeparator: string;
 
   { Folder tabs page }
   gDirTabOptions : TTabsOptions;
@@ -675,7 +679,7 @@ procedure LoadDefaultHotkeyBindings;
 
 function InitPropStorage(Owner: TComponent): TIniPropStorageEx;
 
-procedure FontToFontOptions(Font: TFont; out Options: TDCFontOptions);
+procedure FontToFontOptions(Font: TFont; var Options: TDCFontOptions);
 procedure FontOptionsToFont(Options: TDCFontOptions; Font: TFont);
 
 
@@ -824,8 +828,9 @@ var
   Root: TXmlNode;
   History: TXmlConfig;
 
-  procedure LoadHistory(const NodeName: String; HistoryList: TStrings);
+  procedure LoadHistory(const NodeName: String; HistoryList: TStrings; LoadObj: Boolean = False);
   var
+    Idx: Integer;
     Node: TXmlNode;
   begin
     Node := History.FindNode(Root, NodeName);
@@ -837,7 +842,10 @@ var
       begin
         if Node.CompareName('Item') = 0 then
         begin
-          HistoryList.Add(History.GetContent(Node));
+          Idx:= HistoryList.Add(History.GetContent(Node));
+          if LoadObj then begin
+            HistoryList.Objects[Idx]:= TObject(UIntPtr(History.GetAttr(Node, 'Tag', 0)));
+          end;
           if HistoryList.Count >= cMaxStringItems then Break;
         end;
         Node := Node.NextSibling;
@@ -855,7 +863,7 @@ begin
       LoadHistory('Navigation', glsDirHistory);
       LoadHistory('CommandLine', glsCmdLineHistory);
       LoadHistory('FileMask', glsMaskHistory);
-      LoadHistory('SearchText', glsSearchHistory);
+      LoadHistory('SearchText', glsSearchHistory, True);
       LoadHistory('SearchTextPath', glsSearchPathHistory);
       LoadHistory('ReplaceText', glsReplaceHistory);
       LoadHistory('ReplaceTextPath', glsReplacePathHistory);
@@ -874,7 +882,7 @@ var
   Root: TXmlNode;
   History: TXmlConfig;
 
-  procedure SaveHistory(const NodeName: String; HistoryList: TStrings);
+  procedure SaveHistory(const NodeName: String; HistoryList: TStrings; SaveObj: Boolean = False);
   var
     I: Integer;
     Node, SubNode: TXmlNode;
@@ -885,6 +893,9 @@ var
     begin
       SubNode := History.AddNode(Node, 'Item');
       History.SetContent(SubNode, HistoryList[I]);
+      if SaveObj then begin
+        History.SetAttr(SubNode, 'Tag', UInt32(UIntPtr(HistoryList.Objects[I])));
+      end;
       if I >= cMaxStringItems then Break;
     end;
   end;
@@ -898,7 +909,7 @@ begin
     if gSaveFileMaskHistory then SaveHistory('FileMask', glsMaskHistory);
     if gSaveSearchReplaceHistory then
     begin
-      SaveHistory('SearchText', glsSearchHistory);
+      SaveHistory('SearchText', glsSearchHistory, True);
       SaveHistory('SearchTextPath', glsSearchPathHistory);
       SaveHistory('ReplaceText', glsReplaceHistory);
       SaveHistory('ReplaceTextPath', glsReplacePathHistory);
@@ -1245,6 +1256,53 @@ begin
       AddIfNotExists(VK_TAB, [ssModifier, ssShift], 'cm_PagePrev');
     end;
 
+  HMForm := HotMan.Forms.FindOrCreate(HotkeysCategoryMultiRename);
+  with HMForm.Hotkeys do
+    begin
+      AddIfNotExists(['Ctrl+R'],[],'cm_ResetAll');
+      AddIfNotExists(['Ctrl+I'],[],'cm_InvokeEditor');
+      AddIfNotExists(['F3'],[],'cm_LoadNamesFromFile');
+      AddIfNotExists(['F4'],[],'cm_EditNames');
+      AddIfNotExists(['Shift+F4'],[],'cm_EditNewNames');
+      AddIfNotExists(['F10'],[],'cm_Config');
+      AddIfNotExists(['F9'],[],'cm_Rename');
+      AddIfNotExists(['Esc'],[],'cm_Close');
+
+      AddIfNotExists(['Shift+F2'],[],'cm_ShowPresetsMenu');
+      AddIfNotExists(['F2'],[],'cm_DropDownPresetList');
+      AddIfNotExists(['Alt+0'],[],'cm_LoadLastPreset');
+      AddIfNotExists(['Alt+1'],[],'cm_LoadPreset1');
+      AddIfNotExists(['Alt+2'],[],'cm_LoadPreset2');
+      AddIfNotExists(['Alt+3'],[],'cm_LoadPreset3');
+      AddIfNotExists(['Alt+4'],[],'cm_LoadPreset4');
+      AddIfNotExists(['Alt+5'],[],'cm_LoadPreset5');
+      AddIfNotExists(['Alt+6'],[],'cm_LoadPreset6');
+      AddIfNotExists(['Alt+7'],[],'cm_LoadPreset7');
+      AddIfNotExists(['Alt+8'],[],'cm_LoadPreset8');
+      AddIfNotExists(['Alt+9'],[],'cm_LoadPreset9');
+      AddIfNotExists(['Ctrl+S'],[],'cm_SavePreset');
+      AddIfNotExists(['F12'],[],'cm_SavePresetAs');
+      AddIfNotExists(['Shift+F6'],[],'cm_RenamePreset');
+      AddIfNotExists(['Ctrl+D'],[],'cm_DeletePreset');
+      AddIfNotExists(['Ctrl+Shift+S'],[],'cm_SortPresets');
+
+      AddIfNotExists(['Ctrl+F2'],[],'cm_AnyNameMask');
+      AddIfNotExists(['Ctrl+F3'],[],'cm_NameNameMask');
+      AddIfNotExists(['Ctrl+F4'],[],'cm_ExtNameMask');
+      AddIfNotExists(['Ctrl+F7'],[],'cm_CtrNameMask');
+      AddIfNotExists(['Ctrl+F5'],[],'cm_DateNameMask');
+      AddIfNotExists(['Ctrl+F6'],[],'cm_TimeNameMask');
+      AddIfNotExists(['Ctrl+F1'],[],'cm_PlgnNameMask');
+
+      AddIfNotExists(['Ctrl+Shift+F2'],[],'cm_AnyExtMask');
+      AddIfNotExists(['Ctrl+Shift+F3'],[],'cm_NameExtMask');
+      AddIfNotExists(['Ctrl+Shift+F4'],[],'cm_ExtExtMask');
+      AddIfNotExists(['Ctrl+Shift+F7'],[],'cm_CtrExtMask');
+      AddIfNotExists(['Ctrl+Shift+F5'],[],'cm_DateExtMask');
+      AddIfNotExists(['Ctrl+Shift+F6'],[],'cm_TimeExtMask');
+      AddIfNotExists(['Ctrl+Shift+F1'],[],'cm_PlgnExtMask');
+    end;
+
   if not mbFileExists(gpCfgDir + gNameSCFile) then
     gNameSCFile := 'shortcuts.scf';
   HotMan.Save(gpCfgDir + gNameSCFile);
@@ -1269,7 +1327,7 @@ begin
   end;
 end;
 
-procedure FontToFontOptions(Font: TFont; out Options: TDCFontOptions);
+procedure FontToFontOptions(Font: TFont; var Options: TDCFontOptions);
 begin
   with Options do
   begin
@@ -1469,6 +1527,7 @@ begin
   gLynxLike := True;
   gSortCaseSensitivity := cstNotSensitive;
   gSortNatural := False;
+  gSortSpecial := False;
   gSortFolderMode := sfmSortNameShowFirst;
   gNewFilesPosition := nfpSortedPosition;
   gUpdatedFilesPosition := ufpNoChange;
@@ -1527,55 +1586,71 @@ begin
   gFonts[dcfMain].Size := 10;
   gFonts[dcfMain].Style := [fsBold];
   gFonts[dcfMain].Quality := fqDefault;
+  gFonts[dcfMain].MinValue := 6;
+  gFonts[dcfMain].MaxValue := 200;
 
   gFonts[dcfEditor].Name := MonoSpaceFont;
   gFonts[dcfEditor].Size := 14;
   gFonts[dcfEditor].Style := [];
   gFonts[dcfEditor].Quality := fqDefault;
+  gFonts[dcfEditor].MinValue := 6;
+  gFonts[dcfEditor].MaxValue := 200;
 
   gFonts[dcfViewer].Name := MonoSpaceFont;
   gFonts[dcfViewer].Size := 14;
   gFonts[dcfViewer].Style := [];
   gFonts[dcfViewer].Quality := fqDefault;
-
-  gFonts[dcfSearchResults].Name := 'default';
-  gFonts[dcfSearchResults].Size := 14;
-  gFonts[dcfSearchResults].Style := [];
-  gFonts[dcfSearchResults].Quality := fqDefault;
-
-  gFonts[dcfPathEdit].Name := 'default';
-  gFonts[dcfPathEdit].Size := 8;
-  gFonts[dcfPathEdit].Style := [];
-  gFonts[dcfPathEdit].Quality := fqDefault;
-
-  gFonts[dcfFunctionButtons].Name := 'default';
-  gFonts[dcfFunctionButtons].Size := 8;
-  gFonts[dcfFunctionButtons].Style := [];
-  gFonts[dcfFunctionButtons].Quality := fqDefault;
-
-  gFonts[dcfOptionsTree].Name := 'default';
-  gFonts[dcfOptionsTree].Size := 10;
-  gFonts[dcfOptionsTree].Style := [];
-  gFonts[dcfOptionsTree].Quality := fqDefault;
-                             gFonts[dcfOptionsMain].Name := 'default';
-  gFonts[dcfOptionsMain].Size := 10;
-  gFonts[dcfOptionsMain].Style := [];
-  gFonts[dcfOptionsMain].Quality := fqDefault;
-
-  gFonts[dcfLog].Name := MonoSpaceFont;
-  gFonts[dcfLog].Size := 12;
-  gFonts[dcfLog].Style := [];
-  gFonts[dcfLog].Quality := fqDefault;
+  gFonts[dcfViewer].MinValue := 6;
+  gFonts[dcfViewer].MaxValue := 200;
 
   gFonts[dcfViewerBook].Name := 'default';
   gFonts[dcfViewerBook].Size := 16;
   gFonts[dcfViewerBook].Style := [fsBold];
   gFonts[dcfViewerBook].Quality := fqDefault;
+  gFonts[dcfViewerBook].MinValue := 6;
+  gFonts[dcfViewerBook].MaxValue := 200;
+
+  gFonts[dcfLog].Name := MonoSpaceFont;
+  gFonts[dcfLog].Size := 12;
+  gFonts[dcfLog].Style := [];
+  gFonts[dcfLog].Quality := fqDefault;
+  gFonts[dcfLog].MinValue := 6;
+  gFonts[dcfLog].MaxValue := 200;
 
   gFonts[dcfConsole].Name := MonoSpaceFont;
   gFonts[dcfConsole].Size := 12;
   gFonts[dcfConsole].Style := [];
   gFonts[dcfConsole].Quality := fqDefault;
+  gFonts[dcfConsole].MinValue := 6;
+  gFonts[dcfConsole].MaxValue := 200;
+
+  gFonts[dcfPathEdit].Name := 'default';
+  gFonts[dcfPathEdit].Size := 8;
+  gFonts[dcfPathEdit].Style := [];
+  gFonts[dcfPathEdit].Quality := fqDefault;
+  gFonts[dcfPathEdit].MinValue := 6;
+  gFonts[dcfPathEdit].MaxValue := 200;
+
+  gFonts[dcfFunctionButtons].Name := 'default';
+  gFonts[dcfFunctionButtons].Size := 8;
+  gFonts[dcfFunctionButtons].Style := [];
+  gFonts[dcfFunctionButtons].Quality := fqDefault;
+  gFonts[dcfFunctionButtons].MinValue := 6;
+  gFonts[dcfFunctionButtons].MaxValue := 200;
+
+  gFonts[dcfSearchResults].Name := 'default';
+  gFonts[dcfSearchResults].Size := 9;
+  gFonts[dcfSearchResults].Style := [];
+  gFonts[dcfSearchResults].Quality := fqDefault;
+  gFonts[dcfSearchResults].MinValue := 6;
+  gFonts[dcfSearchResults].MaxValue := 200;
+
+  gFonts[dcfTreeViewMenu].Name := 'default';
+  gFonts[dcfTreeViewMenu].Size := 10;
+  gFonts[dcfTreeViewMenu].Style := [];
+  gFonts[dcfTreeViewMenu].Quality := fqDefault;
+  gFonts[dcfTreeViewMenu].MinValue := 6;
+  gFonts[dcfTreeViewMenu].MaxValue := 200;
 
   { Colors page }
   gUseCursorBorder := False;
@@ -1682,6 +1757,17 @@ begin
   gAutoExtractOpenMask := EmptyStr;
   gFileOperationsProgressKind := fopkSeparateWindow;
   gFileOperationsConfirmations := [focCopy, focMove, focDelete, focDeleteToTrash];
+
+  { Multi-Rename }
+  gMulRenShowMenuBarOnTop := True;
+  gMulRenInvalidCharReplacement := '.';
+  gMulRenLaunchBehavior := mrlbLastMaskUnderLastOne;
+  gMulRenExitModifiedPreset := mrempIgnoreSaveLast;
+  gMulRenSaveRenamingLog := mrsrlPerPreset;
+  gMulRenLogFilename := EnvVarConfigPath + PathDelim + 'multirename.log';
+  gMultRenDailyIndividualDirLog := True;
+  gMulRenFilenameWithFullPathInLog:= False;
+  gMulRenPathRangeSeparator := ' - ';
 
   // Operations options
   gOperationOptionSymLinks := fsooslNone;
@@ -2309,6 +2395,18 @@ begin
     gSizeDisplayUnits[fsfPersonalizedGiga] := rsDefaultPersonalizedAbbrevGiga;
     gSizeDisplayUnits[fsfPersonalizedTera] := rsDefaultPersonalizedAbbrevTera;
 
+    { Since language has been loaded, we may now load our font usage name}
+    gFonts[dcfMain].Usage := rsFontUsageMain;
+    gFonts[dcfEditor].Usage := rsFontUsageEditor;
+    gFonts[dcfViewer].Usage := rsFontUsageViewer;
+    gFonts[dcfViewerBook].Usage := rsFontUsageViewerBook;
+    gFonts[dcfLog].Usage := rsFontUsageLog;
+    gFonts[dcfConsole].Usage := rsFontUsageConsole;
+    gFonts[dcfPathEdit].Usage := rsFontUsagePathEdit;
+    gFonts[dcfFunctionButtons].Usage := rsFontUsageFunctionButtons;
+    gFonts[dcfSearchResults].Usage := rsFontUsageSearchResults;
+    gFonts[dcfTreeViewMenu].Usage := rsFontUsageTreeViewMenu;
+
     { Behaviours page }
     Node := Root.FindNode('Behaviours');
     if Assigned(Node) then
@@ -2442,16 +2540,13 @@ begin
     GetDCFont(gConfig.FindNode(Root, 'Fonts/Main'), gFonts[dcfMain]);
     GetDCFont(gConfig.FindNode(Root, 'Fonts/Editor'), gFonts[dcfEditor]);
     GetDCFont(gConfig.FindNode(Root, 'Fonts/Viewer'), gFonts[dcfViewer]);
-    GetDCFont(gConfig.FindNode(Root, 'Fonts/OptionsTree'), gFonts[dcfOptionsTree]);
-    GetDCFont(gConfig.FindNode(Root, 'Fonts/OptionsMain'), gFonts[dcfOptionsMain]);
-
-    GetDCFont(gConfig.FindNode(Root, 'Fonts/SearchResults'), gFonts[dcfSearchResults]);
+    GetDCFont(gConfig.FindNode(Root, 'Fonts/ViewerBook'), gFonts[dcfViewerBook]);
+    GetDCFont(gConfig.FindNode(Root, 'Fonts/Log'), gFonts[dcfLog]);
+    GetDCFont(gConfig.FindNode(Root, 'Fonts/Console'), gFonts[dcfConsole]);
     GetDCFont(gConfig.FindNode(Root, 'Fonts/PathEdit'), gFonts[dcfPathEdit]);
     GetDCFont(gConfig.FindNode(Root, 'Fonts/FunctionButtons'), gFonts[dcfFunctionButtons]);
-
-    GetDCFont(gConfig.FindNode(Root, 'Fonts/Log'), gFonts[dcfLog]);
-    GetDCFont(gConfig.FindNode(Root, 'Fonts/ViewerBook'), gFonts[dcfViewerBook]);
-    GetDCFont(gConfig.FindNode(Root, 'Fonts/Console'), gFonts[dcfConsole]);
+    if LoadedConfigVersion >= 11 then GetDCFont(gConfig.FindNode(Root, 'Fonts/SearchResults'), gFonts[dcfSearchResults]); //Let's ignore possible previous setting for this and keep our default.
+    GetDCFont(gConfig.FindNode(Root, 'Fonts/TreeViewMenu'), gFonts[dcfTreeViewMenu]);
 
     { Colors page }
     Node := Root.FindNode('Colors');
@@ -2481,8 +2576,6 @@ begin
       gLogInfoColor:= GetValue(Node, 'LogWindow/Info', gLogInfoColor);
       gLogErrorColor:= GetValue(Node, 'LogWindow/Error', gLogErrorColor);
       gLogSuccessColor:= GetValue(Node, 'LogWindow/Success', gLogSuccessColor);
-
-      gColorExt.Load(gConfig, Node);
     end;
 
     { ToolTips page }
@@ -2569,6 +2662,7 @@ begin
       begin
         gSortCaseSensitivity := TCaseSensitivity(GetValue(SubNode, 'CaseSensitivity', Integer(gSortCaseSensitivity)));
         gSortNatural := GetValue(SubNode, 'NaturalSorting', gSortNatural);
+        gSortSpecial := GetValue(SubNode, 'SpecialSorting', gSortSpecial);
         gSortFolderMode:= TSortFolderMode(GetValue(SubNode, 'SortFolderMode', Integer(gSortFolderMode)));
         gNewFilesPosition := TNewFilesPosition(GetValue(SubNode, 'NewFilesPosition', Integer(gNewFilesPosition)));
         gUpdatedFilesPosition := TUpdatedFilesPosition(GetValue(SubNode, 'UpdatedFilesPosition', Integer(gUpdatedFilesPosition)));
@@ -2662,6 +2756,21 @@ begin
       if Assigned(SubNode) then
       begin
         gExtractOverwrite := GetValue(SubNode, 'Overwrite', gExtractOverwrite);
+      end;
+
+      // Multi-Rename
+      SubNode := Node.FindNode('MultiRename');
+      if Assigned(SubNode) then
+      begin
+        gMulRenShowMenuBarOnTop := GetValue(SubNode, 'MulRenShowMenuBarOnTop', gMulRenShowMenuBarOnTop);
+        gMulRenInvalidCharReplacement := GetValue(SubNode, 'MulRenInvalidCharReplacement', gMulRenInvalidCharReplacement);
+        gMulRenLaunchBehavior := TMulRenLaunchBehavior(GetValue(SubNode, 'MulRenLaunchBehavor', Integer(gMulRenLaunchBehavior)));
+        gMulRenExitModifiedPreset := TMulRenExitModifiedPreset(GetValue(SubNode, 'MulRenExitModifiedPreset', Integer(gMulRenExitModifiedPreset)));
+        gMulRenSaveRenamingLog := TMulRenSaveRenamingLog(GetValue(SubNode, 'MulRenSaveRenamingLog', Integer(gMulRenSaveRenamingLog)));
+        gMulRenLogFilename := GetValue(SubNode, 'MulRenLogFilename', gMulRenLogFilename);
+        gMultRenDailyIndividualDirLog := GetValue(SubNode, 'MultRenDailyIndividualDirLog', gMultRenDailyIndividualDirLog);
+        gMulRenFilenameWithFullPathInLog := GetValue(SubNode, 'MulRenFilenameWithFullPathInLog', gMulRenFilenameWithFullPathInLog);
+        gMulRenPathRangeSeparator := GetValue(SubNode, 'MulRenPathRangeSeparator', gMulRenPathRangeSeparator);
       end;
     end;
 
@@ -2981,6 +3090,13 @@ begin
   { Search template list }
   gSearchTemplateList.LoadFromXml(gConfig, Root);
 
+  { File type colors, load after search templates }
+  Node := Root.FindNode('Colors');
+  if Assigned(Node) then
+  begin
+    gColorExt.Load(gConfig, Node);
+  end;
+
   { Columns sets }
   ColSet.Load(gConfig, Root);
 
@@ -3112,14 +3228,13 @@ begin
     SetDCFont(gConfig.FindNode(Root, 'Fonts/Main', True), gFonts[dcfMain]);
     SetDCFont(gConfig.FindNode(Root, 'Fonts/Editor', True), gFonts[dcfEditor]);
     SetDCFont(gConfig.FindNode(Root, 'Fonts/Viewer', True), gFonts[dcfViewer]);
-    SetDCFont(gConfig.FindNode(Root, 'Fonts/OptionsTree', True), gFonts[dcfOptionsTree]);
-    SetDCFont(gConfig.FindNode(Root, 'Fonts/OptionsMain', True), gFonts[dcfOptionsMain]);
-    SetDCFont(gConfig.FindNode(Root, 'Fonts/SearchResults',True), gFonts[dcfSearchResults]);
+    SetDCFont(gConfig.FindNode(Root, 'Fonts/ViewerBook', True), gFonts[dcfViewerBook]);
+    SetDCFont(gConfig.FindNode(Root, 'Fonts/Log', True), gFonts[dcfLog]);
+    SetDCFont(gConfig.FindNode(Root, 'Fonts/Console', True), gFonts[dcfConsole]);
     SetDCFont(gConfig.FindNode(Root, 'Fonts/PathEdit',True), gFonts[dcfPathEdit]);
     SetDCFont(gConfig.FindNode(Root, 'Fonts/FunctionButtons',True), gFonts[dcfFunctionButtons]);
-    SetDCFont(gConfig.FindNode(Root, 'Fonts/Log', True), gFonts[dcfLog]);
-    SetDCFont(gConfig.FindNode(Root, 'Fonts/ViewerBook', True), gFonts[dcfViewerBook]);
-    SetDCFont(gConfig.FindNode(Root, 'Fonts/Console', True), gFonts[dcfConsole]);
+    SetDCFont(gConfig.FindNode(Root, 'Fonts/SearchResults',True), gFonts[dcfSearchResults]);
+    SetDCFont(gConfig.FindNode(Root, 'Fonts/TreeViewMenu', True), gFonts[dcfTreeViewMenu]);
 
     { Colors page }
     Node := FindNode(Root, 'Colors', True);
@@ -3210,6 +3325,7 @@ begin
     SubNode := FindNode(Node, 'Sorting', True);
     SetValue(SubNode, 'CaseSensitivity', Integer(gSortCaseSensitivity));
     SetValue(SubNode, 'NaturalSorting', gSortNatural);
+    SetValue(SubNode, 'SpecialSorting', gSortSpecial);
     SetValue(SubNode, 'SortFolderMode', Integer(gSortFolderMode));
     SetValue(SubNode, 'NewFilesPosition', Integer(gNewFilesPosition));
     SetValue(SubNode, 'UpdatedFilesPosition', Integer(gUpdatedFilesPosition));
@@ -3282,6 +3398,18 @@ begin
     begin
       SetValue(SubNode, 'Overwrite', gExtractOverwrite);
     end;
+
+    // Multi-Rename
+    SubNode := FindNode(Node, 'MultiRename', True);
+    SetValue(SubNode, 'MulRenShowMenuBarOnTop', gMulRenShowMenuBarOnTop);
+    SetValue(SubNode, 'MulRenInvalidCharReplacement', gMulRenInvalidCharReplacement);
+    SetValue(SubNode, 'MulRenLaunchBehavor', Integer(gMulRenLaunchBehavior));
+    SetValue(SubNode, 'MulRenExitModifiedPreset', Integer(gMulRenExitModifiedPreset));
+    SetValue(SubNode, 'MulRenSaveRenamingLog', Integer(gMulRenSaveRenamingLog));
+    SetValue(SubNode, 'MulRenLogFilename', gMulRenLogFilename);
+    SetValue(SubNode, 'MultRenDailyIndividualDirLog', gMultRenDailyIndividualDirLog);
+    SetValue(SubNode, 'MulRenFilenameWithFullPathInLog', gMulRenFilenameWithFullPathInLog);
+    SetValue(SubNode, 'MulRenPathRangeSeparator', gMulRenPathRangeSeparator);
 
     { Tabs page }
     Node := FindNode(Root, 'Tabs', True);

@@ -68,8 +68,12 @@ var
 implementation
 
 uses
-  dbus, fpjson, jsonparser, unix,
-  uGlobs, uGlobsPaths, uMyUnix, uPython;
+  dbus, fpjson, jsonparser, jsonscanner, unix,
+  uGlobs, uGlobsPaths, uMyUnix, uPython
+{$IF DEFINED(LCLQT5)}
+  , uGObject2
+{$ENDIF}
+  ;
 
 const
   MODULE_NAME = 'rabbit-vcs';
@@ -109,12 +113,12 @@ begin
 
   Result:= service_exists <> 0;
   if Result then
-    Print('Service found running.')
+    Print('Service found running')
   else
     begin
       Result:= fpSystemStatus(PythonExe + ' ' + PythonScript) = 0;
       if Result then
-        Print('Service successfully started.');
+        Print('Service successfully started');
     end;
 end;
 
@@ -197,7 +201,7 @@ begin
       begin
         dbus_message_iter_get_basic(@argsIter, @StringPtr);
 
-        with TJSONParser.Create(StrPas(StringPtr)) do
+        with TJSONParser.Create(StrPas(StringPtr), [joUTF8]) do
         try
           JAnswer:= Parse as TJSONObject;
           try
@@ -244,7 +248,7 @@ end;
 procedure FillRabbitMenu(Menu: TPopupMenu; Paths: TStringList);
 var
   Handler: TMethod;
-  pyMethod, pyValue, pyArgs: PPyObject;
+  pyMethod, pyValue: PPyObject;
 
   procedure SetBitmap(Item: TMenuItem; const IconName: String);
   var
@@ -311,6 +315,48 @@ begin
   end;
 end;
 
+function CheckVersion: Boolean;
+var
+  ATemp: AnsiString;
+  RabbitGTK3: Boolean;
+  pyModule: PPyObject;
+  pyVersion: PPyObject;
+  AVersion: TStringArray;
+  Major, Minor, Micro: Integer;
+begin
+  Result:= False;
+  pyModule:= PythonLoadModule('rabbitvcs');
+  if Assigned(pyModule) then
+  begin
+    pyVersion:= PythonRunFunction(pyModule, 'package_version');
+    if Assigned(pyVersion) then
+    begin
+      ATemp:= PyStringToString(pyVersion);
+      AVersion:= ATemp.Split(['.']);
+      Print('Version ' + ATemp);
+      if (Length(AVersion) > 2) then
+      begin
+        Major:= StrToIntDef(AVersion[0], 0);
+        Minor:= StrToIntDef(AVersion[1], 0);
+        Micro:= StrToIntDef(AVersion[2], 0);
+        // RabbitVCS migrated to GTK3 from version 0.17.1
+        RabbitGTK3:= (Major > 0) or (Minor > 17) or ((Minor = 17) and (Micro > 0));
+{$IF DEFINED(LCLQT5)}
+        Result:= RabbitGTK3;
+        // Qt5 can work with RabbitVCS GTK2 when no GTK3 platform theme plugin
+        if not Result then Result:= (g_type_from_name('GtkWidget') = 0);
+{$ELSEIF DEFINED(LCLGTK2)}
+        Result:= not RabbitGTK3;
+{$ELSEIF DEFINED(LCLGTK3)}
+        Result:= RabbitGTK3;
+{$ELSE}
+        Result:= True
+{$ENDIF}
+      end;
+    end;
+  end;
+end;
+
 procedure Initialize;
 var
   PythonPath: String;
@@ -321,11 +367,13 @@ begin
     Exit;
   if HasPython then
   begin
+    if not CheckVersion then Exit;
     PythonPath:= gpExePath + 'scripts';
     RabbitVCS:= CheckService(PythonPath + PathDelim + MODULE_NAME + '.py');
     if RabbitVCS then begin
       PythonAddModulePath(PythonPath);
       PythonModule:= PythonLoadModule(MODULE_NAME);
+      RabbitVCS:= Assigned(PythonModule);
     end;
   end;
 end;
@@ -336,9 +384,7 @@ begin
 end;
 
 initialization
-{$IF NOT DEFINED(LCLQT5)}
   RegisterInitialization(@Initialize);
-{$ENDIF}
 
 finalization
   Finalize;

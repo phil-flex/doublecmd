@@ -71,19 +71,15 @@ object frmMain: TfrmMain
     ClientHeight = 191
     ClientWidth = 634
     TabOrder = 5
-    object pnlDisk: TPanel
-      AnchorSideTop.Control = MainToolBar
+    object pnlDisk: TKASToolPanel
+      AnchorSideTop.Control = MainToolbar
       Left = 0
       Height = 24
       Top = 0
       Width = 634
       Align = alTop
       AutoSize = True
-      BevelOuter = bvNone
-      ClientHeight = 24
-      ClientWidth = 634
-      FullRepaint = False
-      TabOrder = 0
+      EdgeBorders = [ebTop, ebBottom]
       Visible = False
       object pnlDskLeft: TPanel
         AnchorSideLeft.Control = pnlDisk
@@ -92,6 +88,7 @@ object frmMain: TfrmMain
         Height = 24
         Top = 0
         Width = 170
+        AutoSize = True
         BevelOuter = bvNone
         ClientHeight = 24
         ClientWidth = 170
@@ -104,11 +101,10 @@ object frmMain: TfrmMain
           Width = 170
           AutoSize = True
           Constraints.MinHeight = 20
-          EdgeBorders = [ebTop, ebBottom]
+          EdgeBorders = []
           Flat = True
           ShowCaptions = True
           TabOrder = 0
-          OnResize = dskLeftResize
           OnToolButtonClick = dskLeftToolButtonClick
           OnToolButtonMouseUp = dskToolButtonMouseUp
           OnToolButtonDragDrop = dskLeftRightToolButtonDragDrop
@@ -124,6 +120,7 @@ object frmMain: TfrmMain
         Height = 24
         Top = 0
         Width = 588
+        AutoSize = True
         Anchors = [akTop, akRight]
         BevelOuter = bvNone
         ClientHeight = 24
@@ -137,11 +134,10 @@ object frmMain: TfrmMain
           Width = 588
           AutoSize = True
           Constraints.MinHeight = 20
-          EdgeBorders = [ebTop, ebBottom]
+          EdgeBorders = []
           Flat = True
           ShowCaptions = True
           TabOrder = 0
-          OnResize = dskRightResize
           OnToolButtonClick = dskRightToolButtonClick
           OnToolButtonMouseUp = dskToolButtonMouseUp
           OnToolButtonDragDrop = dskLeftRightToolButtonDragDrop
@@ -174,14 +170,14 @@ object frmMain: TfrmMain
         TabOrder = 0
         OnDblClick = pnlLeftRightDblClick
         OnResize = pnlLeftResize
-        object pnlDiskLeftInner: TPanel
+        object pnlDiskLeftInner: TKASToolPanel
           Left = 0
           Height = 10
           Top = 0
           Width = 511
           Align = alTop
-          BevelOuter = bvNone
-          TabOrder = 1
+          AutoSize = True
+          EdgeBorders = [ebTop, ebBottom]
           Visible = False
         end
         object pnlLeftTools: TPanel
@@ -326,14 +322,14 @@ object frmMain: TfrmMain
         TabOrder = 1
         OnDblClick = pnlLeftRightDblClick
         OnResize = pnlRightResize
-        object pnlDiskRightInner: TPanel
+        object pnlDiskRightInner: TKASToolPanel
           Left = 0
           Height = 10
           Top = 0
           Width = 123
           Align = alTop
-          BevelOuter = bvNone
-          TabOrder = 1
+          AutoSize = True
+          EdgeBorders = [ebTop, ebBottom]
           Visible = False
         end
         object pnlRightTools: TPanel
@@ -1551,7 +1547,7 @@ object frmMain: TfrmMain
     object actMultiRename: TAction
       Tag = 18
       Category = 'Tools'
-      Caption = 'Multi &Rename Tool'
+      Caption = 'Multi-&Rename Tool'
       HelpType = htKeyword
       OnExecute = actExecute
     end

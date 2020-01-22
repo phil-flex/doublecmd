@@ -2,9 +2,9 @@
 <CONFIG>
   <ProjectSession>
     <PathDelim Value="\"/>
-    <Version Value="10"/>
+    <Version Value="11"/>
     <BuildModes Active="Debug"/>
-    <Units Count="238">
+    <Units Count="261">
       <Unit0>
         <Filename Value="doublecmd.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -17,9 +17,8 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="fMain"/>
-        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="-1"/>
         <UsageCount Value="20"/>
-        <Loaded Value="True"/>
       </Unit1>
       <Unit2>
         <Filename Value="uwcxprototypes.pas"/>
@@ -212,7 +211,9 @@
       <Unit24>
         <Filename Value="frames\foptionsfileassocextra.pas"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmOptionsFileAssocExtra"/>
         <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
         <UnitName Value="fOptionsFileAssocExtra"/>
         <UsageCount Value="20"/>
       </Unit24>
@@ -501,12 +502,12 @@
         <UsageCount Value="20"/>
       </Unit63>
       <Unit64>
-        <Filename Value="frames\foptionsplugins.pas"/>
+        <Filename Value="frames\foptionspluginsgroup.pas"/>
         <IsPartOfProject Value="True"/>
-        <ComponentName Value="frmOptionsPlugins"/>
+        <ComponentName Value="frmOptionsPluginsGroup"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="fOptionsPlugins"/>
+        <UnitName Value="fOptionsPluginsGroup"/>
         <UsageCount Value="20"/>
       </Unit64>
       <Unit65>
@@ -997,6 +998,7 @@
       <Unit131>
         <Filename Value="filesources\ufilesourcewipeoperation.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="uFileSourceWipeOperation"/>
         <UsageCount Value="20"/>
       </Unit131>
       <Unit132>
@@ -1111,7 +1113,8 @@
         <IsPartOfProject Value="True"/>
         <ComponentName Value="MultiArchiveCopyOperationOptionsUI"/>
         <HasResources Value="True"/>
-        <ResourceBaseClass Value="Frame"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="fMultiArchiveCopyOperationOptions"/>
         <UsageCount Value="20"/>
       </Unit151>
       <Unit152>
@@ -1196,6 +1199,7 @@
       <Unit166>
         <Filename Value="filesources\vfs\uvfsexecuteoperation.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="uVfsExecuteOperation"/>
         <UsageCount Value="20"/>
       </Unit166>
       <Unit167>
@@ -1214,7 +1218,8 @@
         <IsPartOfProject Value="True"/>
         <ComponentName Value="WcxArchiveCopyOperationOptionsUI"/>
         <HasResources Value="True"/>
-        <ResourceBaseClass Value="Frame"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="fWcxArchiveCopyOperationOptions"/>
         <UsageCount Value="20"/>
       </Unit169>
       <Unit170>
@@ -1269,7 +1274,8 @@
         <IsPartOfProject Value="True"/>
         <ComponentName Value="WfxPluginCopyMoveOperationOptionsUI"/>
         <HasResources Value="True"/>
-        <ResourceBaseClass Value="Frame"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="fWfxPluginCopyMoveOperationOptions"/>
         <UsageCount Value="20"/>
       </Unit178>
       <Unit179>
@@ -1676,7 +1682,197 @@
         <UnitName Value="fViewOperations"/>
         <UsageCount Value="20"/>
       </Unit237>
+      <Unit238>
+        <Filename Value="ffileunlock.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmFileUnlock"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="fFileUnlock"/>
+        <UsageCount Value="20"/>
+      </Unit238>
+      <Unit239>
+        <Filename Value="frames\foptionspluginsbase.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmOptionsPluginsBase"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="fOptionsPluginsBase"/>
+        <UsageCount Value="20"/>
+      </Unit239>
+      <Unit240>
+        <Filename Value="frames\foptionspluginsdsx.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmOptionsPluginsDSX"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="fOptionsPluginsDSX"/>
+        <UsageCount Value="20"/>
+      </Unit240>
+      <Unit241>
+        <Filename Value="frames\foptionspluginswcx.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmOptionsPluginsWCX"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="fOptionsPluginsWCX"/>
+        <UsageCount Value="20"/>
+      </Unit241>
+      <Unit242>
+        <Filename Value="frames\foptionspluginswdx.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmOptionsPluginsWDX"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="fOptionsPluginsWDX"/>
+        <UsageCount Value="20"/>
+      </Unit242>
+      <Unit243>
+        <Filename Value="frames\foptionspluginswfx.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmOptionsPluginsWFX"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="fOptionsPluginsWFX"/>
+        <UsageCount Value="20"/>
+      </Unit243>
+      <Unit244>
+        <Filename Value="frames\foptionspluginswlx.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmOptionsPluginsWLX"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="fOptionsPluginsWLX"/>
+        <UsageCount Value="20"/>
+      </Unit244>
+      <Unit245>
+        <Filename Value="uhotdir.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="uHotDir"/>
+        <UsageCount Value="20"/>
+      </Unit245>
+      <Unit246>
+        <Filename Value="ufilefunctions.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="uFileFunctions"/>
+        <UsageCount Value="20"/>
+      </Unit246>
+      <Unit247>
+        <Filename Value="frames\foptionsfilesviewscomplement.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmOptionsFilesViewsComplement"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="fOptionsFilesViewsComplement"/>
+        <UsageCount Value="20"/>
+      </Unit247>
+      <Unit248>
+        <Filename Value="frames\foptionstoolbarextra.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmOptionsToolbarExtra"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="fOptionsToolbarExtra"/>
+        <UsageCount Value="20"/>
+      </Unit248>
+      <Unit249>
+        <Filename Value="frames\foptionsdirectoryhotlistextra.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmOptionsDirectoryHotlistExtra"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="fOptionsDirectoryHotlistExtra"/>
+        <UsageCount Value="20"/>
+      </Unit249>
+      <Unit250>
+        <Filename Value="uvariablemenusupport.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="uVariableMenuSupport"/>
+        <UsageCount Value="20"/>
+      </Unit250>
+      <Unit251>
+        <Filename Value="fbenchmark.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmBenchmark"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="fBenchmark"/>
+        <UsageCount Value="20"/>
+      </Unit251>
+      <Unit252>
+        <Filename Value="filesources\gio\fgioauthdlg.pas"/>
+        <IsPartOfProject Value="True"/>
+        <HasResources Value="True"/>
+        <UnitName Value="fGioAuthDlg"/>
+        <UsageCount Value="20"/>
+      </Unit252>
+      <Unit253>
+        <Filename Value="filesources\gio\fgiocopymoveoperationoptions.pas"/>
+        <IsPartOfProject Value="True"/>
+        <HasResources Value="True"/>
+        <UnitName Value="fGioCopyMoveOperationOptions"/>
+        <UsageCount Value="20"/>
+      </Unit253>
+      <Unit254>
+        <Filename Value="fconfirmcommandline.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="TfrmConfirmCommandLine"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="fConfirmCommandLine"/>
+        <UsageCount Value="20"/>
+      </Unit254>
+      <Unit255>
+        <Filename Value="uwdxmodule.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="uWDXModule"/>
+        <UsageCount Value="20"/>
+      </Unit255>
+      <Unit256>
+        <Filename Value="uluapas.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="uLuaPas"/>
+        <UsageCount Value="20"/>
+      </Unit256>
+      <Unit257>
+        <Filename Value="fprintsetup.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmPrintSetup"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="fPrintSetup"/>
+        <UsageCount Value="20"/>
+      </Unit257>
+      <Unit258>
+        <Filename Value="frames\foptionstoolbarbase.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmOptionsToolbarBase"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="fOptionsToolbarBase"/>
+        <UsageCount Value="20"/>
+      </Unit258>
+      <Unit259>
+        <Filename Value="frames\foptionstoolbarmiddle.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmOptionsToolbarMiddle"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="fOptionsToolbarMiddle"/>
+        <UsageCount Value="20"/>
+      </Unit259>
+      <Unit260>
+        <Filename Value="C:\lazarus\components\codetools\codeatom.pas"/>
+        <UnitName Value="CodeAtom"/>
+        <IsVisibleTab Value="True"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit260>
     </Units>
     <JumpHistory HistoryIndex="-1"/>
+    <RunParams>
+      <FormatVersion Value="2"/>
+      <Modes Count="0" ActiveMode=""/>
+    </RunParams>
   </ProjectSession>
 </CONFIG>

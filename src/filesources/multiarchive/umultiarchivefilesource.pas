@@ -111,10 +111,9 @@ type
     class function CreateByArchiveName(anArchiveFileSource: IFileSource;
                                        anArchiveFileName: String): IMultiArchiveFileSource;
     {en
-       Returns @true if there is an addon registered for the archive type
-       (only extension is checked).
+       Returns @true if there is an addon registered for the archive name.
     }
-    class function CheckAddonByExt(anArchiveType: String): Boolean;
+    class function CheckAddonByName(const anArchiveFileName: String): Boolean;
 
     property Password: String read GetPassword;
     property ArchiveFileList: TObjectList read GetArcFileList;
@@ -177,7 +176,7 @@ begin
   begin
     aMultiArcItem:= gMultiArcList.Items[I];
 
-    if MatchesMaskList(anArchiveType, aMultiArcItem.FExtension, ',') and (aMultiArcItem.FEnabled) then
+    if (aMultiArcItem.FEnabled) and MatchesMaskList(anArchiveType, aMultiArcItem.FExtension, ',') then
     begin
       Result := TMultiArchiveFileSource.Create(anArchiveFileSource,
                                                anArchiveFileName,
@@ -192,12 +191,30 @@ end;
 class function TMultiArchiveFileSource.CreateByArchiveName(
     anArchiveFileSource: IFileSource;
     anArchiveFileName: String): IMultiArchiveFileSource;
+var
+  I: Integer;
+  aMultiArcItem: TMultiArcItem;
 begin
-  Result:= CreateByArchiveType(anArchiveFileSource, anArchiveFileName,
-                               ExtractOnlyFileExt(anArchiveFileName));
+  Result := nil;
+
+  // Check if there is a registered addon for the archive file name.
+  for I := 0 to gMultiArcList.Count - 1 do
+  begin
+    aMultiArcItem:= gMultiArcList.Items[I];
+
+    if (aMultiArcItem.FEnabled) and aMultiArcItem.Matches(anArchiveFileName) then
+    begin
+      Result := TMultiArchiveFileSource.Create(anArchiveFileSource,
+                                               anArchiveFileName,
+                                               aMultiArcItem);
+
+      DCDebug('Found registered addon "' + aMultiArcItem.FDescription + '" for archive ' + anArchiveFileName);
+      Break;
+    end;
+  end;
 end;
 
-class function TMultiArchiveFileSource.CheckAddonByExt(anArchiveType: String): Boolean;
+class function TMultiArchiveFileSource.CheckAddonByName(const anArchiveFileName: String): Boolean;
 var
   I: Integer;
   aMultiArcItem: TMultiArcItem;
@@ -205,7 +222,7 @@ begin
   for I := 0 to gMultiArcList.Count - 1 do
   begin
     aMultiArcItem:= gMultiArcList.Items[I];
-    if MatchesMaskList(anArchiveType, aMultiArcItem.FExtension, ',') and (aMultiArcItem.FEnabled) then
+    if (aMultiArcItem.FEnabled) and aMultiArcItem.Matches(anArchiveFileName) then
       Exit(True);
   end;
   Result := False;
@@ -291,7 +308,7 @@ begin
     end;
 
     // Set name after assigning Attributes property, because it is used to get extension.
-    Name := ExtractFileName(ArchiveItem.FileName);
+    Name := ExtractFileNameEx(ArchiveItem.FileName);
     if ArchiveItem.FileExt <> EmptyStr then
       Name:= Name + '.' + ArchiveItem.FileExt;
   end;
@@ -582,21 +599,28 @@ procedure TMultiArchiveFileSource.FillAndCount(const FileMask: String; Files: TF
   CountDirs: Boolean; out NewFiles: TFiles; out FilesCount: Int64;
   out FilesSize: Int64);
 var
-  I, J: Integer;
-  ArchiveItem: TArchiveItem;
-  sFileName: String;
   aFile: TFile;
+  I, J: Integer;
+  sFileName: String;
+  MaskList: TMaskList;
+  ArchiveItem: TArchiveItem;
 begin
-  NewFiles:= TFiles.Create(Files.Path);
-  FilesCount:= 0;
   FilesSize:= 0;
+  FilesCount:= 0;
+  NewFiles:= TFiles.Create(Files.Path);
+  if (FileMask = '*.*') or (FileMask = '*') then
+    MaskList:= nil
+  else begin
+    MaskList:= TMaskList.Create(FileMask);
+  end;
   for I := 0 to ArchiveFileList.Count - 1 do
   begin
     ArchiveItem := TArchiveItem(ArchiveFileList.Items[I]);
     sFileName:= PathDelim + ArchiveItem.FileName;
 
-    if ((FileMask = '*.*') or (FileMask = '*') or // And name matches file mask
-        MatchesMaskList(ExtractFileName(ArchiveItem.FileName), FileMask)) then
+    // And name matches file mask
+    if ((MaskList = nil) or MaskList.Matches(ExtractFileNameEx(ArchiveItem.FileName))) then
+    begin
       for J := 0 to Files.Count - 1 do
       begin
         aFile := Files[J];
@@ -613,12 +637,14 @@ begin
                 Inc(FilesCount);
                 Inc(FilesSize, aFile.Size);
               end;
-            aFile:= TMultiArchiveFileSource.CreateFile(ExtractFilePath(ArchiveItem.FileName), ArchiveItem, FMultiArcItem.FFormMode);
+            aFile:= TMultiArchiveFileSource.CreateFile(ExtractFilePathEx(ArchiveItem.FileName), ArchiveItem, FMultiArcItem.FFormMode);
             aFile.FullPath:= ExcludeFrontPathDelimiter(aFile.FullPath);
             NewFiles.Add(aFile);
           end;
       end; // for J
+    end;
   end; // for I
+  MaskList.Free;
 end;
 
 end.

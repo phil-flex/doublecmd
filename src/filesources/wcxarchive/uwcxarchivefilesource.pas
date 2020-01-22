@@ -114,10 +114,9 @@ type
                                        anArchiveFileName: String;
                                        bIncludeHidden: Boolean = False): IWcxArchiveFileSource;
     {en
-       Returns @true if there is a plugin registered for the archive type
-       (only extension is checked).
+       Returns @true if there is a plugin registered for the archive name.
     }
-    class function CheckPluginByExt(anArchiveType: String): Boolean;
+    class function CheckPluginByName(const anArchiveFileName: String): Boolean;
 
     function GetConnection(Operation: TFileSourceOperation): TFileSourceConnection; override;
     procedure RemoveOperationFromQueue(Operation: TFileSourceOperation); override;
@@ -145,7 +144,7 @@ implementation
 
 uses
   LazUTF8, uDebug, DCStrUtils, uDCUtils, uGlobs, DCOSUtils, uShowMsg,
-  DCDateTimeUtils, uLng, uLog,
+  DCDateTimeUtils, uLng, uLog, uMasks,
   DCConvertEncoding,
   DCFileAttributes,
   FileUtil, uCryptProc,
@@ -264,12 +263,13 @@ class function TWcxArchiveFileSource.CreateByArchiveSign(
 var
   I: Integer;
   ModuleFileName: String;
-  WcxPlugin: TWcxModule;
   bFound: Boolean = False;
   lOpenResult: LongInt;
   anArchiveHandle: TArcHandle = 0;
+  WcxPlugin, WcxPrevious: TWcxModule;
 begin
   Result := nil;
+  WcxPrevious := nil;
 
   // Check if there is a registered plugin for the archive file by content.
   for I := 0 to gWCXPlugins.Count - 1 do
@@ -279,25 +279,29 @@ begin
       ModuleFileName := gWCXPlugins.FileName[I];
       WcxPlugin := gWCXPlugins.LoadModule(ModuleFileName);
       if Assigned(WcxPlugin) then
+      begin
+        if ((gWCXPlugins.Flags[I] and PK_CAPS_BY_CONTENT) = PK_CAPS_BY_CONTENT) then
         begin
-          if ((gWCXPlugins.Flags[I] and PK_CAPS_BY_CONTENT) = PK_CAPS_BY_CONTENT) then
+          if (WcxPlugin <> WcxPrevious) then
+          begin
+            WcxPrevious:= WcxPlugin;
+            if WcxPlugin.WcxCanYouHandleThisFile(anArchiveFileName) then
             begin
-              if WcxPlugin.WcxCanYouHandleThisFile(anArchiveFileName) then
+              anArchiveHandle:= WcxPlugin.OpenArchiveHandle(anArchiveFileName, PK_OM_LIST, lOpenResult);
+              if (anArchiveHandle <> 0) and (lOpenResult = E_SUCCESS) then
               begin
-                anArchiveHandle:= WcxPlugin.OpenArchiveHandle(anArchiveFileName, PK_OM_LIST, lOpenResult);
-                if (anArchiveHandle <> 0) and (lOpenResult = E_SUCCESS) then
-                begin
-                  bFound:= True;
-                  Break;
-                end;
+                bFound:= True;
+                Break;
               end;
-            end
-          else if ((gWCXPlugins.Flags[I] and PK_CAPS_HIDE) = PK_CAPS_HIDE) then
-            begin
-              bFound:= SameText(ExtractOnlyFileExt(anArchiveFileName), gWCXPlugins.Ext[I]);
-              if bFound then Break;
             end;
+          end;
+        end
+        else if ((gWCXPlugins.Flags[I] and PK_CAPS_HIDE) = PK_CAPS_HIDE) then
+        begin
+          bFound:= MatchesMask(anArchiveFileName, AllFilesMask + ExtensionSeparator + gWCXPlugins.Ext[I]);
+          if bFound then Break;
         end;
+      end;
     end;
   end;
   if bFound then
@@ -324,7 +328,7 @@ begin
   // Check if there is a registered plugin for the extension of the archive file name.
   for i := 0 to gWCXPlugins.Count - 1 do
   begin
-    if SameText(anArchiveType, gWCXPlugins.Ext[i]) and (gWCXPlugins.Enabled[i]) and
+    if (gWCXPlugins.Enabled[i]) and SameText(anArchiveType, gWCXPlugins.Ext[i]) and
        ((bIncludeHidden) or ((gWCXPlugins.Flags[I] and PK_CAPS_HIDE) <> PK_CAPS_HIDE)) then
     begin
       ModuleFileName := gWCXPlugins.FileName[I];
@@ -343,19 +347,42 @@ end;
 class function TWcxArchiveFileSource.CreateByArchiveName(
   anArchiveFileSource: IFileSource; anArchiveFileName: String;
   bIncludeHidden: Boolean): IWcxArchiveFileSource;
-begin
-  Result:= CreateByArchiveType(anArchiveFileSource, anArchiveFileName,
-                               ExtractOnlyFileExt(anArchiveFileName),
-                               bIncludeHidden);
-end;
-
-class function TWcxArchiveFileSource.CheckPluginByExt(anArchiveType: String): Boolean;
 var
   i: Integer;
+  aMask: String;
+  ModuleFileName: String;
+begin
+  Result := nil;
+
+  // Check if there is a registered plugin for the archive file name.
+  for i := 0 to gWCXPlugins.Count - 1 do
+  begin
+    aMask:= AllFilesMask + ExtensionSeparator + gWCXPlugins.Ext[i];
+    if (gWCXPlugins.Enabled[i]) and MatchesMask(anArchiveFileName, aMask) and
+       ((bIncludeHidden) or ((gWCXPlugins.Flags[I] and PK_CAPS_HIDE) <> PK_CAPS_HIDE)) then
+    begin
+      ModuleFileName := gWCXPlugins.FileName[I];
+
+      Result := TWcxArchiveFileSource.Create(anArchiveFileSource,
+                                             anArchiveFileName,
+                                             ModuleFileName,
+                                             gWCXPlugins.Flags[I]);
+
+      DCDebug('Found registered plugin ' + ModuleFileName + ' for archive ' + anArchiveFileName);
+      break;
+    end;
+  end;
+end;
+
+class function TWcxArchiveFileSource.CheckPluginByName(const anArchiveFileName: String): Boolean;
+var
+  i: Integer;
+  aMask: String;
 begin
   for i := 0 to gWCXPlugins.Count - 1 do
   begin
-    if SameText(anArchiveType, gWCXPlugins.Ext[i]) and (gWCXPlugins.Enabled[i]) then
+    aMask:= AllFilesMask + ExtensionSeparator + gWCXPlugins.Ext[i];
+    if (gWCXPlugins.Enabled[i]) and MatchesMask(anArchiveFileName, aMask) then
       Exit(True);
   end;
   Result := False;
@@ -455,7 +482,7 @@ begin
     end;
 
     // Set name after assigning Attributes property, because it is used to get extension.
-    Name := ExtractFileName(WcxHeader.FileName);
+    Name := ExtractFileNameEx(WcxHeader.FileName);
   end;
 end;
 
@@ -635,6 +662,7 @@ var
   AllDirsList, ExistsDirList : TStringHashListUtf8;
   I : Integer;
   NameLength: Integer;
+  ArchiveTime: LongInt;
 begin
   Result:= False;
 
@@ -663,66 +691,63 @@ begin
 
   try
     while (WcxModule.ReadWCXHeader(ArcHandle, Header) = E_SUCCESS) do
+    begin
+      // Some plugins end directories with path delimiter.
+      // And not set directory attribute. So delete path
+      // delimiter if present and add directory attribute.
+      NameLength := Length(Header.FileName);
+      if (NameLength > 0) and (Header.FileName[NameLength] = PathDelim) then
       begin
-        // Some plugins end directories with path delimiter.
-        // And not set directory attribute. So delete path
-        // delimiter if present and add directory attribute.
-        NameLength := Length(Header.FileName);
-        if (NameLength > 0) and (Header.FileName[NameLength] = PathDelim) then
-        begin
-          Delete(Header.FileName, NameLength, 1);
-          Header.FileAttr := Header.FileAttr or GENERIC_ATTRIBUTE_FOLDER;
-        end;
+        Delete(Header.FileName, NameLength, 1);
+        Header.FileAttr := Header.FileAttr or GENERIC_ATTRIBUTE_FOLDER;
+      end;
 
-        //**********************************************************************
+      //**********************************************************************
 
-        // Workaround for plugins that don't give a list of
-        // folders or the list does not include all of the folders.
-        if FPS_ISDIR(Header.FileAttr) then
-        begin
-          // Collect directories that the plugin supplies.
-          if (ExistsDirList.Find(Header.FileName) < 0) then
-            ExistsDirList.Add(Header.FileName);
-        end;
-
-        // Collect all directories.
-        CollectDirs(PAnsiChar(Header.FileName), AllDirsList);
-
-        //**********************************************************************
-
-        FArcFileList.Add(Header);
-
-        // get next file
-        FOpenResult := WcxModule.WcxProcessFile(ArcHandle, PK_SKIP, EmptyStr, EmptyStr);
-
-        // Check for errors
-        if FOpenResult <> E_SUCCESS then Exit;
-      end; // while
-
-      (* if plugin does not give a list of folders *)
-      for I := 0 to AllDirsList.Count - 1 do
+      // Workaround for plugins that don't give a list of
+      // folders or the list does not include all of the folders.
+      if FPS_ISDIR(Header.FileAttr) then
       begin
-        // Add only those directories that were not supplied by the plugin.
-        if ExistsDirList.Find(AllDirsList.List[I]^.Key) < 0 then
-        begin
-          Header := TWCXHeader.Create;
-          try
-            Header.FileName := AllDirsList.List[I]^.Key;
-            Header.ArcName  := ArchiveFileName;
-            Header.FileAttr := GENERIC_ATTRIBUTE_FOLDER;
-{$IFDEF MSWINDOWS}
-            WinToDosTime(mbFileAge(ArchiveFileName), Header.FileTime);
-{$ELSE}
-{$PUSH}{$R-}
-            Header.FileTime := LongInt(mbFileAge(ArchiveFileName));
-{$POP}
-{$ENDIF}
-            FArcFileList.Add(Header);
-          except
-            FreeAndNil(Header);
-          end;
+        // Collect directories that the plugin supplies.
+        if (ExistsDirList.Find(Header.FileName) < 0) then
+          ExistsDirList.Add(Header.FileName);
+      end;
+
+      // Collect all directories.
+      CollectDirs(PAnsiChar(Header.FileName), AllDirsList);
+
+      //**********************************************************************
+
+      FArcFileList.Add(Header);
+
+      // get next file
+      FOpenResult := WcxModule.WcxProcessFile(ArcHandle, PK_SKIP, EmptyStr, EmptyStr);
+
+      // Check for errors
+      if FOpenResult <> E_SUCCESS then Exit;
+    end; // while
+
+    ArchiveTime:= FileTimeToWcxFileTime(mbFileAge(ArchiveFileName));
+
+    (* if plugin does not give a list of folders *)
+    for I := 0 to AllDirsList.Count - 1 do
+    begin
+      // Add only those directories that were not supplied by the plugin.
+      if ExistsDirList.Find(AllDirsList.List[I]^.Key) < 0 then
+      begin
+        Header := TWCXHeader.Create;
+        try
+          Header.FileName := AllDirsList.List[I]^.Key;
+          Header.ArcName  := ArchiveFileName;
+          Header.FileAttr := GENERIC_ATTRIBUTE_FOLDER;
+          Header.FileTime := ArchiveTime;
+
+          FArcFileList.Add(Header);
+        except
+          FreeAndNil(Header);
         end;
       end;
+    end;
 
     Result:= True;
   finally

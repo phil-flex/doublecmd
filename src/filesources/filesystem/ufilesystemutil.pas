@@ -159,7 +159,7 @@ uses
   StrUtils, DCDateTimeUtils, uShowMsg, Forms, LazUTF8, uHash;
 
 const
-  HASH_TYPE = HASH_BLAKE2S;
+  HASH_TYPE = HASH_BEST;
 
 function ApplyRenameMask(aFile: TFile; NameMask: String; ExtMask: String): String; overload;
 begin
@@ -208,6 +208,7 @@ procedure FillAndCount(Files: TFiles; CountDirs: Boolean; ExcludeRootDir: Boolea
 var
   i: Integer;
   aFile: TFile;
+  aFindData: TSearchRecEx;
 begin
   FilesCount:= 0;
   FilesSize:= 0;
@@ -226,6 +227,14 @@ begin
     begin
       aFile := Files[i];
 
+      // Update file attributes
+      if mbFileGetAttr(aFile.FullPath, aFindData) then
+      begin
+        aFile.Size:= aFindData.Size;
+        aFile.Attributes:= aFindData.Attr;
+        aFile.ModificationTime:= FileTimeToDateTime(aFindData.Time);
+      end;
+
       NewFiles.Add(aFile.Clone);
 
       if aFile.IsLink then
@@ -235,7 +244,7 @@ begin
       begin
         if CountDirs then
           Inc(FilesCount);
-        FillAndCountRec(aFile.Path + aFile.Name + DirectorySeparator);  // recursive browse child dir
+        FillAndCountRec(aFile.FullPath + DirectorySeparator);  // recursive browse child dir
       end
       else
       begin
@@ -271,7 +280,7 @@ var
   AddedIndex: Integer;
 begin
   LinkedFilePath := mbReadAllLinks(aFile.FullPath);
-  if LinkedFilePath <> '' then
+  if (LinkedFilePath <> '') and (LinkedFilePath <> PathDelim) then
   begin
     try
       LinkedFile := TFileSystemFileSource.CreateFileFromFile(LinkedFilePath);

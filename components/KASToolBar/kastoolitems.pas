@@ -78,6 +78,8 @@ type
   { TKASSeparatorItem }
 
   TKASSeparatorItem = class(TKASToolItem)
+  public
+    Style: Boolean;
     procedure Assign(OtherItem: TKASToolItem); override;
     function Clone: TKASToolItem; override;
     function ConfigNodeName: String; override;
@@ -374,6 +376,8 @@ end;
 procedure TKASSeparatorItem.Assign(OtherItem: TKASToolItem);
 begin
   inherited Assign(OtherItem);
+  if OtherItem is TKASSeparatorItem then
+    Style := TKASSeparatorItem(OtherItem).Style;
 end;
 
 function TKASSeparatorItem.Clone: TKASToolItem;
@@ -399,12 +403,12 @@ end;
 
 procedure TKASSeparatorItem.Load(Config: TXmlConfig; Node: TXmlNode; Loader: TKASToolBarLoader);
 begin
-  // Empty.
+  Style := Config.GetValue(Node, 'Style', False);
 end;
 
 procedure TKASSeparatorItem.SaveContents(Config: TXmlConfig; Node: TXmlNode);
 begin
-  // Empty.
+  Config.AddValue(Node, 'Style', Style);
 end;
 
 { TKASNormalItem }
