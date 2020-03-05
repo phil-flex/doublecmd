@@ -307,6 +307,8 @@ var
   gLynxLike:Boolean;
   gFirstTextSearch: Boolean;
   gExtraLineSpan: Integer;
+  gFolderPrefix,
+  gFolderPostfix: String;
 
   { Mouse }
   gMouseSelectionEnabled: Boolean;
@@ -605,6 +607,11 @@ var
   gEditorSynEditTabWidth,
   gEditorSynEditRightEdge: Integer;
 
+  { Differ }
+  gDifferAddedColor: TColor;
+  gDifferDeletedColor: TColor;
+  gDifferModifiedColor: TColor;
+
   {SyncDirs}
   gSyncDirsSubdirs,
   gSyncDirsByContent,
@@ -632,7 +639,6 @@ var
   gFileAssocPathModifierElements: tFileAssocPathModifierElements;
 
   { TreeViewMenu }
-  gslAccents, gslAccentsStripped: TStringList;
   gUseTreeViewMenuWithDirectoryHotlistFromMenuCommand: boolean;
   gUseTreeViewMenuWithDirectoryHotlistFromDoubleClick: boolean;
   gUseTreeViewMenuWithFavoriteTabsFromMenuCommand: boolean;
@@ -698,12 +704,12 @@ var
 implementation
 
 uses
-   LCLProc, LCLType, Dialogs, Laz2_XMLRead, LazUTF8, uExifWdx,
+   LCLProc, LCLType, Dialogs, Laz2_XMLRead, LazUTF8, uExifWdx, uSynDiffControls,
    uGlobsPaths, uLng, uShowMsg, uFileProcs, uOSUtils, uFindFiles,
    uDCUtils, fMultiRename, uFile, uDCVersion, uDebug, uFileFunctions,
    uDefaultPlugins, Lua, uKeyboard, DCOSUtils, DCStrUtils, uPixMapManager
    {$IF DEFINED(MSWINDOWS)}
-    , ShlObj, win32proc
+    , ShlObj
    {$ENDIF}
    ;
 
@@ -1567,6 +1573,8 @@ begin
 
   { File views page }
   gExtraLineSpan := 2;
+  gFolderPrefix := '[';
+  gFolderPostfix := ']';
   { Brief view page }
   gBriefViewFixedCount := 2;
   gBriefViewFixedWidth := 100;
@@ -1921,6 +1929,11 @@ begin
   gEditorSynEditOptions := SYNEDIT_DEFAULT_OPTIONS;
   gEditorSynEditTabWidth := 8;
   gEditorSynEditRightEdge := 80;
+
+  { Differ }
+  gDifferAddedColor := clPaleGreen;
+  gDifferDeletedColor := clPaleRed;
+  gDifferModifiedColor := clPaleBlue;
 
   {SyncDirs}
   gSyncDirsSubdirs := False;
@@ -2686,6 +2699,8 @@ begin
         end;
       end;
       gExtraLineSpan := GetValue(Node, 'ExtraLineSpan', gExtraLineSpan);
+      gFolderPrefix := GetValue(Node, 'FolderPrefix', gFolderPrefix);
+      gFolderPostfix := GetValue(Node, 'FolderPostfix', gFolderPostfix);
     end;
 
     { Keys page }
@@ -2973,6 +2988,19 @@ begin
       gEditorSynEditOptions := TSynEditorOptions(GetValue(Node, 'SynEditOptions', Integer(gEditorSynEditOptions)));
       gEditorSynEditTabWidth := GetValue(Node, 'SynEditTabWidth', gEditorSynEditTabWidth);
       gEditorSynEditRightEdge := GetValue(Node, 'SynEditRightEdge', gEditorSynEditRightEdge);
+    end;
+
+    { Differ }
+    Node := Root.FindNode('Differ');
+    if Assigned(Node) then
+    begin
+      SubNode := FindNode(Node, 'Colors');
+      if Assigned(SubNode) then
+      begin
+        gDifferAddedColor := GetValue(SubNode, 'Added', gDifferAddedColor);
+        gDifferDeletedColor := GetValue(SubNode, 'Deleted', gDifferDeletedColor);
+        gDifferModifiedColor := GetValue(SubNode, 'Modified', gDifferModifiedColor);
+      end;
     end;
 
     { SyncDirs }
@@ -3339,6 +3367,8 @@ begin
     SetValue(SubNode, 'FixedCount', gBriefViewFixedCount);
     SetValue(SubNode, 'AutoSize', Integer(gBriefViewMode));
     SetValue(Node, 'ExtraLineSpan', gExtraLineSpan);
+    SetValue(Node, 'FolderPrefix', gFolderPrefix);
+    SetValue(Node, 'FolderPostfix', gFolderPostfix);
 
     { Keys page }
     Node := FindNode(Root, 'Keyboard', True);
@@ -3540,6 +3570,13 @@ begin
     SetValue(Node, 'SynEditOptions', Integer(gEditorSynEditOptions));
     SetValue(Node, 'SynEditTabWidth', gEditorSynEditTabWidth);
     SetValue(Node, 'SynEditRightEdge', gEditorSynEditRightEdge);
+
+    { Differ }
+    Node := FindNode(Root, 'Differ',True);
+    SubNode := FindNode(Node, 'Colors', True);
+    SetValue(SubNode, 'Added', gDifferAddedColor);
+    SetValue(SubNode, 'Deleted', gDifferDeletedColor);
+    SetValue(SubNode, 'Modified', gDifferModifiedColor);
 
     { SyncDirs }
     Node := FindNode(Root, 'SyncDirs', True);

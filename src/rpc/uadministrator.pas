@@ -5,12 +5,13 @@ unit uAdministrator;
 interface
 
 uses
-  Classes, SysUtils, DCBasicTypes, DCClassesUtf8, DCOSUtils;
+  Classes, SysUtils, DCBasicTypes, DCClassesUtf8, DCOSUtils, uFindEx;
 
 procedure PushPop(var Elevate: TDuplicates);
 
 function FileExistsUAC(const FileName: String): Boolean;
 function FileGetAttrUAC(const FileName: String; FollowLink: Boolean = False): TFileAttrs;
+function FileGetAttrUAC(const FileName: String; out Attr: TFileAttributeData): Boolean;
 function FileSetAttrUAC(const FileName: String; Attr: TFileAttrs): Boolean;
 function FileSetTimeUAC(const FileName: String;
                         ModificationTime: DCBasicTypes.TFileTime;
@@ -25,6 +26,10 @@ function FileCreateUAC(const FileName: String; Mode: LongWord): System.THandle;
 
 function DeleteFileUAC(const FileName: String): LongBool;
 function RenameFileUAC(const OldName, NewName: String): LongBool;
+
+function FindFirstUAC(const Path: String; Flags: UInt32; out SearchRec: TSearchRecEx): Integer;
+function FindNextUAC(var SearchRec: TSearchRecEx): Integer;
+procedure FindCloseUAC(var SearchRec: TSearchRecEx);
 
 function ForceDirectoriesUAC(const Path: String): Boolean;
 function CreateDirectoryUAC(const Directory: String): Boolean;
@@ -133,6 +138,21 @@ begin
     LastError:= GetLastOSError;
     if RequestElevation(rsElevationRequiredGetAttributes, FileName) then
       Result:= TWorkerProxy.Instance.FileGetAttr(FileName, FollowLink)
+    else
+      SetLastOSError(LastError);
+  end;
+end;
+
+function FileGetAttrUAC(const FileName: String; out Attr: TFileAttributeData): Boolean;
+var
+  LastError: Integer;
+begin
+  Result:= mbFileGetAttr(FileName, Attr);
+  if (not Result) and ElevationRequired then
+  begin
+    LastError:= GetLastOSError;
+    if RequestElevation(rsElevationRequiredGetAttributes, FileName) then
+      Result:= TWorkerProxy.Instance.FileGetAttr(FileName, Attr)
     else
       SetLastOSError(LastError);
   end;
@@ -342,6 +362,36 @@ begin
     else
       SetLastOSError(LastError);
   end;
+end;
+
+function FindFirstUAC(const Path: String; Flags: UInt32; out
+  SearchRec: TSearchRecEx): Integer;
+begin
+  Result:= FindFirstEx(Path, Flags, SearchRec);
+  if (Result <> 0) and ElevationRequired(Result) then
+  begin
+    if RequestElevation(rsElevationRequiredOpen, Path) then
+    begin
+      SearchRec.Flags:= SearchRec.Flags or fffElevated;
+      Result:= TWorkerProxy.Instance.FindFirst(Path, Flags, SearchRec)
+    end;
+  end;
+end;
+
+function FindNextUAC(var SearchRec: TSearchRecEx): Integer;
+begin
+  if (SearchRec.Flags and fffElevated <> 0) then
+    Result:= TWorkerProxy.Instance.FindNext(SearchRec)
+  else
+    Result:= FindNextEx(SearchRec);
+end;
+
+procedure FindCloseUAC(var SearchRec: TSearchRecEx);
+begin
+  if (SearchRec.Flags and fffElevated <> 0) then
+    TWorkerProxy.Instance.FindClose(SearchRec)
+  else
+    FindCloseEx(SearchRec);
 end;
 
 function ForceDirectoriesUAC(const Path: String): Boolean;

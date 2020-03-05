@@ -72,16 +72,11 @@ type
   { TSynDiffGutterChanges }
 
   TSynDiffGutterChanges = class(TSynGutterPartBase)
-  private
-    FColors: TDiffColors;
   protected
     function  PreferedWidth: Integer; override;
   public
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
     procedure Paint(Canvas: TCanvas; AClip: TRect; FirstLine, LastLine: Integer); override;
-  published
-    property Colors: TDiffColors read FColors write FColors;
   end;
 
   { TSynDiffEdit }
@@ -104,6 +99,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   public
+    procedure Renumber;
     procedure StartCompare;
     procedure FinishCompare;
     function DiffBegin(ALine: Integer): Integer;
@@ -126,6 +122,7 @@ type
     procedure SetKind(AIndex: Integer; AValue: TChangeKind);
     procedure SetNumber(AIndex: Integer; AValue: PtrInt);
   public
+    procedure Renumber;
     procedure RemoveFake;
     procedure Append(const S: String; AKind: TChangeKind);
     procedure InsertFake(AIndex: Integer; AKind: TChangeKind);
@@ -307,6 +304,12 @@ begin
   inherited Destroy;
 end;
 
+procedure TSynDiffEdit.Renumber;
+begin
+  Lines.Renumber;
+  Repaint;
+end;
+
 { TSynDiffGutterChanges }
 
 function TSynDiffGutterChanges.PreferedWidth: Integer;
@@ -317,16 +320,7 @@ end;
 constructor TSynDiffGutterChanges.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-
-  FColors:= TDiffColors.Create;
   MarkupInfo.Background := clNone;
-end;
-
-destructor TSynDiffGutterChanges.Destroy;
-begin
-  if Assigned(FColors) then
-    FreeAndNil(FColors);
-  inherited Destroy;
 end;
 
 procedure TSynDiffGutterChanges.Paint(Canvas: TCanvas; AClip: TRect; FirstLine,
@@ -366,11 +360,11 @@ begin
         ckNone:
             Continue;
         ckAdd:
-            Canvas.Pen.Color := FColors.Added;
+            Canvas.Pen.Color := SynDiffEdit.FColors.Added;
         ckDelete:
-            Canvas.Pen.Color := FColors.Deleted;
+            Canvas.Pen.Color := SynDiffEdit.FColors.Deleted;
         ckModify:
-            Canvas.Pen.Color := FColors.Modified;
+            Canvas.Pen.Color := SynDiffEdit.FColors.Modified;
       end;
       Canvas.Line(rcLine.Left, rcLine.Top + 1, rcLine.Left, rcLine.Bottom - 1);
     end;
@@ -612,6 +606,21 @@ begin
   begin
     if ((PtrInt(Objects[I]) shr KindShift) = FakeLine) and (Self[I] = EmptyStr) then
       Delete(I);
+  end;
+end;
+
+procedure TStringsHelper.Renumber;
+var
+  I, N: Integer;
+begin
+  N:= 1;
+  for I:= 0 to Count - 1 do
+  begin
+    if ((PtrInt(Objects[I]) shr KindShift) <> FakeLine) then
+    begin
+      Number[I] := N;
+      Inc(N);
+    end;
   end;
 end;
 

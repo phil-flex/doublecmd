@@ -82,6 +82,7 @@ type
     function GetPathType(sPath : String): TPathType; override;
 
     function CreateDirectory(const Path: String): Boolean; override;
+    function FileSystemEntryExists(const Path: String): Boolean; override;
     function GetFreeSpace(Path: String; out FreeSize, TotalSize : Int64) : Boolean; override;
 
     function CreateListOperation(TargetPath: String): TFileSourceOperation; override;
@@ -319,28 +320,48 @@ begin
 end;
 
 class function TFileSystemFileSource.CreateFile(const APath: String; pSearchRecord: PSearchRecEx): TFile;
+var
+  AFilePath: String;
+  LinkAttrs: TFileAttrs;
 begin
   Result := TFile.Create(APath);
 
-{$IF DEFINED(MSWINDOWS)}
-
-  FillFromFindData(Result,
-                   APath + pSearchRecord^.Name,
-                   @(pSearchRecord^.FindData));
-
-{$ELSEIF DEFINED(UNIX)}
-
-  FillFromStat(Result,
-               APath + pSearchRecord^.Name,
-               @pSearchRecord^.FindData);
-
+  with Result do
+  begin
+{$IF DEFINED(UNIX)}
+    ChangeTimeProperty := TFileChangeDateTimeProperty.Create(DCBasicTypes.TFileTime(pSearchRecord^.PlatformTime));
 {$ELSE}
-
-  FillFromSearchRecord(Result,
-                       APath + pSearchRecord^.Name,
-                       pSearchRecord);
-
+    CreationTimeProperty := TFileCreationDateTimeProperty.Create(DCBasicTypes.TFileTime(pSearchRecord^.PlatformTime));
 {$ENDIF}
+    SizeProperty := TFileSizeProperty.Create(pSearchRecord^.Size);
+    AttributesProperty := TFileAttributesProperty.CreateOSAttributes(pSearchRecord^.Attr);
+
+    ModificationTimeProperty := TFileModificationDateTimeProperty.Create(pSearchRecord^.Time);
+    LastAccessTimeProperty := TFileLastAccessDateTimeProperty.Create(DCBasicTypes.TFileTime(pSearchRecord^.LastAccessTime));
+
+    LinkProperty := TFileLinkProperty.Create;
+
+    if fpS_ISLNK(pSearchRecord^.Attr) then
+    begin
+      AFilePath:= APath + pSearchRecord^.Name;
+      LinkAttrs := mbFileGetAttrNoLinks(AFilePath);
+      LinkProperty.LinkTo := ReadSymLink(AFilePath);
+      LinkProperty.IsValid := LinkAttrs <> faInvalidAttributes;
+{$IF DEFINED(UNIX)}
+      if LinkProperty.IsValid then
+      begin
+        LinkProperty.IsLinkToDirectory := fpS_ISDIR(LinkAttrs);
+        if LinkProperty.IsLinkToDirectory then SizeProperty.Value := 0;
+      end;
+{$ELSE}
+      if LinkProperty.IsValid then
+        LinkProperty.IsLinkToDirectory := fpS_ISDIR(LinkAttrs)
+      else
+        // On Windows links to directories are marked with Directory flag on the link.
+        LinkProperty.IsLinkToDirectory := fpS_ISDIR(pSearchRecord^.Attr);
+{$ENDIF}
+    end;
+  end;
 
   // Set name after assigning Attributes property, because it is used to get extension.
   Result.Name := pSearchRecord^.Name;
@@ -779,6 +800,11 @@ begin
     if (log_dir_op in gLogOptions) and (log_errors in gLogOptions) then
       logWrite(Format(rsMsgLogError + rsMsgLogMkDir, [Path]), lmtError);
   end;
+end;
+
+function TFileSystemFileSource.FileSystemEntryExists(const Path: String): Boolean;
+begin
+  Result:= mbFileSystemEntryExists(Path);
 end;
 
 function TFileSystemFileSource.GetFreeSpace(Path: String; out FreeSize, TotalSize : Int64) : Boolean;

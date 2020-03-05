@@ -171,6 +171,7 @@ type
    procedure cm_CopyFileDetailsToClip(const {%H-}Params: array of string);
    procedure cm_Exchange(const {%H-}Params: array of string);
    procedure cm_FlatView(const {%H-}Params: array of string);
+   procedure cm_FlatViewSel(const {%H-}Params: array of string);
    procedure cm_LeftFlatView(const {%H-}Params: array of string);
    procedure cm_RightFlatView(const {%H-}Params: array of string);
    procedure cm_OpenArchive(const {%H-}Params: array of string);
@@ -196,6 +197,8 @@ type
    procedure cm_GoToFirstEntry(const {%H-}Params: array of string);
    procedure cm_GoToLastEntry(const {%H-}Params: array of string);
    procedure cm_GoToFirstFile(const {%H-}Params: array of string);
+   procedure cm_GoToNextEntry(const {%H-}Params: array of string);
+   procedure cm_GoToPrevEntry(const {%H-}Params: array of string);
    procedure cm_GoToLastFile(const {%H-}Params: array of string);
    procedure cm_Minimize(const {%H-}Params: array of string);
    procedure cm_Wipe(const {%H-}Params: array of string);
@@ -371,7 +374,7 @@ type
 implementation
 
 uses fOptionsPluginsBase, fOptionsPluginsDSX, fOptionsPluginsWCX,
-     fOptionsPluginsWDX, fOptionsPluginsWFX, fOptionsPluginsWLX,
+     fOptionsPluginsWDX, fOptionsPluginsWFX, fOptionsPluginsWLX, uFlatViewFileSource,
      uFindFiles, Forms, Controls, Dialogs, Clipbrd, strutils, LCLProc, HelpIntfs, DCStringHashListUtf8,
      dmHelpManager, typinfo, fMain, fPackDlg, fMkDir, DCDateTimeUtils, KASToolBar, KASToolItems,
      fExtractDlg, fAbout, fOptions, fDiffer, fFindDlg, fSymLink, fHardLink, fMultiRename,
@@ -1089,56 +1092,119 @@ end;
 procedure TMainCommands.cm_FlatView(const Params: array of string);
 var
   AFile: TFile;
+  AFileView: TFileView;
+  AValue, Param: String;
 begin
   with frmMain do
-  if not (fspListFlatView in ActiveFrame.FileSource.GetProperties) then
   begin
-    msgWarning(rsMsgErrNotSupported);
-  end
-  else
-  begin
-    ActiveFrame.FlatView:= not ActiveFrame.FlatView;
-    if not ActiveFrame.FlatView then
+    AFileView:= ActiveFrame;
+
+    for Param in Params do
     begin
-      AFile:= ActiveFrame.CloneActiveFile;
-      if Assigned(AFile) and AFile.IsNameValid then
+      if GetParamValue(Param, 'side', AValue) then
       begin
-        if not mbCompareFileNames(ActiveFrame.CurrentPath, AFile.Path) then
-        begin
-          ActiveFrame.CurrentPath:= AFile.Path;
-          ActiveFrame.SetActiveFile(AFile.Name);
-        end;
-      end;
-      AFile.Free;
+        if AValue = 'left' then AFileView:= FrameLeft
+        else if AValue = 'right' then AFileView:= FrameRight
+        else if AValue = 'inactive' then AFileView:= NotActiveFrame;
+      end
     end;
-    ActiveFrame.Reload;
+
+    if not (fspListFlatView in AFileView.FileSource.GetProperties) then
+    begin
+      msgWarning(rsMsgErrNotSupported);
+    end
+    else begin
+      AFileView.FlatView:= not AFileView.FlatView;
+      if not AFileView.FlatView then
+      begin
+        AFile:= AFileView.CloneActiveFile;
+        if Assigned(AFile) and AFile.IsNameValid then
+        begin
+          if not mbCompareFileNames(AFileView.CurrentPath, AFile.Path) then
+          begin
+            AFileView.CurrentPath:= AFile.Path;
+            AFileView.SetActiveFile(AFile.Name);
+          end;
+        end;
+        AFile.Free;
+      end;
+      AFileView.Reload;
+    end;
   end;
+end;
+
+procedure TMainCommands.cm_FlatViewSel(const Params: array of string);
+var
+  AFileList: TFileTree;
+  AFileSource: IFileSource;
+
+  procedure ScanDir(const Dir: String);
+  var
+    I: Integer;
+    AFile: TFile;
+    AFiles: TFiles;
+  begin
+    AFiles := AFileSource.GetFiles(Dir);
+    try
+      for I := 0 to AFiles.Count - 1 do
+      begin
+        AFile := AFiles[I];
+        if not AFile.IsDirectory then
+          AFileList.AddSubNode(AFile.Clone)
+        else if AFile.IsNameValid then
+          ScanDir(AFile.FullPath);
+      end;
+    finally
+      AFiles.Free;
+    end;
+  end;
+
+var
+  J: Integer;
+  AFile: TFile;
+  AFiles: TFiles;
+  AFileView: TFileView;
+  AFlatView: ISearchResultFileSource;
+begin
+  AFileView:= frmMain.ActiveFrame;
+  AFileSource:= AFileView.FileSource;
+  if AFileView.FlatView then
+  begin
+    AFileView.FlatView := False;
+    if AFileSource.IsInterface(ISearchResultFileSource) then
+      AFileView.ChangePathToParent(True)
+    else
+      AFileView.Reload;
+    Exit;
+  end;
+  AFileList := TFileTree.Create;
+  AFiles := AFileView.CloneSelectedFiles;
+  for J := 0 to AFiles.Count - 1 do
+  begin
+    AFile := AFiles[J];
+    if not AFile.IsDirectory then
+      AFileList.AddSubNode(AFile.Clone)
+    else if AFile.IsNameValid then
+      ScanDir(AFile.FullPath);
+  end;
+  AFiles.Free;
+
+  // Create search result file source.
+  AFlatView := TFlatViewFileSource.Create;
+  AFlatView.AddList(AFileList, AFileSource);
+
+  AFileView.AddFileSource(AFlatView, AFileView.CurrentPath);
+  AFileView.FlatView := True;
 end;
 
 procedure TMainCommands.cm_LeftFlatView(const Params: array of string);
 begin
-  if not (fspListFlatView in frmMain.FrameLeft.FileSource.GetProperties) then
-  begin
-    msgWarning(rsMsgErrNotSupported);
-  end
-  else
-  begin
-    frmMain.FrameLeft.FlatView:= not frmMain.FrameLeft.FlatView;
-    frmMain.FrameLeft.Reload;
-  end;
+  cm_FlatView(['side=left']);
 end;
 
 procedure TMainCommands.cm_RightFlatView(const Params: array of string);
 begin
-  if not (fspListFlatView in frmMain.FrameRight.FileSource.GetProperties) then
-  begin
-    msgWarning(rsMsgErrNotSupported);
-  end
-  else
-  begin
-    frmMain.FrameRight.FlatView:= not frmMain.FrameRight.FlatView;
-    frmMain.FrameRight.Reload;
-  end;
+  cm_FlatView(['side=right']);
 end;
 
 procedure TMainCommands.cm_OpenDirInNewTab(const Params: array of string);
@@ -1491,6 +1557,16 @@ end;
 procedure TMainCommands.cm_GoToFirstFile(const Params: array of string);
 begin
   frmMain.ActiveFrame.ExecuteCommand('cm_GoToFirstFile', []);
+end;
+
+procedure TMainCommands.cm_GoToNextEntry(const Params: array of string);
+begin
+  frmMain.ActiveFrame.ExecuteCommand('cm_GoToNextEntry', []);
+end;
+
+procedure TMainCommands.cm_GoToPrevEntry(const Params: array of string);
+begin
+  frmMain.ActiveFrame.ExecuteCommand('cm_GoToPrevEntry', []);
 end;
 
 procedure TMainCommands.cm_GoToLastFile(const Params: array of string);
@@ -3097,19 +3173,19 @@ begin
   if bUseTreeViewMenu then
   begin
     if not bUsePanel then
-      iWantedHeight := ((frmMain.ActiveFrame.ClientToScreen(Classes.Point(0, 0)).y + frmMain.ActiveFrame.Height) - p.y)
-  else
-  begin
+      iWantedHeight := 0
+    else
+    begin
       iWantedWidth := frmMain.ActiveFrame.Width;
       iWantedHeight := frmMain.ActiveFrame.Height;
-  end;
+    end;
 
     sMaybeMenuItem := GetUserChoiceFromTreeViewMenuLoadedFromPopupMenu(frmMain.pmHotList, tvmcHotDirectory, p.X, p.Y, iWantedWidth, iWantedHeight);
     if sMaybeMenuItem <> nil then sMaybeMenuItem.OnClick(sMaybeMenuItem);
   end
   else
   begin
-  frmMain.pmHotList.Popup(p.X,p.Y);
+    frmMain.pmHotList.Popup(p.X,p.Y);
   end;
 end;
 
@@ -3637,7 +3713,7 @@ begin
   if bUseTreeViewMenu then
   begin
     if not bUsePanel then
-      iWantedHeight := ((frmMain.ActiveFrame.ClientToScreen(Classes.Point(0, 0)).y + frmMain.ActiveFrame.Height) - p.y)
+      iWantedHeight := 0
     else
     begin
       iWantedWidth := frmMain.ActiveFrame.Width;
@@ -3707,15 +3783,14 @@ begin
         if sUserChoice<>'' then
         begin
           edtCommand.ItemIndex:=edtCommand.Items.IndexOf(sUserChoice);
-      edtCommand.SetFocus;
+          edtCommand.SetFocus;
         end;
-
       end
       else
       begin
         edtCommand.SetFocus;
-      if edtCommand.Items.Count>0 then
-        edtCommand.DroppedDown:=True;
+        if edtCommand.Items.Count>0 then
+          edtCommand.DroppedDown:=True;
       end;
     end;
 
@@ -4818,7 +4893,7 @@ begin
   if bUseTreeViewMenu then
   begin
     if not bUsePanel then
-      iWantedHeight := ((frmMain.ActiveFrame.ClientToScreen(Classes.Point(0, 0)).y + frmMain.ActiveFrame.Height) - p.y)
+      iWantedHeight := 0
     else
     begin
       iWantedWidth := frmMain.ActiveFrame.Width;

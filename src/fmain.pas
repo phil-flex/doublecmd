@@ -87,6 +87,8 @@ type
     actHorizontalFilePanels: TAction;
     actGoToFirstEntry: TAction;
     actGoToLastEntry: TAction;
+    actGoToNextEntry: TAction;
+    actGoToPrevEntry: TAction;
     actGoToFirstFile: TAction;
     actGoToLastFile: TAction;
     actCompareDirectories: TAction;
@@ -97,6 +99,7 @@ type
     actChangeDirToHome: TAction;
     actCopyFileDetailsToClip: TAction;
     actFlatView: TAction;
+    actFlatViewSel: TAction;
     actConfigDirHotList: TAction;
     actCopyPathOfFilesToClip: TAction;
     actCopyPathNoSepOfFilesToClip: TAction;
@@ -1115,7 +1118,7 @@ begin
   LoadTabs;
 
   // Must be after LoadTabs
-  TDriveWatcher.Initialize(Handle);
+  TDriveWatcher.Initialize(GetWindowHandle(Self));
   TDriveWatcher.AddObserver(@OnDriveWatcherEvent);
 
 {$IF DEFINED(LCLQT) or DEFINED(LCLQT5)}
@@ -1969,9 +1972,10 @@ end;
 procedure TfrmMain.MainSplitterMouseMove(Sender: TObject; Shift: TShiftState;
   X, Y: Integer);
 var
-  APoint: TPoint;
   Rect: TRect;
   sHint: String;
+  Delta: Integer;
+  APoint: TPoint;
   Moved: Boolean = False;
 begin
   if MainSplitterLeftMouseBtnDown then
@@ -2002,9 +2006,14 @@ begin
 
       // calculate percent
       if not gHorizontalFilePanels then
-        FMainSplitterPos:= MainSplitter.Left * 100 / (pnlNotebooks.Width-MainSplitter.Width - MiddleToolBar.Width)
-      else
-        FMainSplitterPos:= MainSplitter.Top * 100 / (pnlNotebooks.Height-MainSplitter.Height - MiddleToolBar.Height);
+      begin
+        Delta:= IfThen(MiddleToolBar.Visible, MiddleToolBar.Width);
+        FMainSplitterPos:= MainSplitter.Left * 100 / (pnlNotebooks.Width-MainSplitter.Width - Delta);
+      end
+      else begin
+        Delta:= IfThen(MiddleToolBar.Visible, MiddleToolBar.Height);
+        FMainSplitterPos:= MainSplitter.Top * 100 / (pnlNotebooks.Height-MainSplitter.Height - Delta);
+      end;
 
       // generate hint text
       sHint:= FloatToStrF(FMainSplitterPos, ffFixed, 15, 1) + '%';
@@ -3153,7 +3162,7 @@ begin
   if bUseTreeViewMenu then
   begin
     if not bUsePanel then
-      iWantedHeight := ((frmMain.ActiveFrame.ClientToScreen(Classes.Point(0, 0)).y + frmMain.ActiveFrame.Height) - p.y)
+      iWantedHeight := 0
     else
     begin
       iWantedWidth := frmMain.ActiveFrame.Width;
@@ -4041,14 +4050,25 @@ begin
 end;
 
 procedure TfrmMain.pnlNotebooksResize(Sender: TObject);
+var
+  Delta: Integer;
 begin
   if not FResizingFilePanels then
   begin
     FResizingFilePanels := True;
     if not gHorizontalFilePanels then
-      pnlLeft.Width := Round(Double(pnlNotebooks.Width - MainSplitter.Width - MiddleToolBar.Width) * FMainSplitterPos / 100.0)
-    else
-      pnlLeft.Height := Round(Double(pnlNotebooks.Height - MainSplitter.Height - MiddleToolBar.Height) * FMainSplitterPos / 100.0);
+    begin
+      pnlLeft.BorderSpacing.Bottom:= 0;
+      Delta:= IfThen(MiddleToolBar.Visible, MiddleToolBar.Width);
+      pnlLeft.BorderSpacing.Right:= 4 - (pnlNotebooks.Width - Delta) mod 2;
+      pnlLeft.Width := Round(Double(pnlNotebooks.Width - pnlLeft.BorderSpacing.Right - Delta) * FMainSplitterPos / 100.0);
+    end
+    else begin
+      pnlLeft.BorderSpacing.Right:= 0;
+      Delta:= IfThen(MiddleToolBar.Visible, MiddleToolBar.Height);
+      pnlLeft.BorderSpacing.Bottom:= 4 - (pnlNotebooks.Height - Delta) mod 2;
+      pnlLeft.Height := Round(Double(pnlNotebooks.Height - pnlLeft.BorderSpacing.Bottom - Delta) * FMainSplitterPos / 100.0);
+    end;
     FResizingFilePanels := False;
   end;
 end;

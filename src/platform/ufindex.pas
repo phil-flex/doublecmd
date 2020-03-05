@@ -3,7 +3,7 @@
     -------------------------------------------------------------------------
     This unit contains UTF-8 versions of Find(First, Next, Close) functions
 
-    Copyright (C) 2006-2019 Alexander Koblov (alexx2000@mail.ru)
+    Copyright (C) 2006-2020 Alexander Koblov (alexx2000@mail.ru)
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
@@ -22,7 +22,9 @@
 
 unit uFindEx;
 
+{$macro on}
 {$mode objfpc}{$H+}
+{$modeswitch advancedrecords}
 
 interface
 
@@ -41,6 +43,7 @@ uses
 
 const
   fffPortable = $80000000;
+  fffElevated = $40000000;
 
 type
 {$IFDEF UNIX}
@@ -62,9 +65,13 @@ type
 {$IF DEFINED(MSWINDOWS)}
     FindHandle : THandle;
     FindData : Windows.TWin32FindDataW;
+    property PlatformTime: TFileTime read FindData.ftCreationTime;
+    property LastAccessTime: TFileTime read FindData.ftLastAccessTime;
 {$ELSE}
     FindHandle : Pointer;
     FindData : BaseUnix.Stat;
+    property PlatformTime: TFileTime read FindData.st_ctime;
+    property LastAccessTime: TFileTime read FindData.st_atime;
 {$ENDIF}
   end;
 
@@ -80,13 +87,14 @@ uses
   , DCWindows, DCDateTimeUtils, uMyWindows
   {$ENDIF}
   {$IFDEF UNIX}
-  , Unix, DCOSUtils, DCFileAttributes, DCConvertEncoding, uMyUnix
+  , InitC, Unix, DCOSUtils, DCFileAttributes, DCConvertEncoding
   {$ENDIF};
 
 {$IF DEFINED(LINUX)}
-  function fpOpenDir(dirname: PAnsiChar): pDir; cdecl; external libc name 'opendir';
-  function fpReadDir(var dirp: TDir): pDirent; cdecl; external libc name 'readdir64';
-  function fpCloseDir(var dirp: TDir): cInt; cdecl; external libc name 'closedir';
+  {$define fpgeterrno:= fpgetCerrno}
+  function fpOpenDir(dirname: PAnsiChar): pDir; cdecl; external clib name 'opendir';
+  function fpReadDir(var dirp: TDir): pDirent; cdecl; external clib name 'readdir64';
+  function fpCloseDir(var dirp: TDir): cInt; cdecl; external clib name 'closedir';
 {$ENDIF}
 
 function mbFindMatchingFile(var SearchRec: TSearchRecEx): Integer;
@@ -118,7 +126,13 @@ begin
     begin
       with SearchRec.FindData do
       begin
-        SearchRec.Size:= Int64(st_size);
+        // On Unix a size for directory entry on filesystem is returned in StatInfo.
+        // We don't want to use it.
+        if fpS_ISDIR(st_mode) then
+          SearchRec.Size:= 0
+        else begin
+          SearchRec.Size:= Int64(st_size);
+        end;
         SearchRec.Time:= DCBasicTypes.TFileTime(st_mtime);
         if (SearchRec.Flags and fffPortable = 0) then
           SearchRec.Attr:= DCBasicTypes.TFileAttrs(st_mode)
@@ -136,10 +150,21 @@ function FindFirstEx(const Path: String; Flags: UInt32; out SearchRec: TSearchRe
 {$IFDEF MSWINDOWS}
 var
   wsPath: UnicodeString;
+  fInfoLevelId: FINDEX_INFO_LEVELS;
 begin
   SearchRec.Flags:= Flags;
   wsPath:= UTF16LongName(Path);
-  SearchRec.FindHandle:= FindFirstFileW(PWideChar(wsPath), SearchRec.FindData);
+  if CheckWin32Version(6, 1) then
+  begin
+    fInfoLevelId:= FindExInfoBasic;
+    Flags:= FIND_FIRST_EX_LARGE_FETCH;
+  end
+  else begin
+    Flags:= 0;
+    fInfoLevelId:= FindExInfoStandard;
+  end;
+  SearchRec.FindHandle:= FindFirstFileExW(PWideChar(wsPath), fInfoLevelId,
+                                          @SearchRec.FindData, FindExSearchNameMatch, nil, Flags);
 
   if SearchRec.FindHandle = INVALID_HANDLE_VALUE then
     Result:= GetLastError
@@ -185,6 +210,7 @@ begin
     end;
 
     DirPtr:= fpOpenDir(PAnsiChar(CeUtf8ToSys(FindPath)));
+    if (DirPtr = nil) then Exit(fpgeterrno);
   end;
   Result:= FindNextEx(SearchRec);
 end;

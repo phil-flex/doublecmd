@@ -68,7 +68,7 @@ var
 implementation
 
 uses
-  dbus, fpjson, jsonparser, jsonscanner, unix,
+  dbus, fpjson, jsonparser, jsonscanner, unix, baseunix,
   uGlobs, uGlobsPaths, uMyUnix, uPython
 {$IF DEFINED(LCLQT5)}
   , uGObject2
@@ -80,6 +80,7 @@ const
 
 var
   error: DBusError;
+  RabbitGtk3: Boolean;
   conn: PDBusConnection = nil;
   PythonModule: PPyObject = nil;
   ShellContextMenu: PPyObject = nil;
@@ -101,7 +102,7 @@ begin
     Result := False;
 end;
 
-function CheckService(const PythonScript: String): Boolean;
+function CheckRabbit: Boolean;
 var
   service_exists: dbus_bool_t;
 begin
@@ -109,17 +110,25 @@ begin
   // Check if RabbitVCS service is running
   service_exists := dbus_bus_name_has_owner(conn, RabbitVCSAddress, @error);
   if CheckError('Cannot query RabbitVCS on DBUS', @error) then
-    Exit(False);
+    Result:= False
+  else
+    Result:= (service_exists <> 0);
+end;
 
-  Result:= service_exists <> 0;
+function CheckService: Boolean;
+var
+  pyValue: PPyObject;
+begin
+  Result:= CheckRabbit;
   if Result then
     Print('Service found running')
-  else
-    begin
-      Result:= fpSystemStatus(PythonExe + ' ' + PythonScript) = 0;
-      if Result then
-        Print('Service successfully started');
-    end;
+  else begin
+    // Try to start RabbitVCS service
+    pyValue:= PythonRunFunction(PythonModule, 'StartService');
+    Py_XDECREF(pyValue);
+    Result:= CheckRabbit;
+    if Result then Print('Service successfully started');
+  end;
 end;
 
 function CheckStatus(Path: String; Recurse: Boolean32;
@@ -132,6 +141,7 @@ var
   message: PDBusMessage;
   argsIter: DBusMessageIter;
   pending: PDBusPendingCall;
+  arrayIter: DBusMessageIter;
 begin
   if not RabbitVCS then Exit;
 
@@ -150,7 +160,15 @@ begin
     // Append arguments
     StringPtr:= PAnsiChar(Path);
     dbus_message_iter_init_append(message, @argsIter);
-    Return:= (dbus_message_iter_append_basic(@argsIter, DBUS_TYPE_STRING, @StringPtr) <> 0);
+
+    if not RabbitGtk3 then
+      Return:= (dbus_message_iter_append_basic(@argsIter, DBUS_TYPE_STRING, @StringPtr) <> 0)
+    else begin
+      Return:= (dbus_message_iter_open_container(@argsIter, DBUS_TYPE_ARRAY, DBUS_TYPE_BYTE_AS_STRING, @arrayIter) <> 0);
+      Return:= Return and (dbus_message_iter_append_fixed_array(@arrayIter, DBUS_TYPE_BYTE, @StringPtr, Length(Path)) <> 0);
+      Return:= Return and (dbus_message_iter_close_container(@argsIter, @arrayIter) <> 0);
+    end;
+
     Return:= Return and (dbus_message_iter_append_basic(@argsIter, DBUS_TYPE_BOOLEAN, @Recurse) <> 0);
     Return:= Return and (dbus_message_iter_append_basic(@argsIter, DBUS_TYPE_BOOLEAN, @Invalidate) <> 0);
     Return:= Return and (dbus_message_iter_append_basic(@argsIter, DBUS_TYPE_BOOLEAN, @Summary) <> 0);
@@ -315,14 +333,42 @@ begin
   end;
 end;
 
+function CheckPackage: Boolean;
+const
+  PythonVersion: array[0..2] of String = ('2.7', '3.8', '3.9');
+var
+  Index: Integer;
+  Debian: Boolean;
+  PackageFormat: String = '/usr/lib/python%s/';
+begin
+  Debian:= fpAccess('/etc/debian_version', F_OK) = 0;
+  if Debian then
+    PackageFormat+= 'dist-packages/rabbitvcs'
+  else begin
+    PackageFormat+= 'site-packages/rabbitvcs';
+  end;
+  for Index:= 0 to High(PythonVersion) do
+  begin
+    if (fpAccess(Format(PackageFormat, [PythonVersion[Index]]), F_OK) = 0) then
+    begin
+      Result:= PythonInitialize(PythonVersion[Index]);
+      Exit;
+    end;
+  end;
+  Result:= False;
+end;
+
 function CheckVersion: Boolean;
 var
   ATemp: AnsiString;
-  RabbitGTK3: Boolean;
   pyModule: PPyObject;
   pyVersion: PPyObject;
   AVersion: TStringArray;
   Major, Minor, Micro: Integer;
+{$IF DEFINED(LCLQT5)}
+  GtkWidget: TGType;
+  GtkClass, Gtk3: Pointer;
+{$ENDIF}
 begin
   Result:= False;
   pyModule:= PythonLoadModule('rabbitvcs');
@@ -340,11 +386,19 @@ begin
         Minor:= StrToIntDef(AVersion[1], 0);
         Micro:= StrToIntDef(AVersion[2], 0);
         // RabbitVCS migrated to GTK3 from version 0.17.1
-        RabbitGTK3:= (Major > 0) or (Minor > 17) or ((Minor = 17) and (Micro > 0));
+        RabbitGtk3:= (Major > 0) or (Minor > 17) or ((Minor = 17) and (Micro > 0));
 {$IF DEFINED(LCLQT5)}
-        Result:= RabbitGTK3;
-        // Qt5 can work with RabbitVCS GTK2 when no GTK3 platform theme plugin
-        if not Result then Result:= (g_type_from_name('GtkWidget') = 0);
+        // Check GTK platform theme plugin
+        GtkWidget:= g_type_from_name('GtkWidget');
+        Result:= (GtkWidget = 0);
+        if not Result then
+        begin
+          GtkClass:= g_type_class_ref(GtkWidget);
+          // Property 'expand' since GTK 3.0
+          Gtk3:= g_object_class_find_property(GtkClass, 'expand');
+          // RabbitVCS GTK version should be same as Qt5 platform theme plugin GTK version
+          Result:= (RabbitGtk3 = Assigned(Gtk3));
+        end;
 {$ELSEIF DEFINED(LCLGTK2)}
         Result:= not RabbitGTK3;
 {$ELSEIF DEFINED(LCLGTK3)}
@@ -358,28 +412,23 @@ begin
 end;
 
 procedure Initialize;
-var
-  PythonPath: String;
 begin
   dbus_error_init(@error);
   conn := dbus_bus_get(DBUS_BUS_SESSION, @error);
   if CheckError('Cannot acquire connection to DBUS session bus', @error) then
     Exit;
-  if HasPython then
+  if CheckPackage then
   begin
     if not CheckVersion then Exit;
-    PythonPath:= gpExePath + 'scripts';
-    RabbitVCS:= CheckService(PythonPath + PathDelim + MODULE_NAME + '.py');
-    if RabbitVCS then begin
-      PythonAddModulePath(PythonPath);
-      PythonModule:= PythonLoadModule(MODULE_NAME);
-      RabbitVCS:= Assigned(PythonModule);
-    end;
+    PythonAddModulePath(gpExePath + 'scripts');
+    PythonModule:= PythonLoadModule(MODULE_NAME);
+    RabbitVCS:= Assigned(PythonModule) and CheckService;
   end;
 end;
 
 procedure Finalize;
 begin
+  PythonFinalize;
   if Assigned(conn) then dbus_connection_unref(conn);
 end;
 

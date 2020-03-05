@@ -89,6 +89,7 @@ type
     function GetFreeSpace(Path: String; out FreeSize, TotalSize : Int64) : Boolean;
     function GetLocalName(var aFile: TFile): Boolean;
     function CreateDirectory(const Path: String): Boolean;
+    function FileSystemEntryExists(const Path: String): Boolean;
 
     function GetConnection(Operation: TFileSourceOperation): TFileSourceConnection;
     procedure RemoveOperationFromQueue(Operation: TFileSourceOperation);
@@ -266,6 +267,7 @@ type
     function GetPathType(sPath : String): TPathType; virtual;
 
     function CreateDirectory(const Path: String): Boolean; virtual;
+    function FileSystemEntryExists(const Path: String): Boolean; virtual;
     function GetFreeSpace(Path: String; out FreeSize, TotalSize : Int64) : Boolean; virtual;
     function GetLocalName(var aFile: TFile): Boolean; virtual;
 
@@ -283,8 +285,8 @@ type
        This is used if a file source has any internal cache or file list.
        Overwrite DoReload in descendant classes.
     }
-    procedure Reload(const PathsToReload: TPathsArray); virtual;
-    procedure Reload(const PathToReload: String);
+    procedure Reload(const PathsToReload: TPathsArray); virtual; overload;
+    procedure Reload(const PathToReload: String); overload;
 
     procedure AddReloadEventListener(FunctionToCall: TFileSourceReloadEventNotify);
     procedure RemoveReloadEventListener(FunctionToCall: TFileSourceReloadEventNotify);
@@ -564,6 +566,11 @@ end;
 function TFileSource.CreateDirectory(const Path: String): Boolean;
 begin
   Result := False;
+end;
+
+function TFileSource.FileSystemEntryExists(const Path: String): Boolean;
+begin
+  Result := True;
 end;
 
 function TFileSource.GetFreeSpace(Path: String; out FreeSize, TotalSize : Int64) : Boolean;

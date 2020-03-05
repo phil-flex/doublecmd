@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Double Commander 1.0.0 alpha\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2020-01-05 20:25+0300\n"
+"PO-Revision-Date: 2020-02-01 03:11+0300\n"
 "Last-Translator: Alexander Koblov <alexx2000@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -28,12 +28,12 @@ msgid "Files found: %d  (Identical: %d, Different: %d, Unique left: %d, Unique r
 msgstr "Найдено файлов: %d  (Одинаковых: %d, Различных: %d, Уникальных слева: %d, Уникальных справа: %d)"
 
 #: fsyncdirsdlg.rslefttorightcopy
-msgid "Left to Right: Copy %d files, total size: %d bytes"
-msgstr "Слева направо: Копируется файлов: %d, общий размер: %d байт"
+msgid "Left to Right: Copy %d files, total size: %s (%s)"
+msgstr "Слева направо: Копируется файлов: %d, общий размер: %s (%s)"
 
 #: fsyncdirsdlg.rsrighttoleftcopy
-msgid "Right to Left: Copy %d files, total size: %d bytes"
-msgstr "Справа налево: Копируется файлов: %d, общий размер: %d байт"
+msgid "Right to Left: Copy %d files, total size: %s (%s)"
+msgstr "Справа налево: Копируется файлов: %d, общий размер: %s (%s)"
 
 #: tfilesystemcopymoveoperationoptionsui.btnsearchtemplate.hint
 msgid "Choose template..."
@@ -2249,6 +2249,10 @@ msgstr "&Разрезать файл..."
 msgid "&Flat view"
 msgstr "Показать все фа&йлы без подкаталогов"
 
+#: tfrmmain.actflatviewsel.caption
+msgid "&Flat view, only selected"
+msgstr "Показать все фа&йлы без подкаталогов (только в выделенном)"
+
 #: tfrmmain.actfocuscmdline.caption
 msgid "Focus command line"
 msgstr "Перейти к командной строке"
@@ -2284,6 +2288,14 @@ msgstr "Поместить курсор на последнюю папку ил�
 #: tfrmmain.actgotolastfile.caption
 msgid "Place cursor on last file in list"
 msgstr "Поместить курсор на последний файл в списке"
+
+#: tfrmmain.actgotonextentry.caption
+msgid "Place cursor on next folder or file"
+msgstr "Поместить курсор на следующую папку или файл"
+
+#: tfrmmain.actgotopreventry.caption
+msgid "Place cursor on previous folder or file"
+msgstr "Поместить курсор на следующую папку или файл"
 
 #: tfrmmain.acthardlink.caption
 msgctxt "TFRMMAIN.ACTHARDLINK.CAPTION"
@@ -5864,7 +5876,7 @@ msgstr "Показ&ывать панель выбора вкладок в диа
 #: tfrmoptionsfileoperations.cbskipfileoperror.caption
 msgctxt "TFRMOPTIONSFILEOPERATIONS.CBSKIPFILEOPERROR.CAPTION"
 msgid "S&kip file operations errors and write them to log window"
-msgstr "Пропускать о&шибки при файловых операциях и выводить их в окно протокола"
+msgstr "Выводить сообщения об о&шибках файловых операций только в окно протокола"
 
 #: tfrmoptionsfileoperations.cbverifychecksumconfirmation.caption
 msgid "Verify checksum operation"
@@ -9767,6 +9779,50 @@ msgctxt "TWFXPLUGINCOPYMOVEOPERATIONOPTIONSUI.LBLFILEEXISTS.CAPTION"
 msgid "When file exists"
 msgstr "Если файл существует"
 
+#: uaccentsutils.rsstraccents
+msgid "á;â;à;å;ã;ä;ç;é;ê;è;ë;í;î;ì;ï;ñ;ó;ô;ò;ø;õ;ö;ú;û;ù;ü;ÿ;Á;Â;À;Å;Ã;Ä;Ç;É;Ê;È;Ë;Í;Í;Ì;Ï;Ñ;Ó;Ô;Ø;Õ;Ö;ß;Ú;Û;Ù;Ü;Ÿ;¿;¡;œ;æ;Æ;Œ"
+msgstr "á;â;à;å;ã;ä;ç;é;ê;è;ë;í;î;ì;ï;ñ;ó;ô;ò;ø;õ;ö;ú;û;ù;ü;ÿ;Á;Â;À;Å;Ã;Ä;Ç;É;Ê;È;Ë;Í;Í;Ì;Ï;Ñ;Ó;Ô;Ø;Õ;Ö;ß;Ú;Û;Ù;Ü;Ÿ;¿;¡;œ;æ;Æ;Œ"
+
+#: uaccentsutils.rsstraccentsstripped
+msgid "a;a;a;a;a;a;c;e;e;e;e;i;i;i;i;n;o;o;o;o;o;o;u;u;u;u;y;A;A;A;A;A;A;C;E;E;E;E;I;I;I;I;N;O;O;O;O;O;B;U;U;U;U;Y;?;!;oe;ae;AE;OE"
+msgstr "a;a;a;a;a;a;c;e;e;e;e;i;i;i;i;n;o;o;o;o;o;o;u;u;u;u;y;A;A;A;A;A;A;C;E;E;E;E;I;I;I;I;N;O;O;O;O;O;B;U;U;U;U;Y;?;!;oe;ae;AE;OE"
+
+#: uadministrator.rselevationrequired
+msgid "You need to provide administrator permission"
+msgstr "Нужно обладать правами администратора"
+
+#: uadministrator.rselevationrequiredcreate
+msgid "to create this object:"
+msgstr "для создания этого объекта:"
+
+#: uadministrator.rselevationrequireddelete
+msgid "to delete this object:"
+msgstr "для удаления этого объекта:"
+
+#: uadministrator.rselevationrequiredgetattributes
+msgid "to get attributes of this object:"
+msgstr "для получения атрибутов этого объекта:"
+
+#: uadministrator.rselevationrequiredhardlink
+msgid "to create this hard link:"
+msgstr "для создания этой жёсткой ссылки:"
+
+#: uadministrator.rselevationrequiredopen
+msgid "to open this object:"
+msgstr "для открытия этого объекта:"
+
+#: uadministrator.rselevationrequiredrename
+msgid "to rename this object:"
+msgstr "для переименования этого объекта:"
+
+#: uadministrator.rselevationrequiredsetattributes
+msgid "to set attributes of this object:"
+msgstr "для установки атрибутов этого объекта:"
+
+#: uadministrator.rselevationrequiredsymlink
+msgid "to create this symbolic link:"
+msgstr "для создания этой символьной ссылки:"
+
 #: uexifreader.rsdatetimeoriginal
 msgid "Date taken"
 msgstr "Дата съёмки"
@@ -13319,14 +13375,6 @@ msgstr "Автоматически;1457664 B - 3.5\" High Density 1.44 M;1213952
 #: ulng.rssplitseldir
 msgid "Select directory:"
 msgstr "Выберите каталог:"
-
-#: ulng.rsstraccents
-msgid "á;â;à;å;ã;ä;ç;é;ê;è;ë;í;î;ì;ï;ñ;ó;ô;ò;ø;õ;ö;ú;û;ù;ü;ÿ;Á;Â;À;Å;Ã;Ä;Ç;É;Ê;È;Ë;Í;Í;Ì;Ï;Ñ;Ó;Ô;Ø;Õ;Ö;ß;Ú;Û;Ù;Ü;Ÿ;¿;¡;œ;æ;Æ;Œ"
-msgstr "á;â;à;å;ã;ä;ç;é;ê;è;ë;í;î;ì;ï;ñ;ó;ô;ò;ø;õ;ö;ú;û;ù;ü;ÿ;Á;Â;À;Å;Ã;Ä;Ç;É;Ê;È;Ë;Í;Í;Ì;Ï;Ñ;Ó;Ô;Ø;Õ;Ö;ß;Ú;Û;Ù;Ü;Ÿ;¿;¡;œ;æ;Æ;Œ"
-
-#: ulng.rsstraccentsstripped
-msgid "a;a;a;a;a;a;c;e;e;e;e;i;i;i;i;n;o;o;o;o;o;o;u;u;u;u;y;A;A;A;A;A;A;C;E;E;E;E;I;I;I;I;N;O;O;O;O;O;B;U;U;U;U;Y;?;!;oe;ae;AE;OE"
-msgstr "a;a;a;a;a;a;c;e;e;e;e;i;i;i;i;n;o;o;o;o;o;o;u;u;u;u;y;A;A;A;A;A;A;C;E;E;E;E;I;I;I;I;N;O;O;O;O;O;B;U;U;U;U;Y;?;!;oe;ae;AE;OE"
 
 #: ulng.rsstrpreviewjustpreview
 msgid "Just preview"

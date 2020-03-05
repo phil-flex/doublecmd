@@ -4,7 +4,7 @@
    WLX-API implementation (TC WLX-API v2.0).
 
    Copyright (C) 2008  Dmitry Kolomiets (B4rr4cuda@rambler.ru)
-   Copyright (C) 2009-2019 Alexander Koblov (alexx2000@mail.ru)
+   Copyright (C) 2009-2020 Alexander Koblov (alexx2000@mail.ru)
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -29,7 +29,7 @@ interface
 uses
   Classes, SysUtils, dynlibs, uDetectStr, uWlxPrototypes, WlxPlugin,
   DCClassesUtf8, uDCUtils, LCLProc, LCLType, DCXmlConfig
-  {$IFDEF LCLWIN32}
+  {$IFDEF MSWINDOWS}
   , Windows, LCLIntf, Controls
   {$ENDIF}
   {$IFDEF LCLGTK}
@@ -44,6 +44,9 @@ uses
   {$ENDIF}
   {$IFDEF LCLQT5}
   , qt5, qtwidgets
+  {$ENDIF}
+  {$IF DEFINED(MSWINDOWS) and DEFINED(LCLQT5)}
+  , uDarkStyle
   {$ENDIF}
   ;
 
@@ -209,7 +212,10 @@ end;
 
 procedure WlxPrepareContainer(var {%H-}ParentWin: HWND);
 begin
-{$IF DEFINED(LCLGTK) or DEFINED(LCLGTK2)}
+{$IF DEFINED(MSWINDOWS) and DEFINED(LCLQT5)}
+  ParentWin := HWND(QWidget_winId(TQtWidget(ParentWin).GetContainerWidget));
+  ParentWin := Windows.GetAncestor(ParentWin, GA_ROOT);
+{$ELSEIF DEFINED(LCLGTK) or DEFINED(LCLGTK2)}
   ParentWin := HWND(GetFixedWidget(Pointer(ParentWin)));
 {$ELSEIF DEFINED(LCLQT) or DEFINED(LCLQT5)}
   ParentWin := HWND(TQtWidget(ParentWin).GetContainerWidget);
@@ -315,6 +321,11 @@ function TWlxModule.CallListLoad(ParentWin: HWND; FileToLoad: String; ShowFlags:
 begin
   WlxPrepareContainer(ParentWin);
 
+{$IF DEFINED(MSWINDOWS) and DEFINED(LCLQT5)}
+  if g_darkModeEnabled then
+    ShowFlags:= ShowFlags or lcp_darkmode or lcp_darkmodenative;
+{$ENDIF}
+
   if Assigned(ListLoadW) then
     FPluginWindow := ListLoadW(ParentWin, PWideChar(UTF8Decode(FileToLoad)), ShowFlags)
   else if Assigned(ListLoad) then
@@ -334,12 +345,23 @@ begin
   end;
 {$ENDIF}
 
+{$IF DEFINED(MSWINDOWS) and DEFINED(LCLQT5)}
+  if FPluginWindow <> 0 then begin
+    SetWindowLongPtr(FPluginWindow, GWL_HWNDPARENT, ParentWin);
+  end;
+{$ENDIF}
+
   Result := FPluginWindow;
 end;
 
 function TWlxModule.CallListLoadNext(ParentWin: HWND; FileToLoad: String; ShowFlags: Integer): Integer;
 begin
   WlxPrepareContainer(ParentWin);
+
+{$IF DEFINED(MSWINDOWS) and DEFINED(LCLQT5)}
+  if g_darkModeEnabled then
+    ShowFlags:= ShowFlags or lcp_darkmode or lcp_darkmodenative;
+{$ENDIF}
 
   if Assigned(ListLoadNextW) then
     Result := ListLoadNextW(ParentWin, FPluginWindow, PWideChar(UTF8Decode(FileToLoad)), ShowFlags)
@@ -359,7 +381,7 @@ begin
 {$ENDIF}
     if Assigned(ListCloseWindow) then
       ListCloseWindow(FPluginWindow)
-{$IF DEFINED(LCLWIN32)}
+{$IF DEFINED(MSWINDOWS)}
     else DestroyWindow(FPluginWindow)
 {$ELSEIF DEFINED(LCLGTK) or DEFINED(LCLGTK2)}
     else gtk_widget_destroy(PGtkWidget(FPluginWindow));
@@ -427,7 +449,7 @@ end;
 
 procedure TWlxModule.SetFocus;
 begin
-  {$IF DEFINED(LCLWIN32)}
+  {$IF DEFINED(MSWINDOWS)}
   Windows.SetFocus(FPluginWindow);
   {$ELSEIF DEFINED(LCLQT) or DEFINED(LCLQT5)}
   QWidget_setFocus(QWidgetH(FPluginWindow));
@@ -441,7 +463,10 @@ begin
   //ToDo: Implement for other widgetsets
   with aRect do
   begin
-    {$IF DEFINED(LCLWIN32)}
+    {$IF DEFINED(MSWINDOWS) and DEFINED(LCLQT5)}
+    OffsetRect(aRect, 0, GetSystemMetrics(SM_CYMENU));
+    MoveWindow(FPluginWindow, Left, Top, Right - Left, Bottom - Top, True);
+    {$ELSEIF DEFINED(LCLWIN32)}
     MoveWindow(FPluginWindow, Left, Top, Right - Left, Bottom - Top, True);
     {$ELSEIF DEFINED(LCLQT) or DEFINED(LCLQT5)}
     QWidget_move(QWidgetH(FPluginWindow), Left, Top);

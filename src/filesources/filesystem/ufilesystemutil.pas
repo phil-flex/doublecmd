@@ -178,7 +178,7 @@ procedure FillAndCount(Files: TFiles; CountDirs: Boolean; ExcludeRootDir: Boolea
     sr: TSearchRecEx;
     aFile: TFile;
   begin
-    if FindFirstEx(srcPath + '*', 0, sr) = 0 then
+    if FindFirstUAC(srcPath + '*', 0, sr) = 0 then
     begin
       repeat
         if (sr.Name='.') or (sr.Name='..') then Continue;
@@ -199,16 +199,16 @@ procedure FillAndCount(Files: TFiles; CountDirs: Boolean; ExcludeRootDir: Boolea
           FilesSize:= FilesSize + aFile.Size;
           Inc(FilesCount);
         end;
-      until FindNextEx(sr) <> 0;
+      until FindNextUAC(sr) <> 0;
     end;
 
-    FindCloseEx(sr);
+    FindCloseUAC(sr);
   end;
 
 var
   i: Integer;
   aFile: TFile;
-  aFindData: TSearchRecEx;
+  aFindData: TFileAttributeData;
 begin
   FilesCount:= 0;
   FilesSize:= 0;
@@ -228,11 +228,11 @@ begin
       aFile := Files[i];
 
       // Update file attributes
-      if mbFileGetAttr(aFile.FullPath, aFindData) then
+      if FileGetAttrUAC(aFile.FullPath, aFindData) then
       begin
         aFile.Size:= aFindData.Size;
         aFile.Attributes:= aFindData.Attr;
-        aFile.ModificationTime:= FileTimeToDateTime(aFindData.Time);
+        aFile.ModificationTime:= FileTimeToDateTime(aFindData.LastWriteTime);
       end;
 
       NewFiles.Add(aFile.Clone);
@@ -258,13 +258,13 @@ end;
 function FileExistsMessage(const TargetName, SourceName: String;
                            SourceSize: Int64; SourceTime: TDateTime): String;
 var
-  TargetInfo: TSearchRecEx;
+  TargetInfo: TFileAttributeData;
 begin
   Result:= rsMsgFileExistsOverwrite + LineEnding + WrapTextSimple(TargetName, 100) + LineEnding;
-  if mbFileGetAttr(TargetName, TargetInfo) then
+  if FileGetAttrUAC(TargetName, TargetInfo) then
   begin
     Result:= Result + Format(rsMsgFileExistsFileInfo, [Numb2USA(IntToStr(TargetInfo.Size)),
-                             DateTimeToStr(FileTimeToDateTime(TargetInfo.Time))]) + LineEnding;
+                             DateTimeToStr(FileTimeToDateTime(TargetInfo.LastWriteTime))]) + LineEnding;
   end;
   Result:= Result + LineEnding + rsMsgFileExistsWithFile + LineEnding + WrapTextSimple(SourceName, 100) + LineEnding +
            Format(rsMsgFileExistsFileInfo, [Numb2USA(IntToStr(SourceSize)), DateTimeToStr(SourceTime)]);
@@ -316,17 +316,17 @@ var
   sr: TSearchRecEx;
   aFile: TFile;
 begin
-  if FindFirstEx(srcPath + '*', 0, sr) = 0 then
+  if FindFirstUAC(srcPath + '*', 0, sr) = 0 then
   begin
     repeat
       if (sr.Name = '.') or (sr.Name = '..') then Continue;
 
       aFile := TFileSystemFileSource.CreateFile(srcPath, @sr);
       AddItem(aFile, CurrentNode);
-    until FindNextEx(sr) <> 0;
+    until FindNextUAC(sr) <> 0;
   end;
 
-  FindCloseEx(sr);
+  FindCloseUAC(sr);
 end;
 
 // ----------------------------------------------------------------------------

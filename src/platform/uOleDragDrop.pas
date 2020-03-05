@@ -141,7 +141,8 @@ type
     function QueryGetData(const formatetc: TFormatEtc): HResult; stdcall;
     function GetCanonicalFormatEtc(const formatetc: TFormatEtc;
       out formatetcOut: TFormatEtc): HResult; stdcall;
-    function SetData(const formatetc: TFormatEtc; const medium: TStgMedium;
+    function SetData(const formatetc: TFormatEtc;
+      {$IF FPC_FULLVERSION < 30200}const{$ELSE}var{$ENDIF} medium: TStgMedium;
       fRelease: BOOL): HResult; stdcall;
     function EnumFormatEtc(dwDirection: LongWord;
       out enumFormatEtc: IEnumFormatEtc): HResult; stdcall;
@@ -198,7 +199,7 @@ uses
 
   //DC
   uOSUtils, fOptionsDragDrop, uShowMsg, UGlobs, DCStrUtils, DCOSUtils,
-  uClipboard, uLng, uDebug;
+  uClipboard, uLng, uDebug, uShlObjAdditional;
 
 var
   // Supported formats by the source.
@@ -493,7 +494,7 @@ begin
   if SHGetDesktopFolder(ShellDesktop) = S_OK then
   begin
     // Get Desktop PIDL, which will be the root PIDL for the files' PIDLs.
-    if SHGetSpecialFolderLocation(0, CSIDL_DESKTOP, pidl) = S_OK then
+    if SHGetFolderLocation(0, CSIDL_DESKTOP, 0, 0, pidl) = S_OK then
     begin
       pidlSize := GetPidlSize(pidl);
 
@@ -1421,7 +1422,8 @@ end;
 
 { THDropDataObject.SetData }
 function THDropDataObject.SetData(const formatetc: TFormatEtc;
-  const medium: TStgMedium; fRelease: BOOL): HResult;
+  {$IF FPC_FULLVERSION < 30200}const{$ELSE}var{$ENDIF} medium: TStgMedium;
+  fRelease: BOOL): HResult;
 begin
   Result := E_NOTIMPL;
 end;

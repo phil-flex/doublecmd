@@ -2232,6 +2232,12 @@ object frmMain: TfrmMain
       Caption = '&Flat view'
       OnExecute = actExecute
     end
+    object actFlatViewSel: TAction
+      Tag = 1
+      Category = 'Active Panel'
+      Caption = '&Flat view, only selected'
+      OnExecute = actExecute
+    end
     object actQuickView: TAction
       Tag = 1
       Category = 'Active Panel'
@@ -2375,6 +2381,18 @@ object frmMain: TfrmMain
       Tag = 14
       Category = 'Navigation'
       Caption = 'Place cursor on last folder or file'
+      OnExecute = actExecute
+    end
+    object actGoToNextEntry: TAction
+      Tag = 14
+      Category = 'Navigation'
+      Caption = 'Place cursor on next folder or file'
+      OnExecute = actExecute
+    end
+    object actGoToPrevEntry: TAction
+      Tag = 14
+      Category = 'Navigation'
+      Caption = 'Place cursor on previous folder or file'
       OnExecute = actExecute
     end
     object actGoToFirstFile: TAction

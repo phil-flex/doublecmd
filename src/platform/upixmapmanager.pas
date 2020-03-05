@@ -1688,6 +1688,7 @@ var
 {$IFDEF MSWINDOWS}
   hicn: HICON;
   cx, cy: Integer;
+  Icon: TIcon;
 {$ENDIF}
 {$IFDEF LCLGTK2}
   pbPicture : PGdkPixbuf;
@@ -1735,6 +1736,7 @@ begin
       else
         TrySetSize(gIconsSize, gIconsSize);
 
+      {$IF DEFINED(LCLWIN32)}
       if (cx = Width) and (cy = Height) then
         ImageList_Draw(FSysImgList, iIndex - SystemIconIndexStart, Canvas.Handle, X, Y, ILD_TRANSPARENT)
       else
@@ -1749,6 +1751,17 @@ begin
           DestroyIcon(hicn);
         end;
       end;
+      {$ELSEIF DEFINED(LCLQT5)}
+      hicn:= ImageList_GetIcon(FSysImgList, iIndex - SystemIconIndexStart, ILD_NORMAL);
+      try
+        Icon:= CreateIconFromHandle(hicn);
+        aRect := Classes.Bounds(X, Y, Width, Height);
+        Canvas.StretchDraw(aRect, Icon);
+      finally
+        FreeAndNil(Icon);
+        DestroyIcon(hicn);
+      end
+      {$ENDIF}
     except
       Result:= False;
     end;
@@ -1811,6 +1824,7 @@ var
   FileInfo: TSHFileInfoW;
   dwFileAttributes: DWORD;
   uFlags: UINT;
+  ABitmap: Graphics.TBitmap;
 {$ENDIF}
 begin
   Result := -1;
@@ -1853,7 +1867,7 @@ begin
          // Directory has special icon only if it has "read only" or "system" attributes
          // and contains desktop.ini file
          (not (DirectAccess and (IsSysFile or FileIsReadOnly(Attributes)) and mbFileExists(FullPath + '\desktop.ini'))) or
-         (GetDeviceCaps(Application.MainForm.Canvas.Handle, BITSPIXEL) < 16) then
+         (ScreenInfo.ColorDepth < 16) then
       {$ELSEIF DEFINED(UNIX) AND NOT DEFINED(DARWIN)}
       if (IconsMode = sim_all_and_exe) and (DirectAccess) then
       begin
@@ -2030,6 +2044,12 @@ begin
         (Ext <> 'lnk') and
         (Ext <> 'url') then
       begin
+{$IF DEFINED(LCLQT5)}
+        ABitmap := GetBitmap(Result);
+        if (ABitmap.Width <> gIconsSize) or (ABitmap.Height <> gIconsSize) then
+          ABitmap:= StretchBitmap(ABitmap, gIconsSize, clWhite, True);
+        Result := FPixmapList.Add(ABitmap);
+{$ENDIF}
         FPixmapsLock.Acquire;
         try
           FExtList.Add(Ext, Pointer(Result));
@@ -2107,8 +2127,8 @@ begin
   end;
   Result := nil;
 {$IFDEF MSWINDOWS}
-  if GetDeviceCaps(Application.MainForm.Canvas.Handle, BITSPIXEL) < 15 then Exit;
-  if (not (cimDrive in gCustomIcons)) and (GetDeviceCaps(Application.MainForm.Canvas.Handle, BITSPIXEL) > 16) then
+  if ScreenInfo.ColorDepth < 15 then Exit;
+  if (not (cimDrive in gCustomIcons)) and (ScreenInfo.ColorDepth > 16) then
     begin
       SFI.hIcon := 0;
       Result := Graphics.TBitMap.Create;
@@ -2155,7 +2175,7 @@ var
   ABitmap: Graphics.TBitmap;
 begin
 {$IFDEF MSWINDOWS}
-  if GetDeviceCaps(Application.MainForm.Canvas.Handle, BITSPIXEL) < 15 then Exit(nil);
+  if ScreenInfo.ColorDepth < 15 then Exit(nil);
 {$ENDIF}
   case IconSize of
   16: // Standart 16x16 icon size

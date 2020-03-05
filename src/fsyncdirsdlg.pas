@@ -218,8 +218,8 @@ type
 
 resourcestring
   rsComparingPercent = 'Comparing... %d%% (ESC to cancel)';
-  rsLeftToRightCopy = 'Left to Right: Copy %d files, total size: %d bytes';
-  rsRightToLeftCopy = 'Right to Left: Copy %d files, total size: %d bytes';
+  rsLeftToRightCopy = 'Left to Right: Copy %d files, total size: %s (%s)';
+  rsRightToLeftCopy = 'Right to Left: Copy %d files, total size: %s (%s)';
   rsDeleteLeft = 'Left: Delete %d file(s)';
   rsDeleteRight = 'Right: Delete %d file(s)';
   rsFilesFound = 'Files found: %d  (Identical: %d, Different: %d, '
@@ -233,7 +233,8 @@ uses
   fMain, uDebug, fDiffer, fSyncDirsPerformDlg, uGlobs, LCLType, LazUTF8, LazFileUtils,
   DCClassesUtf8, uFileSystemFileSource, uFileSourceOperationOptions, DCDateTimeUtils,
   uDCUtils, uFileSourceUtil, uFileSourceOperationTypes, uShowForm, uAdministrator,
-  uOSUtils, uLng, uMasks, Math, uClipboard, IntegerList, fMaskInputDlg, uSearchTemplate;
+  uOSUtils, uLng, uMasks, Math, uClipboard, IntegerList, fMaskInputDlg, uSearchTemplate,
+  StrUtils, uTypes;
 
 {$R *.lfm}
 
@@ -620,9 +621,9 @@ begin
     chkDeleteLeft.Caption := Format(rsDeleteLeft, [DeleteLeftCount]);
     chkDeleteRight.Caption := Format(rsDeleteRight, [DeleteRightCount]);
     chkLeftToRight.Caption :=
-      Format(rsLeftToRightCopy, [CopyRightCount, CopyRightSize]);
+      Format(rsLeftToRightCopy, [CopyRightCount, cnvFormatFileSize(CopyRightSize, fsfFloat, gFileSizeDigits), Numb2USA(IntToStr(CopyRightSize))]);
     chkRightToLeft.Caption :=
-      Format(rsRightToLeftCopy, [CopyLeftCount, CopyLeftSize]);
+      Format(rsRightToLeftCopy, [CopyLeftCount, cnvFormatFileSize(CopyLeftSize, fsfFloat, gFileSizeDigits), Numb2USA(IntToStr(CopyLeftSize))]);
     if ShowModal = mrOk then
     begin
       EnableControls(False);
@@ -1111,7 +1112,7 @@ end;
 procedure TfrmSyncDirsDlg.InitVisibleItems;
 var
   i, j: Integer;
-  filter: record
+  AFilter: record
     copyLeft, copyRight, eq, neq: Boolean;
     dup, single: Boolean;
   end;
@@ -1125,7 +1126,7 @@ begin
     FVisibleItems.CaseSensitive := FileNameCaseSensitive;
   end;
   { init filter }
-  with filter do
+  with AFilter do
   begin
     copyLeft := sbCopyLeft.Down;
     copyRight := sbCopyRight.Down;
@@ -1143,15 +1144,15 @@ begin
       begin
         { check filter }
         r := TFileSyncRec(Objects[j]);
-        if ((Assigned(r.FFileL) <> Assigned(r.FFileR)) and filter.single or
-           (Assigned(r.FFileL) = Assigned(r.FFileR)) and filter.dup)
+        if ((Assigned(r.FFileL) <> Assigned(r.FFileR)) and AFilter.single or
+           (Assigned(r.FFileL) = Assigned(r.FFileR)) and AFilter.dup)
            and
-           ((r.FState = srsCopyLeft) and filter.copyLeft or
-            (r.FState = srsCopyRight) and filter.copyRight or
-            (r.FState = srsDeleteLeft) and filter.copyRight or
-            (r.FState = srsDeleteRight) and filter.copyLeft or
-            (r.FState = srsEqual) and filter.eq or
-            (r.FState = srsNotEq) and filter.neq or
+           ((r.FState = srsCopyLeft) and AFilter.copyLeft or
+            (r.FState = srsCopyRight) and AFilter.copyRight or
+            (r.FState = srsDeleteLeft) and AFilter.copyRight or
+            (r.FState = srsDeleteRight) and AFilter.copyLeft or
+            (r.FState = srsEqual) and AFilter.eq or
+            (r.FState = srsNotEq) and AFilter.neq or
             (r.FState = srsUnknown))
         then
           FVisibleItems.AddObject(Strings[j], Objects[j]);
