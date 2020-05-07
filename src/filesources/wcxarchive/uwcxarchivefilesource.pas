@@ -8,7 +8,7 @@ interface
 uses
   Classes, SysUtils, contnrs, syncobjs, DCStringHashListUtf8,
   WcxPlugin, uWCXmodule, uFile, uFileSourceProperty, uFileSourceOperationTypes,
-  uArchiveFileSource, uFileProperty, uFileSource, uFileSourceOperation;
+  uArchiveFileSource, uFileProperty, uFileSource, uFileSourceOperation, uClassesEx;
 
 type
 
@@ -19,11 +19,11 @@ type
   IWcxArchiveFileSource = interface(IArchiveFileSource)
     ['{DB32E8A8-486B-4053-9448-4C145C1A33FA}']
 
-    function GetArcFileList: TObjectList;
+    function GetArcFileList: TThreadObjectList;
     function GetPluginCapabilities: PtrInt;
     function GetWcxModule: TWcxModule;
 
-    property ArchiveFileList: TObjectList read GetArcFileList;
+    property ArchiveFileList: TThreadObjectList read GetArcFileList;
     property PluginCapabilities: PtrInt read GetPluginCapabilities;
     property WcxModule: TWCXModule read GetWcxModule;
   end;
@@ -34,14 +34,14 @@ type
   private
     FModuleFileName: String;
     FPluginCapabilities: PtrInt;
-    FArcFileList : TObjectList;
+    FArcFileList : TThreadObjectList;
     FWcxModule: TWCXModule;
     FOpenResult: LongInt;
 
     procedure SetCryptCallback;
     function ReadArchive(anArchiveHandle: TArcHandle = 0): Boolean;
 
-    function GetArcFileList: TObjectList;
+    function GetArcFileList: TThreadObjectList;
     function GetPluginCapabilities: PtrInt;
     function GetWcxModule: TWcxModule;
 
@@ -121,7 +121,7 @@ type
     function GetConnection(Operation: TFileSourceOperation): TFileSourceConnection; override;
     procedure RemoveOperationFromQueue(Operation: TFileSourceOperation); override;
 
-    property ArchiveFileList: TObjectList read FArcFileList;
+    property ArchiveFileList: TThreadObjectList read FArcFileList;
     property PluginCapabilities: PtrInt read FPluginCapabilities;
     property WcxModule: TWCXModule read FWcxModule;
   end;
@@ -143,8 +143,8 @@ type
 implementation
 
 uses
-  LazUTF8, uDebug, DCStrUtils, uDCUtils, uGlobs, DCOSUtils, uShowMsg,
-  DCDateTimeUtils, uLng, uLog, uMasks,
+  LazUTF8, uDebug, DCStrUtils, uGlobs, DCOSUtils,
+  DCDateTimeUtils, uMasks,
   DCConvertEncoding,
   DCFileAttributes,
   FileUtil, uCryptProc,
@@ -399,7 +399,7 @@ begin
 
   FModuleFileName := aWcxPluginFileName;
   FPluginCapabilities := aWcxPluginCapabilities;
-  FArcFileList := TObjectList.Create(True);
+  FArcFileList := TThreadObjectList.Create;
   FWcxModule := gWCXPlugins.LoadModule(FModuleFileName);
 
   if not Assigned(FWcxModule) then
@@ -426,7 +426,7 @@ begin
   inherited Create(anArchiveFileSource, anArchiveFileName);
 
   FPluginCapabilities := aWcxPluginCapabilities;
-  FArcFileList := TObjectList.Create(True);
+  FArcFileList := TThreadObjectList.Create;
   FWcxModule := aWcxPluginModule;
 
   FOperationsClasses[fsoCopyIn]  := TWcxArchiveCopyInOperation.GetOperationClass;
@@ -513,6 +513,7 @@ end;
 function TWcxArchiveFileSource.SetCurrentWorkingDirectory(NewDir: String): Boolean;
 var
   I: Integer;
+  AFileList: TList;
   Header: TWCXHeader;
 begin
   Result := False;
@@ -523,15 +524,20 @@ begin
 
     NewDir := IncludeTrailingPathDelimiter(NewDir);
 
-    // Search file list for a directory with name NewDir.
-    for I := 0 to FArcFileList.Count - 1 do
-    begin
-      Header := TWCXHeader(FArcFileList.Items[I]);
-      if FPS_ISDIR(Header.FileAttr) and (Length(Header.FileName) > 0) then
+    AFileList:= FArcFileList.LockList;
+    try
+      // Search file list for a directory with name NewDir.
+      for I := 0 to AFileList.Count - 1 do
       begin
-        if NewDir = IncludeTrailingPathDelimiter(GetRootDir() + Header.FileName) then
-          Exit(True);
+        Header := TWCXHeader(AFileList.Items[I]);
+        if FPS_ISDIR(Header.FileAttr) and (Length(Header.FileName) > 0) then
+        begin
+          if NewDir = IncludeTrailingPathDelimiter(GetRootDir() + Header.FileName) then
+            Exit(True);
+        end;
       end;
+    finally
+      FArcFileList.UnlockList;
     end;
   end;
 end;
@@ -548,7 +554,7 @@ begin
   FWcxModule.WcxSetCryptCallback(0, AFlags, @CryptProcA, @CryptProcW);
 end;
 
-function TWcxArchiveFileSource.GetArcFileList: TObjectList;
+function TWcxArchiveFileSource.GetArcFileList: TThreadObjectList;
 begin
   Result := FArcFileList;
 end;
@@ -659,6 +665,7 @@ function TWcxArchiveFileSource.ReadArchive(anArchiveHandle: TArcHandle): Boolean
 var
   ArcHandle : TArcHandle;
   Header: TWCXHeader;
+  AFileList: TList;
   AllDirsList, ExistsDirList : TStringHashListUtf8;
   I : Integer;
   NameLength: Integer;
@@ -685,75 +692,81 @@ begin
 
   DCDebug('Get File List');
   (*Get File List*)
-  FArcFileList.Clear;
-  ExistsDirList := TStringHashListUtf8.Create(True);
-  AllDirsList := TStringHashListUtf8.Create(True);
-
+  AFileList:= FArcFileList.LockList;
   try
-    while (WcxModule.ReadWCXHeader(ArcHandle, Header) = E_SUCCESS) do
-    begin
-      // Some plugins end directories with path delimiter.
-      // And not set directory attribute. So delete path
-      // delimiter if present and add directory attribute.
-      NameLength := Length(Header.FileName);
-      if (NameLength > 0) and (Header.FileName[NameLength] = PathDelim) then
+    AFileList.Clear;
+    ExistsDirList := TStringHashListUtf8.Create(True);
+    AllDirsList := TStringHashListUtf8.Create(True);
+
+    try
+      while (WcxModule.ReadWCXHeader(ArcHandle, Header) = E_SUCCESS) do
       begin
-        Delete(Header.FileName, NameLength, 1);
-        Header.FileAttr := Header.FileAttr or GENERIC_ATTRIBUTE_FOLDER;
-      end;
+        // Some plugins end directories with path delimiter.
+        // And not set directory attribute. So delete path
+        // delimiter if present and add directory attribute.
+        NameLength := Length(Header.FileName);
+        if (NameLength > 0) and (Header.FileName[NameLength] = PathDelim) then
+        begin
+          Delete(Header.FileName, NameLength, 1);
+          Header.FileAttr := Header.FileAttr or GENERIC_ATTRIBUTE_FOLDER;
+        end;
 
-      //**********************************************************************
+        //**********************************************************************
 
-      // Workaround for plugins that don't give a list of
-      // folders or the list does not include all of the folders.
-      if FPS_ISDIR(Header.FileAttr) then
+        // Workaround for plugins that don't give a list of
+        // folders or the list does not include all of the folders.
+        if FPS_ISDIR(Header.FileAttr) then
+        begin
+          // Collect directories that the plugin supplies.
+          if (ExistsDirList.Find(Header.FileName) < 0) then
+            ExistsDirList.Add(Header.FileName);
+        end;
+
+        // Collect all directories.
+        CollectDirs(PAnsiChar(Header.FileName), AllDirsList);
+
+        //**********************************************************************
+
+        AFileList.Add(Header);
+
+        // get next file
+        FOpenResult := WcxModule.WcxProcessFile(ArcHandle, PK_SKIP, EmptyStr, EmptyStr);
+
+        // Check for errors
+        if FOpenResult <> E_SUCCESS then Exit;
+      end; // while
+
+      ArchiveTime:= FileTimeToWcxFileTime(mbFileAge(ArchiveFileName));
+
+      (* if plugin does not give a list of folders *)
+      for I := 0 to AllDirsList.Count - 1 do
       begin
-        // Collect directories that the plugin supplies.
-        if (ExistsDirList.Find(Header.FileName) < 0) then
-          ExistsDirList.Add(Header.FileName);
-      end;
+        // Add only those directories that were not supplied by the plugin.
+        if ExistsDirList.Find(AllDirsList.List[I]^.Key) < 0 then
+        begin
+          Header := TWCXHeader.Create;
+          try
+            Header.FileName := AllDirsList.List[I]^.Key;
+            Header.ArcName  := ArchiveFileName;
+            Header.FileAttr := GENERIC_ATTRIBUTE_FOLDER;
+            Header.FileTime := ArchiveTime;
 
-      // Collect all directories.
-      CollectDirs(PAnsiChar(Header.FileName), AllDirsList);
-
-      //**********************************************************************
-
-      FArcFileList.Add(Header);
-
-      // get next file
-      FOpenResult := WcxModule.WcxProcessFile(ArcHandle, PK_SKIP, EmptyStr, EmptyStr);
-
-      // Check for errors
-      if FOpenResult <> E_SUCCESS then Exit;
-    end; // while
-
-    ArchiveTime:= FileTimeToWcxFileTime(mbFileAge(ArchiveFileName));
-
-    (* if plugin does not give a list of folders *)
-    for I := 0 to AllDirsList.Count - 1 do
-    begin
-      // Add only those directories that were not supplied by the plugin.
-      if ExistsDirList.Find(AllDirsList.List[I]^.Key) < 0 then
-      begin
-        Header := TWCXHeader.Create;
-        try
-          Header.FileName := AllDirsList.List[I]^.Key;
-          Header.ArcName  := ArchiveFileName;
-          Header.FileAttr := GENERIC_ATTRIBUTE_FOLDER;
-          Header.FileTime := ArchiveTime;
-
-          FArcFileList.Add(Header);
-        except
-          FreeAndNil(Header);
+            AFileList.Add(Header);
+          except
+            FreeAndNil(Header);
+          end;
         end;
       end;
+
+      Result:= True;
+    finally
+      AllDirsList.Free;
+      ExistsDirList.Free;
+      WcxModule.CloseArchive(ArcHandle);
     end;
 
-    Result:= True;
   finally
-    AllDirsList.Free;
-    ExistsDirList.Free;
-    WcxModule.CloseArchive(ArcHandle);
+    FArcFileList.UnlockList;
   end;
 end;
 

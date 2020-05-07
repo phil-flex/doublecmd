@@ -67,6 +67,8 @@ const
   AbLanguageEncodingFlag    = $0800;
 
   Ab_Zip64SubfieldID                        : Word    = $0001;
+  Ab_NTFSSubfieldID                         : Word    = $000A;
+  Ab_InfoZipTimestampSubfieldID             : Word    = $5455;
   Ab_InfoZipUnicodePathSubfieldID           : Word    = $7075;
   Ab_XceedUnicodePathSubfieldID             : Word    = $554E;
   Ab_XceedUnicodePathSignature              : LongWord= $5843554E;
@@ -370,6 +372,7 @@ type
     FDiskNumberStart : LongWord;
     FLFHExtraField : TAbExtraField;
     FRelativeOffset : Int64;
+    FDateTime : TDateTime;
 
   protected {methods}
     function GetCompressionMethod : TAbZipCompressionMethod;
@@ -628,7 +631,9 @@ uses
   SysUtils,
   LazUTF8,
   DCOSUtils,
+  DCBasicTypes,
   DCClassesUtf8,
+  DCDateTimeUtils,
   DCConvertEncoding;
 
 function VerifyZip(Strm : TStream) : TAbArchiveType;
@@ -1432,11 +1437,19 @@ var
 begin
   // Zip stores MS-DOS date/time.
 {$IFDEF UNIX}
-  DateTime := AbDosFileDateToDateTime(LastModFileDate, LastModFileTime);
-  Result   := AbLocalDateTimeToUnixTime(DateTime);
+  if (FDateTime <> 0) then
+    DateTime := FDateTime
+  else begin
+    DateTime := AbDosFileDateToDateTime(LastModFileDate, LastModFileTime);
+  end;
+  Result := DateTimeToUnixFileTime(DateTime);
 {$ELSE}
-  LongRec(Result).Hi := LastModFileDate;
-  LongRec(Result).Lo := LastModFileTime;
+  if (FDateTime <> 0) then
+    Result := DateTimeToDosFileTime(FDateTime)
+  else begin
+    LongRec(Result).Hi := LastModFileDate;
+    LongRec(Result).Lo := LastModFileTime;
+  end;
 {$ENDIF}
 end;
 { -------------------------------------------------------------------------- }
@@ -1457,6 +1470,7 @@ end;
 { -------------------------------------------------------------------------- }
 procedure TAbZipItem.LoadFromStream( Stream : TStream );
 var
+  Tag, TagSize,
   FieldSize: Word;
   FieldStream: TStream;
   InfoZipField: PInfoZipUnicodePathRec;
@@ -1485,25 +1499,14 @@ begin
     SetString(UnicodeName, XceedField.UnicodeName, XceedField.Length);
     FFileName := Utf16ToUtf8(UnicodeName);
   end
-  else
-  begin
+  else begin
     SystemCode := HostOS;
-    {$IF DEFINED(MSWINDOWS)}
-    if (GetACP <> GetOEMCP) and (SystemCode = hosDOS) then
-      FFileName := CeOemToUtf8(FItemInfo.FileName)
-    else if (GetACP <> GetOEMCP) and CeTryDecode(FItemInfo.FileName, CP_OEMCP, UnicodeName) then
-      FFileName := Utf16ToUtf8(UnicodeName)
-    else if (SystemCode = hosNTFS) or (SystemCode = hosWinNT) then
-      FFileName := CeAnsiToUtf8(FItemInfo.FileName)
-    else
-    {$ELSEIF DEFINED(UNIX)}
     if (SystemCode = hosDOS) then
       FFileName := CeOemToUtf8(FItemInfo.FileName)
     else if (SystemCode = hosNTFS) or (SystemCode = hosWinNT) then
       FFileName := CeAnsiToUtf8(FItemInfo.FileName)
     else
-    {$ENDIF}
-      FFileName := FItemInfo.FileName;
+      FFileName := CeSysToUtf8(FItemInfo.FileName);
   end;
 
   { read ZIP64 extended header }
@@ -1527,6 +1530,45 @@ begin
 
   LastModFileTime := FItemInfo.LastModFileTime;
   LastModFileDate := FItemInfo.LastModFileDate;
+  // NTFS Extra Field
+  if FItemInfo.ExtraField.GetStream(Ab_NTFSSubfieldID, FieldStream) then
+  try
+    FieldSize:= FieldStream.Size;
+    if (FieldSize >= 32) then
+    begin
+      // Skip Reserved
+      Dec(FieldSize, 4);
+      FieldStream.Seek(4, soBeginning);
+      while (FieldSize > 4) do
+      begin
+        Dec(FieldSize, 4);
+        Tag:= FieldStream.ReadWord;
+        TagSize:= FieldStream.ReadWord;
+        TagSize:= Min(TagSize, FieldSize);
+        if (Tag = $0001) and (TagSize >= 24) then
+        begin
+          FDateTime:= WinFileTimeToDateTime(TWinFileTime(FieldStream.ReadQWord));
+          Break;
+        end;
+        Dec(FieldSize, TagSize);
+      end;
+    end;
+  finally
+    FieldStream.Free;
+  end
+  // Extended Timestamp Extra Field
+  else if FItemInfo.ExtraField.GetStream(Ab_InfoZipTimestampSubfieldID, FieldStream) then
+  try
+    FieldSize:= FieldStream.Size;
+    if (FieldSize >= 5) then
+    begin
+      Tag:= FieldStream.ReadByte;
+      if (Tag and $01 <> 0) then
+        FDateTime:= UnixFileTimeToDateTime(TUnixFileTime(FieldStream.ReadDWord));
+    end;
+  finally
+    FieldStream.Free;
+  end;
   FDiskFileName := FileName;
   AbUnfixName( FDiskFileName );
   Action := aaNone;
@@ -1631,6 +1673,7 @@ procedure TAbZipItem.SetFileName(const Value : string );
 var
   {$IFDEF MSWINDOWS}
   AnsiName : AnsiString;
+  UnicName : UnicodeString;
   {$ENDIF}
   UTF8Name : AnsiString;
   FieldSize : Word;
@@ -1642,9 +1685,10 @@ begin
   {$IFDEF MSWINDOWS}
   FItemInfo.IsUTF8 := False;
   HostOS := hosDOS;
-  if CeTryEncode(UTF8Decode(Value), CP_OEMCP, False, AnsiName) then
+  UnicName := UTF8Decode(Value);
+  if CeTryEncode(UnicName, CP_OEMCP, False, AnsiName) then
     {no-op}
-  else if (GetACP <> GetOEMCP) and CeTryEncode(UTF8Decode(Value), CP_ACP, False, AnsiName) then
+  else if (GetACP <> GetOEMCP) and CeTryEncode(UnicName, CP_ACP, False, AnsiName) then
     HostOS := hosWinNT
   else
     FItemInfo.IsUTF8 := True;

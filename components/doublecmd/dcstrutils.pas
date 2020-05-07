@@ -3,7 +3,7 @@
    -------------------------------------------------------------------------
    Useful functions dealing with strings.
    
-   Copyright (C) 2006-2019  Alexander Koblov (alexx2000@mail.ru)
+   Copyright (C) 2006-2020  Alexander Koblov (alexx2000@mail.ru)
    Copyright (C) 2012       Przemyslaw Nagay (cobines@gmail.com)
 
    This program is free software; you can redistribute it and/or modify
@@ -243,6 +243,10 @@ function ApplyRenameMask(aFileName: String; NameMask: String; ExtMask: String): 
 }
 function NumCountChars(const Char: Char; const S: String): Integer;
 {en
+   Trim the leading and ending spaces
+}
+function TrimPath(const Path: String): String;
+{en
    Remove last line ending in text
    @param(sText Text)
    @param(TextLineBreakStyle Text line break style)
@@ -363,7 +367,7 @@ function EscapeNoQuotes(const Str: String): String;
 implementation
 
 uses
-  DCOSUtils;
+  DCOSUtils, StrUtils;
 
 function NormalizePathDelimiters(const Path: String): String;
 {$IFDEF UNIX}
@@ -953,6 +957,25 @@ begin
       if S[I] = Char then Inc(Result);
 end;
 
+function TrimPath(const Path: String): String;
+const
+  WhiteSpace = [#0..' '{$IFDEF MSWINDOWS},'.'{$ENDIF}];
+var
+  Index: Integer;
+  S: TStringArray;
+begin
+  S:= TrimRightSet(Path, WhiteSpace).Split([PathDelim]);
+  if Length(S) = 0 then
+    Result:= EmptyStr
+  else begin
+    Result:= TrimRightSet(S[0], WhiteSpace);
+    for Index := Low(S) + 1 to High(S) do
+    begin
+      Result+= PathDelim + TrimRightSet(S[Index], WhiteSpace);
+    end;
+  end;
+end;
+
 function TrimRightLineEnding(const sText: String; TextLineBreakStyle: TTextLineBreakStyle): String;
 const
   TextLineBreakArray: array[TTextLineBreakStyle] of Integer = (1, 2, 1);
@@ -1156,7 +1179,7 @@ var
 begin
   Len:= Length(S);
   SetLength(Result, 0);
-  for Finish:= 1 to Len - 1 do
+  for Finish:= 1 to Len do
   begin
     if S[Finish] = Delimiter then
     begin

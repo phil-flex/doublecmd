@@ -59,7 +59,6 @@ uses
   fHackForm,
   fMain,
   uAccentsUtils,
-  fMkDir,
   dmHigh, dmHelpManager, dmCommonData,
   uShowMsg,
   uCryptProc,
@@ -88,6 +87,7 @@ uses
 {$ENDIF}
 
 {$IF DEFINED(MSWINDOWS)}
+{$SETPEOPTFLAGS $140}
 {$R doublecmd.manifest.rc}
 {$ENDIF}
 
@@ -205,7 +205,6 @@ begin
       Application.CreateForm(TdmHighl, dmHighl); // highlighters
       Application.CreateForm(TdmComData, dmComData); // common data
       Application.CreateForm(TdmHelpManager, dmHelpMgr); // help manager
-      Application.CreateForm(TfrmMkDir, frmMkDir);  // 21.05.2009 - makedir form
 
       {$IF DEFINED(LCLGTK2) AND (lcl_fullversion >= 093100)}
       // LCLGTK2 uses Application.MainForm as the clipboard widget, however our
