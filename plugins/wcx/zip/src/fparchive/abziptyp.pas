@@ -171,7 +171,8 @@ type
     (cmStored, cmShrunk, cmReduced1, cmReduced2, cmReduced3,
      cmReduced4, cmImploded, cmTokenized, cmDeflated,
      cmEnhancedDeflated, cmDCLImploded, cmBzip2 = 12, cmLZMA = 14,
-     cmIBMTerse = 18, cmLZ77, cmXz = 95, cmJPEG = 96, cmWavPack = 97, cmPPMd);
+     cmIBMTerse = 18, cmLZ77, cmZstd = 93, cmXz = 95, cmJPEG = 96,
+     cmWavPack = 97, cmPPMd);
 
   TAbZipSupportedMethod =
     (smStored, smDeflated, smBestMethod);
@@ -631,6 +632,7 @@ uses
   SysUtils,
   LazUTF8,
   DCOSUtils,
+  DCStrUtils,
   DCBasicTypes,
   DCClassesUtf8,
   DCDateTimeUtils,
@@ -1482,7 +1484,7 @@ begin
   FItemInfo.LoadFromStream( Stream );
 
   { decode filename (ANSI/OEM/UTF-8) }
-  if FItemInfo.IsUTF8 then
+  if FItemInfo.IsUTF8 and (FindInvalidUTF8Character(PAnsiChar(FItemInfo.FileName), Length(FItemInfo.FileName)) < 0) then
     FFileName := FItemInfo.FileName
   else if FItemInfo.ExtraField.Get(Ab_InfoZipUnicodePathSubfieldID, Pointer(InfoZipField), FieldSize) and
      (FieldSize > SizeOf(TInfoZipUnicodePathRec)) and
@@ -2180,6 +2182,8 @@ var
   WorkingStream      : TAbVirtualMemoryStream;
   CurrItem           : TAbZipItem;
   Progress           : Byte;
+  ATempName          : String;
+  CreateArchive      : Boolean;
 begin
   if Count = 0 then
     Exit;
@@ -2204,8 +2208,14 @@ begin
     TAbSpanWriteStream(NewStream).OnRequestImage := DoRequestImage;
   end
   else begin
-    NewStream := TAbVirtualMemoryStream.Create;
-    TAbVirtualMemoryStream(NewStream).SwapFileDirectory := FTempDir;
+    CreateArchive:= FOwnsStream and (FStream.Size = 0) and (FStream is TFileStreamEx);
+    if CreateArchive then
+      NewStream := FStream
+    else begin
+      ATempName := Copy(ExtractOnlyFileName(FArchiveName), 1, MAX_PATH div 2) + '~';
+      ATempName := GetTempName(ExtractFilePath(FArchiveName) + ATempName) + '.tmp';
+      NewStream := TFileStreamEx.Create(ATempName, fmCreate or fmShareDenyWrite);
+    end;
   end;
 
   try {NewStream}
@@ -2393,15 +2403,25 @@ begin
       if (FStream is TMemoryStream) then
         TMemoryStream(FStream).LoadFromStream(NewStream)
       else begin
-        if FOwnsStream then begin
+        if FOwnsStream then
+        begin
           {need new stream to write}
-          FreeAndNil(FStream);
-          FStream := TFileStreamEx.Create(FArchiveName,
-            fmOpenReadWrite or fmShareDenyWrite);
+          if CreateArchive then
+            NewStream := nil
+          else begin
+            FreeAndNil(FStream);
+            FreeAndNil(NewStream);
+            if (mbDeleteFile(FArchiveName) and mbRenameFile(ATempName, FArchiveName)) then
+              FStream := TFileStreamEx.Create(FArchiveName, fmOpenReadWrite or fmShareDenyWrite)
+            else
+              RaiseLastOSError;
+          end;
+        end
+        else begin
+          FStream.Size := 0;
+          FStream.Position := 0;
+          FStream.CopyFrom(NewStream, 0)
         end;
-        FStream.Size := 0;
-        FStream.Position := 0;
-        FStream.CopyFrom(NewStream, 0)
       end;
     end;
 
@@ -2416,7 +2436,8 @@ begin
     DoArchiveSaveProgress( 100, Abort );
     DoArchiveProgress( 100, Abort );
   finally {NewStream}
-    NewStream.Free;
+    if (FStream <> NewStream) then
+      NewStream.Free;
   end;
 end;
 { -------------------------------------------------------------------------- }

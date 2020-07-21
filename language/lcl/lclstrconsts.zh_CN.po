@@ -1,289 +1,98 @@
-﻿msgid ""
+msgid ""
 msgstr ""
-"Project-Id-Version: Double Commander 0.8.4 beta\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-05-18 10:00+0800\n\n"
-"PO-Revision-Date: 2018-08-20 20:00+0800\n"
-"Last-Translator: iYoung <iyoung@126.com>\n"
-"Language-Team: Chinese <iyoung@126.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Native-Language: 简体中文\n"
+"Project-Id-Version: X-1.9\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: 郑建平@夏宗萍 aka  robsean <robsean@126.com>\n"
+"Language-Team: \n"
+"Language: zh_CN\n"
+"X-Generator: Poedit 1.8.7.1\n"
+"X-Poedit-SourceCharset: UTF-8\n"
 
 #: lclstrconsts.hhshelpbrowsernotexecutable
-msgid "Browser %s%s%s not executable."
-msgstr "浏览器 %s%s%s 不是可执行程序."
+msgid "Browser \"%s\" not executable."
+msgstr "浏览器\"%s\"不是可执行程序."
 
 #: lclstrconsts.hhshelpbrowsernotfound
-msgid "Browser %s%s%s not found."
-msgstr "浏览器 %s%s%s 未找到."
+msgid "Browser \"%s\" not found."
+msgstr "浏览器\"%s\"未找到."
 
 #: lclstrconsts.hhshelperrorwhileexecuting
-msgid "Error while executing %s%s%s:%s%s"
-msgstr "执行 %s%s%s 时发生错误:%s%s "
+msgid "Error while executing \"%s\":%s%s"
+msgstr "当执行\"%s\":%s%s时发生错误"
 
 #: lclstrconsts.hhshelpnohtmlbrowserfound
 msgid "Unable to find a HTML browser."
-msgstr "无法找到网页浏览器"
+msgstr "不能找到一个HTML浏览器."
 
 #: lclstrconsts.hhshelpnohtmlbrowserfoundpleasedefineone
 msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> Help Options"
-msgstr "未找到网页浏览器。%s请在 工具 -> 选项 -> 帮助 -> 帮助选项 中定义一个"
+msgstr "没有HTML浏览器找到.%s请定义一个在  工具->选项->帮助->帮助选项"
 
 #: lclstrconsts.hhshelpthehelpdatabasewasunabletofindfile
-msgid "The help database %s%s%s was unable to find file %s%s%s."
-msgstr "帮助数据库 %s%s%s 无法找到文件 %s%s%s。"
+msgid "The help database \"%s\" was unable to find file \"%s\"."
+msgstr ""
 
 #: lclstrconsts.hhshelpthemacrosinbrowserparamswillbereplacedbytheurl
 msgid "The macro %s in BrowserParams will be replaced by the URL."
-msgstr "浏览框里的宏 %s 将被网址所替代."
+msgstr "浏览框里的宏 %s 将被URL所替代."
 
 #: lclstrconsts.ifsalt
 msgid "Alt"
-msgstr ""
+msgstr "Alt"
 
 #: lclstrconsts.ifsctrl
 msgid "Ctrl"
-msgstr ""
-
-#: lclstrconsts.ifsvk_accept
-msgid "Accept"
-msgstr "接受"
-
-#: lclstrconsts.ifsvk_apps
-msgid "application key"
-msgstr "应用程序快捷键"
-
-#: lclstrconsts.ifsvk_back
-msgid "Backspace"
-msgstr ""
-
-#: lclstrconsts.ifsvk_cancel
-msgctxt "lclstrconsts.ifsvk_cancel"
-msgid "Cancel"
-msgstr "取消"
-
-#: lclstrconsts.ifsvk_capital
-msgid "Capital"
-msgstr "大写"
-
-#: lclstrconsts.ifsvk_clear
-msgid "Clear"
-msgstr "清除"
+msgstr "Ctrl"
 
 #: lclstrconsts.ifsvk_cmd
 msgid "Cmd"
-msgstr "命令"
-
-#: lclstrconsts.ifsvk_control
-msgid "Control"
-msgstr "控件"
-
-#: lclstrconsts.ifsvk_convert
-msgid "Convert"
-msgstr "转换"
-
-#: lclstrconsts.ifsvk_delete
-msgctxt "lclstrconsts.ifsvk_delete"
-msgid "Delete"
-msgstr "删除"
-
-#: lclstrconsts.ifsvk_down
-msgctxt "lclstrconsts.ifsvk_down"
-msgid "Down"
-msgstr ""
-
-#: lclstrconsts.ifsvk_end
-msgctxt "lclstrconsts.ifsvk_end"
-msgid "End"
-msgstr ""
-
-#: lclstrconsts.ifsvk_escape
-msgid "Escape"
-msgstr ""
-
-#: lclstrconsts.ifsvk_execute
-msgid "Execute"
-msgstr "执行"
-
-#: lclstrconsts.ifsvk_final
-msgid "Final"
-msgstr ""
-
-#: lclstrconsts.ifsvk_hanja
-msgid "Hanja"
-msgstr ""
+msgstr "Cmd"
 
 #: lclstrconsts.ifsvk_help
+msgctxt "lclstrconsts.ifsvk_help"
 msgid "Help"
 msgstr "帮助"
-
-#: lclstrconsts.ifsvk_home
-msgctxt "lclstrconsts.ifsvk_home"
-msgid "Home"
-msgstr ""
-
-#: lclstrconsts.ifsvk_insert
-msgctxt "lclstrconsts.ifsvk_insert"
-msgid "Insert"
-msgstr ""
-
-#: lclstrconsts.ifsvk_junja
-msgid "Junja"
-msgstr ""
-
-#: lclstrconsts.ifsvk_kana
-msgid "Kana"
-msgstr ""
-
-#: lclstrconsts.ifsvk_lbutton
-msgid "Mouse Button Left"
-msgstr "鼠标左键"
-
-#: lclstrconsts.ifsvk_left
-msgctxt "lclstrconsts.ifsvk_left"
-msgid "Left"
-msgstr "左"
-
-#: lclstrconsts.ifsvk_lwin
-msgid "left windows key"
-msgstr "左 Win 键"
-
-#: lclstrconsts.ifsvk_mbutton
-msgid "Mouse Button Middle"
-msgstr "鼠标中键"
-
-#: lclstrconsts.ifsvk_menu
-msgctxt "lclstrconsts.ifsvk_menu"
-msgid "Menu"
-msgstr "菜单"
 
 #: lclstrconsts.ifsvk_meta
 msgid "Meta"
 msgstr ""
 
-#: lclstrconsts.ifsvk_modechange
-msgid "Mode Change"
-msgstr "模式更改"
-
-#: lclstrconsts.ifsvk_next
-msgctxt "lclstrconsts.ifsvk_next"
-msgid "Next"
-msgstr "下一个"
-
-#: lclstrconsts.ifsvk_nonconvert
-msgid "Nonconvert"
-msgstr "不转换"
-
-#: lclstrconsts.ifsvk_numlock
-msgid "Numlock"
-msgstr ""
-
-#: lclstrconsts.ifsvk_numpad
-msgid "Numpad %d"
-msgstr "数字键盘 %d"
-
-#: lclstrconsts.ifsvk_pause
-msgid "Pause key"
-msgstr "暂停键"
-
-#: lclstrconsts.ifsvk_print
-msgid "Print"
-msgstr "打印"
-
-#: lclstrconsts.ifsvk_prior
-msgctxt "lclstrconsts.ifsvk_prior"
-msgid "Prior"
-msgstr ""
-
-#: lclstrconsts.ifsvk_rbutton
-msgid "Mouse Button Right"
-msgstr "鼠标右键"
-
-#: lclstrconsts.ifsvk_return
-msgid "Return"
-msgstr ""
-
-#: lclstrconsts.ifsvk_right
-msgctxt "lclstrconsts.ifsvk_right"
-msgid "Right"
-msgstr "右"
-
-#: lclstrconsts.ifsvk_rwin
-msgid "right windows key"
-msgstr "右 Win 键"
-
-#: lclstrconsts.ifsvk_scroll
-msgid "Scroll"
-msgstr ""
-
-#: lclstrconsts.ifsvk_select
-msgid "Select"
-msgstr "选择"
-
 #: lclstrconsts.ifsvk_shift
 msgid "Shift"
-msgstr ""
-
-#: lclstrconsts.ifsvk_snapshot
-msgid "Snapshot"
-msgstr "快照"
-
-#: lclstrconsts.ifsvk_space
-msgid "Space key"
-msgstr "空格键"
+msgstr "Shift"
 
 #: lclstrconsts.ifsvk_super
 msgid "Super"
-msgstr ""
-
-#: lclstrconsts.ifsvk_tab
-msgctxt "lclstrconsts.ifsvk_tab"
-msgid "Tab"
 msgstr ""
 
 #: lclstrconsts.ifsvk_unknown
 msgid "Unknown"
 msgstr "未知"
 
-#: lclstrconsts.ifsvk_up
-msgctxt "lclstrconsts.ifsvk_up"
-msgid "Up"
-msgstr "上方向键"
-
-#: lclstrconsts.liscannotexecute
-msgid "can not execute %s"
-msgstr "无法执行 %s"
-
-#: lclstrconsts.liscefilter
-msgid "(filter)"
-msgstr "（过滤器）"
-
 #: lclstrconsts.lislclresourcesnotfound
 msgctxt "lclstrconsts.lislclresourcesnotfound"
 msgid "Resource %s not found"
-msgstr "未找到资源 %s"
-
-#: lclstrconsts.lisprogramfilenotfound
-msgid "program file not found %s"
-msgstr "找不到程序文件 %s"
+msgstr "资源%s未找到"
 
 #: lclstrconsts.rs3ddkshadowcolorcaption
 msgid "3D Dark Shadow"
-msgstr "3D 阴影"
+msgstr "3D阴影"
 
 #: lclstrconsts.rs3dlightcolorcaption
 msgid "3D Light"
-msgstr "3D 光线"
+msgstr "3D光线"
 
 #: lclstrconsts.rsacontrolcannothaveitselfasparent
 msgid "A control can't have itself as a parent"
-msgstr "控件不能把自己设为父节点"
+msgstr ""
 
 #: lclstrconsts.rsactivebordercolorcaption
 msgid "Active Border"
-msgstr "活动边框"
+msgstr "活动边线"
 
 #: lclstrconsts.rsactivecaptioncolorcaption
 msgid "Active Caption"
@@ -295,11 +104,15 @@ msgstr "所有文件 (%s)|%s|%s"
 
 #: lclstrconsts.rsappworkspacecolorcaption
 msgid "Application Workspace"
-msgstr "程序工作区"
+msgstr "应用程序工作区"
 
 #: lclstrconsts.rsaquacolorcaption
 msgid "Aqua"
-msgstr "浅绿色"
+msgstr ""
+
+#: lclstrconsts.rsascannothaveasparent
+msgid "Class %s cannot have %s as parent."
+msgstr ""
 
 #: lclstrconsts.rsbackgroundcolorcaption
 msgid "Desktop"
@@ -356,7 +169,7 @@ msgstr "无法聚焦"
 
 #: lclstrconsts.rscanvasdoesnotallowdrawing
 msgid "Canvas does not allow drawing"
-msgstr "画布不允许绘图"
+msgstr "Canvas不允许画图"
 
 #: lclstrconsts.rscaptiontextcolorcaption
 msgid "Caption Text"
@@ -368,23 +181,23 @@ msgstr "区分大小写"
 
 #: lclstrconsts.rscontrolclasscantcontainchildclass
 msgid "Control of class '%s' can't have control of class '%s' as a child"
-msgstr "'%s' 类的控件不能带有作为子项的 '%s' 类的控件"
+msgstr ""
+
+#: lclstrconsts.rscontrolhasnoparentformorframe
+msgid "Control '%s' has no parent form or frame"
+msgstr ""
 
 #: lclstrconsts.rscontrolhasnoparentwindow
 msgid "Control '%s' has no parent window"
-msgstr "'%s' 控件没有父窗口"
+msgstr ""
 
 #: lclstrconsts.rscontrolisnotaparent
 msgid "'%s' is not a parent of '%s'"
-msgstr "'%s' 不是 '%s' 的父项"
+msgstr ""
 
 #: lclstrconsts.rscreamcolorcaption
 msgid "Cream"
-msgstr "奶油色"
-
-#: lclstrconsts.rscreatinggdbcatchableerror
-msgid "Creating gdb catchable error:"
-msgstr "创建可捕捉的 GDB 时出错"
+msgstr ""
 
 #: lclstrconsts.rscursor
 msgid "Cursor"
@@ -404,7 +217,7 @@ msgstr "权限 用户 组 大小 日期 时间"
 
 #: lclstrconsts.rsdeleterecord
 msgid "Delete record?"
-msgstr "删除记录？"
+msgstr "删除记?"
 
 #: lclstrconsts.rsdeleterecordhint
 msgctxt "lclstrconsts.rsdeleterecordhint"
@@ -417,15 +230,19 @@ msgstr "方向"
 
 #: lclstrconsts.rsdirectory
 msgid "&Directory"
-msgstr "文件夹(&D)"
+msgstr "目录(&D)"
 
-#: lclstrconsts.rsdocking
-msgid "Docking"
-msgstr "停靠"
+#: lclstrconsts.rsdocopy
+msgid "Copy"
+msgstr "复制"
+
+#: lclstrconsts.rsdopaste
+msgid "Paste"
+msgstr "粘贴"
 
 #: lclstrconsts.rsduplicateiconformat
 msgid "Duplicate icon format."
-msgstr "重复的图标格式。"
+msgstr ""
 
 #: lclstrconsts.rseditrecordhint
 msgid "Edit"
@@ -433,7 +250,7 @@ msgstr "编辑"
 
 #: lclstrconsts.rsentirescope
 msgid "Search entire file"
-msgstr "搜索整个文件"
+msgstr ""
 
 #: lclstrconsts.rserror
 msgctxt "lclstrconsts.rserror"
@@ -442,23 +259,15 @@ msgstr "错误"
 
 #: lclstrconsts.rserrorcreatingdevicecontext
 msgid "Error creating device context for %s.%s"
-msgstr "为 %s.%s 创建设备上下文菜单时出错。"
-
-#: lclstrconsts.rserrorinlcl
-msgid "ERROR in LCL: "
-msgstr "LCL 中的错误："
+msgstr ""
 
 #: lclstrconsts.rserroroccurredinataddressframe
 msgid "Error occurred in %s at %sAddress %s%s Frame %s"
-msgstr "%s 中 %s 处发生错误 地址 %s%s 窗体 %s"
-
-#: lclstrconsts.rserrorreadingproperty
-msgid "Error reading %s%s%s: %s"
-msgstr "读取 %s%s%s 时出错: %s"
+msgstr ""
 
 #: lclstrconsts.rserrorwhilesavingbitmap
 msgid "Error while saving bitmap."
-msgstr "保存位图时出错。"
+msgstr "保存位图时错误."
 
 #: lclstrconsts.rsexception
 msgid "Exception"
@@ -466,15 +275,15 @@ msgstr "异常"
 
 #: lclstrconsts.rsfddirectorymustexist
 msgid "Directory must exist"
-msgstr "文件夹必须存在"
+msgstr "目录必须存在"
 
 #: lclstrconsts.rsfddirectorynotexist
 msgid "The directory \"%s\" does not exist."
-msgstr "文件夹 \"%s\" 不存在。"
+msgstr "目录\"%s\"不存在."
 
 #: lclstrconsts.rsfdfilealreadyexists
 msgid "The file \"%s\" already exists. Overwrite ?"
-msgstr "文件 \"%s\" 已经存在。要替换吗？"
+msgstr "文件\"%s\"已经存在.覆盖?"
 
 #: lclstrconsts.rsfdfilemustexist
 msgid "File must exist"
@@ -482,27 +291,27 @@ msgstr "文件必须存在"
 
 #: lclstrconsts.rsfdfilenotexist
 msgid "The file \"%s\" does not exist."
-msgstr "文件 \"%s\" 不存在。"
+msgstr "文件\"%s\"不存在."
 
 #: lclstrconsts.rsfdfilereadonly
 msgid "The file \"%s\" is not writable."
-msgstr "文件 \"%s\" 不可写入。"
+msgstr "文件\"%s\"不可写."
 
 #: lclstrconsts.rsfdfilereadonlytitle
 msgid "File is not writable"
-msgstr "文件不可写入"
+msgstr "文件不可写"
 
 #: lclstrconsts.rsfdfilesaveas
 msgid "Save file as"
-msgstr "文件另存为"
+msgstr "保存文件为"
 
 #: lclstrconsts.rsfdopenfile
 msgid "Open existing file"
-msgstr "打开现有文件"
+msgstr "打开存在的文件"
 
 #: lclstrconsts.rsfdoverwritefile
 msgid "Overwrite file ?"
-msgstr "覆盖文件吗？"
+msgstr "覆盖文件?"
 
 #: lclstrconsts.rsfdpathmustexist
 msgid "Path must exist"
@@ -510,19 +319,24 @@ msgstr "路径必须存在"
 
 #: lclstrconsts.rsfdpathnoexist
 msgid "The path \"%s\" does not exist."
-msgstr "路径 \"%s\" 不存在。"
+msgstr "路径\"%s\"不存在."
 
 #: lclstrconsts.rsfdselectdirectory
 msgid "Select Directory"
-msgstr "选择文件夹"
+msgstr "选择目录"
 
 #: lclstrconsts.rsfileinfofilenotfound
 msgid "(file not found: \"%s\")"
-msgstr "（未找到文件: \"%s\"）"
+msgstr "(文件未找到:\"%s\")"
 
 #: lclstrconsts.rsfileinformation
 msgid "File information"
 msgstr "文件信息"
+
+#: lclstrconsts.rsfilter
+msgctxt "lclstrconsts.rsfilter"
+msgid "(filter)"
+msgstr "(过滤器)"
 
 #: lclstrconsts.rsfind
 msgid "Find"
@@ -534,31 +348,31 @@ msgstr "查找更多"
 
 #: lclstrconsts.rsfirstrecordhint
 msgid "First"
-msgstr "首先"
+msgstr "第一个"
 
 #: lclstrconsts.rsfixedcolstoobig
-msgid "FixedCols can't be >= ColCount"
-msgstr "FixedCols 不能 >= ColCount"
+msgid "FixedCols can't be > ColCount"
+msgstr "FixedCols不能>ColCount"
 
 #: lclstrconsts.rsfixedrowstoobig
-msgid "FixedRows can't be >= RowCount"
-msgstr "FixedRows 不能 >= RowCount"
+msgid "FixedRows can't be > RowCount"
+msgstr "FixedRows不能> RowCount"
 
 #: lclstrconsts.rsformcolorcaption
 msgid "Form"
-msgstr "表单"
+msgstr "窗体"
 
 #: lclstrconsts.rsformresourcesnotfoundforresourcelessformscreatenew
 msgid "Form resource %s not found. For resourceless forms CreateNew constructor must be used. See the global variable RequireDerivedFormResource."
-msgstr "找不到表单资源 %s。对于无资源表单, 必须使用 CreateNew 构造函数。请参见全局变量 RequireDerivedFormResource。"
+msgstr ""
 
 #: lclstrconsts.rsformstreamingerror
 msgid "Form streaming \"%s\" error: %s"
-msgstr "表单流 \"%s\" 错误: %s"
+msgstr "窗体流\"%s\"错误:%s"
 
 #: lclstrconsts.rsforward
 msgid "Forward"
-msgstr "前进"
+msgstr "向前"
 
 #: lclstrconsts.rsfuchsiacolorcaption
 msgid "Fuchsia"
@@ -566,11 +380,11 @@ msgstr "紫红色"
 
 #: lclstrconsts.rsgdkoptiondebug
 msgid "--gdk-debug flags     Turn on specific GDK trace/debug messages."
-msgstr "--gdk-debug flags     打开 GDK 跟踪/调试信息。"
+msgstr "--gdk-debug flags     打开GDK 跟踪/调试信息."
 
 #: lclstrconsts.rsgdkoptionnodebug
 msgid "--gdk-no-debug flags  Turn off specific GDK trace/debug messages."
-msgstr "--gdk-no-debug flags  关闭 GDK 跟踪/调试信息。"
+msgstr "--gdk-no-debug flags  关闭GDK跟踪/调试信息."
 
 #: lclstrconsts.rsgif
 msgid "Graphics Interchange Format"
@@ -578,19 +392,19 @@ msgstr "图形交换格式"
 
 #: lclstrconsts.rsgoptionfatalwarnings
 msgid "--g-fatal-warnings    Warnings and errors generated by Gtk+/GDK will halt the application."
-msgstr "--g-fatal-warnings   Gtk+/GDK 产生的警告和错误将终止应用程序。"
+msgstr "--g-fatal-warnings   由Gtk+/GDK 产生的警告和错误终止应用程序."
 
 #: lclstrconsts.rsgradientactivecaptioncolorcaption
 msgid "Gradient Active Caption"
-msgstr "渐变活动标题"
+msgstr ""
 
 #: lclstrconsts.rsgradientinactivecaptioncolorcaption
 msgid "Gradient Inactive Caption"
-msgstr "渐变非活动标题"
+msgstr ""
 
 #: lclstrconsts.rsgraphic
 msgid "Graphic"
-msgstr "图形"
+msgstr ""
 
 #: lclstrconsts.rsgraycolorcaption
 msgid "Gray"
@@ -604,73 +418,87 @@ msgstr "灰色文本"
 msgid "Green"
 msgstr "绿色"
 
-#: lclstrconsts.rsgridfiledoesnotexists
-msgid "Grid file doesn't exists"
+#: lclstrconsts.rsgridfiledoesnotexist
+msgid "Grid file doesn't exist"
 msgstr "网格文件不存在"
+
+#: lclstrconsts.rsgridhasnocols
+msgid "Cannot insert rows into a grid when it has no columns"
+msgstr ""
+
+#: lclstrconsts.rsgridhasnorows
+msgid "Cannot insert columns into a grid when it has no rows"
+msgstr ""
 
 #: lclstrconsts.rsgridindexoutofrange
 msgid "Grid index out of range."
-msgstr "网格索引越界。"
+msgstr "网格索引越界."
 
 #: lclstrconsts.rsgroupindexcannotbelessthanprevious
 msgid "GroupIndex cannot be less than a previous menu item's GroupIndex"
-msgstr "GroupIndex 不能小于之前菜单项目的 GroupIndex"
+msgstr ""
 
 #: lclstrconsts.rsgtkfilter
 msgid "Filter:"
-msgstr "过滤器："
+msgstr "过滤器:"
 
 #: lclstrconsts.rsgtkhistory
 msgid "History:"
-msgstr "历史："
+msgstr "历史:"
 
 #: lclstrconsts.rsgtkoptionclass
 msgid "--class classname     Following Xt conventions, the class of a program is the program name with the initial character capitalized. For example, the classname for gimp is \"Gimp\". If --class is specified, the class of the program will be set to \"classname\"."
-msgstr "--class classname     按照 Xt 约定，程序的类是首字母大写的程序名。比如，gimp 的类是 \"Gimp\"。如果指定了 --class，程序的类会被设为 \"classname\"。"
+msgstr ""
 
 #: lclstrconsts.rsgtkoptiondebug
 msgid "--gtk-debug flags     Turn on specific Gtk+ trace/debug messages."
-msgstr "--gtk-debug flags     打开 Gtk+ 跟踪/调试信息。"
+msgstr "--gtk-debug flags     打开Gtk+跟踪/调试信息."
 
 #: lclstrconsts.rsgtkoptiondisplay
 msgid "--display h:s:d       Connect to the specified X server, where \"h\" is the hostname, \"s\" is the server number (usually 0), and \"d\" is the display number (typically omitted). If --display is not specified, the DISPLAY environment variable is used."
-msgstr "--display h:s:d       连接到指定的 X 服务器，其中 \"h\" 是主机名，\"s\" 是服务器编号（通常为 0），\"d\" 是显示编号（通常省略）。如果没有指定 --display ，将会使用 DISPLAY 环境变量。"
+msgstr ""
 
 #: lclstrconsts.rsgtkoptionmodule
 msgid "--gtk-module module   Load the specified module at startup."
-msgstr "--gtk-module module   启动时载入指定模块"
+msgstr "--gtk-module module   启动时加载指定模块."
 
 #: lclstrconsts.rsgtkoptionname
 msgid "--name programe       Set program name to \"progname\". If not specified, program name will be set to ParamStrUTF8(0)."
-msgstr "--name programe       将程序名称设置为 \"progname\"。如果未指定，程序名称将设置为 ParamStrUTF8(0)。"
+msgstr ""
 
 #: lclstrconsts.rsgtkoptionnodebug
 msgid "--gtk-no-debug flags  Turn off specific Gtk+ trace/debug messages."
-msgstr "--gtk-no-debug flags  关闭 Gtk+ 跟踪/调试信息."
+msgstr "--gtk-no-debug flags  关闭Gtk+跟踪/调试信息."
 
 #: lclstrconsts.rsgtkoptionnotransient
 msgid "--lcl-no-transient    Do not set transient order for modal forms"
-msgstr "--lcl-no-transient    不要为模态表单设定临时顺序"
+msgstr ""
 
 #: lclstrconsts.rsgtkoptionnoxshm
 msgid "--no-xshm             Disable use of the X Shared Memory Extension."
-msgstr "--no-xshm             禁止使用 X 共享内存扩展。"
+msgstr "--no-xshm             禁止使用 X共享内存扩展。"
 
 #: lclstrconsts.rsgtkoptionsync
 msgid "--sync                Call XSynchronize (display, True) after the Xserver connection has been established. This makes debugging X protocol errors easier, because X request buffering will be disabled and X errors will be received immediately after the protocol request that generated the error has been processed by the X server."
-msgstr "--sync                建立 Xserver 连接后, 调用 XSynchronize (display, True) 。这使得调试 X 协议错误更容易，因为 X 请求缓冲将被禁用，并且在 X 服务器处理了生成错误的协议请求之后，将立即接收到 X 错误。"
+msgstr ""
+
+#: lclstrconsts.rshelp
+#, fuzzy
+msgctxt "lclstrconsts.rshelp"
+msgid "Help"
+msgstr "帮助"
 
 #: lclstrconsts.rshelpalreadyregistered
 msgid "%s: Already registered"
-msgstr "%s: 已经注册"
+msgstr "%s:已经注册"
 
 #: lclstrconsts.rshelpcontextnotfound
 msgid "A help database was found for this topic, but this topic was not found"
-msgstr "找到此主题的帮助数据库，但找不到此主题"
+msgstr ""
 
 #: lclstrconsts.rshelpdatabasenotfound
 msgid "There is no help database installed for this topic"
-msgstr "没有为此主题安装帮助数据库"
+msgstr ""
 
 #: lclstrconsts.rshelperror
 msgid "Help Error"
@@ -678,63 +506,63 @@ msgstr "帮助错误"
 
 #: lclstrconsts.rshelphelpcontextnotfound
 msgid "Help context %s not found."
-msgstr "未找到帮助上下文 %s。"
+msgstr "帮助上下文%s未找到."
 
 #: lclstrconsts.rshelphelpcontextnotfoundindatabase
-msgid "Help context %s not found in Database %s%s%s."
-msgstr "没有找到 %s 的帮助内容（在数据库 %s%s%s 中）。"
+msgid "Help context %s not found in Database \"%s\"."
+msgstr ""
 
 #: lclstrconsts.rshelphelpdatabasedidnotfoundaviewerforahelppageoftype
-msgid "Help Database %s%s%s did not found a viewer for a help page of type %s"
-msgstr "帮助数据库 %s%s%s 中未找到可以阅读帮助页中 %s 类型的查看器"
+msgid "Help Database \"%s\" did not find a viewer for a help page of type %s"
+msgstr ""
 
 #: lclstrconsts.rshelphelpdatabasenotfound
-msgid "Help Database %s%s%s not found"
-msgstr "未找到帮助数据库 %s%s%s"
+msgid "Help Database \"%s\" not found"
+msgstr ""
 
 #: lclstrconsts.rshelphelpfordirectivenotfound
-msgid "Help for directive %s%s%s not found."
-msgstr "未找到指令 %s%s%s 的帮助。"
+msgid "Help for directive \"%s\" not found."
+msgstr ""
 
 #: lclstrconsts.rshelphelpfordirectivenotfoundindatabase
-msgid "Help for directive %s%s%s not found in Database %s%s%s."
-msgstr "未找到关于指令 %s%s%s 的帮助（在数据库 %s%s%s 中）。"
+msgid "Help for directive \"%s\" not found in Database \"%s\"."
+msgstr ""
 
 #: lclstrconsts.rshelphelpkeywordnotfound
-msgid "Help keyword %s%s%s not found."
-msgstr "未找到帮助中的关键字 %s%s%s。"
+msgid "Help keyword \"%s\" not found."
+msgstr "帮助关键字\"%s\"未找到"
 
 #: lclstrconsts.rshelphelpkeywordnotfoundindatabase
-msgid "Help keyword %s%s%s not found in Database %s%s%s."
-msgstr "未找到帮助中的关键字 %s%s%s（在数据库 %s%s%s 中）。"
+msgid "Help keyword \"%s\" not found in Database \"%s\"."
+msgstr "帮助关键字\"%s\"未找到在数据库\"%s\"."
 
 #: lclstrconsts.rshelphelpnodehasnohelpdatabase
-msgid "Help node %s%s%s has no Help Database"
-msgstr "帮助节点 %s%s%s 没有帮助数据库"
+msgid "Help node \"%s\" has no Help Database"
+msgstr ""
 
 #: lclstrconsts.rshelpnohelpfoundforsource
 msgid "No help found for line %d, column %d of %s."
-msgstr "%s 中未找到第 %d 行、第 %d 列相关帮助。"
+msgstr ""
 
 #: lclstrconsts.rshelpnohelpnodesavailable
 msgid "No help entries available for this topic"
-msgstr "没有有效的帮助节点"
+msgstr ""
 
 #: lclstrconsts.rshelpnotfound
 msgid "No help found for this topic"
-msgstr "未找到此主题的帮助"
+msgstr "没有帮助找到对于这个主题(topic)"
 
 #: lclstrconsts.rshelpnotregistered
 msgid "%s: Not registered"
-msgstr "%s: 未注册"
+msgstr "%s: 没有注册"
 
 #: lclstrconsts.rshelpselectorerror
 msgid "Help Selector Error"
 msgstr "帮助选择器错误"
 
 #: lclstrconsts.rshelpthereisnoviewerforhelptype
-msgid "There is no viewer for help type %s%s%s"
-msgstr "没有用于帮助类型 %s%s%s 的查看器"
+msgid "There is no viewer for help type \"%s\""
+msgstr ""
 
 #: lclstrconsts.rshelpviewererror
 msgid "Help Viewer Error"
@@ -742,7 +570,7 @@ msgstr "帮助查看器错误"
 
 #: lclstrconsts.rshelpviewernotfound
 msgid "No viewer was found for this type of help content"
-msgstr "未找到此类帮助内容的查看器"
+msgstr ""
 
 #: lclstrconsts.rshighlightcolorcaption
 msgid "Highlight"
@@ -754,7 +582,7 @@ msgstr "高亮文本"
 
 #: lclstrconsts.rshotlightcolorcaption
 msgid "Hot Light"
-msgstr "高光"
+msgstr ""
 
 #: lclstrconsts.rsicns
 msgid "Mac OS X Icon"
@@ -774,19 +602,19 @@ msgstr "图标图像必须有相同的格式"
 
 #: lclstrconsts.rsiconimageformatchange
 msgid "Cannot change format of icon image"
-msgstr "无法改变图标图像的格式"
+msgstr "不能改变图标图像的格式"
 
 #: lclstrconsts.rsiconimagesize
 msgid "Icon image must have the same size"
-msgstr "图标图像必须有同样的大小"
+msgstr "图标图像必须有相同的大小"
 
 #: lclstrconsts.rsiconimagesizechange
 msgid "Cannot change size of icon image"
-msgstr "无法改变图标图像的大小"
+msgstr "不能改变图标图像的大小"
 
 #: lclstrconsts.rsiconnocurrent
 msgid "Icon has no current image"
-msgstr "图标没有当前图像"
+msgstr "图标没有当前的图像"
 
 #: lclstrconsts.rsinactivebordercolorcaption
 msgid "Inactive Border"
@@ -804,19 +632,19 @@ msgstr "非活动标题"
 
 #: lclstrconsts.rsindexoutofbounds
 msgid "%s Index %d out of bounds 0 .. %d"
-msgstr "%s 的索引 %d 超出范围 0 .. %d"
+msgstr "%s索引%d超出范围0..%d"
 
 #: lclstrconsts.rsindexoutofrange
 msgid "Index Out of range Cell[Col=%d Row=%d]"
-msgstr "单元格索引超过范围 [列=%d 行=%d]"
+msgstr "单元格索引超过范围[列=%d 行=%d]"
 
 #: lclstrconsts.rsinfobkcolorcaption
 msgid "Info Background"
-msgstr "信息背景"
+msgstr "info底色"
 
 #: lclstrconsts.rsinfotextcolorcaption
 msgid "Info Text"
-msgstr "信息文本"
+msgstr "info文本"
 
 #: lclstrconsts.rsinsertrecordhint
 msgctxt "lclstrconsts.rsinsertrecordhint"
@@ -829,11 +657,11 @@ msgstr "无效日期: %s"
 
 #: lclstrconsts.rsinvaliddaterangehint
 msgid "Invalid Date: %s. Must be between %s and %s"
-msgstr "无效日期: %s。必须在 %s 和 %s 之间"
+msgstr "无效日期:%s.必须在%s和%s之间"
 
 #: lclstrconsts.rsinvalidformobjectstream
 msgid "invalid Form object stream"
-msgstr "无效的表单对象流"
+msgstr "无效窗体对象流"
 
 #: lclstrconsts.rsinvalidpropertyvalue
 msgid "Invalid property value"
@@ -841,19 +669,19 @@ msgstr "无效属性值"
 
 #: lclstrconsts.rsinvalidstreamformat
 msgid "Invalid stream format"
-msgstr "无效的流格式"
+msgstr "无效流格式"
 
 #: lclstrconsts.rsisalreadyassociatedwith
 msgid "%s is already associated with %s"
-msgstr "%s 已经与 %s 相关联"
+msgstr "%s已经与%s相关联"
 
 #: lclstrconsts.rsjpeg
 msgid "Joint Picture Expert Group"
-msgstr "联合图片专家组"
+msgstr "JPEG(联合图片专家组)"
 
 #: lclstrconsts.rslastrecordhint
 msgid "Last"
-msgstr "最后"
+msgstr "最后(Last)"
 
 #: lclstrconsts.rslimecolorcaption
 msgid "Lime"
@@ -861,19 +689,35 @@ msgstr "橙色"
 
 #: lclstrconsts.rslistindexexceedsbounds
 msgid "List index exceeds bounds (%d)"
-msgstr "列表索引超出界限 (%d)"
+msgstr "列表索引超过限制 (%d)"
 
-#: lclstrconsts.rslistmustbeempty
-msgid "List must be empty"
-msgstr "列表必须为空"
+#: lclstrconsts.rsmacosmenuhide
+msgid "Hide %s"
+msgstr ""
+
+#: lclstrconsts.rsmacosmenuhideothers
+msgid "Hide Others"
+msgstr ""
+
+#: lclstrconsts.rsmacosmenuquit
+msgid "Quit %s"
+msgstr ""
+
+#: lclstrconsts.rsmacosmenuservices
+msgid "Services"
+msgstr ""
+
+#: lclstrconsts.rsmacosmenushowall
+msgid "Show All"
+msgstr ""
 
 #: lclstrconsts.rsmarooncolorcaption
 msgid "Maroon"
-msgstr "栗色"
+msgstr "褐红"
 
 #: lclstrconsts.rsmbabort
 msgid "Abort"
-msgstr "中止"
+msgstr "取消"
 
 #: lclstrconsts.rsmball
 msgid "&All"
@@ -902,7 +746,7 @@ msgstr "否(&N)"
 
 #: lclstrconsts.rsmbnotoall
 msgid "No to all"
-msgstr "全部为否"
+msgstr "没有所有(No to all)"
 
 #: lclstrconsts.rsmbok
 msgid "&OK"
@@ -930,7 +774,7 @@ msgstr "是(&Y)"
 
 #: lclstrconsts.rsmbyestoall
 msgid "Yes to &All"
-msgstr "全部为是(&A)"
+msgstr "全部选是(&A)"
 
 #: lclstrconsts.rsmedgraycolorcaption
 msgid "Medium Gray"
@@ -938,7 +782,7 @@ msgstr "中灰色"
 
 #: lclstrconsts.rsmenubarcolorcaption
 msgid "Menu Bar"
-msgstr "菜单栏"
+msgstr "菜单条"
 
 #: lclstrconsts.rsmenucolorcaption
 msgctxt "lclstrconsts.rsmenucolorcaption"
@@ -947,7 +791,7 @@ msgstr "菜单"
 
 #: lclstrconsts.rsmenuhighlightcolorcaption
 msgid "Menu Highlight"
-msgstr "高亮菜单"
+msgstr "菜单高亮"
 
 #: lclstrconsts.rsmenutextcolorcaption
 msgid "Menu Text"
@@ -955,7 +799,7 @@ msgstr "菜单文本"
 
 #: lclstrconsts.rsmodified
 msgid "  modified "
-msgstr " 已更改 "
+msgstr "  已修改"
 
 #: lclstrconsts.rsmoneygreencolorcaption
 msgid "Money Green"
@@ -997,7 +841,7 @@ msgstr "下一个"
 
 #: lclstrconsts.rsnonecolorcaption
 msgid "None"
-msgstr "无"
+msgstr "None"
 
 #: lclstrconsts.rsnotavalidgridfile
 msgid "Not a valid grid file"
@@ -1005,11 +849,11 @@ msgstr "不是有效的网格文件"
 
 #: lclstrconsts.rsnowidgetset
 msgid "No widgetset object. Please check if the unit \"interfaces\" was added to the programs uses clause."
-msgstr "没有窗口部件集合对象，请检查单元 \"interfaces\" 是否已添加到程序的 uses 语句中。"
+msgstr "没有widgetset 合对象,请检查单元\"interfaces\"是否已添加到程序uses语句(clause)."
 
 #: lclstrconsts.rsolivecolorcaption
 msgid "Olive"
-msgstr "橄榄色"
+msgstr "橄榄绿色"
 
 #: lclstrconsts.rspickdate
 msgid "Select a date"
@@ -1017,31 +861,31 @@ msgstr "选择日期"
 
 #: lclstrconsts.rspixmap
 msgid "Pixmap"
-msgstr "位图"
+msgstr "像素图"
 
 #: lclstrconsts.rsportablebitmap
 msgid "Portable BitMap"
-msgstr "便携位图"
+msgstr "便携式位图"
 
 #: lclstrconsts.rsportablegraymap
 msgid "Portable GrayMap"
-msgstr "便携灰度位图"
+msgstr "便携式灰度位图"
 
 #: lclstrconsts.rsportablenetworkgraphic
 msgid "Portable Network Graphic"
-msgstr "便携网络图形 (PNG)"
+msgstr "便携式网络图形(PNG)"
 
 #: lclstrconsts.rsportablepixmap
 msgid "Portable PixMap"
-msgstr "便携位图"
+msgstr "便携式像素图"
 
 #: lclstrconsts.rspostrecordhint
 msgid "Post"
 msgstr "提交"
 
-#: lclstrconsts.rspressoktoignoreandriskdatacorruptionpresscanceltok
-msgid "%s%sPress OK to ignore and risk data corruption.%sPress Cancel to kill the program."
-msgstr "%s%s 点击 “确定” 按钮以忽略但数据有遗失的风险。%s点击 “取消” 按钮以终止程序。"
+#: lclstrconsts.rspressoktoignoreandriskdatacorruptionpressaborttok
+msgid "%s%sPress OK to ignore and risk data corruption.%sPress Abort to kill the program."
+msgstr ""
 
 #: lclstrconsts.rspriorrecordhint
 msgctxt "lclstrconsts.rspriorrecordhint"
@@ -1050,11 +894,11 @@ msgstr "优先"
 
 #: lclstrconsts.rspromptonreplace
 msgid "Prompt on replace"
-msgstr "提示替换"
+msgstr ""
 
 #: lclstrconsts.rspropertydoesnotexist
 msgid "Property %s does not exist"
-msgstr "属性 %s 不存在"
+msgstr "属性%s不存在"
 
 #: lclstrconsts.rspurplecolorcaption
 msgid "Purple"
@@ -1062,103 +906,103 @@ msgstr "紫色"
 
 #: lclstrconsts.rsqtoptiondograb
 msgid "-dograb (only under X11), running under a debugger can cause an implicit -nograb, use -dograb to override. Need QT_DEBUG."
-msgstr "-dograb（仅在 X11 下），在调试器下运行可能会导致隐式的 -nograb，使用 -dograb 来覆盖。需要 QT_DEBUG。"
+msgstr ""
 
 #: lclstrconsts.rsqtoptiongraphicsstyle
 msgid "-graphicssystem param, sets the backend to be used for on-screen widgets and QPixmaps. Available options are native, raster and opengl. OpenGL is still unstable."
-msgstr "-graphicssystem param，设置用于屏幕小部件和 QPixmaps 的后端。可用选项有 native，raster 和 opengl。OpenGL仍然不稳定。"
+msgstr ""
 
 #: lclstrconsts.rsqtoptionnograb
 msgid "-nograb, tells Qt that it must never grab the mouse or the keyboard. Need QT_DEBUG."
-msgstr "-nograb，告诉 Qt 它永远不会抓取鼠标或键盘。需要 QT_DEBUG。"
+msgstr ""
 
 #: lclstrconsts.rsqtoptionreverse
 msgid "-reverse, sets the application's layout direction to Qt::RightToLeft."
-msgstr "-reverse，将应用程序的布局方向设置为 Qt::RightToLeft。"
+msgstr ""
 
 #: lclstrconsts.rsqtoptionsession
 msgid "-session session, restores the application from an earlier session."
-msgstr "-session session，从早期会话恢复应用程序。"
+msgstr ""
 
 #: lclstrconsts.rsqtoptionstyle
 msgid "-style style or -style=style, sets the application GUI style. Possible values are motif, windows, and platinum. If you compiled Qt with additional styles or have additional styles as plugins these will be available to the -style  command line option. NOTE: Not all styles are available on all platforms. If style param does not exist Qt will start an application with default common style (windows)."
-msgstr "-style style 或  -style=style，设置应用程序 GUI 样式。可能的值是 motif，windows 和 platinum。如果您使用其他样式编译 Qt 或将其他样式作为插件进行编译，这些将可用于 -style 命令行选项。注意：并非所有样式都适用于所有平台。如果样式参数不存在，Qt 将使用默认常用样式 (windows) 启动应用程序。"
+msgstr ""
 
 #: lclstrconsts.rsqtoptionstylesheet
 msgid "-stylesheet stylesheet or -stylesheet=stylesheet, sets the application Style Sheet. The value must be a path to a file that contains the Style Sheet. Note: Relative URLs in the Style Sheet file are relative to the Style Sheet file's path."
-msgstr "-stylesheet stylesheet 或 -stylesheet=stylesheet 设置应用程序样式表。该值必须是包含样式表的文件的路径。注意：样式表文件中的相对网址与样式表文件的路径有关。"
+msgstr ""
 
 #: lclstrconsts.rsqtoptionsync
 msgid "-sync (only under X11), switches to synchronous mode for debugging."
-msgstr "-sync（仅在 X11 下）切换到同步模式进行调试。"
+msgstr ""
 
 #: lclstrconsts.rsqtoptionwidgetcount
 msgid "-widgetcount, prints debug message at the end about number of widgets left undestroyed and maximum number of widgets existed at the same time."
-msgstr "-widgetcount，在最后打印调试消息，其中包含未保存的小部件数量以及同时存在的最大部件数量。"
+msgstr ""
 
 #: lclstrconsts.rsqtoptionx11bgcolor
 msgid "-bg or -background color, sets the default background color and an application palette (light and dark shades are calculated)."
-msgstr "-bg 或 -background 颜色，设置默认背景色和应用程序调色板（计算明暗阴影）。"
+msgstr ""
 
 #: lclstrconsts.rsqtoptionx11btncolor
 msgid "-btn or -button color, sets the default button color."
-msgstr "-btn 或 -button 颜色，设置默认的按钮颜色。"
+msgstr "-btn 或 -button color,设置默认button颜色."
 
 #: lclstrconsts.rsqtoptionx11cmap
 msgid "-cmap, causes the application to install a private color map on an 8-bit display."
-msgstr "-cmap，使应用程序在 8 位显示器上安装私有颜色映射。"
+msgstr ""
 
 #: lclstrconsts.rsqtoptionx11display
 msgid "-display display, sets the X display (default is $DISPLAY)."
-msgstr "-display display，设置 X 显示（默认为 $DISPLAY）。"
+msgstr ""
 
 #: lclstrconsts.rsqtoptionx11fgcolor
 msgid "-fg or -foreground color, sets the default foreground color."
-msgstr "-fg 或 -foreground 颜色，设置默认的前景色。"
+msgstr "-fg 或 -foreground color,设置默认foreground颜色."
 
 #: lclstrconsts.rsqtoptionx11font
-msgid "-fn or -font 字体, defines the application font. The font should be specified using an X logical font description."
-msgstr "-fn 或 -font 字体，定义应用程序字体。字体应该使用 X 逻辑字体描述来指定。"
+msgid "-fn or -font font, defines the application font. The font should be specified using an X logical font description."
+msgstr ""
 
 #: lclstrconsts.rsqtoptionx11geometry
 msgid "-geometry geometry, sets the client geometry of the first window that is shown."
-msgstr "-geometry geometry，设置显示的第一个窗口的客户端几何图形。"
+msgstr ""
 
 #: lclstrconsts.rsqtoptionx11im
 msgid "-im, sets the input method server (equivalent to setting the XMODIFIERS environment variable)."
-msgstr "-im，设置输入法服务器（相当于设置 XMODIFIERS 环境变量）。"
+msgstr ""
 
 #: lclstrconsts.rsqtoptionx11inputstyle
 msgid "-inputstyle, defines how the input is inserted into the given widget, e.g. onTheSpot makes the input appear directly in the widget, while overTheSpot makes the input appear in a box floating over the widget and is not inserted until the editing is done."
-msgstr "-inputstyle，定义输入如何插入到给定小部件中，例如 onTheSpot 使输入直接显示在窗口小部件中，而 overTheSpot 使输入显示在浮动在窗口小部件上的框中，并且在编辑完成之前不会插入。"
+msgstr ""
 
 #: lclstrconsts.rsqtoptionx11name
 msgid "-name name, sets the application name."
-msgstr "-name 名称，设置应用程序名称。"
+msgstr "-name name,设置应用名称."
 
 #: lclstrconsts.rsqtoptionx11ncols
 msgid "-ncols count, limits the number of colors allocated in the color cube on an 8-bit display, if the application is using the QApplication::ManyColor color specification. If count is 216 then a 6x6x6 color cube is used (i.e. 6 levels of red, 6 of green, and 6 of blue); for other values, a cube approximately proportional to a 2x3x1 cube is used."
-msgstr "-ncols 计数，如果应用程序使用 QApplication::ManyColor 颜色规范，则会限制在 8 位显示器上分配的颜色立方体中的颜色数量。如果计数是 216，则使用 6×6×6 彩色立方体（即 6 级红色，6 个绿色和 6 个蓝色）；对于其他值，使用与 2x3x1 立方体大致成比例的立方体。"
+msgstr ""
 
 #: lclstrconsts.rsqtoptionx11title
 msgid "-title title, sets the application title."
-msgstr "-title 标题，设置应用程序标题。"
+msgstr "-title title,设置应用标题."
 
 #: lclstrconsts.rsqtoptionx11visual
 msgid "-visual TrueColor, forces the application to use a TrueColor visual on an 8-bit display."
-msgstr "-visual TrueColor，强制应用程序在 8 位显示器上使用 TrueColor 可视化。"
+msgstr ""
 
 #: lclstrconsts.rsrasterimageendupdate
 msgid "Endupdate while no update in progress"
-msgstr "结束更新, 但未进行更新"
+msgstr ""
 
 #: lclstrconsts.rsrasterimagesaveinupdate
 msgid "Cannot save image while update in progress"
-msgstr "更新时候无法保存图片"
+msgstr "更新时候不能保存图片"
 
 #: lclstrconsts.rsrasterimageupdateall
 msgid "Cannot begin update all when canvas only update in progress"
-msgstr "仅在画布正在进行更新时无法开始全部更新"
+msgstr ""
 
 #: lclstrconsts.rsredcolorcaption
 msgid "Red"
@@ -1174,12 +1018,12 @@ msgstr "替换"
 
 #: lclstrconsts.rsreplaceall
 msgid "Replace all"
-msgstr "全部替换"
+msgstr "替换所有"
 
 #: lclstrconsts.rsresourcenotfound
 msgctxt "lclstrconsts.rsresourcenotfound"
 msgid "Resource %s not found"
-msgstr "未找到资源 %s"
+msgstr "资源%s未找到"
 
 #: lclstrconsts.rsscrollbarcolorcaption
 msgid "ScrollBar"
@@ -1199,11 +1043,11 @@ msgstr "选择字体"
 
 #: lclstrconsts.rssilvercolorcaption
 msgid "Silver"
-msgstr "银色"
+msgstr "银白色"
 
 #: lclstrconsts.rssize
 msgid "  size "
-msgstr " 大小"
+msgstr "  大小"
 
 #: lclstrconsts.rsskybluecolorcaption
 msgid "Sky Blue"
@@ -1211,43 +1055,50 @@ msgstr "天蓝色"
 
 #: lclstrconsts.rstcustomtabcontrolaccessibilitydescription
 msgid "A control with tabs"
-msgstr "带有标签的控件"
+msgstr ""
 
 #: lclstrconsts.rstealcolorcaption
 msgid "Teal"
-msgstr "青色"
+msgstr "蓝绿色"
 
 #: lclstrconsts.rstext
 msgid "Text"
 msgstr "文本"
+
+#: lclstrconsts.rsthebuiltinurlisreadonlychangethebaseurlinstead
+msgid "The built-in URL is read only. Change the BaseURL instead."
+msgstr ""
 
 #: lclstrconsts.rstiff
 msgid "Tagged Image File Format"
 msgstr "标记图像文件格式"
 
 #: lclstrconsts.rstpanelaccessibilitydescription
+msgctxt "lclstrconsts.rstpanelaccessibilitydescription"
 msgid "Panel"
 msgstr "面板"
 
 #: lclstrconsts.rstsplitteraccessibilitydescription
+msgctxt "lclstrconsts.rstsplitteraccessibilitydescription"
 msgid "A grip to control how much size to give two parts of an area"
-msgstr "控制一个区域的两个部分的大小"
+msgstr ""
 
 #: lclstrconsts.rsttreeviewaccessibilitydescription
+msgctxt "lclstrconsts.rsttreeviewaccessibilitydescription"
 msgid "A tree of items"
-msgstr "项目树"
+msgstr "一个项目(items)树"
 
 #: lclstrconsts.rsunabletoloaddefaultfont
 msgid "Unable to load default font"
-msgstr "无法加载默认字体"
+msgstr "不能加载默认字体"
 
 #: lclstrconsts.rsunknownerrorpleasereportthisbug
 msgid "Unknown Error, please report this bug"
-msgstr "未知错误，请报告此缺陷"
+msgstr "未知错误,请报告这个错误"
 
 #: lclstrconsts.rsunknownpictureextension
 msgid "Unknown picture extension"
-msgstr "未知图片扩展名"
+msgstr "未知图片文件后缀"
 
 #: lclstrconsts.rsunknownpictureformat
 msgid "Unknown picture format"
@@ -1255,31 +1106,31 @@ msgstr "未知图片格式"
 
 #: lclstrconsts.rsunsupportedbitmapformat
 msgid "Unsupported bitmap format."
-msgstr "不支持的位图格式。"
+msgstr "不支持位图格式."
 
 #: lclstrconsts.rsunsupportedclipboardformat
 msgid "Unsupported clipboard format: %s"
-msgstr "不支持的剪贴板格式: %s"
+msgstr "不支持剪贴板格式: %s"
 
 #: lclstrconsts.rswarningunreleaseddcsdump
 msgid " WARNING: There are %d unreleased DCs, a detailed dump follows:"
-msgstr " 警告: 有 %d 个未发布的 DC，详细转储如下："
+msgstr ""
 
 #: lclstrconsts.rswarningunreleasedgdiobjectsdump
 msgid " WARNING: There are %d unreleased GDIObjects, a detailed dump follows:"
-msgstr " 警告：有 %d 个未发布的 GDI 对象，详细转储如下："
+msgstr ""
 
 #: lclstrconsts.rswarningunreleasedmessagesinqueue
 msgid " WARNING: There are %d messages left in the queue! I'll free them"
-msgstr " 警告: 队列中留有 %d 条消息！将会释放他们"
+msgstr ""
 
 #: lclstrconsts.rswarningunreleasedtimerinfos
 msgid " WARNING: There are %d TimerInfo structures left, I'll free them"
-msgstr " 警告：还剩下 %d 个 TimerInfo 结构，我将释放它们"
+msgstr ""
 
 #: lclstrconsts.rswarningunremovedpaintmessages
 msgid " WARNING: There are %s unremoved LM_PAINT/LM_GtkPAINT message links left."
-msgstr " 警告：还剩下 %s 未移除的 LM_PAINT/LM_GtkPAINT 消息链接。"
+msgstr ""
 
 #: lclstrconsts.rswhitecolorcaption
 msgid "White"
@@ -1287,27 +1138,27 @@ msgstr "白色"
 
 #: lclstrconsts.rswholewordsonly
 msgid "Whole words only"
-msgstr "整词匹配"
+msgstr "仅整个单词"
 
 #: lclstrconsts.rswin32error
 msgid "Error:"
-msgstr "错误："
+msgstr "错误:"
 
 #: lclstrconsts.rswin32warning
 msgid "Warning:"
-msgstr "警告："
+msgstr "警告:"
 
 #: lclstrconsts.rswindowcolorcaption
 msgid "Window"
-msgstr "窗口"
+msgstr "窗体"
 
 #: lclstrconsts.rswindowframecolorcaption
 msgid "Window Frame"
-msgstr "窗口框架"
+msgstr "窗体框架(Frame)"
 
 #: lclstrconsts.rswindowtextcolorcaption
 msgid "Window Text"
-msgstr "窗口文本"
+msgstr "窗体文本"
 
 #: lclstrconsts.rsyellowcolorcaption
 msgid "Yellow"
@@ -1315,76 +1166,80 @@ msgstr "黄色"
 
 #: lclstrconsts.scannotfocus
 msgid "Cannot focus a disabled or invisible window"
-msgstr "无法聚集到禁用或不可见的窗口"
+msgstr ""
+
+#: lclstrconsts.scannotsetdesigntimeppi
+msgid "Cannot set design time PPI."
+msgstr ""
 
 #: lclstrconsts.sduplicatemenus
 msgid "Duplicate menus"
-msgstr "重复的菜单"
+msgstr ""
 
 #: lclstrconsts.sinvalidactioncreation
 msgid "Invalid action creation"
-msgstr "无效的动作创建"
+msgstr "无效动作创建"
 
 #: lclstrconsts.sinvalidactionenumeration
 msgid "Invalid action enumeration"
-msgstr "无效的动作枚举"
+msgstr "无效动作详表(enumeration)"
 
 #: lclstrconsts.sinvalidactionregistration
 msgid "Invalid action registration"
-msgstr "无效的动作注册"
+msgstr "无效动作注册"
 
 #: lclstrconsts.sinvalidactionunregistration
 msgid "Invalid action unregistration"
-msgstr "无效的动作注销"
+msgstr "无效动作未注册"
 
 #: lclstrconsts.sinvalidcharset
 msgid "The char set in mask \"%s\" is not valid!"
-msgstr "在掩码 \"%s\" 中设置的 char 无效！"
+msgstr ""
 
 #: lclstrconsts.sinvalidimagesize
 msgid "Invalid image size"
-msgstr "无效的图像大小"
+msgstr "无效图像的大小"
 
 #: lclstrconsts.sinvalidindex
 msgid "Invalid ImageList Index"
-msgstr "无效的 ImageList 索引"
+msgstr "无效图像列表索引"
 
 #: lclstrconsts.smaskeditnomatch
 msgid "The current text does not match the specified mask."
-msgstr "当前文本与指定的掩码不匹配。"
+msgstr ""
 
 #: lclstrconsts.smenuindexerror
 msgid "Menu index out of range"
-msgstr "菜单索引超过范围"
+msgstr ""
 
 #: lclstrconsts.smenuitemisnil
 msgid "MenuItem is nil"
-msgstr "MenuItem 为零"
+msgstr "MenuItem是nil(空)"
 
 #: lclstrconsts.smenunotfound
 msgid "Sub-menu is not in menu"
-msgstr "子菜单不在菜单中"
+msgstr ""
 
 #: lclstrconsts.smkcalt
 msgid "Alt+"
-msgstr ""
+msgstr "Alt+"
 
 #: lclstrconsts.smkcbksp
 msgid "BkSp"
-msgstr ""
+msgstr "BackSpace(退格)"
 
 #: lclstrconsts.smkcctrl
 msgid "Ctrl+"
-msgstr ""
+msgstr "Ctrl+"
 
 #: lclstrconsts.smkcdel
 msgid "Del"
-msgstr ""
+msgstr "Delete(删除)"
 
 #: lclstrconsts.smkcdown
 msgctxt "lclstrconsts.smkcdown"
 msgid "Down"
-msgstr ""
+msgstr "下"
 
 #: lclstrconsts.smkcend
 msgctxt "lclstrconsts.smkcend"
@@ -1393,20 +1248,20 @@ msgstr ""
 
 #: lclstrconsts.smkcenter
 msgid "Enter"
-msgstr ""
+msgstr "Enter(回车)"
 
 #: lclstrconsts.smkcesc
 msgid "Esc"
-msgstr ""
+msgstr "Esc"
 
 #: lclstrconsts.smkchome
 msgctxt "lclstrconsts.smkchome"
 msgid "Home"
-msgstr ""
+msgstr "用户主目录"
 
 #: lclstrconsts.smkcins
 msgid "Ins"
-msgstr ""
+msgstr "Insert(插入)"
 
 #: lclstrconsts.smkcleft
 msgctxt "lclstrconsts.smkcleft"
@@ -1419,11 +1274,11 @@ msgstr ""
 
 #: lclstrconsts.smkcpgdn
 msgid "PgDn"
-msgstr ""
+msgstr "PageDown(下一页)"
 
 #: lclstrconsts.smkcpgup
 msgid "PgUp"
-msgstr ""
+msgstr "PageUp(上一页)"
 
 #: lclstrconsts.smkcright
 msgctxt "lclstrconsts.smkcright"
@@ -1432,59 +1287,117 @@ msgstr "右"
 
 #: lclstrconsts.smkcshift
 msgid "Shift+"
-msgstr ""
+msgstr "Shift+"
 
 #: lclstrconsts.smkcspace
 msgid "Space"
-msgstr ""
+msgstr "空格"
 
 #: lclstrconsts.smkctab
 msgctxt "lclstrconsts.smkctab"
 msgid "Tab"
-msgstr ""
+msgstr "Tab"
 
 #: lclstrconsts.smkcup
 msgctxt "lclstrconsts.smkcup"
 msgid "Up"
-msgstr ""
-
-#: lclstrconsts.snomdiform
-msgid "No MDI form present."
-msgstr "没有 MDI 表单。"
+msgstr "上"
 
 #: lclstrconsts.snotimers
 msgid "No timers available"
-msgstr "没有定时器可用"
+msgstr "无有效计时器"
+
+#: lclstrconsts.sparentrequired
+msgid "Control \"%s\" has no parent window."
+msgstr ""
 
 #: lclstrconsts.sparexpected
 msgid "Wrong token type: %s expected"
-msgstr "错误的标记类型：期望 %s"
+msgstr ""
 
 #: lclstrconsts.sparinvalidfloat
 msgid "Invalid floating point number: %s"
-msgstr "无效的浮点数：%s"
+msgstr "无效的浮点数: %s"
 
 #: lclstrconsts.sparinvalidinteger
 msgid "Invalid integer number: %s"
-msgstr "无效的整数：%s"
+msgstr "无效的整数数: %s"
 
 #: lclstrconsts.sparlocinfo
 msgid " (at %d,%d, stream offset %d)"
-msgstr "（在 %d,%d, 流偏移量 %d）"
+msgstr ""
 
 #: lclstrconsts.sparunterminatedbinvalue
 msgid "Unterminated byte value"
-msgstr "未终止的字节值"
+msgstr ""
 
 #: lclstrconsts.sparunterminatedstring
 msgid "Unterminated string"
-msgstr "未终止的字符串"
+msgstr ""
 
 #: lclstrconsts.sparwrongtokensymbol
 msgid "Wrong token symbol: %s expected but %s found"
-msgstr "错误的标记符号：期望 %s 但是找到 %s"
+msgstr ""
 
 #: lclstrconsts.sparwrongtokentype
 msgid "Wrong token type: %s expected but %s found"
-msgstr "错误的标记类型：期望 %s 但是找到 %s"
+msgstr ""
+
+#: lclstrconsts.sshellctrlsbytes
+msgid "%s bytes"
+msgstr "%s字节"
+
+#: lclstrconsts.sshellctrlsinvalidpath
+msgctxt "lclstrconsts.sshellctrlsinvalidpath"
+msgid ""
+"Invalid pathname:\n"
+"\"%s\"\n"
+msgstr ""
+"无效路径名:\n"
+"\"%s\"\n"
+
+#: lclstrconsts.sshellctrlsinvalidpathrelative
+msgid ""
+"Invalid relative pathname:\n"
+"\"%s\"\n"
+"in relation to rootpath:\n"
+"\"%s\"\n"
+msgstr ""
+
+#: lclstrconsts.sshellctrlsinvalidroot
+msgctxt "lclstrconsts.sshellctrlsinvalidroot"
+msgid ""
+"Invalid pathname:\n"
+"\"%s\"\n"
+msgstr ""
+"无效路径名:\n"
+"\"%s\"\n"
+
+#: lclstrconsts.sshellctrlskb
+msgid "%s kB"
+msgstr "%s kB"
+
+#: lclstrconsts.sshellctrlsmb
+msgid "%s MB"
+msgstr "%s MB"
+
+#: lclstrconsts.sshellctrlsname
+msgid "Name"
+msgstr "名称"
+
+#: lclstrconsts.sshellctrlsselecteditemdoesnotexists
+msgid ""
+"The selected item does not exist on disk:\n"
+"\"%s\"\n"
+msgstr ""
+"所选择项目在硬盘中不存在:\n"
+"\"%s\"\n"
+
+#: lclstrconsts.sshellctrlssize
+msgid "Size"
+msgstr "  大小"
+
+#: lclstrconsts.sshellctrlstype
+msgid "Type"
+msgstr "类型"
 

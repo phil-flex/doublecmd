@@ -200,6 +200,7 @@ procedure ExtensionInitialize(StartupInfo: PExtensionStartupInfo); dcpcall;
 
 var
   gStartupInfo: TExtensionStartupInfo;
+  ProcessDataProcW : TProcessDataProcW = nil;
 
 implementation
 
@@ -222,7 +223,6 @@ var
   ChangeVolProc : TChangeVolProc = nil;
   ChangeVolProcW : TChangeVolProcW = nil;
   ProcessDataProc : TProcessDataProc = nil;
-  ProcessDataProcW : TProcessDataProcW = nil;
 
   // These variables store currently processed file name.
   // They cannot be dynamic strings, because if they are created from the
@@ -702,11 +702,8 @@ end;
 function GetPackerCaps: Integer; dcpcall;
 begin
   Result := PK_CAPS_MULTIPLE or PK_CAPS_BY_CONTENT
-{$IF DEFINED(MSWINDOWS)}
             or PK_CAPS_NEW or PK_CAPS_MODIFY or PK_CAPS_DELETE
-            or PK_CAPS_OPTIONS or PK_CAPS_ENCRYPT
-{$ENDIF}
-            ;
+            or PK_CAPS_OPTIONS or PK_CAPS_ENCRYPT;
 end;
 
 procedure ExtensionInitialize(StartupInfo: PExtensionStartupInfo); dcpcall;

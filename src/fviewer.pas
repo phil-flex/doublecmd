@@ -1300,7 +1300,7 @@ function TfrmViewer.PluginShowFlags : Integer;
 begin
   Result:= IfThen(miStretch.Checked, lcp_fittowindow, 0) or
            IfThen(miCenter.Checked, lcp_center, 0) or
-           IfThen(miStretchOnlyLarge.Checked, lcp_fitlargeronly, 0)
+           IfThen(miStretchOnlyLarge.Checked, lcp_fittowindow or lcp_fitlargeronly, 0)
 end;
 
 function TfrmViewer.CheckPlugins(const sFileName: String; bForce: Boolean = False): Boolean;
@@ -2168,6 +2168,7 @@ var
   fsFileStream: TFileStreamEx = nil;
   gifHeader: array[0..5] of AnsiChar;
 begin
+  Result:= True;
   FZoomFactor:= 1.0;
   sExt:= ExtractOnlyFileExt(sFilename);
   if SameText(sExt, 'gif') then
@@ -2230,7 +2231,11 @@ begin
         end;
         AdjustImageSize;
       except
-        Exit(False);
+        on E: Exception do
+        begin
+          DCDebug(E.Message);
+          Exit(False);
+        end;
       end;
     end
   else
@@ -2253,7 +2258,11 @@ begin
         btnNextGifFrame.Visible:= True;
         btnPrevGifFrame.Visible:= True;
       except
-        Exit(False);
+        on E: Exception do
+        begin
+          DCDebug(E.Message);
+          Exit(False);
+        end;
       end;
     end;
   ImgEdit:= False;
