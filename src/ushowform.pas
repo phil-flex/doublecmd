@@ -114,7 +114,7 @@ uses
   uTempFileSystemFileSource, uLng, fDiffer, uDebug, DCOSUtils, uShowMsg,
   DCStrUtils, uFileSourceProperty, uWfxPluginCopyOutOperation,
   uFileSourceOperationOptions, uOperationsManager, uFileSourceOperationTypes,
-  uMultiArchiveFileSource, fFileExecuteYourSelf, uFileProcs;
+  uMultiArchiveFileSource, fFileExecuteYourSelf, uFileProcs, uFileSystemFileSource;
 
 type
 
@@ -165,15 +165,19 @@ type
 procedure RunExtTool(const ExtTool: TExternalToolOptions; sFileName: String);
 var
   sCmd: String;
-  sParams:string='';
+  sParams: String = '';
 begin
   sCmd := ExtTool.Path;
   sParams := ExtTool.Parameters;
-  //If there is %p already configured in the parameter, we assume user configured it the way he wants.
-  //This might be in non-common case where there are parameters AFTER the filename to open.
-  //If there is not %p, let's do thing like legacy was and let's add the filename received as paramter.
-  if pos('%p',sParams)=0 then
-    sParams := ConcatenateStrWithSpace(sParams,QuoteFilenameIfNecessary(sFileName));
+  // If there is %p already configured in the parameter, we assume user configured it the way he wants.
+  // This might be in non-common case where there are parameters AFTER the filename to open.
+  // If there is not %p, let's do thing like legacy was and let's add the filename received as parameter.
+  if (Pos('%p', sParams) = 0) and (Pos('%f', sParams) = 0) then
+  begin
+    sParams := ConcatenateStrWithSpace(sParams, '%' + ASCII_DLE);
+    sParams := ConcatenateStrWithSpace(sParams, QuoteStr(sFileName));
+  end;
+
   ProcessExtCommandFork(sCmd, sParams, '', nil, ExtTool.RunInTerminal, ExtTool.KeepTerminalOpen);
 end;
 
@@ -186,8 +190,10 @@ begin
   with gExternalTools[etDiffer] do
   begin
     sCmd := QuoteStr(ReplaceEnvVars(Path));
-    if Parameters <> EmptyStr then
+    if Parameters <> EmptyStr then begin
       sParams := sParams + ' ' + Parameters;
+    end;
+    sParams := ConcatenateStrWithSpace(sParams, '%' + ASCII_DLE);
     for i := 0 to CompareList.Count - 1 do
       sParams := sParams + ' ' + QuoteStr(CompareList.Strings[i]);
     try

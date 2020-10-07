@@ -1,7 +1,7 @@
 @echo off
 
 rem the next two line must be changed before run on your computer
-set lazpath=C:\lazarus
+set lazpath=D:\Alexx\Prog\FreePascal\Lazarus
 
 set PATH=%lazpath%;%PATH%
 

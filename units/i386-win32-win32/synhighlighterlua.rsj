@@ -1,4 +1,0 @@
-{"version":1,"strings":[
-{"hash":94358340,"name":"synhighlighterlua.syns_langlua","sourcebytes":[76,117,97,32,83,99,114,105,112,116],"value":"Lua Script"},
-{"hash":149879681,"name":"synhighlighterlua.syns_filterlua","sourcebytes":[76,117,97,32,83,99,114,105,112,116,32,70,105,108,101,32,40,42,46,108,117,97,41,124,42,46,108,117,97],"value":"Lua Script File (*.lua)|*.lua"}
-]}

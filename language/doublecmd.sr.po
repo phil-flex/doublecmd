@@ -6858,6 +6858,10 @@ msgctxt "TFRMOPTIONSLOG.CBLOGFILE.CAPTION"
 msgid "C&reate a log file:"
 msgstr "Направи& датотеку дневника:"
 
+#: tfrmoptionslog.cblogfilecount.caption
+msgid "Maximum log file count"
+msgstr ""
+
 #: tfrmoptionslog.cbloginfo.caption
 msgctxt "TFRMOPTIONSLOG.CBLOGINFO.CAPTION"
 msgid "Log &information messages"
@@ -8625,6 +8629,66 @@ msgstr ""
 msgid "&OR (any match)"
 msgstr ""
 
+#: tfrmselectduplicates.btnapply.caption
+#, fuzzy
+msgctxt "tfrmselectduplicates.btnapply.caption"
+msgid "&Apply"
+msgstr "Примени&"
+
+#: tfrmselectduplicates.btncancel.caption
+#, fuzzy
+msgctxt "tfrmselectduplicates.btncancel.caption"
+msgid "&Cancel"
+msgstr "&Откажи"
+
+#: tfrmselectduplicates.btnexcludemask.hint
+#, fuzzy
+msgctxt "tfrmselectduplicates.btnexcludemask.hint"
+msgid "Template..."
+msgstr "Образац..."
+
+#: tfrmselectduplicates.btnincludemask.hint
+#, fuzzy
+msgctxt "tfrmselectduplicates.btnincludemask.hint"
+msgid "Template..."
+msgstr "Образац..."
+
+#: tfrmselectduplicates.btnok.caption
+#, fuzzy
+msgctxt "tfrmselectduplicates.btnok.caption"
+msgid "&OK"
+msgstr "&У реду"
+
+#: tfrmselectduplicates.caption
+msgid "Select duplicate files"
+msgstr ""
+
+#: tfrmselectduplicates.chkleaveunselected.caption
+msgid "&Leave at least one file in each group unselected:"
+msgstr ""
+
+#: tfrmselectduplicates.cmbincludemask.text
+#, fuzzy
+msgctxt "tfrmselectduplicates.cmbincludemask.text"
+msgid "*"
+msgstr "*"
+
+#: tfrmselectduplicates.lblexcludemask.caption
+msgid "&Remove selection by name/extension:"
+msgstr ""
+
+#: tfrmselectduplicates.lblfirstmethod.caption
+msgid "&1."
+msgstr ""
+
+#: tfrmselectduplicates.lblincludemask.caption
+msgid "Select by &name/extension:"
+msgstr ""
+
+#: tfrmselectduplicates.lblsecondmethod.caption
+msgid "&2."
+msgstr ""
+
 #: tfrmselectpathrange.buttonpanel.cancelbutton.caption
 msgctxt "tfrmselectpathrange.buttonpanel.cancelbutton.caption"
 msgid "&Cancel"
@@ -9691,11 +9755,21 @@ msgctxt "tfrmviewer.actzoomin.caption"
 msgid "Zoom In"
 msgstr "Приближи"
 
+#: tfrmviewer.actzoomin.hint
+msgctxt "tfrmviewer.actzoomin.hint"
+msgid "Zoom In"
+msgstr ""
+
 #: tfrmviewer.actzoomout.caption
 #, fuzzy
 msgctxt "tfrmviewer.actzoomout.caption"
 msgid "Zoom Out"
 msgstr "Удаљи"
+
+#: tfrmviewer.actzoomout.hint
+msgctxt "tfrmviewer.actzoomout.hint"
+msgid "Zoom Out"
+msgstr ""
 
 #: tfrmviewer.btncuttuimage.hint
 msgctxt "TFRMVIEWER.BTNCUTTUIMAGE.HINT"
@@ -9707,32 +9781,33 @@ msgctxt "TFRMVIEWER.BTNFULLSCREEN.HINT"
 msgid "Full Screen"
 msgstr "Преко целог екрана"
 
-#: tfrmviewer.btngifmove.caption
-msgctxt "TFRMVIEWER.BTNGIFMOVE.CAPTION"
-msgid "||"
-msgstr "||"
-
-#: tfrmviewer.btngiftobmp.caption
-msgid "S"
-msgstr "С"
+#: tfrmviewer.btngiftobmp.hint
+msgid "Export Frame"
+msgstr ""
 
 #: tfrmviewer.btnhightlight.hint
 msgctxt "TFRMVIEWER.BTNHIGHTLIGHT.HINT"
 msgid "Highlight"
 msgstr "Истицање"
 
-#: tfrmviewer.btnnextgifframe.caption
-msgid "||>"
-msgstr "||>"
+#: tfrmviewer.btnnextgifframe.hint
+msgid "Next Frame"
+msgstr ""
 
 #: tfrmviewer.btnpaint.hint
 msgctxt "TFRMVIEWER.BTNPAINT.HINT"
 msgid "Paint"
 msgstr "Обоји"
 
-#: tfrmviewer.btnprevgifframe.caption
-msgid "<||"
-msgstr "<||"
+#: tfrmviewer.btnpenwidth.caption
+#, fuzzy
+msgctxt "tfrmviewer.btnpenwidth.caption"
+msgid "1"
+msgstr "1"
+
+#: tfrmviewer.btnprevgifframe.hint
+msgid "Previous Frame"
+msgstr ""
 
 #: tfrmviewer.btnredeye.hint
 msgid "Red Eyes"
@@ -9742,6 +9817,12 @@ msgstr "Црвене очи"
 msgctxt "TFRMVIEWER.BTNRESIZE.HINT"
 msgid "Resize"
 msgstr "Промени величину"
+
+#: tfrmviewer.btnslideshow.caption
+#, fuzzy
+msgctxt "tfrmviewer.btnslideshow.caption"
+msgid "Slide Show"
+msgstr "Покретне слике"
 
 #: tfrmviewer.btnundo.hint
 msgctxt "TFRMVIEWER.BTNUNDO.HINT"
@@ -9753,44 +9834,6 @@ msgctxt "TFRMVIEWER.CAPTION"
 msgid "Viewer"
 msgstr "Прегледник"
 
-#: tfrmviewer.cbslideshow.caption
-msgctxt "TFRMVIEWER.CBSLIDESHOW.CAPTION"
-msgid "Slide Show"
-msgstr "Покретне слике"
-
-#: tfrmviewer.comboboxpaint.text
-msgid "Pen"
-msgstr "Оловка"
-
-#: tfrmviewer.comboboxwidth.text
-msgctxt "TFRMVIEWER.COMBOBOXWIDTH.TEXT"
-msgid "1"
-msgstr "1"
-
-#: tfrmviewer.gboxhightlight.caption
-msgctxt "TFRMVIEWER.GBOXHIGHTLIGHT.CAPTION"
-msgid "Highlight"
-msgstr "Истицање"
-
-#: tfrmviewer.gboxpaint.caption
-msgctxt "TFRMVIEWER.GBOXPAINT.CAPTION"
-msgid "Paint"
-msgstr "Бојење"
-
-#: tfrmviewer.gboxslideshow.caption
-msgctxt "TFRMVIEWER.GBOXSLIDESHOW.CAPTION"
-msgid "Slide Show"
-msgstr "Покретни приказ"
-
-#: tfrmviewer.gboxview.caption
-msgctxt "TFRMVIEWER.GBOXVIEW.CAPTION"
-msgid "View"
-msgstr "Преглед"
-
-#: tfrmviewer.lblhightlight.caption
-msgid "0x0"
-msgstr "0x0"
-
 #: tfrmviewer.miabout.caption
 msgctxt "TFRMVIEWER.MIABOUT.CAPTION"
 msgid "About"
@@ -9800,6 +9843,10 @@ msgstr "О програму"
 msgctxt "TFRMVIEWER.MIEDIT.CAPTION"
 msgid "&Edit"
 msgstr "&Уреди"
+
+#: tfrmviewer.miellipse.caption
+msgid "Ellipse"
+msgstr ""
 
 #: tfrmviewer.miencoding.caption
 msgctxt "TFRMVIEWER.MIENCODING.CAPTION"
@@ -9814,6 +9861,16 @@ msgstr "&Датотека"
 #: tfrmviewer.miimage.caption
 msgid "&Image"
 msgstr "&Слика"
+
+#: tfrmviewer.mipen.caption
+#, fuzzy
+msgctxt "tfrmviewer.mipen.caption"
+msgid "Pen"
+msgstr "Оловка"
+
+#: tfrmviewer.mirect.caption
+msgid "Rect"
+msgstr ""
 
 #: tfrmviewer.mirotate.caption
 msgctxt "TFRMVIEWER.MIROTATE.CAPTION"
@@ -10329,6 +10386,10 @@ msgstr "&Настави"
 #: ulng.rsdlgbuttonautorenamesource
 msgid "A&uto-rename source files"
 msgstr "&Самостално преименуј изворне датотеке"
+
+#: ulng.rsdlgbuttonautorenametarget
+msgid "A&uto-rename target files"
+msgstr ""
 
 #: ulng.rsdlgbuttoncancel
 msgctxt "ulng.rsdlgbuttoncancel"
@@ -13516,6 +13577,10 @@ msgstr ""
 #: ulng.rsselectdir
 msgid "Select a directory"
 msgstr "Изаберите фасциклу"
+
+#: ulng.rsselectduplicatemethod
+msgid "Newest;Oldest;Largest;Smallest;First in group;Last in group"
+msgstr ""
 
 #: ulng.rsselectyoufindfileswindow
 msgid "Select your window"

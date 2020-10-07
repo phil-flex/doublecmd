@@ -16,7 +16,6 @@ set PACK_DIR=%CD%\windows\release
 
 rem Create temp dir for building
 set BUILD_DC_TMP_DIR=%TEMP%\doublecmd-%DC_VER%
-
 rm -rf %BUILD_DC_TMP_DIR%
 %SVN_EXE% export ..\ %BUILD_DC_TMP_DIR%
 

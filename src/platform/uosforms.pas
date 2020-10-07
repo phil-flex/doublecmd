@@ -116,23 +116,22 @@ function ShowOpenIconDialog(Owner: TCustomControl; var sFileName : String) : Boo
 procedure ShowOpenWithDialog(TheOwner: TComponent; const FileList: TStringList);
 {$ENDIF}
 
+function GetControlHandle(AWindow: TWinControl): HWND;
 function GetWindowHandle(AWindow: TWinControl): HWND;
 
 implementation
 
 uses
   ExtDlgs, LCLProc, Menus, Graphics, InterfaceBase, WSForms, LMessages, LCLIntf,
-  uConnectionManager, uTurboJPEG
+  uConnectionManager
   {$IF DEFINED(MSWINDOWS)}
   , ComObj, fMain, DCOSUtils, uOSUtils, uFileSystemFileSource
   , uTotalCommander, FileUtil, Windows, ShlObj, uShlObjAdditional
   , uWinNetFileSource, uVfsModule, uLng, uMyWindows, DCStrUtils
-  , uDCReadSVG, uFileSourceUtil
-  , Dialogs, Clipbrd, uShowMsg, uDebug, JwaDbt
+  , uDCReadSVG, uFileSourceUtil, uGdiPlusJPEG, uListGetPreviewBitmap
+  , Dialogs, Clipbrd, uShowMsg, uDebug, JwaDbt, uThumbnailProvider
     {$IFDEF LCLQT5}
     , qt5, qtwidgets, uDarkStyle
-    {$ELSE}
-    , uListGetPreviewBitmap, uThumbnailProvider
     {$ENDIF}
   {$ENDIF}
   {$IFDEF UNIX}
@@ -152,7 +151,8 @@ uses
     {$IF DEFINED(LCLGTK2)}
     , gtk2
     {$ENDIF}
-  {$ENDIF};
+  {$ENDIF}
+  , uTurboJPEG;
 
 { TAloneForm }
 
@@ -848,6 +848,17 @@ begin
   if Assigned(opdDialog) then
     FreeAndNil(opdDialog);
 end;
+
+function GetControlHandle(AWindow: TWinControl): HWND;
+{$IF DEFINED(MSWINDOWS) and DEFINED(LCLQT5)}
+begin
+  Result:= HWND(QWidget_winId(TQtWidget(AWindow.Handle).GetContainerWidget));
+end;
+{$ELSE}
+begin
+  Result:= AWindow.Handle;
+end;
+{$ENDIF}
 
 function GetWindowHandle(AWindow: TWinControl): HWND;
 {$IF DEFINED(MSWINDOWS) and DEFINED(LCLQT5)}

@@ -27,7 +27,8 @@ unit fOptionsLog;
 interface
 
 uses
-  Classes, SysUtils, Controls, StdCtrls, EditBtn, Buttons, Menus, fOptionsFrame;
+  Classes, SysUtils, Controls, StdCtrls, EditBtn, Buttons, Menus, SpinEx,
+  fOptionsFrame;
 type
 
   { TfrmOptionsLog }
@@ -45,6 +46,7 @@ type
     cbLogSuccess: TCheckBox;
     cbLogVFS: TCheckBox;
     cbLogStartShutdown: TCheckBox;
+    cbLogFileCount: TCheckBox;
     fneLogFileName: TFileNameEdit;
     gbLogFile: TGroupBox;
     gbLogFileOp: TGroupBox;
@@ -52,9 +54,12 @@ type
     btnRelativeLogFile: TSpeedButton;
     pmPathHelper: TPopupMenu;
     btnViewLogFile: TSpeedButton;
+    seLogFileCount: TSpinEditEx;
     procedure btnRelativeLogFileClick(Sender: TObject);
+    procedure cbIncludeDateInLogFilenameChange(Sender: TObject);
     procedure cbLogFileChange(Sender: TObject);
     procedure btnViewLogFileClick(Sender: TObject);
+    procedure cbLogFileCountChange(Sender: TObject);
   protected
     procedure Load; override;
     function Save: TOptionsEditorSaveFlags; override;
@@ -85,11 +90,20 @@ end;
 procedure TfrmOptionsLog.cbLogFileChange(Sender: TObject);
 begin
   cbIncludeDateInLogFilename.Enabled := cbLogFile.Checked;
+  cbIncludeDateInLogFilenameChange(cbIncludeDateInLogFilename);
 end;
 
 procedure TfrmOptionsLog.btnViewLogFileClick(Sender: TObject);
 begin
   frmMain.Commands.cm_ViewLogFile([]);
+end;
+
+procedure TfrmOptionsLog.cbLogFileCountChange(Sender: TObject);
+begin
+  if not cbLogFileCount.Checked then
+    seLogFileCount.Value:= 0
+  else if seLogFileCount.Value = 0 then
+    seLogFileCount.Value:= 7;
 end;
 
 procedure TfrmOptionsLog.btnRelativeLogFileClick(Sender: TObject);
@@ -99,8 +113,16 @@ begin
   pmPathHelper.PopUp(Mouse.CursorPos.X, Mouse.CursorPos.Y);
 end;
 
+procedure TfrmOptionsLog.cbIncludeDateInLogFilenameChange(Sender: TObject);
+begin
+  cbLogFileCount.Enabled:= cbLogFile.Checked and cbIncludeDateInLogFilename.Checked;
+  seLogFileCount.Enabled:= cbLogFileCount.Enabled;
+end;
+
 procedure TfrmOptionsLog.Load;
 begin
+  seLogFileCount.Value:= gLogFileCount;
+  cbLogFileCount.Checked:= gLogFileCount > 0;
   cbIncludeDateInLogFilename.Checked := gLogFileWithDateInName;
   cbLogFile.Checked := gLogFile;
   cbLogFileChange(cbLogFile);
@@ -126,6 +148,7 @@ begin
   Result := [];
 
   gLogFile := cbLogFile.Checked;
+  gLogFileCount :=  seLogFileCount.Value;
   gLogFileWithDateInName := cbIncludeDateInLogFilename.Checked;
   gLogFileName := fneLogFileName.FileName;
 

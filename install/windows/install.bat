@@ -3,8 +3,6 @@ rem If you run it direct, set up %BUILD_PACK_DIR% first
 
 rem Prepare all installation files
 
-if "%BUILD_PACK_DIR%"=="" (set BUILD_PACK_DIR=..)
-
 set DC_INSTALL_DIR=%BUILD_PACK_DIR%\doublecmd
 mkdir  %DC_INSTALL_DIR%
 

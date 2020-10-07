@@ -6792,6 +6792,10 @@ msgctxt "TFRMOPTIONSLOG.CBLOGFILE.CAPTION"
 msgid "C&reate a log file:"
 msgstr "C&riar um arquivo de log:"
 
+#: tfrmoptionslog.cblogfilecount.caption
+msgid "Maximum log file count"
+msgstr ""
+
 #: tfrmoptionslog.cbloginfo.caption
 msgctxt "TFRMOPTIONSLOG.CBLOGINFO.CAPTION"
 msgid "Log &information messages"
@@ -8567,6 +8571,66 @@ msgstr "&E (qualquer combinação)"
 msgid "&OR (any match)"
 msgstr "&OU (qualquer combinação)"
 
+#: tfrmselectduplicates.btnapply.caption
+#, fuzzy
+msgctxt "tfrmselectduplicates.btnapply.caption"
+msgid "&Apply"
+msgstr "&Aplicar"
+
+#: tfrmselectduplicates.btncancel.caption
+#, fuzzy
+msgctxt "tfrmselectduplicates.btncancel.caption"
+msgid "&Cancel"
+msgstr "&Cancelar"
+
+#: tfrmselectduplicates.btnexcludemask.hint
+#, fuzzy
+msgctxt "tfrmselectduplicates.btnexcludemask.hint"
+msgid "Template..."
+msgstr "Modelo..."
+
+#: tfrmselectduplicates.btnincludemask.hint
+#, fuzzy
+msgctxt "tfrmselectduplicates.btnincludemask.hint"
+msgid "Template..."
+msgstr "Modelo..."
+
+#: tfrmselectduplicates.btnok.caption
+#, fuzzy
+msgctxt "tfrmselectduplicates.btnok.caption"
+msgid "&OK"
+msgstr "&OK"
+
+#: tfrmselectduplicates.caption
+msgid "Select duplicate files"
+msgstr ""
+
+#: tfrmselectduplicates.chkleaveunselected.caption
+msgid "&Leave at least one file in each group unselected:"
+msgstr ""
+
+#: tfrmselectduplicates.cmbincludemask.text
+#, fuzzy
+msgctxt "tfrmselectduplicates.cmbincludemask.text"
+msgid "*"
+msgstr "*"
+
+#: tfrmselectduplicates.lblexcludemask.caption
+msgid "&Remove selection by name/extension:"
+msgstr ""
+
+#: tfrmselectduplicates.lblfirstmethod.caption
+msgid "&1."
+msgstr ""
+
+#: tfrmselectduplicates.lblincludemask.caption
+msgid "Select by &name/extension:"
+msgstr ""
+
+#: tfrmselectduplicates.lblsecondmethod.caption
+msgid "&2."
+msgstr ""
+
 #: tfrmselectpathrange.buttonpanel.cancelbutton.caption
 msgctxt "tfrmselectpathrange.buttonpanel.cancelbutton.caption"
 msgid "&Cancel"
@@ -9628,11 +9692,21 @@ msgctxt "tfrmviewer.actzoomin.caption"
 msgid "Zoom In"
 msgstr "Ampliar"
 
+#: tfrmviewer.actzoomin.hint
+msgctxt "tfrmviewer.actzoomin.hint"
+msgid "Zoom In"
+msgstr ""
+
 #: tfrmviewer.actzoomout.caption
 #, fuzzy
 msgctxt "tfrmviewer.actzoomout.caption"
 msgid "Zoom Out"
 msgstr "Reduzir"
+
+#: tfrmviewer.actzoomout.hint
+msgctxt "tfrmviewer.actzoomout.hint"
+msgid "Zoom Out"
+msgstr ""
 
 #: tfrmviewer.btncuttuimage.hint
 msgctxt "TFRMVIEWER.BTNCUTTUIMAGE.HINT"
@@ -9644,32 +9718,33 @@ msgctxt "TFRMVIEWER.BTNFULLSCREEN.HINT"
 msgid "Full Screen"
 msgstr "Ecrã completo"
 
-#: tfrmviewer.btngifmove.caption
-msgctxt "TFRMVIEWER.BTNGIFMOVE.CAPTION"
-msgid "||"
-msgstr "||"
-
-#: tfrmviewer.btngiftobmp.caption
-msgid "S"
-msgstr "S"
+#: tfrmviewer.btngiftobmp.hint
+msgid "Export Frame"
+msgstr ""
 
 #: tfrmviewer.btnhightlight.hint
 msgctxt "TFRMVIEWER.BTNHIGHTLIGHT.HINT"
 msgid "Highlight"
 msgstr "Realçar"
 
-#: tfrmviewer.btnnextgifframe.caption
-msgid "||>"
-msgstr "||>"
+#: tfrmviewer.btnnextgifframe.hint
+msgid "Next Frame"
+msgstr ""
 
 #: tfrmviewer.btnpaint.hint
 msgctxt "TFRMVIEWER.BTNPAINT.HINT"
 msgid "Paint"
 msgstr "Pintar"
 
-#: tfrmviewer.btnprevgifframe.caption
-msgid "<||"
-msgstr "<||"
+#: tfrmviewer.btnpenwidth.caption
+#, fuzzy
+msgctxt "tfrmviewer.btnpenwidth.caption"
+msgid "1"
+msgstr "1"
+
+#: tfrmviewer.btnprevgifframe.hint
+msgid "Previous Frame"
+msgstr ""
 
 #: tfrmviewer.btnredeye.hint
 msgid "Red Eyes"
@@ -9679,6 +9754,12 @@ msgstr "Olhos vermelhos"
 msgctxt "TFRMVIEWER.BTNRESIZE.HINT"
 msgid "Resize"
 msgstr "Redimensionar"
+
+#: tfrmviewer.btnslideshow.caption
+#, fuzzy
+msgctxt "tfrmviewer.btnslideshow.caption"
+msgid "Slide Show"
+msgstr "Diaporama"
 
 #: tfrmviewer.btnundo.hint
 msgctxt "TFRMVIEWER.BTNUNDO.HINT"
@@ -9690,44 +9771,6 @@ msgctxt "TFRMVIEWER.CAPTION"
 msgid "Viewer"
 msgstr "Visualizador"
 
-#: tfrmviewer.cbslideshow.caption
-msgctxt "TFRMVIEWER.CBSLIDESHOW.CAPTION"
-msgid "Slide Show"
-msgstr "Diaporama"
-
-#: tfrmviewer.comboboxpaint.text
-msgid "Pen"
-msgstr "Caneta"
-
-#: tfrmviewer.comboboxwidth.text
-msgctxt "TFRMVIEWER.COMBOBOXWIDTH.TEXT"
-msgid "1"
-msgstr "1"
-
-#: tfrmviewer.gboxhightlight.caption
-msgctxt "TFRMVIEWER.GBOXHIGHTLIGHT.CAPTION"
-msgid "Highlight"
-msgstr "Realçar"
-
-#: tfrmviewer.gboxpaint.caption
-msgctxt "TFRMVIEWER.GBOXPAINT.CAPTION"
-msgid "Paint"
-msgstr "Pintar"
-
-#: tfrmviewer.gboxslideshow.caption
-msgctxt "TFRMVIEWER.GBOXSLIDESHOW.CAPTION"
-msgid "Slide Show"
-msgstr "Show de Slides"
-
-#: tfrmviewer.gboxview.caption
-msgctxt "TFRMVIEWER.GBOXVIEW.CAPTION"
-msgid "View"
-msgstr "Ver"
-
-#: tfrmviewer.lblhightlight.caption
-msgid "0x0"
-msgstr "0x0"
-
 #: tfrmviewer.miabout.caption
 msgctxt "TFRMVIEWER.MIABOUT.CAPTION"
 msgid "About"
@@ -9737,6 +9780,10 @@ msgstr "Sobre"
 msgctxt "TFRMVIEWER.MIEDIT.CAPTION"
 msgid "&Edit"
 msgstr "&Editar"
+
+#: tfrmviewer.miellipse.caption
+msgid "Ellipse"
+msgstr ""
 
 #: tfrmviewer.miencoding.caption
 msgctxt "TFRMVIEWER.MIENCODING.CAPTION"
@@ -9751,6 +9798,16 @@ msgstr "&arquivo"
 #: tfrmviewer.miimage.caption
 msgid "&Image"
 msgstr "&Imagem"
+
+#: tfrmviewer.mipen.caption
+#, fuzzy
+msgctxt "tfrmviewer.mipen.caption"
+msgid "Pen"
+msgstr "Caneta"
+
+#: tfrmviewer.mirect.caption
+msgid "Rect"
+msgstr ""
 
 #: tfrmviewer.mirotate.caption
 msgctxt "TFRMVIEWER.MIROTATE.CAPTION"
@@ -10258,6 +10315,10 @@ msgstr "Jun&tar"
 #: ulng.rsdlgbuttonautorenamesource
 msgid "A&uto-rename source files"
 msgstr "Auto renomer arquivos fonte"
+
+#: ulng.rsdlgbuttonautorenametarget
+msgid "A&uto-rename target files"
+msgstr ""
 
 #: ulng.rsdlgbuttoncancel
 msgctxt "ulng.rsdlgbuttoncancel"
@@ -13428,6 +13489,10 @@ msgstr ""
 #: ulng.rsselectdir
 msgid "Select a directory"
 msgstr "Selecione uma pasta"
+
+#: ulng.rsselectduplicatemethod
+msgid "Newest;Oldest;Largest;Smallest;First in group;Last in group"
+msgstr ""
 
 #: ulng.rsselectyoufindfileswindow
 msgid "Select your window"

@@ -268,6 +268,7 @@ var
   i:Integer;
   mi:TMenuItem;
   HMEditor: THMForm;
+  miOther: TMenuItem = nil;
   EncodingsList: TStringList;
   Options: TTextSearchOptions;
 begin
@@ -277,19 +278,30 @@ begin
 
   LoadGlobalOptions;
 
-// update menu highlighting
+  // update menu highlighting
   miHighlight.Clear;
-  for i:=0 to dmHighl.SynHighlighterList.Count - 1 do
-    begin
-      mi:=TMenuItem.Create(miHighlight);
-      mi.Caption:=TSynCustomHighlighter(dmHighl.SynHighlighterList.Objects[i]).LanguageName;
-      mi.Tag:=i;
-//      mi.Name:='miHigh'+IntToStr(i);
-      mi.Enabled:=True;
-      mi.OnClick:=@SetHighLighter;
-      miHighlight.Add(mi);
+  for i:= 0 to dmHighl.SynHighlighterList.Count - 1 do
+  begin
+    mi:= TMenuItem.Create(miHighlight);
+    mi.Caption:= TSynCustomHighlighter(dmHighl.SynHighlighterList.Objects[i]).LanguageName;
+    mi.Tag:= i;
+    mi.Enabled:= True;
+    mi.OnClick:=@SetHighLighter;
+
+    if not TSynCustomHighlighter(dmHighl.SynHighlighterList.Objects[i]).Other then
+      miHighlight.Add(mi)
+    else begin
+      if (miOther = nil) then
+      begin
+        miOther:= TMenuItem.Create(miHighlight);
+        miOther.Caption:= rsDlgButtonOther;
+      end;
+      miOther.Add(mi);
     end;
-// update menu encoding
+  end;
+  if Assigned(miOther) then
+    miHighlight.Add(miOther);
+  // update menu encoding
   miEncodingIn.Clear;
   miEncodingOut.Clear;
   EncodingsList:= TStringList.Create;
@@ -691,13 +703,17 @@ begin
 end;
 
 procedure TfrmEditor.UpdateStatus;
+const
+  BreakStyle: array[TTextLineBreakStyle] of String = ('LF', 'CRLF', 'CR');
 begin
   if bChanged then
-    StatusBar.Panels[0].Text:='*'
-  else
-    StatusBar.Panels[0].Text:='';
-  StatusBar.Panels[1].Text:=Format('%d:%d',[Editor.CaretX, Editor.CaretY]);
-//  StatusBar.Panels[2].Text:=IntToStr(Length(Editor.Lines.Text));
+    StatusBar.Panels[0].Text:= '*'
+  else begin
+    StatusBar.Panels[0].Text:= '';
+  end;
+  StatusBar.Panels[1].Text:= Format('%d:%d',[Editor.CaretX, Editor.CaretY]);
+  StatusBar.Panels[2].Text:= sEncodingIn;
+  StatusBar.Panels[3].Text:= BreakStyle[Editor.Lines.TextLineBreakStyle];
 end;
 
 procedure TfrmEditor.SetEncodingIn(Sender: TObject);
@@ -706,6 +722,7 @@ begin
   sEncodingOut:= sEncodingIn;
   ChooseEncoding(miEncodingOut, sEncodingOut);
   Editor.Lines.Text:= ConvertEncoding(sOriginalText, sEncodingIn, EncodingUTF8);
+  UpdateStatus;
 end;
 
 procedure TfrmEditor.SetEncodingOut(Sender: TObject);
@@ -723,7 +740,7 @@ end;
 procedure TfrmEditor.UpdateHighlighter(Highlighter: TSynCustomHighlighter);
 begin
   dmHighl.SetHighlighter(Editor, Highlighter);
-  StatusBar.Panels[3].Text:= Highlighter.LanguageName;
+  StatusBar.Panels[4].Text:= Highlighter.LanguageName;
 end;
 
 procedure TfrmEditor.FormCloseQuery(Sender: TObject;
@@ -900,16 +917,19 @@ end;
 procedure TfrmEditor.cm_EditLineEndCr(const Params:array of string);
 begin
   Editor.Lines.TextLineBreakStyle:= tlbsCR;
+  UpdateStatus;
 end;
 
 procedure TfrmEditor.cm_EditLineEndCrLf(const Params:array of string);
 begin
   Editor.Lines.TextLineBreakStyle:= tlbsCRLF;
+  UpdateStatus;
 end;
 
 procedure TfrmEditor.cm_EditLineEndLf(const Params:array of string);
 begin
   Editor.Lines.TextLineBreakStyle:= tlbsLF;
+  UpdateStatus;
 end;
 
 procedure TfrmEditor.cm_About(const Params:array of string);
