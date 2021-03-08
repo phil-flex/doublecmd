@@ -2345,9 +2345,9 @@ var
   bTextFound: Boolean;
   sSearchTextU: String;
   sSearchTextA: AnsiString;
-  iSearchParameter: Integer;
   RecodeTable: TRecodeTable;
   Options: TTextSearchOptions;
+  iSearchParameter: Integer = 0;
 begin
   // in first use create dialog
   if not Assigned(FFindDialog) then
@@ -2372,6 +2372,7 @@ begin
         // if plugin has specific search dialog
         if FWlxModule.CallListSearchDialog(0) = LISTPLUGIN_OK then
           Exit;
+        iSearchParameter:= iSearchParameter or lcs_findfirst;
       end;
 
       FFindDialog.chkHex.Visible:= not bPlugin;
@@ -2383,14 +2384,19 @@ begin
                                        (TRegExprU.Available and (ViewerControl.Encoding in [veUtf8, veUtf8bom]))
                                      );
       if not FFindDialog.cbRegExp.Visible then FFindDialog.cbRegExp.Checked:= False;
+      if FFindDialog.cbRegExp.Checked then bSearchBackwards:= False;
+      FFindDialog.cbBackwards.Checked:= bSearchBackwards;
       // Load search history
       FFindDialog.cbDataToFind.Items.Assign(glsSearchHistory);
       sSearchTextU:= ViewerControl.Selection;
       if Length(sSearchTextU) > 0 then
         FFindDialog.cbDataToFind.Text:= sSearchTextU;
+
       if FFindDialog.ShowModal <> mrOK then Exit;
+
       if FFindDialog.cbDataToFind.Text = '' then Exit;
       sSearchTextU:= FFindDialog.cbDataToFind.Text;
+      bSearchBackwards:= FFindDialog.cbBackwards.Checked;
       // Save search history
       glsSearchHistory.Assign(FFindDialog.cbDataToFind.Items);
       gFirstTextSearch:= False;
@@ -2405,17 +2411,17 @@ begin
       end;
       if glsSearchHistory.Count > 0 then
         sSearchTextU:= glsSearchHistory[0];
+      FFindDialog.cbBackwards.Checked:= bSearchBackwards;
     end;
 
-    if FFindDialog.cbRegExp.Checked then
-    begin
-      FRegExp.SetInputString(ViewerControl.GetDataAdr, ViewerControl.FileSize)
-    end;
+  if FFindDialog.cbRegExp.Checked then
+  begin
+    FRegExp.SetInputString(ViewerControl.GetDataAdr, ViewerControl.FileSize)
+  end;
 
   if bPlugin then
   begin
-    iSearchParameter:= 0;
-    if bSearchBackwards then iSearchParameter:= lcs_backwards;
+    if bSearchBackwards then iSearchParameter:= iSearchParameter or lcs_backwards;
     if FFindDialog.cbCaseSens.Checked then iSearchParameter:= iSearchParameter or lcs_matchcase;
     FWlxModule.CallListSearchText(sSearchTextU, iSearchParameter);
   end
@@ -2983,8 +2989,18 @@ begin
 end;
 
 procedure TfrmViewer.cm_Find(const Params: array of string);
+var
+  bSearchBackwards: Boolean;
 begin
-  if not miGraphics.Checked then DoSearch(False, False);
+  if not miGraphics.Checked then
+  begin
+    if (FFindDialog = nil) then
+      bSearchBackwards:= False
+    else begin
+      bSearchBackwards:= FFindDialog.cbBackwards.Checked;
+    end;
+    DoSearch(False, bSearchBackwards);
+  end;
 end;
 
 procedure TfrmViewer.cm_FindNext(const Params: array of string);
@@ -3046,6 +3062,7 @@ procedure TfrmViewer.cm_ShowGraphics(const Params: array of string);
 begin
   if CheckGraphics(FileList.Strings[iActiveFile]) then
   begin
+    ExitPluginMode;
     ViewerControl.FileName := ''; // unload current file if any is loaded
     if LoadGraphics(FileList.Strings[iActiveFile]) then
       ActivatePanel(pnlImage)

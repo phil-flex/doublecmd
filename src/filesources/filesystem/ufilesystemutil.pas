@@ -71,10 +71,15 @@ type
     FReserveSpace,
     FCheckFreeSpace: Boolean;
     FSkipAllBigFiles: Boolean;
+{$IF DEFINED(UNIX)}
+    FSkipAllSpecialFiles: Boolean;
+{$ENDIF}
+    FSkipRenameError: Boolean;
     FSkipOpenForReadingError: Boolean;
     FSkipOpenForWritingError: Boolean;
     FSkipReadError: Boolean;
     FSkipWriteError: Boolean;
+    FSkipCopyError: Boolean;
     FAutoRenameItSelf: Boolean;
     FCorrectSymLinks: Boolean;
     FCopyAttributesOptions: TCopyAttributesOptions;
@@ -98,6 +103,7 @@ type
     procedure LogMessage(sMessage: String; logOptions: TLogOptions; logMsgType: TLogMsgType);
 
     function CheckFileHash(const FileName, Hash: String; Size: Int64): Boolean;
+    function CompareFiles(const FileName1, FileName2: String; Size: Int64): Boolean;
     function CopyFile(SourceFile: TFile; TargetFileName: String; Mode: TFileSystemOperationHelperCopyMode): Boolean;
     function MoveFile(SourceFile: TFile; TargetFileName: String; Mode: TFileSystemOperationHelperCopyMode): Boolean;
     procedure CopyProperties(SourceFile: TFile; TargetFileName: String);
@@ -156,7 +162,11 @@ implementation
 uses
   uDebug, uOSUtils, DCStrUtils, FileUtil, uFindEx, DCClassesUtf8, uFileProcs, uLng,
   DCBasicTypes, uFileSource, uFileSystemFileSource, uFileProperty, uAdministrator,
-  StrUtils, DCDateTimeUtils, uShowMsg, Forms, LazUTF8, uHash;
+  StrUtils, DCDateTimeUtils, uShowMsg, Forms, LazUTF8, uHash, uFileCopyEx, SysConst
+{$IFDEF UNIX}
+  , BaseUnix
+{$ENDIF}
+  ;
 
 const
   HASH_TYPE = HASH_BEST;
@@ -268,6 +278,33 @@ begin
   end;
   Result:= Result + LineEnding + rsMsgFileExistsWithFile + LineEnding + WrapTextSimple(SourceName, 100) + LineEnding +
            Format(rsMsgFileExistsFileInfo, [Numb2USA(IntToStr(SourceSize)), DateTimeToStr(SourceTime)]);
+end;
+
+function FileCopyProgress(TotalBytes, DoneBytes: Int64; UserData: Pointer): LongBool;
+var
+  Helper: TFileSystemOperationHelper absolute UserData;
+begin
+  with Helper do
+  begin
+    FStatistics.DoneBytes+= (DoneBytes - FStatistics.CurrentFileDoneBytes);
+
+    // File has alternate data streams
+    if TotalBytes > FStatistics.CurrentFileTotalBytes then
+    begin
+      FStatistics.TotalBytes+= (TotalBytes - FStatistics.CurrentFileTotalBytes);
+      FStatistics.CurrentFileTotalBytes:= TotalBytes;
+    end;
+
+    FStatistics.CurrentFileDoneBytes:= DoneBytes;
+    UpdateStatistics(FStatistics);
+    try
+      CheckOperationState;
+    except
+      on E: EFileSourceOperationAborting do
+        Exit(False);
+    end;
+  end;
+  Result:= True;
 end;
 
 // ----------------------------------------------------------------------------
@@ -456,6 +493,7 @@ var
   TotalBytesToRead: Int64 = 0;
   NewPos: Int64;
   Hash: String;
+  Options: UInt32;
   Context: THashContext;
   DeleteFile: Boolean = False;
 
@@ -601,6 +639,50 @@ begin
     end;
   end;
 
+  if Assigned(FileCopyEx) and (Mode = fsohcmDefault) then
+  begin
+    if FVerify then
+      Options:= FILE_COPY_NO_BUFFERING
+    else begin
+      Options:= 0;
+    end;
+    repeat
+      bRetryWrite:= False;
+      Result:= FileCopyUAC(SourceFile.FullPath, TargetFileName, Options, @FileCopyProgress, Self);
+      if not Result then
+      begin
+        if FSkipCopyError then Exit;
+        case AskQuestion('',
+                         Format(rsMsgErrCannotCopyFile, [WrapTextSimple(SourceFile.FullPath, 64), WrapTextSimple(TargetFileName, 64)]) +
+                         LineEnding + LineEnding + mbSysErrorMessage,
+                         [fsourRetry, fsourSkip, fsourSkipAll, fsourAbort],
+                         fsourRetry, fsourSkip) of
+          fsourRetry:
+            bRetryWrite := True;
+          fsourAbort:
+            AbortOperation;
+          fsourSkip:
+            Exit;
+          fsourSkipAll:
+            begin
+              FSkipCopyError := True;
+              Exit;
+            end;
+        end; // case
+      end;
+    until not bRetryWrite;
+    if Result and FVerify then
+    begin
+      Result:= CompareFiles(SourceFile.FullPath, TargetFileName, SourceFile.Size);
+    end;
+    if Result and (FCopyAttributesOptions <> []) then
+    begin
+      FCopyAttributesOptions := FCopyAttributesOptions * [caoCopyXattributes, caoCopyPermissions];
+      CopyProperties(SourceFile, TargetFileName);
+    end;
+    Exit;
+  end;
+
   SourceFileStream := nil;
   TargetFileStream := nil; // for safety exception handling
   BytesToRead := FBufferSize;
@@ -647,6 +729,7 @@ begin
                 else if BytesWritten < BytesRead then
                 begin
                   bRetryWrite := True;   // repeat and try to write the rest
+                  Dec(BytesRead, BytesWrittenTry);
                 end;
               except
                 on E: EWriteError do
@@ -808,13 +891,15 @@ begin
         fsoospeNone:
           begin
             if caoCopyAttributes in CopyAttrResult then
-              AddStrWithSep(Msg, Format(rsMsgErrSetAttribute, [SourceFile.FullPath]), LineEnding);
+              AddStrWithSep(Msg, Format(rsMsgErrSetAttribute, [TargetFileName]), LineEnding);
             if caoCopyTime in CopyAttrResult then
-              AddStrWithSep(Msg, Format(rsMsgErrSetDateTime, [SourceFile.FullPath]), LineEnding);
+              AddStrWithSep(Msg, Format(rsMsgErrSetDateTime, [TargetFileName]), LineEnding);
             if caoCopyOwnership in CopyAttrResult then
-              AddStrWithSep(Msg, Format(rsMsgErrSetOwnership, [SourceFile.FullPath]), LineEnding);
+              AddStrWithSep(Msg, Format(rsMsgErrSetOwnership, [TargetFileName]), LineEnding);
             if caoCopyPermissions in CopyAttrResult then
-              AddStrWithSep(Msg, Format(rsMsgErrSetPermissions, [SourceFile.FullPath]), LineEnding);
+              AddStrWithSep(Msg, Format(rsMsgErrSetPermissions, [TargetFileName]), LineEnding);
+            if caoCopyXattributes in CopyAttrResult then
+              AddStrWithSep(Msg, Format(rsMsgErrSetXattribute, [TargetFileName]), LineEnding);
 
             case AskQuestion(Msg, '',
                              [fsourSkip, fsourSkipAll, fsourIgnoreAll, fsourAbort],
@@ -840,35 +925,51 @@ function TFileSystemOperationHelper.MoveFile(SourceFile: TFile; TargetFileName: 
   Mode: TFileSystemOperationHelperCopyMode): Boolean;
 var
   Message: String;
+  RetryRename: Boolean;
   RetryDelete: Boolean;
 begin
-  if (Mode in [fsohcmAppend, fsohcmResume]) or
-     (not RenameFileUAC(SourceFile.FullPath, TargetFileName)) then
+  if not (Mode in [fsohcmAppend, fsohcmResume]) then
   begin
-    if FVerify then FStatistics.TotalBytes += SourceFile.Size;
-    if CopyFile(SourceFile, TargetFileName, Mode) then
-    begin
-      repeat
-        RetryDelete := True;
-        if FileIsReadOnly(SourceFile.Attributes) then
-          FileSetReadOnlyUAC(SourceFile.FullPath, False);
-        Result := DeleteFileUAC(SourceFile.FullPath);
-        if (not Result) and (FDeleteFileOption = fsourInvalid) then
-        begin
-          Message := Format(rsMsgNotDelete, [WrapTextSimple(SourceFile.FullPath, 100)]) + LineEnding + LineEnding + mbSysErrorMessage;
-          case AskQuestion('', Message, [fsourSkip, fsourRetry, fsourAbort, fsourSkipAll], fsourSkip, fsourAbort) of
-            fsourAbort: AbortOperation;
-            fsourRetry: RetryDelete := False;
-            fsourSkipAll: FDeleteFileOption := fsourSkipAll;
-          end;
+    repeat
+      RetryRename := True;
+      if RenameFileUAC(SourceFile.FullPath, TargetFileName) then
+        Exit(True);
+      if (GetLastOSError <> ERROR_NOT_SAME_DEVICE) then
+      begin
+        if FSkipRenameError then Exit(False);
+        Message := Format(rsMsgErrCannotMoveFile, [WrapTextSimple(SourceFile.FullPath, 100)]) +
+                   LineEnding + LineEnding + mbSysErrorMessage;
+        case AskQuestion('', Message, [fsourSkip, fsourRetry, fsourAbort, fsourSkipAll], fsourSkip, fsourAbort) of
+          fsourSkip: Exit(False);
+          fsourAbort: AbortOperation;
+          fsourRetry: RetryRename := False;
+          fsourSkipAll: FSkipRenameError := True;
         end;
-      until RetryDelete;
-    end
-    else
-      Result := False;
+      end;
+    until RetryRename;
+  end;
+
+  if FVerify then FStatistics.TotalBytes += SourceFile.Size;
+  if CopyFile(SourceFile, TargetFileName, Mode) then
+  begin
+    repeat
+      RetryDelete := True;
+      if FileIsReadOnly(SourceFile.Attributes) then
+        FileSetReadOnlyUAC(SourceFile.FullPath, False);
+      Result := DeleteFileUAC(SourceFile.FullPath);
+      if (not Result) and (FDeleteFileOption = fsourInvalid) then
+      begin
+        Message := Format(rsMsgNotDelete, [WrapTextSimple(SourceFile.FullPath, 100)]) + LineEnding + LineEnding + mbSysErrorMessage;
+        case AskQuestion('', Message, [fsourSkip, fsourRetry, fsourAbort, fsourSkipAll], fsourSkip, fsourAbort) of
+          fsourAbort: AbortOperation;
+          fsourRetry: RetryDelete := False;
+          fsourSkipAll: FDeleteFileOption := fsourSkipAll;
+        end;
+      end;
+    until RetryDelete;
   end
   else
-    Result := True;
+    Result := False;
 end;
 
 function TFileSystemOperationHelper.ProcessNode(aFileTreeNode: TFileTreeNode;
@@ -1140,6 +1241,27 @@ begin
   else begin
     Result:= False;
 
+{$IF DEFINED(UNIX)}
+    if not fpS_ISREG(aNode.TheFile.Attributes) then
+    begin
+      if FSkipAllSpecialFiles then Exit(False);
+
+      case AskQuestion('', Format(rsMsgCannotCopySpecialFile, [LineEnding + aNode.TheFile.FullPath]),
+                       [fsourSkip, fsourSkipAll, fsourAbort],
+                       fsourSkip, fsourAbort) of
+        fsourSkip:
+          Exit(False);
+        fsourSkipAll:
+          begin
+            FSkipAllSpecialFiles:= True;
+            Exit(False);
+          end
+        else
+          AbortOperation;
+        end;
+    end;
+{$ENDIF}
+
     if (aNode.TheFile.Size > GetDiskMaxFileSize(ExtractFileDir(AbsoluteTargetFileName))) then
       case AskQuestion('', Format(rsMsgFileSizeTooBig, [aNode.TheFile.Name]),
                        [fsourSkip, fsourAbort],
@@ -1269,7 +1391,7 @@ var
 
 begin
   repeat
-    Attrs := mbFileGetAttr(AbsoluteTargetFileName);
+    Attrs := FileGetAttrUAC(AbsoluteTargetFileName);
     if Attrs <> faInvalidAttributes then
     begin
       SourceFile := aNode.TheFile;
@@ -1710,6 +1832,86 @@ begin
         end; // case
       end;
     end;
+  end;
+end;
+
+function TFileSystemOperationHelper.CompareFiles(const FileName1, FileName2: String;
+  Size: Int64): Boolean;
+const
+  BLOCK_SIZE = $20000;
+  BUF_LEN = 1024 * 1024 * 8;
+var
+  Count: Int64;
+  Buffer1, Buffer2: PByte;
+  Aligned1, Aligned2: PByte;
+  File1, File2: TFileStreamUAC;
+begin
+  Buffer1:= GetMem(BUF_LEN * 2);
+  Buffer2:= GetMem(BUF_LEN * 2);
+  try
+    if (Buffer1 = nil) or (Buffer2 = nil) then
+      raise EOutOfMemory.Create(SOutOfMemory);
+
+    Aligned1:= Align(Buffer1, BLOCK_SIZE);
+    Aligned2:= Align(Buffer2, BLOCK_SIZE);
+    try
+      File1 := TFileStreamUAC.Create(FileName1, fmOpenRead or fmShareDenyWrite or fmOpenSync or fmOpenDirect);
+      try
+        File2 := TFileStreamUAC.Create(FileName2, fmOpenRead or fmShareDenyWrite or fmOpenSync or fmOpenDirect);
+        try
+          FStatistics.CurrentFileDoneBytes:= 0;
+
+          repeat
+            if Size - FStatistics.CurrentFileDoneBytes <= BUF_LEN then
+              Count := Size - FStatistics.CurrentFileDoneBytes
+            else begin
+              Count := BUF_LEN;
+            end;
+
+            File1.ReadBuffer(Aligned1^, Count);
+            File2.ReadBuffer(Aligned2^, Count);
+
+            if (Count <> BUF_LEN) then
+              Result := CompareMem(Aligned1, Aligned2, Count)
+            else begin
+              Result := CompareDWord(Aligned1^, Aligned2^, Count div SizeOf(Dword)) = 0;
+            end;
+
+            with FStatistics do
+            begin
+              DoneBytes += Count;
+              CurrentFileDoneBytes += Count;
+              UpdateStatistics(FStatistics);
+            end;
+
+            CheckOperationState; // check pause and stop
+
+          until not Result or (FStatistics.CurrentFileDoneBytes >= Size);
+        finally
+          File2.Free;
+        end;
+      finally
+        File1.Free;
+      end;
+    except
+      on E: Exception do
+      begin
+        if E is EFileSourceOperationAborting then
+          raise;
+
+        case AskQuestion(rsMsgVerify, E.Message,
+                         [fsourSkip, fsourAbort],
+                         fsourAbort, fsourSkip) of
+          fsourAbort:
+            AbortOperation();
+          fsourSkip:
+            Exit(False);
+        end; // case
+      end;
+    end;
+  finally
+    if Assigned(Buffer1) then FreeMem(Buffer1);
+    if Assigned(Buffer2) then FreeMem(Buffer2);
   end;
 end;
 

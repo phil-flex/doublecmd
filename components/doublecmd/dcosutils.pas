@@ -41,6 +41,12 @@ const
   fmOpenDirect  = $20000;
   fmOpenNoATime = $40000;
 
+{$IF DEFINED(UNIX)}
+  ERROR_NOT_SAME_DEVICE = ESysEXDEV;
+{$ELSE}
+  ERROR_NOT_SAME_DEVICE = Windows.ERROR_NOT_SAME_DEVICE;
+{$ENDIF}
+
 type
   TFileMapRec = record
     FileHandle : System.THandle;
@@ -77,6 +83,7 @@ type
                            caoCopyTime,
                            caoCopyOwnership,
                            caoCopyPermissions,
+                           caoCopyXattributes,
                            caoRemoveReadOnlyAttr);
   TCopyAttributesOptions = set of TCopyAttributesOption;
   TCopyAttributesResult = array[TCopyAttributesOption] of Integer;
@@ -481,6 +488,15 @@ begin
     end;
   end;
 
+  if caoCopyXattributes in Options then
+  begin
+    if not mbFileCopyXattr(sSrc, sDst) then
+    begin
+      Include(Result, caoCopyXattributes);
+      if Assigned(Errors) then Errors^[caoCopyXattributes]:= GetLastOSError;
+    end;
+  end;
+
   if caoCopyTime in Options then
   begin
     if not (mbFileGetTime(sSrc, ModificationTime, CreationTime, LastAccessTime) and
@@ -563,6 +579,17 @@ begin
           if Assigned(Errors) then Errors^[caoCopyAttributes]:= GetLastOSError;
         end;
       end;
+
+{$IFDEF LINUX}
+      if caoCopyXattributes in Options then
+      begin
+        if not mbFileCopyXattr(sSrc, sDst) then
+        begin
+          Include(Result, caoCopyXattributes);
+          if Assigned(Errors) then Errors^[caoCopyXattributes]:= GetLastOSError;
+        end;
+      end;
+{$ENDIF}
     end;
   end;
 end;

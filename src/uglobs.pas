@@ -43,10 +43,10 @@ interface
 
 uses
   Classes, SysUtils, Controls, Forms, Grids, Types, uExts, uColorExt, Graphics,
-  DCClassesUtf8, uMultiArc, uColumns, uHotkeyManager, uSearchTemplate,
+  LCLVersion, DCClassesUtf8, uMultiArc, uColumns, uHotkeyManager, uSearchTemplate,
   uFileSourceOperationOptions, uWFXModule, uWCXModule, uWDXModule, uwlxmodule,
   udsxmodule, DCXmlConfig, uInfoToolTip, fQuickSearch, uTypes, uClassesEx,
-  uHotDir, uSpecialDir, SynEdit, uFavoriteTabs, fTreeViewMenu, uConvEncoding;
+  uHotDir, uSpecialDir, SynEdit, SynEditTypes, uFavoriteTabs, fTreeViewMenu, uConvEncoding;
 
 type
   { Configuration options }
@@ -424,6 +424,11 @@ var
   gAllowOverColor: Boolean;
   gBorderFrameWidth :integer;
 
+  gPathActiveColor,
+  gPathActiveFontColor,
+  gPathInactiveColor,
+  gPathInactiveFontColor: TColor;
+
   gInactivePanelBrightness: Integer; // 0 .. 100 (black .. full color)
   gIndUseGradient : Boolean; // use gradient on drive label
   gIndForeColor, // foreColor of use space on drive label
@@ -568,6 +573,7 @@ var
   gOperationOptionReserveSpace: Boolean;
   gOperationOptionCheckFreeSpace: Boolean;
   gOperationOptionCopyAttributes: Boolean;
+  gOperationOptionCopyXattributes: Boolean;
   gOperationOptionCopyTime: Boolean;
   gOperationOptionVerify: Boolean;
   gOperationOptionCopyOwnership: Boolean;
@@ -714,6 +720,9 @@ uses
    {$IF DEFINED(MSWINDOWS)}
     , ShlObj
    {$ENDIF}
+   {$if lcl_fullversion >= 2010000}
+   , SynEditMiscClasses
+   {$endif}
    ;
 
 const
@@ -1418,7 +1427,7 @@ begin
     begin
       // extension file
       if not mbFileExists(gpCfgDir + gcfExtensionAssociation) then
-        CopyFile(gpGlobalCfgDir + 'extassoc.xml', gpCfgDir + 'ExtAssoc.xml');
+        CopyFile(gpGlobalCfgDir + gcfExtensionAssociation, gpCfgDir + gcfExtensionAssociation);
       // pixmaps file
       if not mbFileExists(gpCfgDir + 'pixmaps.txt') then
         CopyFile(gpGlobalCfgDir + 'pixmaps.txt', gpCfgDir + 'pixmaps.txt');
@@ -1684,6 +1693,11 @@ begin
   gAllowOverColor := True;
   gBorderFrameWidth:=1;
 
+  gPathActiveColor := clHighlight;
+  gPathActiveFontColor := clHighlightText;
+  gPathInactiveColor := clBtnFace;
+  gPathInactiveFontColor := clBtnText;
+
   gInactivePanelBrightness := 100; // Full brightness
   gIndUseGradient := True;
   gIndForeColor := clBlack;
@@ -1790,9 +1804,10 @@ begin
   gOperationOptionFileExists := fsoofeNone;
   gOperationOptionDirectoryExists := fsoodeNone;
   gOperationOptionSetPropertyError := fsoospeNone;
-  gOperationOptionReserveSpace := False;
+  gOperationOptionReserveSpace := True;
   gOperationOptionCheckFreeSpace := True;
   gOperationOptionCopyAttributes := True;
+  gOperationOptionCopyXattributes := True;
   gOperationOptionCopyTime := True;
   gOperationOptionVerify := False;
   gOperationOptionCopyOwnership := False;
@@ -2591,6 +2606,11 @@ begin
       gAllowOverColor   := GetValue(Node, 'AllowOverColor', gAllowOverColor);
       gBorderFrameWidth := GetValue(Node, 'gBorderFrameWidth', gBorderFrameWidth);
 
+      gPathActiveColor := GetValue(Node, 'PathLabel/ActiveColor', gPathActiveColor);
+      gPathActiveFontColor := GetValue(Node, 'PathLabel/ActiveFontColor', gPathActiveFontColor);
+      gPathInactiveColor := GetValue(Node, 'PathLabel/InactiveColor', gPathInactiveColor);
+      gPathInactiveFontColor := GetValue(Node, 'PathLabel/InactiveFontColor', gPathInactiveFontColor);
+
       gInactivePanelBrightness := GetValue(Node, 'InactivePanelBrightness', gInactivePanelBrightness);
       gIndUseGradient := GetValue(Node, 'FreeSpaceIndicator/UseGradient', gIndUseGradient);
       gIndForeColor := GetValue(Node, 'FreeSpaceIndicator/ForeColor', gIndForeColor);
@@ -2770,6 +2790,7 @@ begin
         gOperationOptionReserveSpace := GetValue(SubNode, 'ReserveSpace', gOperationOptionReserveSpace);
         gOperationOptionCheckFreeSpace := GetValue(SubNode, 'CheckFreeSpace', gOperationOptionCheckFreeSpace);
         gOperationOptionCopyAttributes := GetValue(SubNode, 'CopyAttributes', gOperationOptionCopyAttributes);
+        gOperationOptionCopyXattributes := GetValue(SubNode, 'CopyXattributes', gOperationOptionCopyXattributes);
         gOperationOptionVerify := GetValue(SubNode, 'Verify', gOperationOptionVerify);
         gOperationOptionCopyTime := GetValue(SubNode, 'CopyTime', gOperationOptionCopyTime);
         gOperationOptionCopyOwnership := GetValue(SubNode, 'CopyOwnership', gOperationOptionCopyOwnership);
@@ -3294,6 +3315,11 @@ begin
     SetValue(Node, 'AllowOverColor', gAllowOverColor);
     SetValue(Node, 'gBorderFrameWidth', gBorderFrameWidth);
 
+    SetValue(Node, 'PathLabel/ActiveColor', gPathActiveColor);
+    SetValue(Node, 'PathLabel/ActiveFontColor', gPathActiveFontColor);
+    SetValue(Node, 'PathLabel/InactiveColor', gPathInactiveColor);
+    SetValue(Node, 'PathLabel/InactiveFontColor', gPathInactiveFontColor);
+
     SetValue(Node, 'InactivePanelBrightness', gInactivePanelBrightness);
     SetValue(Node, 'FreeSpaceIndicator/UseGradient', gIndUseGradient);
     SetValue(Node, 'FreeSpaceIndicator/ForeColor', gIndForeColor);
@@ -3429,6 +3455,7 @@ begin
     SetValue(SubNode, 'ReserveSpace', gOperationOptionReserveSpace);
     SetValue(SubNode, 'CheckFreeSpace', gOperationOptionCheckFreeSpace);
     SetValue(SubNode, 'CopyAttributes', gOperationOptionCopyAttributes);
+    SetValue(SubNode, 'CopyXattributes', gOperationOptionCopyXattributes);
     SetValue(SubNode, 'Verify', gOperationOptionVerify);
     SetValue(SubNode, 'CopyTime', gOperationOptionCopyTime);
     SetValue(SubNode, 'CopyOwnership', gOperationOptionCopyOwnership);

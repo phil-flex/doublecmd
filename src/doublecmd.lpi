@@ -25,7 +25,7 @@
     <VersionInfo>
       <UseVersionInfo Value="True"/>
       <MajorVersionNr Value="1"/>
-      <StringTable FileDescription="Double Commander is a cross platform open source file manager with two panels side by side" InternalName="DOUBLECMD" LegalCopyright="Copyright (C) 2006-2020 Alexander Koblov" ProductName="Double Commander"/>
+      <StringTable FileDescription="Double Commander is a cross platform open source file manager with two panels side by side" InternalName="DOUBLECMD" LegalCopyright="Copyright (C) 2006-2021 Alexander Koblov" ProductName="Double Commander"/>
     </VersionInfo>
     <BuildModes Count="5">
       <Item1 Name="Debug" Default="True"/>
@@ -290,7 +290,7 @@ end;"/>
         <MinVersion Minor="3" Valid="True"/>
       </Item12>
     </RequiredPackages>
-    <Units Count="265">
+    <Units Count="266">
       <Unit0>
         <Filename Value="doublecmd.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -1927,6 +1927,12 @@ end;"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="fSelectDuplicates"/>
       </Unit264>
+      <Unit265>
+        <Filename Value="rpc\sys\felevation.pas"/>
+        <IsPartOfProject Value="True"/>
+        <HasResources Value="True"/>
+        <UnitName Value="fElevation"/>
+      </Unit265>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

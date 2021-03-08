@@ -258,7 +258,14 @@ begin
   repeat
     case gTypeOfDuplicatedRename of
       drLegacyWithCopy:
-        Result := sFilePath + Format(rsCopyNameTemplate, [CopyNumber, sFileName]);
+        begin
+{$IFDEF UNIX}
+          if (Length(sFileName) > 0) and (sFileName[1] = ExtensionSeparator) then
+            Result := sFilePath + ExtensionSeparator + Format(rsCopyNameTemplate, [CopyNumber, Copy(sFileName, 2, MaxInt)])
+          else
+{$ENDIF}
+          Result := sFilePath + Format(rsCopyNameTemplate, [CopyNumber, sFileName]);
+        end;
       drLikeWindows7, drLikeTC:
         begin
           if IsDirectory then
