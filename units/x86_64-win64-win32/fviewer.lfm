@@ -384,6 +384,7 @@ object frmViewer: TfrmViewer
         Height = 288
         Top = 96
         Width = 376
+        AntialiasingMode = amOn
         Align = alCustom
         BorderSpacing.CellAlignHorizontal = ccaCenter
         BorderSpacing.CellAlignVertical = ccaCenter
@@ -452,7 +453,6 @@ object frmViewer: TfrmViewer
           Top = 2
           Action = actLoadNextFile
           ShowCaption = False
-          Style = tbsCheck
         end
         object btnCopyFile: TToolButton
           Left = 121

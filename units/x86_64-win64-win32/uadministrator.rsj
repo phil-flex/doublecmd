@@ -2,6 +2,7 @@
 {"hash":201317150,"name":"uadministrator.rselevationrequired","sourcebytes":[89,111,117,32,110,101,101,100,32,116,111,32,112,114,111,118,105,100,101,32,97,100,109,105,110,105,115,116,114,97,116,111,114,32,112,101,114,109,105,115,115,105,111,110],"value":"You need to provide administrator permission"},
 {"hash":150783226,"name":"uadministrator.rselevationrequireddelete","sourcebytes":[116,111,32,100,101,108,101,116,101,32,116,104,105,115,32,111,98,106,101,99,116,58],"value":"to delete this object:"},
 {"hash":57266842,"name":"uadministrator.rselevationrequiredopen","sourcebytes":[116,111,32,111,112,101,110,32,116,104,105,115,32,111,98,106,101,99,116,58],"value":"to open this object:"},
+{"hash":55959306,"name":"uadministrator.rselevationrequiredcopy","sourcebytes":[116,111,32,99,111,112,121,32,116,104,105,115,32,111,98,106,101,99,116,58],"value":"to copy this object:"},
 {"hash":145982714,"name":"uadministrator.rselevationrequiredcreate","sourcebytes":[116,111,32,99,114,101,97,116,101,32,116,104,105,115,32,111,98,106,101,99,116,58],"value":"to create this object:"},
 {"hash":184446218,"name":"uadministrator.rselevationrequiredrename","sourcebytes":[116,111,32,114,101,110,97,109,101,32,116,104,105,115,32,111,98,106,101,99,116,58],"value":"to rename this object:"},
 {"hash":93707866,"name":"uadministrator.rselevationrequiredhardlink","sourcebytes":[116,111,32,99,114,101,97,116,101,32,116,104,105,115,32,104,97,114,100,32,108,105,110,107,58],"value":"to create this hard link:"},
